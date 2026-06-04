@@ -17,7 +17,7 @@ These are tools, not a pipeline: reach for the one that fits the moment; there i
 
 Reach for a skill when its trigger fits.
 
-Whenever a request, plan, or design is unclear, `interview-me` grills it into a short alignment brief — in any phase. When a question is faster to build than to argue, `prototyping` answers it with a throwaway spike, then deletes it.
+Whenever a request, plan, or design is unclear, `interview-me` grills it into a short alignment brief — in any phase. When a question is faster to build than to argue, `prototyping` answers it with a throwaway spike, then deletes it. To get oriented in code you don't know, `zoom-out` maps the modules and callers a layer up. When a session ends mid-work, `handoff` writes a resumable summary for the next one. And `caveman` switches to ultra-terse output when you ask for brevity.
 
 **Planning** (a new project or initiative)
 

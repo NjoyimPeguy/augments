@@ -40,6 +40,9 @@ A skill is invoked as `augments:<name>` regardless of which phase folder holds i
 | analysis | `spec-it` | Turn a goal or feature into a requirements spec — testable requirements, acceptance criteria, edge cases |
 | common | `interview-me` | Cross-cutting — grills an unclear request, plan, or design into a short alignment brief, in any phase |
 | common | `prototyping` | Answer one uncertain design or feasibility question with a throwaway spike, then delete it |
+| common | `zoom-out` | Before changing unfamiliar code, go up a layer and map the relevant modules and their callers in the project's own vocabulary |
+| common | `handoff` | Write a durable, resumable handoff when a session ends — goal, state, decisions, gotchas, and the one concrete next step |
+| common | `caveman` | Ultra-compressed output mode on request — drop filler, keep every technical fact, code block, and error exact; persists until stopped |
 | design | `system-architecture` | Design how a non-trivial system is structured — components, boundaries, data flow, and testable seams |
 | design | `data-model` | Design the entities, relationships, and invariants the system stores — before the code that moves them |
 | design | `ui-ux` | Design the user flows, layout, and unhappy states as scenarios with acceptance criteria — before building the interface |
