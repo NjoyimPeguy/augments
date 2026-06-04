@@ -17,7 +17,7 @@ These are tools, not a pipeline: reach for the one that fits the moment; there i
 
 Reach for a skill when its trigger fits.
 
-Whenever a request, plan, or design is unclear, `interview-me` grills it into a short alignment brief — in any phase.
+Whenever a request, plan, or design is unclear, `interview-me` grills it into a short alignment brief — in any phase. When a question is faster to build than to argue, `prototyping` answers it with a throwaway spike, then deletes it.
 
 **Planning** (a new project or initiative)
 
@@ -50,6 +50,7 @@ Whenever a request, plan, or design is unclear, `interview-me` grills it into a 
 **Maintenance**
 
 - `debugging` — any bug or unexpected behavior; build a reproduction and find the root cause before touching a fix.
+- `clean-architecture` — an existing codebase has structural friction; improve module depth and locality with targeted refactors.
 
 **Authoring**
 

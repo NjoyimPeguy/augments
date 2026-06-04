@@ -39,6 +39,7 @@ A skill is invoked as `augments:<name>` regardless of which phase folder holds i
 | planning | `feasibility-check` | Before committing — surface the killer risks and a go / no-go verdict |
 | analysis | `spec-it` | Turn a goal or feature into a requirements spec — testable requirements, acceptance criteria, edge cases |
 | common | `interview-me` | Cross-cutting — grills an unclear request, plan, or design into a short alignment brief, in any phase |
+| common | `prototyping` | Answer one uncertain design or feasibility question with a throwaway spike, then delete it |
 | design | `system-architecture` | Design how a non-trivial system is structured — components, boundaries, data flow, and testable seams |
 | design | `data-model` | Design the entities, relationships, and invariants the system stores — before the code that moves them |
 | design | `ui-ux` | Design the user flows, layout, and unhappy states as scenarios with acceptance criteria — before building the interface |
@@ -49,6 +50,7 @@ A skill is invoked as `augments:<name>` regardless of which phase folder holds i
 | implementation | `executing-plans` | Runs a plan to done one task at a time, gating each on its Evaluator and the index, with optional subagent dispatch |
 | testing | `verifying-completion` | Evidence before claims — run the check and read its output before saying complete/fixed/passing; catches hollow verifications |
 | maintenance | `debugging` | Root cause before fix — build a runnable reproduction, test ranked hypotheses, fix the cause; stop and rethink architecture after three failed fixes |
+| maintenance | `clean-architecture` | Improve an existing codebase's structure — deep modules, real seams — via targeted, leverage-first refactors |
 
 The remaining phases are scaffolded and filled in incrementally.
 
