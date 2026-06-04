@@ -50,6 +50,11 @@ Whenever a request, plan, or design is unclear, `interview-me` grills it into a 
 - `receiving-code-review` — review feedback has arrived; verify each finding against the code before acting, and push back with evidence rather than caving.
 - `security-audits` — a change touches a trust boundary; trace attacker-controlled input source-to-sink for security holes.
 
+**Deployment**
+
+- `finishing-a-branch` — a change is working and tested; wrap the branch into clean commits, a PR, and a merge decision.
+- `release-readiness` — about to ship to production; run the portable pre-deploy gate before the environment's deploy command.
+
 **Maintenance**
 
 - `debugging` — any bug or unexpected behavior; build a reproduction and find the root cause before touching a fix.

@@ -52,14 +52,16 @@ A skill is invoked as `augments:<name>` regardless of which phase folder holds i
 | testing | `requesting-code-review` | Dispatch an independent, diff-scoped reviewer — checks convention-conformance and whether the change does what was asked, with a clear merge verdict |
 | testing | `receiving-code-review` | The author's side of review — verify each finding against the code before acting, push back with evidence, refuse performative agreement |
 | testing | `security-audits` | Review a change for security holes by tracing attacker-controlled input source-to-sink — authz, injection, secrets, data exposure, weakened guards |
+| deployment | `finishing-a-branch` | Take a working branch to merge-ready — green-check gate, clean commits, a real PR description, and a clear merge / keep / discard decision |
+| deployment | `release-readiness` | A portable pre-deploy gate — CI green, migrations reversible, rollback named, flags set, changelog, breaking changes flagged; defers the deploy command to your environment |
 | maintenance | `debugging` | Root cause before fix — build a runnable reproduction, test ranked hypotheses, fix the cause; stop and rethink architecture after three failed fixes |
 | maintenance | `refactor-architecture` | Improve an existing codebase's structure — deep modules, real seams — via targeted, leverage-first refactors |
 
-The remaining phases are scaffolded and filled in incrementally.
+Every SDLC phase now ships at least one skill; a few cross-cutting `common/` tools (`caveman`, `handoff`, `zoom-out`) remain scaffolded and are filled in as needed.
 
 ## Status
 
-Early and growing. Planning, analysis, design, implementation, testing, and maintenance each have at least one working skill, alongside the `common` skills (orientation, skill-authoring, and the cross-cutting `interview-me`); deployment is reserved and filled in incrementally. The repo ships a Claude Code plugin manifest (`.claude-plugin/`); adapters for other harnesses are scaffolded under `.codex-plugin/` and `.cursor-plugin/`. Install through your harness's plugin or marketplace mechanism, then invoke skills by name.
+Early and growing. All seven SDLC phases — planning, analysis, design, implementation, testing, deployment, and maintenance — now ship at least one working skill, alongside the `common` skills (orientation, skill-authoring, prototyping, and the cross-cutting `interview-me`). The repo ships a Claude Code plugin manifest (`.claude-plugin/`); adapters for other harnesses are scaffolded under `.codex-plugin/` and `.cursor-plugin/`. Install through your harness's plugin or marketplace mechanism, then invoke skills by name.
 
 ## Acknowledgements
 
