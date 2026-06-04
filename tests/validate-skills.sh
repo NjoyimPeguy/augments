@@ -1,0 +1,54 @@
+#!/usr/bin/env bash
+# Structural validator for augments skills.
+# Enforces the authoring rules in CLAUDE.md across every skill in skills/.
+# Usage: bash tests/validate-skills.sh   (exit 0 = all pass, 1 = violations)
+
+set -uo pipefail
+cd "$(dirname "$0")/.." || exit 2
+
+fail=0
+note() { printf '  %s\n' "$1"; }
+err()  { printf '  FAIL: %s\n' "$1"; fail=1; }
+
+# Patterns that must never appear in shipped skills (see CLAUDE.md).
+EXT_REFS='superpowers|obra|mattpocock|pocock|ousterhout|github\.com|https?://|#[0-9]{2,}'
+VENDORS='\b(haiku|sonnet|opus|claude|gpt-?[0-9o]|gemini|flash|llama|mistral|openai|anthropic)\b'
+
+mapfile -t skills < <(find skills -name SKILL.md | sort)
+[ ${#skills[@]} -eq 0 ] && { echo "no skills found under skills/"; exit 2; }
+
+for skill in "${skills[@]}"; do
+  dir=$(dirname "$skill")
+  name_dir=$(basename "$dir")
+  echo "• $skill"
+
+  # Frontmatter: name + description present.
+  fname=$(awk -F': ' '/^name:/{print $2; exit}' "$skill")
+  fdesc=$(awk '/^description:/{sub(/^description: /,""); print; exit}' "$skill")
+  [ -z "$fname" ] && err "missing frontmatter 'name'"
+  [ -z "$fdesc" ] && err "missing frontmatter 'description'"
+
+  # name must match the directory name.
+  [ -n "$fname" ] && [ "$fname" != "$name_dir" ] && err "name '$fname' != directory '$name_dir'"
+
+  # description length limit.
+  [ "${#fdesc}" -gt 1024 ] && err "description ${#fdesc} chars > 1024"
+
+  # Body length: warn over 80 (ok only for a discipline skill), fail over 120.
+  lines=$(wc -l < "$skill")
+  if   [ "$lines" -gt 120 ]; then err "$lines lines > 120 (too long even for a discipline skill)"
+  elif [ "$lines" -gt 80 ];  then note "warn: $lines lines (>80; acceptable only if a discipline skill)"
+  fi
+
+  # No external references, vendor model names, or <angle> placeholders — in every file of the skill.
+  for f in "$dir"/*.md; do
+    body=$(sed 's/`[^`]*`//g' "$f")   # ignore inline code spans
+    echo "$body" | grep -qiE "$EXT_REFS"        && err "$(basename "$f"): external reference (repo/issue/URL) — state the principle directly"
+    echo "$body" | grep -qiE "$VENDORS"         && err "$(basename "$f"): vendor model name — use a capability tier (small|medium|large)"
+    echo "$body" | grep -qE  '<[a-z][a-z0-9 -]*>' && err "$(basename "$f"): bare <angle> placeholder — use {{double-curly}}"
+  done
+done
+
+echo ""
+if [ "$fail" -eq 0 ]; then echo "✓ all skills pass structural validation"; else echo "✗ violations found"; fi
+exit "$fail"

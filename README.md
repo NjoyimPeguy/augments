@@ -33,6 +33,7 @@ A skill is invoked as `augments:<name>` regardless of which phase folder holds i
 | common | `writing-skills` | The lean format every skill follows, and how to prove a skill actually works |
 | planning | `interview-me` | Grills you one question at a time — answering from the codebase first — then writes a short alignment brief |
 | planning | `writing-plans` | Turns intent into a durable plan: a one-page map plus thin per-task contracts, each with its own acceptance check |
+| implementation | `test-driven-development` | Red-green-refactor as a discipline that holds under pressure, with test-craft and mocking references |
 
 The remaining phases are scaffolded and filled in incrementally.
 
