@@ -34,6 +34,9 @@ A skill is invoked as `augments:<name>` regardless of which phase folder holds i
 | ----- | ----- | ------------ |
 | common | `using-augments` | Start here — the mental model behind the library and the map of which skill to reach for when |
 | common | `writing-skills` | The lean format every skill follows, and how to prove a skill actually works |
+| planning | `define-goals` | At project kickoff — pin the objective and measurable success criteria into the project brief |
+| planning | `scope-it` | Draw the boundary — what's in, what's explicitly out, the MVP cut |
+| planning | `feasibility-check` | Before committing — surface the killer risks and a go / no-go verdict |
 | analysis | `interview-me` | Grills you one question at a time — answering from the codebase first — then writes a short alignment brief |
 | design | `writing-plans` | Turns intent into a durable plan: a one-page map plus thin per-task contracts, each with its own acceptance check |
 | implementation | `test-driven-development` | Red-green-refactor as a discipline that holds under pressure, with test-craft and mocking references |
@@ -45,7 +48,7 @@ The remaining phases are scaffolded and filled in incrementally.
 
 ## Status
 
-Early and growing. Analysis, design, implementation, testing, and maintenance each have at least one working skill, alongside the `common` meta-skills; planning and deployment are reserved and filled in incrementally. The repo ships a Claude Code plugin manifest (`.claude-plugin/`); adapters for other harnesses are scaffolded under `.codex-plugin/` and `.cursor-plugin/`. Install through your harness's plugin or marketplace mechanism, then invoke skills by name.
+Early and growing. Planning, analysis, design, implementation, testing, and maintenance each have at least one working skill, alongside the `common` meta-skills; deployment is reserved and filled in incrementally. The repo ships a Claude Code plugin manifest (`.claude-plugin/`); adapters for other harnesses are scaffolded under `.codex-plugin/` and `.cursor-plugin/`. Install through your harness's plugin or marketplace mechanism, then invoke skills by name.
 
 ## Acknowledgements
 
