@@ -1,0 +1,27 @@
+---
+name: architecture-decisions
+description: Use when making a significant, hard-to-reverse technical decision — a datastore, sync vs async, a framework, a public contract, a security model — to record it as an ADR before building on it. Captures the options weighed, the choice, and why the alternatives were rejected. Skip for easily-reversible choices.
+---
+
+# Architecture Decisions
+
+Record the decisions you'd regret not being able to explain in six months. An ADR (Architecture Decision Record) captures *why*, not just *what* — so the next person, or you, doesn't relitigate it or quietly undo it.
+
+## When to use
+
+- A decision is **significant and hard to reverse** — a datastore, a sync/async boundary, a framework, a public contract, a security model.
+- **Skip** for easily-reversible or obvious choices — an ADR for a variable name is noise.
+
+## Procedure
+
+1. **State the decision** as a question with context: what are you deciding, and what forces it (which requirement, which constraint)?
+2. **Weigh the real options** — at least two — each on four axes: what it assumes, where it breaks down, what would rule it out, what evidence supports it. "A vs B because B is nicer" is not a decision.
+3. **Record the choice and its rationale** — and, explicitly, **the rejected alternatives and why**. The rejection is the load-bearing part: it stops the decision being silently reversed later.
+4. **Note the consequences** — what this commits you to, and what it closes off.
+5. **Append the ADR** to the design document's decisions section (or a standing decisions log) — the project's location, default `docs/augments/designs/{{YYYY-MM-DD}}-{{topic}}.md`.
+
+## Common mistakes
+
+- Recording the *what* without the *why* — it reads as arbitrary and gets undone.
+- No rejected alternatives — the next person re-explores the same dead ends.
+- An ADR for a reversible choice — only the decisions you'd defend belong here.

@@ -40,6 +40,10 @@ A skill is invoked as `augments:<name>` regardless of which phase folder holds i
 | analysis | `spec-it` | Turn a goal or feature into a requirements spec — testable requirements, acceptance criteria, edge cases |
 | common | `interview-me` | Cross-cutting — grills an unclear request, plan, or design into a short alignment brief, in any phase |
 | design | `system-architecture` | Design how a non-trivial system is structured — components, boundaries, data flow, and testable seams |
+| design | `data-model` | Design the entities, relationships, and invariants the system stores — before the code that moves them |
+| design | `ui-ux` | Design the user flows, layout, and unhappy states as scenarios with acceptance criteria — before building the interface |
+| design | `coding-standards` | Set the project's conventions and domain vocabulary so all contributors write code like one author |
+| design | `architecture-decisions` | Record significant, hard-to-reverse choices as ADRs — options weighed, decision, why the alternatives were rejected |
 | design | `writing-plans` | Turns intent into a durable plan: a one-page map plus thin per-task contracts, each with its own acceptance check |
 | implementation | `test-driven-development` | Red-green-refactor as a discipline that holds under pressure, with test-craft and mocking references |
 | implementation | `executing-plans` | Runs a plan to done one task at a time, gating each on its Evaluator and the index, with optional subagent dispatch |

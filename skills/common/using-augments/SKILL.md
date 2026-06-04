@@ -32,6 +32,10 @@ Whenever a request, plan, or design is unclear, `interview-me` grills it into a 
 **Design**
 
 - `system-architecture` — a non-trivial system needs structuring before it's built: components, boundaries, data flow, seams.
+- `data-model` — persistent data: entities, relationships, invariants.
+- `ui-ux` — a user-facing interface: flows, layout, unhappy states.
+- `coding-standards` — set the project's conventions and domain vocabulary.
+- `architecture-decisions` — record a significant, hard-to-reverse choice as an ADR.
 - `writing-plans` — a clear multi-step task; turn it into a durable map plus thin per-task contracts, each with its own check.
 
 **Implementation**

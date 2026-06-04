@@ -28,3 +28,5 @@ Design the shape of the solution before anyone builds it: what the pieces are, h
 - Untested external-service paths — "it'll work in prod" is not a design.
 - Designing for hypothetical futures (a port with one adapter, "for extensibility").
 - Generic vocabulary that hides the domain.
+
+For a high-stakes design, once the document is compiled, dispatch `design-review.md` — a fresh subagent that checks the whole design before anyone builds against it.
