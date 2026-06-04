@@ -1,11 +1,11 @@
 ---
 name: spec-it
-description: Use when you have a goal or feature and need the detailed requirements before design — what it must do and how each one is verified. Produces a requirements spec under docs/augments/specs/. Grill unknowns with interview-me first; this captures the WHAT, never the HOW.
+description: Use when you have a goal or feature and need the detailed requirements before design — what it must do, how each is verified, and the assumptions and risks involved. Produces a requirements spec (SRS) under docs/augments/specs/. Grill unknowns with interview-me; this captures the WHAT, never the HOW.
 ---
 
 # Spec It
 
-Turn an intent into a requirements spec: the testable statements of what the software must do, and how each is verified. Requirements are the *what* — keep the *how* (architecture, schemas, code) for design.
+Turn an intent into a requirements spec (SRS): gather and analyze what the software must do, how each requirement is verified, and the assumptions, dependencies, and risks involved. Requirements are the *what* — keep the *how* (architecture, schemas, code) for design.
 
 ## When to use
 
@@ -15,18 +15,21 @@ Turn an intent into a requirements spec: the testable statements of what the sof
 
 ## Procedure
 
-1. **State the problem** in a line or two, and link the goal it serves (a planning brief, or the request).
-2. **Write functional requirements as testable behaviors.** Each is something a user or caller can observe — "rejects an expired token with a 401", not "good auth". If you can't phrase it as checkable, it's a wish, not a requirement.
-3. **Add only the non-functional requirements that actually matter** — performance, security, accessibility, compatibility. An unbounded NFR list is noise.
-4. **Give each requirement an acceptance criterion** — the concrete check that proves it. These become the plan's **Evaluator** and **Acceptance**, so make them runnable where you can.
-5. **List the edge cases and scenarios** that break a naive build — empty input, concurrency, the unhappy paths.
-6. **State what is out of scope** — the requirements you are deliberately *not* covering this round.
-7. **Write the spec** to the project's specs location — default `docs/augments/specs/{{YYYY-MM-DD}}-{{topic}}.md`.
+1. **Gather the inputs.** Pull the goal or brief (from planning), read the relevant existing code to see what's already there, and grill any genuine gap with `interview-me`. Don't invent what you could have found.
+2. **State the problem** in a line or two, and link the goal it serves.
+3. **Write functional requirements as testable behaviours.** Each is something a user or caller can observe — "rejects an expired token with a 401", not "good auth". If you can't phrase it as checkable, it's a wish, not a requirement.
+4. **Add only the non-functional requirements that matter** — performance, security, accessibility, compatibility. An unbounded NFR list is noise.
+5. **Give each requirement an acceptance criterion** — the concrete check that proves it. These become the plan's **Evaluator** and **Acceptance**, so make them runnable where you can.
+6. **List the edge cases and scenarios** that break a naive build — empty input, concurrency, the unhappy paths.
+7. **Record the assumptions and dependencies** — what you're taking as true, and what external systems, data, or people this relies on. An unstated assumption is a hidden risk.
+8. **Surface the open questions and risks** — the unresolved ambiguities and requirement-level challenges that could derail the build. Naming them now is the cheapest they'll ever be.
+9. **State what is out of scope** — the requirements you are deliberately *not* covering this round.
+10. **Write the spec** to the project's specs location — default `docs/augments/specs/{{YYYY-MM-DD}}-{{topic}}.md`.
 
 ## Common mistakes
 
 - Requirements with no criterion — "fast", "secure", "intuitive" prove nothing.
 - Smuggling design in — file names, schemas, and code belong in the plan, not the spec.
-- A thin happy-path spec with no edge cases — that's exactly where builds break.
+- A thin happy-path spec with no edge cases, assumptions, or risks — that's exactly where builds break.
 
 For a high-stakes spec, optionally dispatch `spec-review.md` (a fresh subagent that checks the requirements before anything is built against them).
