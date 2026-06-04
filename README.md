@@ -37,6 +37,7 @@ A skill is invoked as `augments:<name>` regardless of which phase folder holds i
 | planning | `define-goals` | At project kickoff — pin the objective and measurable success criteria into the project brief |
 | planning | `scope-it` | Draw the boundary — what's in, what's explicitly out, the MVP cut |
 | planning | `feasibility-check` | Before committing — surface the killer risks and a go / no-go verdict |
+| analysis | `spec-it` | Turn a goal or feature into a requirements spec — testable requirements, acceptance criteria, edge cases |
 | common | `interview-me` | Cross-cutting — grills an unclear request, plan, or design into a short alignment brief, in any phase |
 | design | `writing-plans` | Turns intent into a durable plan: a one-page map plus thin per-task contracts, each with its own acceptance check |
 | implementation | `test-driven-development` | Red-green-refactor as a discipline that holds under pressure, with test-craft and mocking references |
@@ -48,7 +49,7 @@ The remaining phases are scaffolded and filled in incrementally.
 
 ## Status
 
-Early and growing. Planning, design, implementation, testing, and maintenance each have at least one working skill, alongside the `common` skills (orientation, skill-authoring, and the cross-cutting `interview-me`); analysis and deployment are reserved and filled in incrementally. The repo ships a Claude Code plugin manifest (`.claude-plugin/`); adapters for other harnesses are scaffolded under `.codex-plugin/` and `.cursor-plugin/`. Install through your harness's plugin or marketplace mechanism, then invoke skills by name.
+Early and growing. Planning, analysis, design, implementation, testing, and maintenance each have at least one working skill, alongside the `common` skills (orientation, skill-authoring, and the cross-cutting `interview-me`); deployment is reserved and filled in incrementally. The repo ships a Claude Code plugin manifest (`.claude-plugin/`); adapters for other harnesses are scaffolded under `.codex-plugin/` and `.cursor-plugin/`. Install through your harness's plugin or marketplace mechanism, then invoke skills by name.
 
 ## Acknowledgements
 

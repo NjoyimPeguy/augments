@@ -25,6 +25,10 @@ Whenever a request, plan, or design is unclear, `interview-me` grills it into a 
 - `scope-it` — draw the boundary: what's in, what's explicitly out, the MVP cut.
 - `feasibility-check` — before committing, surface the killer risks and a go/no-go.
 
+**Analysis**
+
+- `spec-it` — turn a goal or feature into a requirements spec: testable requirements + acceptance criteria.
+
 **Design**
 
 - `writing-plans` — a clear multi-step task; turn it into a durable map plus thin per-task contracts, each with its own check.
