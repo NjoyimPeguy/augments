@@ -1,9 +1,9 @@
 ---
-name: clean-architecture
+name: refactor-architecture
 description: Use when an existing codebase has architectural friction — changes touch many files, modules are shallow, seams leak — and you want to improve its structure. Reviews for module depth and locality, then proposes targeted refactors. Skip for new design (use system-architecture) or a quick local fix.
 ---
 
-# Clean Architecture
+# Refactor Architecture
 
 Improve the structure of code that already exists. The goal is **deep modules** — a lot of behaviour behind a small interface — and **locality**, so a change lives in one place. This is maintenance; for designing new structure, use `system-architecture`.
 

@@ -50,7 +50,7 @@ A skill is invoked as `augments:<name>` regardless of which phase folder holds i
 | implementation | `executing-plans` | Runs a plan to done one task at a time, gating each on its Evaluator and the index, with optional subagent dispatch |
 | testing | `verifying-completion` | Evidence before claims — run the check and read its output before saying complete/fixed/passing; catches hollow verifications |
 | maintenance | `debugging` | Root cause before fix — build a runnable reproduction, test ranked hypotheses, fix the cause; stop and rethink architecture after three failed fixes |
-| maintenance | `clean-architecture` | Improve an existing codebase's structure — deep modules, real seams — via targeted, leverage-first refactors |
+| maintenance | `refactor-architecture` | Improve an existing codebase's structure — deep modules, real seams — via targeted, leverage-first refactors |
 
 The remaining phases are scaffolded and filled in incrementally.
 
