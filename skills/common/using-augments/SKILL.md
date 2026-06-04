@@ -46,6 +46,8 @@ Whenever a request, plan, or design is unclear, `interview-me` grills it into a 
 **Testing**
 
 - `verifying-completion` — before claiming anything is complete, fixed, or passing; run the check and read the output.
+- `requesting-code-review` — a finished change needs fresh eyes before merge; dispatch a diff-scoped reviewer for standards + spec.
+- `security-audits` — a change touches a trust boundary; trace attacker-controlled input source-to-sink for security holes.
 
 **Maintenance**
 
