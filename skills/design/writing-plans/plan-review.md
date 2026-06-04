@@ -6,9 +6,9 @@ This reviews the **plan** *before* execution — distinct from each task's **Eva
 
 Dispatch a subagent with access to the plan directory and the codebase, and this brief:
 
-> Review the plan in `docs/plans/{{topic}}/`. Flag **only** issues that would cause a real implementation problem — skip style and preference. Check four things:
+> Review the plan in `docs/augments/plans/{{YYYY-MM-DD}}-{{topic}}/`. Flag **only** issues that would cause a real implementation problem — skip style and preference. Check four things:
 >
-> 1. **Completeness** — does every requirement in `brief.md` map to a task? Name any gap.
+> 1. **Completeness** — does every requirement in the brief or spec map to a task? Name any gap.
 > 2. **Correctness** — do the files, function names, and data shapes the tasks reference match the actual codebase? Quote each mismatch.
 > 3. **Decomposition** — is each task independently verifiable, ~one commit, with no hidden placeholders?
 > 4. **Consistency** — are names and interfaces consistent across tasks?

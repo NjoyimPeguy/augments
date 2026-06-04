@@ -1,6 +1,6 @@
 ---
 name: spec-it
-description: Use when you have a goal or feature and need the detailed requirements before design — what it must do and how each one is verified. Produces a requirements spec under docs/specs/. Grill unknowns with interview-me first; this captures the WHAT, never the HOW.
+description: Use when you have a goal or feature and need the detailed requirements before design — what it must do and how each one is verified. Produces a requirements spec under docs/augments/specs/. Grill unknowns with interview-me first; this captures the WHAT, never the HOW.
 ---
 
 # Spec It
@@ -21,7 +21,7 @@ Turn an intent into a requirements spec: the testable statements of what the sof
 4. **Give each requirement an acceptance criterion** — the concrete check that proves it. These become the plan's **Evaluator** and **Acceptance**, so make them runnable where you can.
 5. **List the edge cases and scenarios** that break a naive build — empty input, concurrency, the unhappy paths.
 6. **State what is out of scope** — the requirements you are deliberately *not* covering this round.
-7. **Write the spec** to `docs/specs/<topic>.md`.
+7. **Write the spec** to `docs/augments/specs/{{YYYY-MM-DD}}-{{topic}}.md`.
 
 ## Common mistakes
 
