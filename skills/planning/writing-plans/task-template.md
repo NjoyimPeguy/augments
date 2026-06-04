@@ -3,6 +3,7 @@
 **Objective:** {{what this task accomplishes — one sentence}}
 **Depends on:** {{none, or task numbers that must finish first — lets a dispatcher parallelize}}
 **Files:** `path/to/file` (new) · `path/to/other` (edit)
+**Context:** {{key files or entrypoints to read first for this task — or "none"}}
 **Suggested tier:** {{small | medium | large}} — {{mechanical | logic | design}}
 
 ## Change
