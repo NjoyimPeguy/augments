@@ -1,6 +1,6 @@
 ---
 name: scope-it
-description: Use after the goals are set and before design — to draw the boundary of a project or initiative: what is in, what is explicitly out, and the smallest cut that still meets the goal. Skip for a single feature; use interview-me.
+description: Use after the goals are set and before design — to draw the boundary of a project or initiative — what is in, what is explicitly out, and the smallest cut that still meets the goal. Skip for a single feature; use interview-me.
 ---
 
 # Scope It
