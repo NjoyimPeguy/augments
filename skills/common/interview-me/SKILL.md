@@ -1,11 +1,11 @@
 ---
 name: interview-me
-description: Use when a request is ambiguous, underspecified, or about to grow into a feature or plan — before writing code or a plan. Grills you one question at a time, answering from the codebase itself first and asking only what it genuinely cannot determine, then writes a short alignment brief. Skip for trivial or already-precise requests.
+description: Use whenever a request, plan, or design is unclear or underspecified — in any phase, before you build on it. Grills you one question at a time, answering from the codebase first and asking only what it genuinely cannot determine, then writes a short alignment brief. Skip for trivial or already-precise requests.
 ---
 
 # Interview Me
 
-Close the gap between what was asked and what is actually wanted — *before* a plan or code exists. The cheapest bug to fix is the one never built.
+Close the gap between what was asked and what is actually wanted — *before* you build on it. A cross-cutting clarification technique: grill a goal, a requirement, or a plan — the method is the same. The cheapest bug to fix is the one never built.
 
 ## When to use
 
@@ -28,7 +28,7 @@ Prefer yes/no or a small multiple choice. Wait for the answer before the next qu
 
 **4. Stop when another question would not change the outcome** — or when the user says go. Do not gold-plate the interview.
 
-**5. Write a short alignment brief** (not a spec): goal, decisions + rationale, explicit non-goals, open risks. Keep it tight — see `brief-template.md`. Save to `docs/plans/{{topic}}/brief.md`, or inline if tiny.
+**5. Write a short alignment brief** (not a spec): goal, decisions + rationale, explicit non-goals, open risks. Keep it tight — see `brief-template.md`. Save to `docs/briefs/{{topic}}.md`, or inline if tiny.
 
 **6. Offer, do not force, the next step:** "Turn this into a plan?" → `writing-plans`.
 

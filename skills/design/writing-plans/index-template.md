@@ -3,7 +3,7 @@
 **Goal:** {{1–2 sentences}}
 **Architecture:** {{2–3 sentences — the shape of the solution the tasks must stay coherent with}}
 **Acceptance:** {{the single end-to-end check that proves the WHOLE plan is done — an e2e test, a user-visible scenario, or a rubric. Distinct from each task's Evaluator; this is the feature-level definition of done.}}
-**Brief:** ./brief.md   ·   **Created:** {{date}}
+**Brief:** {{link to the alignment brief from interview-me, if any}}   ·   **Created:** {{date}}
 
 ## Tasks
 

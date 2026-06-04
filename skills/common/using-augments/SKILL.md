@@ -17,15 +17,13 @@ These are tools, not a pipeline: reach for the one that fits the moment; there i
 
 Reach for a skill when its trigger fits.
 
+Whenever a request, plan, or design is unclear, `interview-me` grills it into a short alignment brief — in any phase.
+
 **Planning** (a new project or initiative)
 
 - `define-goals` — pin the objective and measurable success criteria.
 - `scope-it` — draw the boundary: what's in, what's explicitly out, the MVP cut.
 - `feasibility-check` — before committing, surface the killer risks and a go/no-go.
-
-**Analysis**
-
-- `interview-me` — the request is vague or assumptions are piling up; grill it into a short alignment brief first.
 
 **Design**
 
