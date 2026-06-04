@@ -1,0 +1,21 @@
+{
+  "name": "superpowers",
+  "description": "Skills library for Claude Code: TDD, debugging, collaboration patterns.",
+  "version": "1.0.0",
+  "author": {
+    "name": "Njoyim Peguy",
+    "email": "pnjoyim@gmail.com"
+  },
+  "homepage": "https://github.com/NjoyimPeguy",
+  "repository": "https://github.com/NjoyimPeguy",
+  "license": "MIT",
+  "keywords": [
+    "skills",
+    "tdd",
+    "debugging",
+    "collaboration",
+    "best-practices",
+    "workflows",
+    "sdlc"
+  ]
+}
