@@ -39,7 +39,7 @@ A few skills exist to hold an agent to a discipline it is tempted to skip under 
 
 ## Procedure
 
-1. **Confirm it should be a skill.** Write one only if an agent reliably gets this *wrong without guidance*. Plain prompt text or a one-off? Don't. Needs an exact, deterministic sequence? Bundle a script, not prose. A needless skill taxes every session it fires.
+1. **Confirm it should be a skill — and whether it's one.** Write one only if an agent reliably gets this *wrong without guidance*. Plain prompt text or a one-off? Don't. Needs an exact, deterministic sequence? Bundle a script, not prose. A needless skill taxes every session it fires. If a phase has several activities, decide one cohesive skill vs several — see `docs/skill-granularity.md`.
 2. Choose the phase folder (`planning`…`maintenance`) or `common/`, create `skills/<phase>/<name>/`, and copy `skill-template.md` to start.
 3. Write `description` as a trigger first. Test it: does it say **when**, not **how**? If it lists steps, rewrite.
 4. Write the body: **When to use** (incl. Skip), **Procedure** (numbered), **Common mistakes**.

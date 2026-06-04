@@ -10,7 +10,7 @@ Augments is a cross-platform library of **opt-in engineering skills** for coding
 - **Earn every line.** A skill loads into context each time it fires, so it carries only what changes behavior; templates, examples, and rationale live in sibling files loaded on demand. Low token cost is a consequence of that discipline — not a goal that overrides correctness, so discipline skills keep what they need to hold the line under pressure.
 - **Any harness, any model.** Skills refer to capability *tiers* (small / medium / large), never vendor model names, so they behave the same on Claude Code, Codex, Gemini CLI, Opencode, or Cursor.
 
-The deeper rationale — why every skill is a *deterministic gate around a non-deterministic generator* — is in [`docs/philosophy.md`](docs/philosophy.md).
+The deeper rationale — why every skill is a *deterministic gate around a non-deterministic generator* — is in [`docs/philosophy.md`](docs/philosophy.md); when a phase is one skill versus several is in [`docs/skill-granularity.md`](docs/skill-granularity.md).
 
 ## The SDLC phases
 
