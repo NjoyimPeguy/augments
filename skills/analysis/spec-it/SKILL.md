@@ -21,10 +21,12 @@ Turn an intent into a requirements spec: the testable statements of what the sof
 4. **Give each requirement an acceptance criterion** — the concrete check that proves it. These become the plan's **Evaluator** and **Acceptance**, so make them runnable where you can.
 5. **List the edge cases and scenarios** that break a naive build — empty input, concurrency, the unhappy paths.
 6. **State what is out of scope** — the requirements you are deliberately *not* covering this round.
-7. **Write the spec** to `docs/augments/specs/{{YYYY-MM-DD}}-{{topic}}.md`.
+7. **Write the spec** to the project's specs location — default `docs/augments/specs/{{YYYY-MM-DD}}-{{topic}}.md`.
 
 ## Common mistakes
 
 - Requirements with no criterion — "fast", "secure", "intuitive" prove nothing.
 - Smuggling design in — file names, schemas, and code belong in the plan, not the spec.
 - A thin happy-path spec with no edge cases — that's exactly where builds break.
+
+For a high-stakes spec, optionally dispatch `spec-review.md` (a fresh subagent that checks the requirements before anything is built against them).

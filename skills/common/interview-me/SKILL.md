@@ -28,7 +28,7 @@ Prefer yes/no or a small multiple choice. Wait for the answer before the next qu
 
 **4. Stop when another question would not change the outcome** — or when the user says go. Do not gold-plate the interview.
 
-**5. Write a short alignment brief** (not a spec): goal, decisions + rationale, explicit non-goals, open risks. Keep it tight — see `brief-template.md`. Save to `docs/augments/briefs/{{YYYY-MM-DD}}-{{topic}}.md`, or inline if tiny.
+**5. Write a short alignment brief** (not a spec): goal, decisions + rationale, explicit non-goals, open risks. Keep it tight — see `brief-template.md`. Save it to the project's briefs location (default `docs/augments/briefs/{{YYYY-MM-DD}}-{{topic}}.md`), or inline if tiny.
 
 **6. Offer, do not force, the next step:** "Turn this into a plan?" → `writing-plans`.
 
