@@ -17,9 +17,12 @@ These are tools, not a pipeline: reach for the one that fits the moment; there i
 
 Reach for a skill when its trigger fits.
 
-**Planning**
+**Analysis**
 
 - `interview-me` — the request is vague or assumptions are piling up; grill it into a short alignment brief first.
+
+**Design**
+
 - `writing-plans` — a clear multi-step task; turn it into a durable map plus thin per-task contracts, each with its own check.
 
 **Implementation**

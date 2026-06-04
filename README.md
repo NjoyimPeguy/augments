@@ -16,9 +16,9 @@ The deeper rationale — why every skill is a *deterministic gate around a non-d
 
 Skills live under `skills/<phase>/<name>/`. The folders are unnumbered (they sort alphabetically on disk); the canonical order is:
 
-1. **planning** — scope, requirements, work breakdown
-2. **analysis** — understand the problem and the existing system
-3. **design** — architecture and interfaces, before code
+1. **planning** — feasibility, scope, and goals → a project brief
+2. **analysis** — the detailed requirements: what the software must do → a spec
+3. **design** — architecture, interfaces, and the build plan
 4. **implementation** — build it
 5. **testing** — does it work, and is it good?
 6. **deployment** — ship it
@@ -34,8 +34,8 @@ A skill is invoked as `augments:<name>` regardless of which phase folder holds i
 | ----- | ----- | ------------ |
 | common | `using-augments` | Start here — the mental model behind the library and the map of which skill to reach for when |
 | common | `writing-skills` | The lean format every skill follows, and how to prove a skill actually works |
-| planning | `interview-me` | Grills you one question at a time — answering from the codebase first — then writes a short alignment brief |
-| planning | `writing-plans` | Turns intent into a durable plan: a one-page map plus thin per-task contracts, each with its own acceptance check |
+| analysis | `interview-me` | Grills you one question at a time — answering from the codebase first — then writes a short alignment brief |
+| design | `writing-plans` | Turns intent into a durable plan: a one-page map plus thin per-task contracts, each with its own acceptance check |
 | implementation | `test-driven-development` | Red-green-refactor as a discipline that holds under pressure, with test-craft and mocking references |
 | implementation | `executing-plans` | Runs a plan to done one task at a time, gating each on its Evaluator and the index, with optional subagent dispatch |
 | testing | `verifying-completion` | Evidence before claims — run the check and read its output before saying complete/fixed/passing; catches hollow verifications |
@@ -45,7 +45,7 @@ The remaining phases are scaffolded and filled in incrementally.
 
 ## Status
 
-Early and growing. The planning phase and the skill-authoring meta-skill are usable today; analysis, design, implementation, testing, deployment, and maintenance are scaffolded. The repo ships a Claude Code plugin manifest (`.claude-plugin/`); adapters for other harnesses are scaffolded under `.codex-plugin/` and `.cursor-plugin/`. Install through your harness's plugin or marketplace mechanism, then invoke skills by name.
+Early and growing. Analysis, design, implementation, testing, and maintenance each have at least one working skill, alongside the `common` meta-skills; planning and deployment are reserved and filled in incrementally. The repo ships a Claude Code plugin manifest (`.claude-plugin/`); adapters for other harnesses are scaffolded under `.codex-plugin/` and `.cursor-plugin/`. Install through your harness's plugin or marketplace mechanism, then invoke skills by name.
 
 ## Acknowledgements
 
