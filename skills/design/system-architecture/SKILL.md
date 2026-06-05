@@ -20,7 +20,7 @@ Design the shape of the solution before anyone builds it: what the pieces are, h
 4. **Seams.** Put boundaries where you'd swap an implementation, and inject across them. Don't add a port for a *hypothetical* seam — two real adapters justify one; one doesn't.
 5. **Decide the load-bearing choices deliberately.** For each significant, hard-to-reverse structural decision, weigh the options on four axes — what it assumes, where it breaks down, what would rule it out, what evidence supports it — and record the result as an ADR (`architecture-decisions`).
 6. **Name things in the domain's language**, not generic "service / manager / handler". The vocabulary is itself a design decision.
-7. **Write the architecture section** of the design document — the project's designs location, default `docs/augments/designs/{{YYYY-MM-DD}}-{{topic}}.md`.
+7. **Write the architecture section** of the design document — the project's designs location, default `.augments/designs/{{YYYY-MM-DD}}-{{topic}}.md`.
 
 ## Common mistakes
 

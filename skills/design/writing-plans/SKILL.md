@@ -24,7 +24,7 @@ Turn an aligned intent into an executable plan: a small durable **map** plus thi
 
 **4. Give every task a deterministic Evaluator.** A pre-committed pass/fail gate, declared now and run on the built code: a test command exiting 0, an HTTP/DB assertion, or — when nothing deterministic exists (design/AI work) — an explicit rubric pass-list. "Done" is never a judgment call: agents reliably praise their own work.
 
-**5. Write the plan directory** (the project's plans location — default `docs/augments/plans/{{YYYY-MM-DD}}-{{topic}}/`):
+**5. Write the plan directory** (the project's plans location — default `.augments/plans/{{YYYY-MM-DD}}-{{topic}}/`):
 - `00-index.md` — the map: goal, 2–3-sentence architecture, an **Acceptance** check (the end-to-end definition of done for the whole plan), checkbox task list with status, links. See `index-template.md`.
 - `NN-<task>.md` — one contract each, ≤ ~2k tokens. See `task-template.md`.
 

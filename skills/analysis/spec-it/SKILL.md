@@ -1,6 +1,6 @@
 ---
 name: spec-it
-description: Use when you have a goal or feature and need the detailed requirements before design — what it must do, how each is verified, and the assumptions and risks involved. Produces a requirements spec (SRS) under docs/augments/specs/. Grill unknowns with interview-me; this captures the WHAT, never the HOW.
+description: Use when you have a goal or feature and need the detailed requirements before design — what it must do, how each is verified, and the assumptions and risks involved. Produces a requirements spec (SRS) under .augments/specs/. Grill unknowns with interview-me; this captures the WHAT, never the HOW.
 ---
 
 # Spec It
@@ -24,7 +24,7 @@ Turn an intent into a requirements spec (SRS): gather and analyze what the softw
 7. **Record the assumptions and dependencies** — what you're taking as true, and what external systems, data, or people this relies on. An unstated assumption is a hidden risk.
 8. **Surface the open questions and risks** — the unresolved ambiguities and requirement-level challenges that could derail the build. Naming them now is the cheapest they'll ever be.
 9. **State what is out of scope** — the requirements you are deliberately *not* covering this round.
-10. **Write the spec** to the project's specs location — default `docs/augments/specs/{{YYYY-MM-DD}}-{{topic}}.md`.
+10. **Write the spec** to the project's specs location — default `.augments/specs/{{YYYY-MM-DD}}-{{topic}}.md`.
 
 ## Common mistakes
 
