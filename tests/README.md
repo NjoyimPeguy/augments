@@ -1,0 +1,26 @@
+# tests/
+
+Two kinds of test live here, because only one kind *can* be deterministic.
+
+## 1. Structural — deterministic, automatable
+
+`validate-skills.sh` checks the shape of every skill: frontmatter present, `name` matches the directory, description ≤ 1024 chars, body line limits, and no external references, vendor model names, or bare `<angle>` placeholders. It exits non-zero on any violation, so it can run in CI.
+
+This is automatable precisely *because* it inspects files, not behaviour — it asks nothing of any model or harness.
+
+## 2. Behavioural & triggering — dated markdown records, not gates
+
+Everything under `behavioral/` and `triggering/` is a **dated markdown record**, never an automated pass/fail gate:
+
+- **`triggering/<skill>.md`** — *activation*: does the `description` fire on the right opening, and stay quiet on trivial ones? (A description is the only text a runtime reads when deciding to load a skill.)
+- **`behavioral/<skill>.md`** — *compliance*: does a discipline hold under pressure?
+
+Each record is the same shape: **Scenario → Pass criteria → "Last result (date)"**. It is re-run by a human or agent whenever the skill changes, and it records the *real* outcome — including inconclusive or no-separation results. A record never green-washes; an honest null is the finding.
+
+### Why these can only be records
+
+A deterministic "did the skill fire / did the discipline hold" test would have to drive a specific harness — invoke *its* CLI, pass *its* plugin and permission flags, and parse *its* output format to see which skill activated. That binds the test to one harness.
+
+This library is **harness-agnostic** (see `../CLAUDE.md`): it must not assume any one harness's tooling or paths. So the deterministic route is closed by the same rule that bans vendor model names. What remains is a model-judged proxy — fresh subagents that see only the catalogue of `name :: description` (no bodies) and route an opening message — whose result is *directional*, model- and run-dependent, and therefore recorded with a date rather than asserted as a gate.
+
+This is the testing face of `docs/philosophy.md`: an instruction (a skill) only shifts a probability, so its effect is measured, not guaranteed. The guarantee comes from a **deterministic gate** — and the only gate that stays portable is the structural one above. Authoring guidance for writing these records is in `../skills/common/writing-skills/testing.md`.
