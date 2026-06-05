@@ -49,6 +49,22 @@ for skill in "${skills[@]}"; do
   done
 done
 
+# Manifest sync: Claude Code discovers skills only one level deep, so every leaf
+# skill dir must be listed explicitly in .claude-plugin/plugin.json's "skills"
+# array — a skill missing from it silently fails to load; a dead entry points nowhere.
+echo "• .claude-plugin/plugin.json (skills array sync)"
+manifest=".claude-plugin/plugin.json"
+if [ ! -f "$manifest" ]; then
+  err "missing $manifest"
+else
+  actual=$(printf '%s\n' "${skills[@]}" | sed 's|/SKILL.md$||; s|^|./|' | sort -u)
+  declared=$(grep -oE '"\./skills/[^"]+"' "$manifest" | tr -d '"' | sort -u)
+  missing=$(comm -23 <(printf '%s\n' "$actual") <(printf '%s\n' "$declared"))
+  dead=$(comm -13 <(printf '%s\n' "$actual") <(printf '%s\n' "$declared"))
+  [ -n "$missing" ] && while IFS= read -r m; do err "skill not in plugin.json 'skills' (won't load): $m"; done <<< "$missing"
+  [ -n "$dead" ]    && while IFS= read -r d; do err "plugin.json 'skills' entry has no SKILL.md: $d"; done <<< "$dead"
+fi
+
 echo ""
 if [ "$fail" -eq 0 ]; then echo "✓ all skills pass structural validation"; else echo "✗ violations found"; fi
 exit "$fail"
