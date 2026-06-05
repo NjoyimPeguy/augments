@@ -43,6 +43,8 @@ A skill is invoked as `augments:<name>` regardless of which phase folder holds i
 | common | `zoom-out` | Before changing unfamiliar code, go up a layer and map the relevant modules and their callers in the project's own vocabulary |
 | common | `handoff` | Write a durable, resumable handoff when a session ends — goal, state, decisions, gotchas, and the one concrete next step |
 | common | `caveman` | Ultra-compressed output mode on request — drop filler, keep every technical fact, code block, and error exact; persists until stopped |
+| common | `using-git-worktrees` | Isolate work in a git worktree (or your harness's native isolation) — own branch, ports, and data — so commits never land on the wrong branch; covers setup, runtime isolation, and teardown |
+| common | `dispatching-parallel-agents` | Fan out two or more provably-independent pieces of work to concurrent agents — scope each, isolate state, then reconcile with a combined check |
 | design | `system-architecture` | Design how a non-trivial system is structured — components, boundaries, data flow, and testable seams |
 | design | `data-model` | Design the entities, relationships, and invariants the system stores — before the code that moves them |
 | design | `ui-ux` | Design the user flows, layout, and unhappy states as scenarios with acceptance criteria — before building the interface |
@@ -60,11 +62,11 @@ A skill is invoked as `augments:<name>` regardless of which phase folder holds i
 | maintenance | `debugging` | Root cause before fix — build a runnable reproduction, test ranked hypotheses, fix the cause; stop and rethink architecture after three failed fixes |
 | maintenance | `refactor-architecture` | Improve an existing codebase's structure — deep modules, real seams — via targeted, leverage-first refactors |
 
-Every SDLC phase now ships at least one skill; a few cross-cutting `common/` tools (`caveman`, `handoff`, `zoom-out`) remain scaffolded and are filled in as needed.
+Every SDLC phase ships at least one skill, alongside the cross-cutting `common/` tools.
 
 ## Status
 
-Early and growing. All seven SDLC phases — planning, analysis, design, implementation, testing, deployment, and maintenance — now ship at least one working skill, alongside the `common` skills (orientation, skill-authoring, prototyping, and the cross-cutting `interview-me`). The repo ships a Claude Code plugin manifest (`.claude-plugin/`); adapters for other harnesses are scaffolded under `.codex-plugin/` and `.cursor-plugin/`. Install through your harness's plugin or marketplace mechanism, then invoke skills by name.
+Early and growing. All seven SDLC phases — planning, analysis, design, implementation, testing, deployment, and maintenance — now ship at least one working skill, alongside the `common` skills (orientation, skill-authoring, prototyping, and the cross-cutting `interview-me`). The repo ships a Claude Code plugin manifest (`.claude-plugin/`); other-harness adapters are planned but not yet provided. Install in Claude Code with `/plugin marketplace add NjoyimPeguy/augments` then `/plugin install augments@augments`, and invoke skills by name.
 
 ## Acknowledgements
 

@@ -17,5 +17,15 @@
     "best-practices",
     "workflows",
     "sdlc"
+  ],
+  "skills": [
+    "./skills/planning",
+    "./skills/analysis",
+    "./skills/design",
+    "./skills/implementation",
+    "./skills/testing",
+    "./skills/deployment",
+    "./skills/maintenance",
+    "./skills/common"
   ]
 }
