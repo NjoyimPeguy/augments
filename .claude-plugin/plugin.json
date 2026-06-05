@@ -18,6 +18,7 @@
     "workflows",
     "sdlc"
   ],
+  "hooks": "./hooks/claude-code/hooks.json",
   "skills": [
     "./skills/analysis/spec-it",
     "./skills/common/caveman",
