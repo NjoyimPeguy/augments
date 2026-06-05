@@ -1,6 +1,6 @@
 ---
 name: finishing-a-branch
-description: Use when a change is working and tested and you're ready to wrap the branch — clean commits, a real PR description, and a clear merge/keep/discard decision. Gates on green checks first; never force-pushes or discards without explicit say-so. Skip mid-development — this is the wrap-up.
+description: Use when a change's checks have been run and verified green and you're ready to wrap the branch — clean commits, a real PR description, and a clear merge/keep/discard decision. If "done" or "tested" is only asserted and not yet confirmed by running the check, verify first (verifying-completion) — don't wrap on an unverified claim. Gates on green before anything destructive; never force-pushes or discards without explicit say-so. Skip mid-development — this is the wrap-up.
 ---
 
 # Finishing a Branch
@@ -9,7 +9,7 @@ Take a working branch to a merge-ready state. The order is fixed — gate, tidy,
 
 ## When to use
 
-- A change is complete and its checks pass, and you're ready to merge, open a PR, or set the branch aside.
+- A change is complete and its checks have been run and pass (not merely claimed), and you're ready to merge, open a PR, or set the branch aside.
 - **Skip** mid-development — this is the wrap-up, not a checkpoint.
 
 ## Procedure
