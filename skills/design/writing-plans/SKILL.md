@@ -33,7 +33,7 @@ Turn an aligned intent into an executable plan: a small durable **map** plus thi
 **7. Self-review before saving** (inline, ~30s):
 - Every requirement in the brief maps to a task.
 - No undefined *scope*: `TBD`, `handle edge cases`, `similar to task N` each mean a task you haven't actually written. (Deferring *implementation* is fine; deferring *scope* is not.)
-- Every task has a deterministic evaluator or an explicit rubric, and the plan has one top-level **Acceptance** check (whole-feature done).
+- Every task has a deterministic Evaluator or an explicit rubric, and the plan has one top-level **Acceptance** check (whole-feature done).
 - Names and interfaces are consistent across tasks.
 
 If reality deviates during execution, update the task file and `00-index.md` — the plan stays the source of truth; don't silently drift.
@@ -42,7 +42,7 @@ If reality deviates during execution, update the task file and `00-index.md` —
 
 - One giant pre-written-code plan — the cost this skill exists to avoid.
 - Horizontal-layer tasks that can't be verified alone.
-- A task whose "done" is vibes, with no evaluator.
+- A task whose "done" is vibes, with no Evaluator.
 - Restating the brief in every task file.
 - Planning work small enough to just do.
 

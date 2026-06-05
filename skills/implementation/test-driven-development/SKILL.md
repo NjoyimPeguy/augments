@@ -35,7 +35,7 @@ Each of these means **stop, delete the unverified code, and restart the cycle** 
 ## When you are tempted to skip
 
 | The thought | The reality |
-|---|---|
+| --- | --- |
 | "Too simple to test" | Simple code still breaks, and the test costs seconds. Simplicity argues *for* a quick test, not against it. |
 | "I'll write the test after" | A test written after passes immediately — it records what the code *does*, not what it *should* do, and silently skips the cases the code already gets wrong. |
 | "I already tested it by hand" | Manual checks aren't repeatable and leave no record. The next change re-breaks it and no one notices. |

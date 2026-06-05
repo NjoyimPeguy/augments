@@ -33,7 +33,7 @@ Skip any step and you have not verified — you have asserted.
 ## When you are tempted to skip
 
 | The thought | The reality |
-|---|---|
+| --- | --- |
 | "It should work now" | Then running it costs seconds and makes it a fact. Run it. |
 | "I'm confident" | Confidence is not evidence. The output is. |
 | "The types check, so it works" | Types ≠ compiles ≠ tests pass ≠ requirement met. Each is a different claim. |

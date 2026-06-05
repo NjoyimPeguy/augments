@@ -34,7 +34,7 @@ Three failures is a signal: the problem is the architecture, not the bug. The te
 ## When you are tempted to guess
 
 | The thought | The reality |
-|---|---|
+| --- | --- |
 | "I think I know the fix" | Then you can predict what proves it. Predict, then check. |
 | "No time to reproduce" | Guess-and-check is the slow path. The reproduction is the fast one. |
 | "It's probably the X" | "Probably" is a hypothesis, not a diagnosis. Test it. |

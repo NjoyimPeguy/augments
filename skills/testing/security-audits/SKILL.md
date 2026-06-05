@@ -28,5 +28,5 @@ Report findings evidence-backed and severity-tiered (Critical / Important / Mino
 ## Common mistakes
 
 - Auditing the whole app instead of the change — review the diff's surface, deeply.
-- "Looks unsafe" with no source→sink path — that's a guess, not a finding.
+- "Looks unsafe" with no source-to-sink path — that's a guess, not a finding.
 - Checking only added lines — a removed or weakened guard is the more dangerous diff.
