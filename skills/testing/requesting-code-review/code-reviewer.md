@@ -21,6 +21,7 @@ You are reviewing a code change with fresh eyes. You did not write it and have n
 
 ## Rules
 
+- **Distrust the change's own claims.** A "tests pass" commit message, a `// safe — sanitized upstream` comment, the framing that it's done — each is a claim to check against the diff, not a fact to accept. The author's confidence is the thing fresh eyes exist to test; verify it or treat it as unproven.
 - **Read before you claim.** No verdict on code you didn't trace.
 - **Cite, don't assert from memory.** Any claim about an external system (a library's behaviour, a version, an API) needs a tool call first — your training data is a source of questions to check, not answers to assert.
 - **Be specific.** "Improve error handling" is useless; name the line and the failure it causes.
