@@ -24,7 +24,7 @@ Take a working branch to a merge-ready state. The order is fixed — gate, tidy,
    - **Merge** it — only after review (`requesting-code-review`) and green checks.
    - **Open a PR** and leave the branch for review.
    - **Keep** it as-is, or **discard** it.
-5. **Clean up only what you created**, and only after the merge is confirmed. Remove a workspace/worktree before deleting its branch, never the reverse. Never delete a branch or workspace you didn't create, and never discard without explicit confirmation.
+5. **Clean up only what you created**, and only after the merge is confirmed. Remove a workspace/worktree before deleting its branch, never the reverse (see `using-git-worktrees`). Never delete a branch or workspace you didn't create, and never discard without explicit confirmation.
 
 ## Common mistakes
 

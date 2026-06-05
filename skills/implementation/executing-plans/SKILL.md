@@ -9,7 +9,7 @@ Run a plan to done one task at a time. The index is the source of truth: a task 
 
 ## Before you start
 
-1. **Confirm you are not on the main branch.** For a plan of 3+ tasks, set up an isolated worktree *now* — don't rationalize "it's quick" into skipping this. Silent commits to main are the failure this prevents.
+1. **Confirm you are not on the main branch.** For a plan of 3+ tasks, set up an isolated worktree *now* (see `using-git-worktrees`) — don't rationalize "it's quick" into skipping this. Silent commits to main are the failure this prevents.
 2. **Load the index (`00-index.md`)** and read it critically: raise any concern (missing dependency, unclear or contradictory task, design conflict) *before* writing code, and confirm the task contracts together actually deliver the Acceptance. Gaps are cheap to fix now and expensive ten tasks in.
 
 ## The loop
