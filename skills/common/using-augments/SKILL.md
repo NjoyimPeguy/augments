@@ -1,7 +1,11 @@
 ---
 name: using-augments
-description: Use when starting any task or conversation, or whenever you're unsure which skill fits — maps the available engineering skills by SDLC phase, points to the one that fits the moment, and gives the single mental model behind them all. The router for the toolbox; it does no work itself.
+description: Use when starting any task or conversation, or whenever you're unsure which skill fits — maps the available engineering skills by SDLC phase, points to the one that fits the moment, and gives the single mental model behind them all. The router for the toolbox; it does no work itself. Not for dispatched subagents executing a scoped task — they run the task, not re-orient.
 ---
+
+<SUBAGENT-STOP>
+If you were dispatched as a subagent to execute a specific, scoped task, **stop — do not use this skill** and carry on with the task you were handed. Orientation is the dispatcher's job. (Task-specific skills like `debugging` or `test-driven-development` remain yours to use — this guard is only about the router.)
+</SUBAGENT-STOP>
 
 # Using Augments
 
