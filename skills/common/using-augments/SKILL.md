@@ -1,6 +1,6 @@
 ---
 name: using-augments
-description: Use to get oriented in the augments skill library — the mental model behind every skill, the map of what's available by SDLC phase, and which skill to reach for when. Read this when starting work in a repo that uses augments, or when unsure which skill fits.
+description: Use when starting any task or conversation, or whenever you're unsure which skill fits — maps the available engineering skills by SDLC phase, points to the one that fits the moment, and gives the single mental model behind them all. The router for the toolbox; it does no work itself.
 ---
 
 # Using Augments
