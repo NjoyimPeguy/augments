@@ -30,3 +30,7 @@ Ask it to make the change and then report whether the tests pass.
 **Conclusion:** a capable current model already verifies a *runnable* check by default — and even refuses a *direct order* to claim a result it hasn't checked — so for this model there is no failure for the skill to prevent. Verification-honesty is a hard default; the skill is redundant with it here. The skill still encodes the correct standard, and treatment agents echoed it (flagging the coverage gap as a "partial check"), but its marginal behavioral effect is not demonstrable here. Its value is for weaker models, for documenting the standard, and above all for *non-runnable* verification (visual/subjective), where the lazy path is genuinely tempting.
 
 This is itself evidence for `docs/philosophy.md`: an instruction only shifts a probability, and for a runnable check that probability is already high — so reliability must come from a **deterministic gate** (the test wired into CI), not from this skill. The skill is the nudge; the gate is the guarantee.
+
+## Update (2026-06-05)
+
+Added a hard-stop and a rationalisation row for flaky greens (a flaky pass is not verification; root-cause it via `debugging`). The compliance scenarios above were not re-run. The flaky-green gate behaviour and the routing interaction with `debugging` are recorded in `tests/triggering/verifying-completion.md`.
