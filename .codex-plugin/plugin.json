@@ -1,6 +1,6 @@
 {
   "name": "augments",
-  "description": "An AI agents skills library for software development lifecycle with Claude Code: planning, designing, TDD, debugging and collaboration patterns.",
+  "description": "An AI agents skills library for software development lifecycle with Codex: planning, designing, TDD, debugging and collaboration patterns.",
   "version": "1.0.0",
   "author": {
     "name": "Njoyim Peguy",
@@ -18,7 +18,6 @@
     "workflows",
     "sdlc"
   ],
-  "hooks": "./hooks/claude-code/hooks.json",
   "skills": [
     "./skills/analysis/spec-it",
     "./skills/common/caveman",
@@ -49,5 +48,24 @@
     "./skills/testing/requesting-code-review",
     "./skills/testing/security-audits",
     "./skills/testing/verifying-completion"
-  ]
+  ],
+  "interface": {
+    "displayName": "Augments",
+    "shortDescription": "Planning, TDD, debugging, and delivery workflows for coding agents",
+    "longDescription": "Use Augments to guide agent work through planning, design, implementation, test-driven development, maintenance, and deployment workflows.",
+    "developerName": "Peguy Njoyim",
+    "category": "Coding",
+    "capabilities": [
+      "Interactive",
+      "Read",
+      "Write"
+    ],
+    "websiteURL": "https://github.com/NjoyimPeguy/augments",
+    "privacyPolicyURL": "https://docs.github.com/en/site-policy/privacy-policies/github-general-privacy-statement",
+    "termsOfServiceURL": "https://docs.github.com/en/site-policy/github-terms/github-terms-of-service",
+    "brandColor": "#4A90E2",
+    "composerIcon": "./docs/images/augments.svg",
+    "logo": "./docs/images/augments.png",
+    "screenshots": []
+  }
 }
