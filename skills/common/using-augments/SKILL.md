@@ -62,6 +62,7 @@ Whenever a request, plan, or design is unclear, `interview-me` grills it into a 
 **Maintenance**
 
 - `debugging` — any bug or unexpected behavior; build a reproduction and find the root cause before touching a fix.
+- `post-mortem` — a failure escaped to production or was caught late; find why the process let it through and turn that into a structural gate. Starts where `debugging` ends.
 - `refactor-architecture` — an existing codebase has structural friction; improve module depth and locality with targeted refactors.
 
 **Authoring**

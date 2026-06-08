@@ -31,7 +31,7 @@ Turn an aligned intent into an executable plan: a small durable **map** plus thi
 **6. Tag a capability tier per task** (mechanical → small, logic/design → large) — a tier, not a vendor model name, so any harness maps it to its own model at dispatch.
 
 **7. Self-review before saving** (inline, ~30s):
-- Every requirement in the brief maps to a task.
+- **Trace each requirement to a task by name** — don't skim from memory. List the requirements in the brief/spec and point each at the task that implements it: a requirement with no task is a silent gap; a task tracing to nothing in the brief is scope creep. (A from-memory skim is what passes plans that have already drifted.)
 - No undefined *scope*: `TBD`, `handle edge cases`, `similar to task N` each mean a task you haven't actually written. (Deferring *implementation* is fine; deferring *scope* is not.)
 - Every task has a deterministic Evaluator or an explicit rubric, and the plan has one top-level **Acceptance** check (whole-feature done).
 - Names and interfaces are consistent across tasks.

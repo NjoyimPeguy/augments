@@ -26,3 +26,4 @@ Optimism is not a plan. Before a project is greenlit, find the thing most likely
 - Greenlighting on optimism — no named risks means you didn't look.
 - Treating "we'll figure it out" as feasibility — name what would make it *infeasible*.
 - Endless analysis instead of a cheap spike to kill the biggest unknown.
+- Skipping Option Zero — the cheapest path is sometimes to not build it: an existing tool, a config change, or a smaller change to the problem. Rule it out before greenlighting a build.

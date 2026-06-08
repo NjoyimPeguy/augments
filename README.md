@@ -60,6 +60,7 @@ A skill is invoked as `augments:<name>` regardless of which phase folder holds i
 | deployment | `finishing-a-branch` | Take a working branch to merge-ready — green-check gate, clean commits, a real PR description, and a clear merge / keep / discard decision |
 | deployment | `release-readiness` | A portable pre-deploy gate — CI green, migrations reversible, rollback named, flags set, changelog, breaking changes flagged; defers the deploy command to your environment |
 | maintenance | `debugging` | Root cause before fix — build a runnable reproduction, test ranked hypotheses, fix the cause; stop and rethink architecture after three failed fixes |
+| maintenance | `post-mortem` | After a failure escapes or is caught late — find why the *process* let it through (which gate was missing) and convert it into a structural fix; starts where `debugging` ends |
 | maintenance | `refactor-architecture` | Improve an existing codebase's structure — deep modules, real seams — via targeted, leverage-first refactors |
 
 Every SDLC phase ships at least one skill, alongside the cross-cutting `common/` tools.

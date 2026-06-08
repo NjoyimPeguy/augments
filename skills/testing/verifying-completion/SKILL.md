@@ -23,6 +23,10 @@ Evidence before claims. "Should work", "looks right", and "probably fine" are no
 
 Skip any step and you have not verified — you have asserted.
 
+## When no automated check exists
+
+Some claims — visual output, real-browser flows, realtime UI, subjective usability — have no command that returns pass/fail. The gate is then human-run, but it is still a gate: structure it as a traceable acceptance matrix with evidence, never self-certify a step a human must judge, and treat an unrun row as pending, not passed. Automate everything that *can* be; this covers only what genuinely can't. See `manual-acceptance.md`.
+
 ## Hard stops
 
 - Never claim a test passes without seeing it pass *this* run.

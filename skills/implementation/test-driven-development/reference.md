@@ -30,6 +30,15 @@ When a test is hard to write, change the design, not the test:
 - **Return values over mutation** — a function that returns a result is trivial to assert; one that mutates hidden state is not.
 - **Keep the surface small** — fewer methods and parameters (a small interface over a large implementation) means fewer ways to misuse it and fewer things to test.
 
+## Don't let the test deform the domain
+
+Making code testable should *improve* the design, not corrupt it. Two ways a test can deform the thing it tests:
+
+- **Parameter pollution** — widening a domain signature with infrastructure (`createOrder(order, clock, idGenerator, random)`) purely so a test can pin those down. Injecting genuine collaborators is good design; but a clock or an id generator is ambient infrastructure — hide it behind the seam (a provider the unit holds, a wrapper you substitute in the test) rather than threading it through the public domain API.
+- **Helper leakage** — promoting an internal (`isAmountValid`, `normalizeName`) to the public surface only so a unit test can reach it. If it has no standalone domain meaning and no production caller, asserting on it directly is testing an implementation detail. Exercise it through the public behavior, or extract it into its *own* unit with a real interface — don't expose it in place.
+
+Same signal as a hard-to-write test: if the only reason a parameter or method is public is the test, the seam is in the wrong place. Move the seam, don't widen the API.
+
 ## Refactor targets
 
 In REFACTOR, with tests green, look for: duplication, over-long functions, shallow modules (a wide interface with little behind it), feature envy (a function more interested in another type's data than its own), and primitive obsession (bare strings or ints where a small type belongs). When you extract private helpers, keep the tests on the public interface — don't let them couple to the new internals.

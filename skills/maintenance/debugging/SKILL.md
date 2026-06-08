@@ -17,7 +17,7 @@ Root cause before fix. A patch you can't explain isn't a fix — it's a guess th
 
 **4. Instrument — read evidence, don't assume.** Probe to confirm or kill the top hypothesis. In a multi-layer system, add a probe at *every* boundary, run **once** to see where it breaks, then investigate that layer. Tag every debug log with a unique prefix so cleanup is one grep.
 
-**5. Fix the root cause.** Turn the reproduction into a failing test at the correct seam — one that exercises the real bug at the real call site — then fix it (use `test-driven-development`). If no correct seam exists, that *is* the finding: name it as architectural debt and fix without the regression test.
+**5. Fix the root cause — Option Zero first.** The cause is often *outside* the application code: a config value, an env var, a dependency version, a feature flag. Rule those out before reaching for a code change or a migration — the smallest correct fix wins, not the most ambitious one. Then turn the reproduction into a failing test at the correct seam — one that exercises the real bug at the real call site — and fix it (use `test-driven-development`). If no correct seam exists, that *is* the finding: name it as architectural debt and fix without the regression test.
 
 **6. Clean up and learn.** Remove the tagged logs. In the commit, note which hypothesis was right and what would have prevented the bug.
 

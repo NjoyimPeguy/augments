@@ -40,6 +40,7 @@
     "./skills/implementation/executing-plans",
     "./skills/implementation/test-driven-development",
     "./skills/maintenance/debugging",
+    "./skills/maintenance/post-mortem",
     "./skills/maintenance/refactor-architecture",
     "./skills/planning/define-goals",
     "./skills/planning/feasibility-check",

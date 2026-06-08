@@ -1,0 +1,22 @@
+name: validate-skills
+
+# The deterministic gate for this library's authoring rules (see CLAUDE.md):
+# no external references, no vendor model names, line budgets, frontmatter
+# shape, and plugin-manifest sync. The rules live in tests/validate-skills.sh;
+# this workflow is what makes them *enforced* rather than merely documented.
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Structural validation (skills + manifest sync)
+        run: bash tests/validate-skills.sh

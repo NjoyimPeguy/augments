@@ -8,7 +8,7 @@ Dispatch a subagent with access to the plan directory and the codebase, and this
 
 > Review the plan in `{{plan directory}}`. Flag **only** issues that would cause a real implementation problem — skip style and preference. Check four things:
 >
-> 1. **Completeness** — does every requirement in the brief or spec map to a task? Name any gap.
+> 1. **Completeness** — list each requirement in the brief or spec and the task that implements it. Name any requirement with no covering task, and any task that traces to no requirement.
 > 2. **Correctness** — do the files, function names, and data shapes the tasks reference match the actual codebase? Quote each mismatch.
 > 3. **Decomposition** — is each task independently verifiable, ~one commit, with no hidden placeholders?
 > 4. **Consistency** — are names and interfaces consistent across tasks?
