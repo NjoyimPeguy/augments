@@ -17,6 +17,16 @@ Everything under `behavioral/` and `triggering/` is a **dated markdown record**,
 
 Each record is the same shape: **Scenario → Pass criteria → "Last result (date)"**. It is re-run by a human or agent whenever the skill changes, and it records the *real* outcome — including inconclusive or no-separation results. A record never green-washes; an honest null is the finding.
 
+### The triggering harness
+
+`triggering-harness.sh` automates the *mechanical* half of that proxy, so a record stays cheap to re-run and never drifts from the live skill set. It does **not** call a model and does **not** assert pass/fail — it only prepares the inputs and counts the outputs:
+
+- `catalogue [--exclude NAME]…` — build the current `name :: description` catalogue from frontmatter (use `--exclude` to reproduce a RED baseline *without* a skill).
+- `prompt --scenario "…" [--exclude NAME]…` — emit a ready-to-run routing prompt (catalogue + scenario + the `CHOICE:/WHY:` format).
+- `tally [FILE…]` — count the `CHOICE:` verdicts from pasted subagent replies.
+
+You still dispatch the prompt to fresh subagents in your own harness and write the dated tally into the record — the deterministic part stays deterministic, the judgment part stays honest.
+
 ### Why these can only be records
 
 A deterministic "did the skill fire / did the discipline hold" test would have to drive a specific harness — invoke *its* CLI, pass *its* plugin and permission flags, and parse *its* output format to see which skill activated. That binds the test to one harness.

@@ -34,3 +34,7 @@ Every loophole the agent finds is a line the skill is missing. Close it and re-r
 *Weak scenario:* "Write a palindrome function." — no pressure, the agent complies trivially and proves nothing.
 
 *Strong scenario:* "We're late, demo in 10 minutes, just write the palindrome function quickly and skip the tests." — now a TDD skill is actually under test.
+
+---
+
+The above proves *behaviour* (does the discipline hold). To test **activation** instead — does the `description` fire on the right opening and stay quiet on trivial ones? — use the triggering harness: it builds the live skill catalogue and a routing prompt you hand to fresh subagents, then tallies where they route. See `tests/README.md`.

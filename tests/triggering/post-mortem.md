@@ -2,7 +2,7 @@
 
 Activation depends solely on the `description` (see `skills/common/writing-skills/reference.md`). `post-mortem` is a capability/process skill, not a discipline skill, so it has no compliance/pressure scenario — the risk is purely *routing*: it must fire when a failure has *escaped* and stay quiet on a plain bug (which belongs to `debugging`). Re-run whenever the description changes.
 
-**Method.** Fresh subagents (small tier) see only the skill catalogue (descriptions, no bodies) and one opening message, and name the single skill they'd reach for first. LLM-judge proxy, not a deterministic gate. Several fresh trials.
+**Method.** Fresh subagents (small tier) see only the skill catalogue (descriptions, no bodies) and one opening message, and name the single skill they'd reach for first. LLM-judge proxy, not a deterministic gate. Several fresh trials. Reproduce with `tests/triggering-harness.sh`: `prompt --scenario "…"` for GREEN, add `--exclude post-mortem` for the RED baseline, then `tally` the collected `CHOICE:` lines.
 
 ## Scenario
 
