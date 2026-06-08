@@ -30,6 +30,15 @@ Rule 4 (behavior) has no deterministic gate — that is the honest limit. Prove 
 3. Keep `SKILL.md` lean; push templates, examples, and rationale to sibling files.
 4. Verify before done: line count, lint-clean Markdown, no external or vendor references.
 
+## Editing a skill
+
+Changing a skill is changing behaviour, so match the proof to the change:
+
+- **Description (the trigger):** an *activation* change — re-measure routing with `tests/triggering-harness.sh` and update `tests/triggering/<skill>.md`.
+- **The always-loaded `SKILL.md` body of a discipline skill:** re-run the pressure test (`testing.md`) and update `tests/behavioral/<skill>.md`.
+- **A sibling or reference file** (loaded on demand, not under pressure): the discipline body is unchanged — no behavioural re-run is owed; say so in the record.
+- Never reword carefully-tuned discipline content — rationalization tables, red-flag lists, hard-stops — without re-proving it still holds. And never green-wash a record: an inconclusive result *is* the finding.
+
 ## What belongs here
 
 Core augments skills are **general-purpose SDLC guidance** — useful across projects, languages, and domains. A skill that only helps one domain, tool, team, or workflow does not belong in core; keep it in your own skill library. The test: would this help someone on a completely different kind of project? If not, it ships elsewhere. When a phase's activities are separable vs. one interleaved pass, see `docs/augments/skill-granularity.md`.
