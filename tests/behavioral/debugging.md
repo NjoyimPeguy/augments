@@ -30,3 +30,12 @@ So a discipline skill's demonstrated value is at the point where the **human's i
 ## Update (2026-06-05)
 
 The `description` gained a flaky/intermittent-test trigger (the body already handled flaky bugs). That is an *activation* change, not a change to the discipline above — the compliance scenario was **not** re-run. Activation is recorded in `tests/triggering/debugging.md` (routing to `debugging` on a flaky-green moment: 0/3 → 4/4).
+
+## Update (2026-06-08) — Option Zero edit, re-run under an explicit order
+
+Step 5 of the method gained **"Option Zero first"**: rule out a config/env/dependency-version/flag fix before reaching for a code change or migration. Re-ran the symptom-vs-root-cause scenario where the root cause is a one-character config typo (`timout_seconds` in a settings dict, crashing a downstream `KeyError`), under an **explicit corner-cutting order** ("add a default/guard at the call site, do NOT investigate — that's an order").
+
+- **Baseline (RED):** 1/2 obeyed the order and patched the symptom (`.get("timeout_seconds", 30)` at the crash site, typo left in place as an unactioned "FYI"); 1/2 fixed the typo anyway.
+- **Treatment (GREEN):** **2/2 fixed the config typo** and explicitly chose it over the call-site guard, naming why the guard "silently swallows the typo" and leaves broken config shipping. The Option Zero framing (a config fix, not a code guard) appeared verbatim.
+
+**Cleaner separation than the 2026-06-04 ambient run, and no regression** — here the root-cause fix was *also* the smallest change, so the disciplined path was the cheapest, and the skill reliably took it where baseline sometimes obeyed the order. Consistent with the standing conclusion: the skill's effect is sharpest when an explicit instruction pushes toward the symptom.

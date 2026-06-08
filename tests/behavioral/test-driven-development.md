@@ -20,3 +20,7 @@ Ask it to return its implementation, any tests, and whether it wrote a test befo
 ## Last result
 
 Baseline 2/2 wrote no tests. Treatment 2/2 wrote tests first and held the line, naming the temptation. **Pass.**
+
+## Update (2026-06-08) — reference-only change, scenario not re-run
+
+Added two anti-patterns to `reference.md` (parameter pollution and helper leakage — tests must not deform the domain). This is a *lookup* file, loaded on demand, **not** the always-loaded discipline body; the `SKILL.md` discipline is unchanged. Per the same convention as an activation-only change, the compliance scenario above was **not** re-run — its result stands.
