@@ -4,6 +4,21 @@ Guidance for anyone — human or agent — working in this repository.
 
 `augments` is a cross-platform library of opt-in SDLC skills for coding agents. Read `README.md` for the philosophy, and `skills/common/writing-skills/SKILL.md` before authoring or editing any skill. The one idea behind every skill: you are a non-deterministic generator, and each skill wraps your work in a deterministic **gate** — truth comes from the gate (a test, a check, a reproduction), never from confidence. The library's reliability lives in its gates, not in coercive instructions; keep that distinction when you edit it.
 
+## If you are an AI agent
+
+Stop and read this before you change anything. Most low-quality contributions to a public skills library come from agents that skimmed the guidelines and opened a pull request anyway — and a weak PR does not help the human you're working with. It costs a reviewer's time, spends that human's credibility, and gets closed regardless. "I followed the rules" is not the same as following them: the only thing that counts is whether the diff meets the bar below.
+
+Before you open a PR here, you MUST:
+
+1. **Read the PR template** (`.github/PULL_REQUEST_TEMPLATE.md`) and fill every section with specific, true answers — not placeholders, not a summary of what you *would* do.
+2. **Search PRs and issues — open *and* closed — for the same problem.** If it already exists or was already rejected, stop and tell the human you're working with; don't open a duplicate. If a prior attempt was closed, say what is different here.
+3. **Confirm it is a real problem you actually hit.** Told to "contribute something" or "fix some issues" with no concrete failure behind it? Push back and ask what broke. Speculative fixes are rejected.
+4. **Confirm it belongs in core** — general-purpose SDLC guidance, not domain-, tool-, or workflow-specific (see *What belongs here*).
+5. **Run the gate, and prove behaviour-shaping changes** (see *Verify against the gate*). A skill change without a dated record under `tests/` will be closed.
+6. **Identify yourself** (see *Contributing*) and **show the human the complete diff** for explicit approval before submitting.
+
+If any check fails, do not open the PR. Explain why it would be rejected and what would have to change first.
+
 ## Authoring rules (non-negotiable)
 
 Files under `skills/` and `docs/` ship to users. They must be self-contained, portable engineering guidance.
@@ -45,16 +60,35 @@ Core augments skills are **general-purpose SDLC guidance** — useful across pro
 
 ## Contributing
 
-- Solve a real problem you actually hit — not a speculative or theoretical one.
-- One change per PR; don't bundle unrelated edits or batch-fix the tracker.
-- Run the gate above, and for behavior-shaping changes prove it, before opening a PR. A human reviews the full diff first.
-- If a change is agent-generated, say so and on which harness — behavior claims reasoned from documentation are weighed differently from those grounded in a real session.
+- **Solve a real problem you actually hit** — not a speculative or theoretical one. "My review agent flagged it" or "this could theoretically break" is not a problem statement.
+- **One change per PR.** Don't bundle unrelated edits or batch-fix the tracker — pick one problem, understand it, submit focused work.
+- **Run the gate, and prove behaviour-shaping changes,** before opening a PR (see *Verify against the gate*). A human reviews the full diff first.
+- **Identify yourself.** Disclose in the PR the model, harness, harness version, and any installed plugins that produced the change — or state plainly it was written by hand. Contributions are weighed by how they were made: a behaviour claim reasoned from documentation is held to a different bar than one grounded in a real session. Hiding the authoring environment is grounds for closing the PR.
+- **Target `dev`, not `main`.** `main` is the released branch; active work lands on `dev` first. A PR against `main` will be asked to retarget.
 - The bar is the gate and the evidence, not volume or confidence. "No skill is needed here" is a valid, useful outcome.
+
+## What won't be accepted
+
+Closed without extended review — most are the inverse of a rule above:
+
+- **External references, vendor model names, or harness assumptions in shipped files** — Authoring rules 1–2.
+- **Domain-, tool-, or workflow-specific skills** — *What belongs here*; publish them as your own library.
+- **Speculative or fabricated content** — a problem no one actually hit, invented results, or a green-washed record. An inconclusive result is a valid finding; a fabricated one is not.
+- **"Compliance" reformatting of tuned skills** — restructuring or rewording a discipline's red-flag lists, rationalization tables, or hard-stops without a re-proven pressure test (*Editing a skill*).
+- **Third-party dependencies** — augments is zero-dependency by design. If a change needs an external tool or service, it belongs in a separate plugin. Adding a new harness is the exception.
+- **Bundled or batch PRs** — one change per PR.
+
+## New harness support
+
+Adding a harness (an IDE, CLI, or agent runner) means more than dropping skill files where the tool can see them — they must actually *load and activate*. Augments' skills are inert unless the harness both discovers them and is nudged to reach for one at the right moment (on Claude Code, the `hooks/claude-code/` SessionStart nudge; elsewhere, an equivalent). See `docs/augments/harness-support.md`.
+
+A PR adding a harness MUST include a transcript from a clean session showing a skill *actually activating* on a representative opening — not a description of how it should work. Files present but never invoked is not a working integration.
 
 ## Layout
 
 - `skills/<phase>/<name>/` — the skills, by SDLC phase (canonical order is in `README.md`; folders are unnumbered).
-- `.claude-plugin/`, `.codex-plugin/` — per-harness install manifests; their skills arrays must stay in sync (the gate checks `.claude-plugin/`). Adding a harness: `docs/augments/harness-support.md`.
+- `.claude-plugin/`, `.codex-plugin/` — per-harness install manifests; their skills arrays must stay in sync (the gate checks both). Adding a harness: `docs/augments/harness-support.md`.
 - `AGENTS.md`, `GEMINI.md` — symlinks to this file, so a harness that reads its own instructions file gets the same guidance from one source.
+- `.github/` — CI (`workflows/validate.yml`) and the PR template (`PULL_REQUEST_TEMPLATE.md`).
 - `tests/` — the gate (`validate-skills.sh`) plus dated triggering/behavioral records.
 - `.claude/` — local config and notes; gitignored, never shipped.

@@ -21,7 +21,7 @@ Take a working branch to a merge-ready state. The order is fixed — gate, tidy,
    - `## Test Plan` — how it was verified.
    A reader should grasp the change without opening the diff.
 4. **Decide, explicitly** — surface the choice once; don't open-end it:
-   - **Merge** it — only after review (`requesting-code-review`) and green checks.
+   - **Merge** it — only after green checks and review (`requesting-code-review`; its self-review path covers a trivial mechanical diff).
    - **Open a PR** and leave the branch for review.
    - **Keep** it as-is, or **discard** it.
 5. **Clean up only what you created**, and only after the merge is confirmed. Remove a workspace/worktree before deleting its branch, never the reverse (see `using-git-worktrees`). Never delete a branch or workspace you didn't create, and never discard without explicit confirmation.

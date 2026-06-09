@@ -12,6 +12,7 @@ Close the gap between what was asked and what is actually wanted — *before* yo
 - A request is vague ("add auth", "make it faster") or has more than one reasonable reading.
 - Assumptions are piling up before a plan or feature.
 - **Skip** when the task is trivial or already fully specified — interrogating wastes turns.
+- **Skipping never licenses a silent decision.** If the request leaves an open point you resolve yourself — a "maybe X?", a "not sure if I need that" — state the decision and your one-line reason in your reply so the user can redirect: decide-and-state, never decide-and-bury. "It's cheap to build" is the rationalization to catch — the cost is not the build, it is the user discovering you decided for them.
 
 ## Procedure
 

@@ -11,7 +11,7 @@ You are reviewing a code change with fresh eyes. You did not write it and have n
 
 **Standards** — conformance to how this project is built:
 
-- Read the project's stated conventions (`CLAUDE.md`, `CONTRIBUTING`, linter / formatter config). Do not assume them from memory.
+- Read the project's stated conventions (its agent-instructions file, `CONTRIBUTING`, linter / formatter config). Do not assume them from memory.
 - Quality: clear names, no duplicated logic, errors handled, edges covered, no value used before it's set, no obvious race or leaked resource.
 
 **Spec** — does the change do what was asked?

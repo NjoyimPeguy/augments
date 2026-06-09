@@ -17,7 +17,7 @@ Get a change reviewed by fresh eyes before it merges. The reviewer sees the diff
 1. **Pin the scope.** Establish the review range as a diff, `base..HEAD`. The diff is the unit — the reviewer reads what changed, not the whole repo.
 2. **Dispatch a fresh-context reviewer.** Hand it `code-reviewer.md` with the diff range and the originating requirement (issue, spec, or plan). It must NOT inherit your session — independence is the whole point.
 3. **Review on two axes, kept separate** (the reviewer can run them as parallel passes):
-   - **Standards** — does it match the project's conventions, style, and quality bar? Read `CLAUDE.md` / config, not memory.
+   - **Standards** — does it match the project's conventions, style, and quality bar? Read the project's conventions file and linter/formatter config, not memory.
    - **Spec** — does it actually do what was asked? Code can be clean and still build the wrong thing.
 4. **Read the verdict.** The reviewer returns severity-tiered findings (Critical / Important / Minor) and an explicit *Ready to merge? Yes / No / With fixes* — never a bare "looks good".
 5. **Act on it with judgement, not deference.** Verify each finding against the code before you change anything — one you can refute with evidence you close, not obey. A reviewer can be wrong; so can you. Resolve it on the merits — `receiving-code-review` is that responding discipline.

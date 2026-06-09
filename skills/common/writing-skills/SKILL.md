@@ -31,7 +31,7 @@ Match the form to the need (see `reference.md` for how much detail each needs):
 
 ## Discipline skills are the exception
 
-A few skills exist to hold an agent to a discipline it is tempted to skip under pressure (TDD, verifying-completion, systematic debugging). For these only:
+A few skills exist to hold an agent to a discipline it is tempted to skip under pressure (TDD, verifying-completion, systematic debugging, receiving-code-review). For these only:
 
 - Keep the **rationalization table** (each tempting excuse → its rebuttal) and **red-flag list** in the *body*, never a sibling — a tempted agent won't choose to load a sibling file, and the counter must be in context when the temptation hits. You cannot lazy-load willpower.
 - They may exceed ~80 lines. Each extra line must earn its place by passing a pressure test (`testing.md`), not by sounding good.
@@ -39,7 +39,7 @@ A few skills exist to hold an agent to a discipline it is tempted to skip under 
 
 ## Procedure
 
-1. **Confirm it should be a skill — and whether it's one.** Write one only if an agent reliably gets this *wrong without guidance*. Plain prompt text or a one-off? Don't. Needs an exact, deterministic sequence? Bundle a script, not prose. A needless skill taxes every session it fires. If a phase has several activities, decide one cohesive skill vs several — see `docs/skill-granularity.md`.
+1. **Confirm it should be a skill — and whether it's one.** Write one only if an agent reliably gets this *wrong without guidance*. Plain prompt text or a one-off? Don't. Needs an exact, deterministic sequence? Bundle a script, not prose. A needless skill taxes every session it fires. If a phase has several activities, decide one cohesive skill vs several — see `docs/augments/skill-granularity.md`.
 2. Choose the phase folder (`planning`…`maintenance`) or `common/`, create `skills/<phase>/<name>/`, and copy `skill-template.md` to start.
 3. Write `description` as a trigger first. Test it: does it say **when**, not **how**? If it lists steps, rewrite.
 4. Write the body: **When to use** (incl. Skip), **Procedure** (numbered), **Common mistakes**.

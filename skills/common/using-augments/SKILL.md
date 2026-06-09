@@ -13,7 +13,7 @@ Augments is a toolbox of opt-in engineering skills, organized by the phases of t
 
 ## The mental model
 
-You are a non-deterministic generator. These skills surround your work with **deterministic gates** — a test, a check, a reproduction. Truth comes from the gate, never from your confidence: **"done" means a check passed, not that you believe it's done.** That one idea is what makes every skill below cohere. The full rationale is in `docs/philosophy.md`.
+You are a non-deterministic generator. These skills surround your work with **deterministic gates** — a test, a check, a reproduction. Truth comes from the gate, never from your confidence: **"done" means a check passed, not that you believe it's done.** That one idea is what makes every skill below cohere. The full rationale is in `docs/augments/philosophy.md`.
 
 These are tools, not a pipeline: reach for the one that fits the moment; there is no sequence you must walk. The disciplines enforce themselves through their own gates, not through ceremony.
 

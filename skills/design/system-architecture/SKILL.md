@@ -30,3 +30,5 @@ Design the shape of the solution before anyone builds it: what the pieces are, h
 - Generic vocabulary that hides the domain.
 
 For a high-stakes design, once the document is compiled, dispatch `design-review.md` — a fresh subagent that checks the whole design before anyone builds against it.
+
+The module-design terms used here (deep module, seam, adapter, leverage) are defined once in `refactor-architecture`'s `vocabulary.md` — both skills use them with the same meaning.
