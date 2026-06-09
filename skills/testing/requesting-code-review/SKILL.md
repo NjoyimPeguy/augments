@@ -22,6 +22,15 @@ Get a change reviewed by fresh eyes before it merges. The reviewer sees the diff
 4. **Read the verdict.** The reviewer returns severity-tiered findings (Critical / Important / Minor) and an explicit *Ready to merge? Yes / No / With fixes* — never a bare "looks good".
 5. **Act on it with judgement, not deference.** Verify each finding against the code before you change anything — one you can refute with evidence you close, not obey. A reviewer can be wrong; so can you. Resolve it on the merits — `receiving-code-review` is that responding discipline.
 
+## Specialist depth passes (optional)
+
+`code-reviewer.md` is the breadth pass — dispatch it every time. For a higher-risk diff, run one or more specialists *in parallel* alongside it (see `dispatching-parallel-agents`): each goes deep on one axis the breadth pass only skims and folds severity-grouped findings into that single merge verdict. Pick by what the diff touches — don't run all four by reflex.
+
+- `silent-failures-reviewer.md` — error handling: swallowed or over-broad catches, masking fallbacks, lost propagation.
+- `type-design-reviewer.md` — encapsulation and invariants: can a caller construct an illegal state?
+- `test-coverage-reviewer.md` — behavioural gaps in the diff (error paths, boundaries, negative cases) and tests over-coupled to implementation.
+- `comment-accuracy-reviewer.md` — comments that no longer match the code, or explain "what" instead of "why".
+
 ## Self-review checklist (for diffs too small to dispatch)
 
 - Does it do what was asked, and only that?
