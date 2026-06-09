@@ -8,10 +8,10 @@ There is exactly **one** set of skills, and they are harness- and model-agnostic
 
 ## Install adapters (using the skills)
 
-| Harness | Adapter | Proactive-use nudge |
-| ------- | ------- | ------------------- |
-| Claude Code | `.claude-plugin/` (plugin manifest + `marketplace.json`) | SessionStart hook → `hooks/claude-code/context.md` |
-| Codex | `.codex-plugin/` (plugin manifest) | — |
+| Harness | Adapter | Proactive-use nudge | Status |
+| ------- | ------- | ------------------- | ------ |
+| Claude Code | `.claude-plugin/` (plugin manifest + `marketplace.json`) | SessionStart hook → `hooks/claude-code/context.md` | Exercised — skills load and activate in live sessions |
+| Codex | `.codex-plugin/` (plugin manifest) | — | Manifest present, **not yet exercised** on a live session — provisional until it is (see *Be honest about status* below) |
 
 Both manifests list the **same** skills array; `tests/validate-skills.sh` fails CI if a manifest drifts from the skill directories on disk, so the two cannot silently diverge.
 
@@ -24,7 +24,7 @@ Both manifests list the **same** skills array; `tests/validate-skills.sh` fails 
 The skills need no runtime — they are plain Markdown invoked by **name** (the phase folder is organization, not part of the address). On any harness:
 
 1. Make this library available to the agent (install it however the harness loads external skills, or point the agent at this repo).
-2. Copy the proactive-use nudge from `hooks/claude-code/context.md` into your project's own instructions file (your `AGENTS.md`, `CLAUDE.md`, or the harness equivalent), so the agent reaches for skills instead of working freehand.
+2. Copy the proactive-use nudge from `hooks/claude-code/context.md` into your project's own instructions file (your `AGENTS.md`, `CLAUDE.md`, or the harness equivalent), so the agent reaches for the right skill at the right moment instead of overlooking the library.
 3. Invoke a skill by name — open `skills/common/using-augments/SKILL.md` for the map, then the chosen skill's `SKILL.md` for the procedure.
 
 ## Adding a harness adapter
