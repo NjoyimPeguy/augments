@@ -23,6 +23,8 @@ Work tasks in order, honoring each task's `Depends-on`. For each:
 5. **Run the task's Evaluator.** Only when it passes, tick `[x]` for that task in the index.
 6. If you learned something that affects later tasks, append a line to a `## Learnings` section in the index — and carry it into any later subagent dispatch.
 
+**Sequential is the default, not a rule.** "One task at a time" is the *gate cadence* — verify each task's Evaluator before the next — not a ban on concurrency. Tasks with no `Depends-on` between them and disjoint files and state may be fanned out with `dispatching-parallel-agents`; each still gates on its own Evaluator, and the combined check waits for the plan's Acceptance.
+
 ## Name the outcome
 
 Don't let "done" hide doubt: **done** (Evaluator green, self-check clean) · **done with concerns** (it works but something nags — record it in the index, don't bury it) · **blocked** (missing dependency, an Evaluator you can't pass, a contradictory task — stop and surface it) · **needs context** (reading file after file without progress — get the missing information, don't guess).

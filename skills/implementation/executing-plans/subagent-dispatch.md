@@ -1,6 +1,8 @@
 # Executing Plans — Optional Subagent Dispatch
 
-Dispatching a task to a subagent gives it a fresh context window — useful for a **large-tier, independent task in a long run**, when the coordinator's own context is filling up. It is optional: small and medium tasks are usually faster inline. Don't dispatch a fully-specified mechanical task, and don't force a review pass on one.
+Dispatching a task to a subagent gives it a fresh context window — useful for a **large-tier, self-contained task in a long run**, when the coordinator's own context is filling up. This is *sequential*: offload one task, gate it on its Evaluator, then move on. It is optional: small and medium tasks are usually faster inline. Don't dispatch a fully-specified mechanical task, and don't force a review pass on one.
+
+*One-at-a-time offload, not fan-out.* "Self-contained" means the task carries no inherited history — not that it is independent of the *other* tasks. When several tasks are independent *of each other* — disjoint files, state, and order — and could run at once, fan them out with `dispatching-parallel-agents` instead; that skill owns the collision check and the combined verification.
 
 ## The dispatch packet
 
