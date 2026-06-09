@@ -36,6 +36,8 @@ Turn an aligned intent into an executable plan: a small durable **map** plus thi
 - Every task has a deterministic Evaluator or an explicit rubric, and the plan has one top-level **Acceptance** check (whole-feature done).
 - Names and interfaces are consistent across tasks.
 
+**8. Present the plan to the user before executing.** Self-review and `plan-review.md` check the plan's *quality*; only the user can confirm its *direction* — and the plan is the cheapest moment to redirect. So stop here: show the index — goal, architecture, Acceptance, the task list — and get the go before `executing-plans`. Two readings that do **not** count as a go: a green light given *before* the plan existed ("go ahead", "over to you" — that approved the work, not the unseen plan), and a non-interactive session (end the turn with the plan presented; don't skip the pause because nobody can answer). Proceed unpaused only when the user explicitly ordered it — "plan it and build it, don't stop for approval" — or explicitly requested an unattended run.
+
 If reality deviates during execution, update the task file and `00-index.md` — the plan stays the source of truth; don't silently drift.
 
 ## Common mistakes

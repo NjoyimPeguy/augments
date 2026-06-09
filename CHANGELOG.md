@@ -2,6 +2,12 @@
 
 Notable changes to augments, newest first. Versions follow semantic versioning; the narrative for each release lives on its release page — this file is the terse, cumulative record.
 
+## [1.0.1] — 2026-06-10
+
+### Fixed
+
+- **The plan→execution seam now pauses for the user.** `writing-plans` ends by presenting the plan index for the user's go, and `executing-plans` confirms the user has seen the plan before starting — pause-by-default, with explicit escapes ("plan it and build it, don't stop" or an explicitly requested unattended run). A pre-plan "go ahead" no longer counts as approval of the unseen plan, and a non-interactive session means presenting the plan at turn end, not skipping the pause. Driven by a captured field failure; proven RED → loopholes closed → GREEN in `tests/behavioral/writing-plans.md`.
+
 ## [1.0.0] — 2026-06-09
 
 First public release.

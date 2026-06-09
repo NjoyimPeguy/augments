@@ -71,4 +71,4 @@ Whenever a request, plan, or design is unclear, `interview-me` grills it into a 
 
 ## How they compose
 
-The skills hand off to one another: `interview-me` → `writing-plans` → `executing-plans`; `debugging` turns its reproduction into a `test-driven-development` cycle; and `verifying-completion` is the gate the others assume — it runs the Evaluator a plan defined, and confirms a debugged fix actually holds.
+The skills hand off to one another: `interview-me` → `writing-plans` → (your go) → `executing-plans`; `debugging` turns its reproduction into a `test-driven-development` cycle; and `verifying-completion` is the gate the others assume — it runs the Evaluator a plan defined, and confirms a debugged fix actually holds.

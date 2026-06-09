@@ -43,3 +43,7 @@ The other executing-plans discipline: a task is done only when its Evaluator pas
 3 fresh subagents per arm. **RED 3/3 held; GREEN 3/3 held — no separation.** Every agent, with or without the skill, ran the Evaluator first and refused to tick on confidence, naming the move for what it was: *"ticking the box anyway would be falsifying the index"*, *"a false tick hands the demo a live mine."* Two GREEN agents cited the named common mistake explicitly.
 
 The core gate holds under combined pressure — but a capable model already refuses to mark an unrun test done; the skill's gate language shifts an already-high probability and documents it for weaker models, rather than supplying behaviour the model lacks. Same philosophy face as Scenario 1: the guarantee is the gate (the Evaluator actually run), not the instruction. This closes the previously-recorded gap that the core gate had never been pressure-tested.
+
+## Update (2026-06-10) — seam guard added; tested discipline untouched
+
+"Before you start" gained item 1: confirm the user has seen the plan before executing — pause-by-default with explicit escapes (a straight-through order, an explicitly requested unattended run), and a pre-plan "go ahead" does not count as approval of the unseen plan. The discipline this record tests — done = Evaluator green — is untouched, so it was not re-run. The seam behavior itself is proven in `writing-plans.md` (field-report RED → loopholes found and closed → 2/2 GREEN, escape arm honored 2/2).
