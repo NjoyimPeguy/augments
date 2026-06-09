@@ -82,7 +82,7 @@ Closed without extended review — most are the inverse of a rule above:
 
 Adding a harness (an IDE, CLI, or agent runner) means more than dropping skill files where the tool can see them — they must actually *load and activate*. Augments' skills are inert unless the harness both discovers them and is nudged to reach for one at the right moment (on Claude Code, the `hooks/claude-code/` SessionStart nudge; elsewhere, an equivalent). See `docs/augments/harness-support.md`.
 
-A PR adding a harness MUST include a transcript from a clean session showing a skill *actually activating* on a representative opening — not a description of how it should work. Files present but never invoked is not a working integration.
+A PR adding a harness MUST include a transcript from a clean session showing a skill *actually activating* on a representative opening — not a description of how it should work — recorded as a dated file under `tests/harness/`. Files present but never invoked is not a working integration.
 
 ## Layout
 
@@ -90,5 +90,5 @@ A PR adding a harness MUST include a transcript from a clean session showing a s
 - `.claude-plugin/`, `.codex-plugin/` — per-harness install manifests; their skills arrays must stay in sync (the gate checks both). Adding a harness: `docs/augments/harness-support.md`.
 - `AGENTS.md`, `GEMINI.md` — symlinks to this file, so a harness that reads its own instructions file gets the same guidance from one source.
 - `.github/` — CI (`workflows/validate.yml`) and the PR template (`PULL_REQUEST_TEMPLATE.md`).
-- `tests/` — the gate (`validate-skills.sh`) plus dated triggering/behavioral records.
+- `tests/` — the gate (`validate-skills.sh`) plus dated records: `triggering/` (activation), `behavioral/` (discipline under pressure), `harness/` (per-adapter proof that skills load and activate on that harness).
 - `.claude/` — local config and notes; gitignored, never shipped.
