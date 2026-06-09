@@ -17,6 +17,8 @@ Everything under `behavioral/` and `triggering/` is a **dated markdown record**,
 
 Each record is the same shape: **Scenario → Pass criteria → "Last result (date)"**. It is re-run by a human or agent whenever the skill changes, and it records the *real* outcome — including inconclusive or no-separation results. A record never green-washes; an honest null is the finding.
 
+**What each skill owes.** Every skill owes a *triggering* record (does its description route the right opening?). A *behavioral* record is owed only by the **discipline** skills (the ones holding a line under pressure — see `writing-skills`): a capability skill has no temptation to counter, so pressure-testing it proves nothing — its procedure is proven by watching it work, not by resisting stress.
+
 ### The triggering harness
 
 `triggering-harness.sh` automates the *mechanical* half of that proxy, so a record stays cheap to re-run and never drifts from the live skill set. It does **not** call a model and does **not** assert pass/fail — it only prepares the inputs and counts the outputs:
