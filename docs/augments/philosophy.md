@@ -54,6 +54,12 @@ Be honest about the limit. Some disciplines can be gated deterministically — a
 
 Real engineering is precise about where it has proof and where it has only process. A skill that dressed "you should brainstorm" in the same absolute language as "the tests pass" would be lying — the very hollow verification it warns against.
 
+## Alongside intelligence, not in its way
+
+Skills and model intelligence are complements, not rivals. As models grow more capable, the *generation* half of the problem genuinely shrinks: a stronger model needs less guidance about how to write the code, and a skill that micromanages a capable generator subtracts value. That is why every skill carries a complexity gate — a stated "skip this when…" — and why the library is a toolbox rather than a pipeline: where the model's judgment is strong, the skill defers to it.
+
+What does not shrink with capability is the verdict problem. However intelligent the generator becomes, it remains probabilistic, and a probabilistic process cannot certify its own output — "I am confident" is still not a check passing. So the division of labor is stable across model generations: the model brings the intelligence, the skill brings the gate, and neither impedes the other. A skill that gets in a capable model's way is a bug in the skill — and a model that talks its way past a gate is the failure the gate exists to stop.
+
 ## What this means for the library
 
 This is why `using-augments` is not a compliance enforcer. Its job is to install the mental model that makes every other skill cohere:

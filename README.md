@@ -9,6 +9,7 @@ Augments is a cross-platform library of **opt-in engineering skills** for coding
 - **Toolbox, not pipeline.** Every skill is a tool you reach for when you need it — never a gate that forces a sequence. The phase folders are a map for discovery, not a workflow you must walk. You own the process; the skills support it.
 - **Earn every line.** A skill loads into context each time it fires, so it carries only what changes behavior; templates, examples, and rationale live in sibling files loaded on demand. Low token cost is a consequence of that discipline — not a goal that overrides correctness, so discipline skills keep what they need to hold the line under pressure.
 - **Any harness, any model.** Skills refer to capability *tiers* (small / medium / large), never vendor model names, so they behave the same on Claude Code, Codex, Gemini CLI, Opencode, or Cursor.
+- **Alongside intelligence, not in its way.** A skill adds the one thing a model cannot supply — a deterministic verdict on its own work — and otherwise defers to the model's judgment. As models grow more capable, skills and intelligence are meant to work together, never to impede each other: every skill states when to *skip* it, so ceremony scales down as capability scales up.
 
 The deeper rationale — why every skill is a *deterministic gate around a non-deterministic generator* — is in [`docs/augments/philosophy.md`](docs/augments/philosophy.md); when a phase is one skill versus several is in [`docs/augments/skill-granularity.md`](docs/augments/skill-granularity.md).
 
@@ -67,7 +68,7 @@ Every SDLC phase ships at least one skill, alongside the cross-cutting `common/`
 
 ## Status
 
-Early and growing. All seven SDLC phases — planning, analysis, design, implementation, testing, deployment, and maintenance — now ship at least one working skill, alongside the `common` skills (orientation, skill-authoring, prototyping, and the cross-cutting `interview-me`). The repo ships a Claude Code plugin (`.claude-plugin/`, with a SessionStart nudge hook) and a Codex plugin manifest (`.codex-plugin/`); `AGENTS.md` and `GEMINI.md` symlink to `CLAUDE.md` so a harness that reads its own instructions file gets the same guidance. Because the skills are harness-agnostic Markdown invoked by name, any other harness works too — see [`docs/augments/harness-support.md`](docs/augments/harness-support.md). Install in Claude Code with `/plugin marketplace add NjoyimPeguy/augments` then `/plugin install augments@augments`, and invoke skills by name.
+Early and growing. All seven SDLC phases — planning, analysis, design, implementation, testing, deployment, and maintenance — now ship at least one working skill, alongside the nine `common` skills (orientation, skill-authoring, and the cross-cutting tools: interviewing, prototyping, zoom-out, handoff, worktrees, parallel dispatch, and terse output). The repo ships a Claude Code plugin (`.claude-plugin/`, with a SessionStart nudge hook) and a Codex plugin manifest (`.codex-plugin/`); `AGENTS.md` and `GEMINI.md` symlink to `CLAUDE.md` so a harness that reads its own instructions file gets the same guidance. Because the skills are harness-agnostic Markdown invoked by name, any other harness works too — see [`docs/augments/harness-support.md`](docs/augments/harness-support.md). Install in Claude Code with `/plugin marketplace add NjoyimPeguy/augments` then `/plugin install augments@augments`, and invoke skills by name.
 
 ## Proactive skill use (Claude Code)
 
@@ -77,7 +78,7 @@ The nudge is deliberately **firm, not coercive** (no "you must / 1% chance" fram
 
 ## Acknowledgements
 
-This ADK draws on prior art and ongoing work from across the
+This library draws on prior art and ongoing work from across the
 multi-agent ecosystem:
 
 - [**Superpowers**](https://github.com/obra/superpowers) —
