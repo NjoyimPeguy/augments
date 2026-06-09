@@ -72,7 +72,7 @@ Early and growing. All seven SDLC phases — planning, analysis, design, impleme
 
 ## Proactive skill use (Claude Code)
 
-A coding agent treats an installed skill library as available-but-optional and usually walks past it unless you name a skill. So on Claude Code, augments ships a **SessionStart hook** (`hooks/claude-code/`) that injects a short, firm nudge each session: *check whether a skill fits the task and invoke it before working freehand; if unsure, reach for `using-augments`.* The agent then orients you — "implementation, or planning + docs?" — instead of diving straight in.
+A coding agent treats an installed skill library as available-but-optional and usually walks past it unless you name a skill. So on Claude Code, augments ships a **SessionStart hook** (`hooks/claude-code/`) that injects a short, firm nudge each session: *check whether a skill fits the task and invoke it to anchor the work — the skills work alongside your judgment; if unsure, reach for `using-augments`.* The agent then orients you — "implementation, or planning + docs?" — instead of diving straight in.
 
 The nudge is deliberately **firm, not coercive** (no "you must / 1% chance" framing) and has one escape: if no skill genuinely applies, it proceeds normally. It's a single plain-text file — `hooks/claude-code/context.md` — so soften, sharpen, or delete it to taste. It is Claude-Code-specific (a hook); the skills themselves stay harness-agnostic, so on other harnesses you invoke skills by name or wire an equivalent nudge.
 
