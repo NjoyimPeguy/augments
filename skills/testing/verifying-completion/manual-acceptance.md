@@ -1,6 +1,6 @@
 # Manual Acceptance — when no automated check exists
 
-Some claims cannot be proven by a command that returns pass/fail: visual output, real-browser behavior, multi-step user flows, realtime UI, notifications, subjective usability. The honest position (`docs/philosophy.md`) is that here you have *process, not proof* — so the discipline is to make the human-run check as close to a gate as it can be: structured, traceable, and tied to a requirement. Informal "I clicked around, looks fine" is not acceptance.
+Some claims cannot be proven by a command that returns pass/fail: visual output, real-browser behavior, multi-step user flows, realtime UI, notifications, subjective usability. The honest position (`docs/augments/philosophy.md`) is that here you have *process, not proof* — so the discipline is to make the human-run check as close to a gate as it can be: structured, traceable, and tied to a requirement. Informal "I clicked around, looks fine" is not acceptance.
 
 ## The rule
 

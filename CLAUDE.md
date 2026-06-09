@@ -87,7 +87,7 @@ A PR adding a harness MUST include a transcript from a clean session showing a s
 ## Layout
 
 - `skills/<phase>/<name>/` — the skills, by SDLC phase (canonical order is in `README.md`; folders are unnumbered).
-- `.claude-plugin/`, `.codex-plugin/` — per-harness install manifests; their skills arrays must stay in sync (the gate checks `.claude-plugin/`). Adding a harness: `docs/augments/harness-support.md`.
+- `.claude-plugin/`, `.codex-plugin/` — per-harness install manifests; their skills arrays must stay in sync (the gate checks both). Adding a harness: `docs/augments/harness-support.md`.
 - `AGENTS.md`, `GEMINI.md` — symlinks to this file, so a harness that reads its own instructions file gets the same guidance from one source.
 - `.github/` — CI (`workflows/validate.yml`) and the PR template (`PULL_REQUEST_TEMPLATE.md`).
 - `tests/` — the gate (`validate-skills.sh`) plus dated triggering/behavioral records.

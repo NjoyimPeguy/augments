@@ -49,21 +49,30 @@ for skill in "${skills[@]}"; do
   done
 done
 
-# Manifest sync: Claude Code discovers skills only one level deep, so every leaf
-# skill dir must be listed explicitly in .claude-plugin/plugin.json's "skills"
-# array — a skill missing from it silently fails to load; a dead entry points nowhere.
-echo "• .claude-plugin/plugin.json (skills array sync)"
-manifest=".claude-plugin/plugin.json"
-if [ ! -f "$manifest" ]; then
-  err "missing $manifest"
-else
-  actual=$(printf '%s\n' "${skills[@]}" | sed 's|/SKILL.md$||; s|^|./|' | sort -u)
+# Manifest sync: a harness discovers skills only through its manifest, so every
+# leaf skill dir must be listed explicitly in each adapter's "skills" array — a
+# skill missing from it silently fails to load; a dead entry points nowhere.
+# Every manifest is checked so the adapters cannot silently diverge.
+actual=$(printf '%s\n' "${skills[@]}" | sed 's|/SKILL.md$||; s|^|./|' | sort -u)
+for manifest in .claude-plugin/plugin.json .codex-plugin/plugin.json; do
+  echo "• $manifest (skills array sync)"
+  if [ ! -f "$manifest" ]; then
+    err "missing $manifest"
+    continue
+  fi
   declared=$(grep -oE '"\./skills/[^"]+"' "$manifest" | tr -d '"' | sort -u)
   missing=$(comm -23 <(printf '%s\n' "$actual") <(printf '%s\n' "$declared"))
   dead=$(comm -13 <(printf '%s\n' "$actual") <(printf '%s\n' "$declared"))
-  [ -n "$missing" ] && while IFS= read -r m; do err "skill not in plugin.json 'skills' (won't load): $m"; done <<< "$missing"
-  [ -n "$dead" ]    && while IFS= read -r d; do err "plugin.json 'skills' entry has no SKILL.md: $d"; done <<< "$dead"
-fi
+  [ -n "$missing" ] && while IFS= read -r m; do err "skill not in $manifest 'skills' (won't load): $m"; done <<< "$missing"
+  [ -n "$dead" ]    && while IFS= read -r d; do err "$manifest 'skills' entry has no SKILL.md: $d"; done <<< "$dead"
+done
+
+# Internal references: any repo-root docs/ or tests/ markdown path named in a
+# shipped or meta file must exist — a broken link ships straight to users.
+echo "• internal references (docs/ and tests/ paths resolve)"
+while IFS=: read -r src ref; do
+  [ -f "$ref" ] || err "$src: internal reference '$ref' does not exist"
+done < <(grep -roE '(docs|tests)/[A-Za-z0-9._/-]+\.md' skills docs tests README.md CLAUDE.md | sort -u)
 
 echo ""
 if [ "$fail" -eq 0 ]; then echo "✓ all skills pass structural validation"; else echo "✗ violations found"; fi

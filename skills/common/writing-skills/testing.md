@@ -37,4 +37,4 @@ Every loophole the agent finds is a line the skill is missing. Close it and re-r
 
 ---
 
-The above proves *behaviour* (does the discipline hold). To test **activation** instead — does the `description` fire on the right opening and stay quiet on trivial ones? — use the triggering harness: it builds the live skill catalogue and a routing prompt you hand to fresh subagents, then tallies where they route. See `tests/README.md`.
+The above proves *behaviour* (does the discipline hold). To test **activation** instead — does the `description` fire on the right opening and stay quiet on trivial ones? — use the triggering harness: it builds the live skill catalogue and a routing prompt you hand to fresh subagents, then tallies where they route. See `tests/README.md` at the repository root.
