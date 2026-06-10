@@ -34,6 +34,7 @@ Some claims — visual output, real-browser flows, realtime UI, subjective usabi
 - Never claim done when the only evidence is a subagent's "success" report — read the actual diff and output yourself.
 - A check that has never been seen to fail is suspect — see `hollow-verification.md`.
 - A test known to fail intermittently is **not** verified by one green run — a flaky pass is unexplained nondeterminism, not proof. Root-cause it (`debugging`); don't build on it.
+- Verified is not reviewed: the gate proves your claim about the checks, not that the change is right. At a feature-level done boundary — merging, opening a PR, or reporting a non-trivial change complete — green hands off to independent review (`requesting-code-review`); don't end the chain at "verified".
 
 ## When you are tempted to skip
 
@@ -48,6 +49,7 @@ Some claims — visual output, real-browser flows, realtime UI, subjective usabi
 | "I'm tired / out of time" | Exhaustion does not make an unrun check pass. |
 | "I said it a different way" | The rule covers implications and synonyms, not just trigger words. |
 | "It's green right now" | A flaky test passing once is luck, not proof — the red you haven't explained is still there. Root-cause it. |
+| "All gates are green, so it's done" | Green proves the checks pass, not that the change is right. A non-trivial change still owes fresh eyes before "done" — `requesting-code-review`. |
 
 ## Relationship to plans
 

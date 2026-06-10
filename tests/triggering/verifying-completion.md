@@ -22,3 +22,5 @@ Added a hard-stop and a rationalisation row: a flaky pass is not verification; r
 - **Gate behaviour:** old body **2/2 "not-verified"** — it did **not** false-pass (the existing hard-stops already sufficed) but gave only a vague "fix the timing," **0/2** naming `debugging`. New body **2/2 "not-verified"** and now hands off explicitly — both cited the new rule verbatim, one invoked `debugging` by name.
 
 **Honest note:** the gate change is a **clarity + handoff** improvement, not a defect-fix — the pre-edit body already reached "not-verified." Kept for the explicit `debugging` handoff and the "It's green right now" rationalisation counter (~2 lines).
+
+*Update (2026-06-10):* the body gained a second handoff — verified-but-unreviewed at a feature boundary → `requesting-code-review` (hard-stop + rationalisation row). Pressure-tested old-vs-new in `tests/behavioral/verifying-completion.md`; the flaky-green gate behaviour above was re-run with the new body and held 2/2 (not-verified, root-cause-first). Routing was not re-measured — the `description` is unchanged.
