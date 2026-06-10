@@ -1,6 +1,6 @@
 ---
 name: requesting-code-review
-description: Use when a change is complete and you want fresh eyes before calling it done or merging — dispatches an independent reviewer scoped to the diff, checking both convention-conformance and whether the change does what was asked. Skip for a trivial mechanical diff (self-review instead).
+description: Use when a non-trivial change reaches a done boundary — before claiming it complete, committing, merging, or opening a PR — not only when you already want fresh eyes. Green gates and passing tests don't substitute - they prove the checks pass, not that the change is right. Dispatches an independent reviewer scoped to the diff, checking convention-conformance and whether the change does what was asked. Skip for a trivial mechanical diff (rename, version bump, config one-liner) — self-review instead.
 ---
 
 # Requesting Code Review

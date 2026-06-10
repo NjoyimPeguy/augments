@@ -27,6 +27,16 @@ The skills need no runtime — they are plain Markdown invoked by **name** (the 
 2. Copy the proactive-use nudge from `hooks/claude-code/context.md` into your project's own instructions file (your `AGENTS.md`, `CLAUDE.md`, or the harness equivalent), so the agent reaches for the right skill at the right moment instead of overlooking the library.
 3. Invoke a skill by name — open `skills/common/using-augments/SKILL.md` for the map, then the chosen skill's `SKILL.md` for the procedure.
 
+## Hardening a boundary locally (optional)
+
+The proactive-use nudge is additive context, never a blocker — that is deliberate: the skills work *alongside* the agent's judgment, and augments ships nothing that blocks an action (see the [philosophy](philosophy.md)). If you want a **deterministic interrupt** at a specific boundary in your own project — say, pausing a commit or merge until the diff has been independently reviewed — build it as *project-local configuration in your repository* (a pre-tool hook, a git hook, or your harness's equivalent). It does not belong in augments core:
+
+- **It binds to one harness's mechanism.** A hook written for one runner's event model is inert everywhere else; the skills must stay portable, so enforcement glue stays out of them and out of the shipped adapters.
+- **It changes the contract.** Shipping a blocking hook to every installer turns an opt-in library into an enforcer — the inverse of the nudge's "firm, not coercive, with one escape."
+- **It usually isn't the gate it looks like.** If the same agent that skipped the discipline can acknowledge or bypass the interrupt, you have built a deterministic *reminder*, not a deterministic *gate*. That can still be worth having — an interrupt at the boundary is an event-conditioned trigger, useful belt-and-suspenders — but be honest that the truth still comes from the review or check it points at, not from the hook.
+
+Keep such a hook dependency-free and scoped to your project. If it grows genuinely reusable, publish it as its own plugin rather than proposing it for core ([`../../CLAUDE.md`](../../CLAUDE.md), *What won't be accepted*).
+
 ## Adding a harness adapter
 
 For a contributor wiring up a new harness:
