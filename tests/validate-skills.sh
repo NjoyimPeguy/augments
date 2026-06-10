@@ -67,6 +67,20 @@ for manifest in .claude-plugin/plugin.json .codex-plugin/plugin.json; do
   [ -n "$dead" ]    && while IFS= read -r d; do err "$manifest 'skills' entry has no SKILL.md: $d"; done <<< "$dead"
 done
 
+# Version sync: the release version is declared in three manifests and bumped
+# together in one release commit (see RELEASING.md). A half-done bump ships
+# different versions to different harnesses, so any disagreement fails.
+echo "• manifest versions agree"
+versions=""
+for manifest in .claude-plugin/plugin.json .claude-plugin/marketplace.json .codex-plugin/plugin.json; do
+  if [ ! -f "$manifest" ]; then err "missing $manifest"; continue; fi
+  v=$(grep -m1 -oE '"version"[[:space:]]*:[[:space:]]*"[^"]+"' "$manifest" | sed -E 's/.*"([^"]+)"$/\1/')
+  if [ -z "$v" ]; then err "$manifest: no \"version\" field"; continue; fi
+  versions="$versions$v"$'\n'
+done
+distinct=$(printf '%s' "$versions" | sort -u | grep -c .)
+[ "$distinct" -gt 1 ] && err "manifest versions disagree: $(printf '%s' "$versions" | sort -u | tr '\n' ' ')"
+
 # Internal references: any repo-root docs/ or tests/ markdown path named in a
 # shipped or meta file must exist — a broken link ships straight to users.
 echo "• internal references (docs/ and tests/ paths resolve)"
