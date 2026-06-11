@@ -18,10 +18,12 @@ Record the decisions you'd regret not being able to explain in six months. An AD
 2. **Weigh the real options** — at least two — each on four axes: what it assumes, where it breaks down, what would rule it out, what evidence supports it. "A vs B because B is nicer" is not a decision.
 3. **Record the choice and its rationale** — and, explicitly, **the rejected alternatives and why**. The rejection is the load-bearing part: it stops the decision being silently reversed later.
 4. **Note the consequences** — what this commits you to, and what it closes off.
-5. **Append the ADR** to the design document's decisions section (or a standing decisions log) — the project's location, default `.augments/designs/{{YYYY-MM-DD}}-{{topic}}.md`.
+5. **Mark its status** — `proposed` when recorded ahead of the work, flipped to `in force` once the decision is built, `superseded by {{adr}}` when replaced. A reader must be able to tell a decision in force from a plan that never landed — otherwise a later session reads unbuilt intentions as the current architecture.
+6. **Append the ADR** to the design document's decisions section (or a standing decisions log) — the project's location, default `.augments/designs/{{YYYY-MM-DD}}-{{topic}}.md`.
 
 ## Common mistakes
 
 - Recording the *what* without the *why* — it reads as arbitrary and gets undone.
 - No rejected alternatives — the next person re-explores the same dead ends.
 - An ADR for a reversible choice — only the decisions you'd defend belong here.
+- A `proposed` ADR never flipped to `in force` (or retired) when the work lands — downstream readers treat the unbuilt plan as what the system actually does.

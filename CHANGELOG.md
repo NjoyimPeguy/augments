@@ -2,6 +2,20 @@
 
 Notable changes to augments, newest first. Versions follow semantic versioning; the narrative for each release lives on its release page — this file is the terse, cumulative record.
 
+## [1.0.3] — 2026-06-11
+
+### Added
+
+- **Versioning policy** (`RELEASING.md`): semver mapped to the skill surface, who bumps and when, and the release checklist; the gate now fails a half-done version bump across the three manifests.
+- **ADRs carry a status lifecycle.** `architecture-decisions` marks each record proposed / in force / superseded, so a later session can't read an unbuilt plan as the current architecture.
+- **Harness-collision checks in the gate**: shipped text is linted for harness scanner trigger-words, and a skill name that shadows a common built-in slash command is rejected.
+- **Compaction-survival requirement for adapters** (`docs/augments/harness-support.md`): the proactive-use nudge must outlive context compaction; mechanisms ranked, session-start-only declared a gap.
+- **Record-staleness rule** (`tests/README.md`): a model-generation change makes existing verdicts the previous generation's data; every dated entry names the harness and tier it was measured from.
+
+### Fixed
+
+- **Reviewer subagents are read-only.** All five `requesting-code-review` dispatch prompts now forbid mutating the shared checkout — no edits, branch switches, or checkouts during a review; a comparison needing one is reported, not performed.
+
 ## [1.0.2] — 2026-06-10
 
 ### Fixed

@@ -4,7 +4,7 @@ Two kinds of test live here, because only one kind *can* be deterministic.
 
 ## 1. Structural — deterministic, automatable
 
-`validate-skills.sh` checks the shape of every skill: frontmatter present, `name` matches the directory, description ≤ 1024 chars, body line limits, and no external references, vendor model names, or bare `<angle>` placeholders. It exits non-zero on any violation, so it can run in CI.
+`validate-skills.sh` checks the shape of every skill: frontmatter present, `name` matches the directory, description ≤ 1024 chars, body line limits, and no external references, vendor model names, or bare `<angle>` placeholders. It also checks the harness-collision surface: no scanner trigger-words in shipped text (skill bodies and the nudge — a literal a harness keyword-scans for can hijack the session every time the text loads) and no skill name that shadows a common built-in slash command (a shadowed name gets mis-invoked). It exits non-zero on any violation, so it can run in CI.
 
 This is automatable precisely *because* it inspects files, not behaviour — it asks nothing of any model or harness.
 
@@ -19,7 +19,9 @@ Each record is the same shape: **Scenario → Pass criteria → "Last result (da
 
 **What each skill owes.** Every skill owes a *triggering* record (does its description route the right opening?). A *behavioral* record is owed only by the **discipline** skills (the ones holding a line under pressure — see `writing-skills`): a capability skill has no temptation to counter, so pressure-testing it proves nothing — its procedure is proven by watching it work, not by resisting stress.
 
-**Where a result was measured.** A record's verdicts come from some real harness and model, and that environment is part of the result — the same measurement from a different harness or tier is a new data point, not a repeat. Every dated entry names the harness it was dispatched from and the model tier that judged it; a re-run from another harness appends a new dated entry to the *same* record rather than forking a per-harness copy. **All records dated 2026-06-09 or earlier were measured from Claude Code with a large-tier model** — the library has not yet been measured from any other harness.
+**Where a result was measured.** A record's verdicts come from some real harness and model, and that environment is part of the result — the same measurement from a different harness or tier is a new data point, not a repeat. Every dated entry names the harness it was dispatched from and the model tier that judged it; a re-run from another harness appends a new dated entry to the *same* record rather than forking a per-harness copy. **Entries dated 2026-06-09 or earlier predate this convention and were all measured from Claude Code with a large-tier model; entries after that date name their environment inline.** The library has not yet been measured from any other harness.
+
+**When a record goes stale.** A skill change is not the only thing that invalidates a verdict — the measuring model is half the measurement, and it changes on its own schedule. Routing and discipline-compliance shift across model generations, so when the harness's model moves a generation, treat existing verdicts as that *previous* generation's data and append a fresh dated entry the next time the skill is touched — starting with the descriptions that needed tuning to pass at all, since a trigger tuned against one generation's reading is the first thing to drift. Old entries are never rewritten; the time series is the drift evidence.
 
 ### The triggering harness
 

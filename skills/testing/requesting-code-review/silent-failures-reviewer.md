@@ -24,6 +24,7 @@ Walk each place the diff can fail and ask *where does the failure go?*
 
 ## Rules
 
+- **Read-only review** — you share the author's checkout: never modify the working tree or git state; inspect with non-mutating commands only.
 - Read before you claim; cite `file:line`, never assert from memory.
 - High signal bar: report only failures the **diff introduced**, not pre-existing handlers it didn't touch. Skip anything a reader dismisses in one line.
 - **Enumerate what a broad catch hides** — list the unexpected errors it would swallow alongside the one it expects (a typo, a null, an out-of-memory), not just the handled case.

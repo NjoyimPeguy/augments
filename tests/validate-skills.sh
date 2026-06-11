@@ -13,6 +13,13 @@ err()  { printf '  FAIL: %s\n' "$1"; fail=1; }
 # Patterns that must never appear in shipped skills (see CLAUDE.md).
 EXT_REFS='superpowers|obra|mattpocock|pocock|ousterhout|github\.com|https?://|#[0-9]{2,}'
 VENDORS='\b(haiku|sonnet|opus|claude|gpt-?[0-9o]|gemini|flash|llama|mistral|openai|anthropic)\b'
+# Skill text is part of the harness's scan surface: a literal trigger-word in a
+# body can hijack the session (fire a thinking mode, trip an injection detector)
+# every time the skill loads. Keep shipped text inert to keyword scanners.
+SCANNER_TRIGGERS='\bultrathink\b'
+# A skill whose name matches a common built-in slash command gets mis-invoked —
+# the harness or model picks the wrong one. Names must not shadow them.
+SHADOWED_COMMANDS='^(review|init|compact|clear|help|config|status|commit|test|run|plan|resume|doctor|login|logout|memory|mcp|model|agents|hooks|settings|todos|cost|export|bug|vim)$'
 
 mapfile -t skills < <(find skills -name SKILL.md | sort)
 [ ${#skills[@]} -eq 0 ] && { echo "no skills found under skills/"; exit 2; }
@@ -31,6 +38,9 @@ for skill in "${skills[@]}"; do
   # name must match the directory name.
   [ -n "$fname" ] && [ "$fname" != "$name_dir" ] && err "name '$fname' != directory '$name_dir'"
 
+  # name must not shadow a common harness slash command.
+  [ -n "$fname" ] && echo "$fname" | grep -qiE "$SHADOWED_COMMANDS" && err "name '$fname' shadows a common harness command — rename to avoid mis-invocation"
+
   # description length limit.
   [ "${#fdesc}" -gt 1024 ] && err "description ${#fdesc} chars > 1024"
 
@@ -45,9 +55,17 @@ for skill in "${skills[@]}"; do
     body=$(sed 's/`[^`]*`//g' "$f")   # ignore inline code spans
     echo "$body" | grep -qiE "$EXT_REFS"        && err "$(basename "$f"): external reference (repo/issue/URL) — state the principle directly"
     echo "$body" | grep -qiE "$VENDORS"         && err "$(basename "$f"): vendor model name — use a capability tier (small|medium|large)"
+    echo "$body" | grep -qiE "$SCANNER_TRIGGERS" && err "$(basename "$f"): harness scanner trigger-word — rephrase so a keyword scan can't hijack the session"
     echo "$body" | grep -qE  '<[a-z][a-z0-9 -]*>' && err "$(basename "$f"): bare <angle> placeholder — use {{double-curly}}"
   done
 done
+
+# The nudge ships too — and is injected into every session, so a scanner
+# trigger-word there fires constantly, not just when one skill loads.
+echo "• hooks (scanner trigger-words)"
+while IFS= read -r f; do
+  sed 's/`[^`]*`//g' "$f" | grep -qiE "$SCANNER_TRIGGERS" && err "$f: harness scanner trigger-word"
+done < <(find hooks -name '*.md' 2>/dev/null)
 
 # Manifest sync: a harness discovers skills only through its manifest, so every
 # leaf skill dir must be listed explicitly in each adapter's "skills" array — a
@@ -66,6 +84,20 @@ for manifest in .claude-plugin/plugin.json .codex-plugin/plugin.json; do
   [ -n "$missing" ] && while IFS= read -r m; do err "skill not in $manifest 'skills' (won't load): $m"; done <<< "$missing"
   [ -n "$dead" ]    && while IFS= read -r d; do err "$manifest 'skills' entry has no SKILL.md: $d"; done <<< "$dead"
 done
+
+# Version sync: the release version is declared in three manifests and bumped
+# together in one release commit (see RELEASING.md). A half-done bump ships
+# different versions to different harnesses, so any disagreement fails.
+echo "• manifest versions agree"
+versions=""
+for manifest in .claude-plugin/plugin.json .claude-plugin/marketplace.json .codex-plugin/plugin.json; do
+  if [ ! -f "$manifest" ]; then err "missing $manifest"; continue; fi
+  v=$(grep -m1 -oE '"version"[[:space:]]*:[[:space:]]*"[^"]+"' "$manifest" | sed -E 's/.*"([^"]+)"$/\1/')
+  if [ -z "$v" ]; then err "$manifest: no \"version\" field"; continue; fi
+  versions="$versions$v"$'\n'
+done
+distinct=$(printf '%s' "$versions" | sort -u | grep -c .)
+[ "$distinct" -gt 1 ] && err "manifest versions disagree: $(printf '%s' "$versions" | sort -u | tr '\n' ' ')"
 
 # Internal references: any repo-root docs/ or tests/ markdown path named in a
 # shipped or meta file must exist — a broken link ships straight to users.

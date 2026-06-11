@@ -65,6 +65,7 @@ Core augments skills are **general-purpose SDLC guidance** — useful across pro
 - **Run the gate, and prove behaviour-shaping changes,** before opening a PR (see *Verify against the gate*). A human reviews the full diff first.
 - **Identify yourself.** Disclose in the PR the model, harness, harness version, and any installed plugins that produced the change — or state plainly it was written by hand. Contributions are weighed by how they were made: a behaviour claim reasoned from documentation is held to a different bar than one grounded in a real session. Hiding the authoring environment is grounds for closing the PR.
 - **Target `dev`, not `main`.** `main` is the released branch; active work lands on `dev` first. A PR against `main` will be asked to retarget.
+- **Never bump versions or edit CHANGELOG version headings in a PR.** Releases are versioned once, by the maintainer — see `RELEASING.md`.
 - The bar is the gate and the evidence, not volume or confidence. "No skill is needed here" is a valid, useful outcome.
 
 ## What won't be accepted
@@ -91,4 +92,5 @@ A PR adding a harness MUST include a transcript from a clean session showing a s
 - `AGENTS.md`, `GEMINI.md` — symlinks to this file, so a harness that reads its own instructions file gets the same guidance from one source.
 - `.github/` — CI (`workflows/validate.yml`) and the PR template (`PULL_REQUEST_TEMPLATE.md`).
 - `tests/` — the gate (`validate-skills.sh`) plus dated records: `triggering/` (activation), `behavioral/` (discipline under pressure), `harness/` (per-adapter proof that skills load and activate on that harness).
+- `CHANGELOG.md`, `RELEASING.md` — the release record, and how releases are versioned and cut (semver over the skill surface; the gate checks the three manifest versions agree).
 - `.claude/` — local config and notes; gitignored, never shipped.
