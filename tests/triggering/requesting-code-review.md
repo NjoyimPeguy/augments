@@ -2,7 +2,7 @@
 
 First activation record for this skill — it shipped without one, and the gap showed: in a real session on a large codebase, an agent finished a multi-file change, saw every gate green, claimed done, and never reached review. The pre-edit `description` was *desire-conditioned* ("…and you want fresh eyes…"): it only fires if the agent already wants a review, and the agent that most needs one is the confident one. This record measures the edit to an *event-conditioned* trigger (done boundary, named boundary words, green-gates-don't-substitute rebuttal, sharper skip list) — and reports honestly that the edit did **not** change first-hop routing; the operative hole is elsewhere (see the honest note).
 
-**Method.** Routing proxy via `tests/triggering-harness.sh`: fresh subagents see only the live `name :: description` catalogue plus one opening message and answer `CHOICE:`/`WHY:`. Four fresh verdicts per condition; old-description baselines were measured *before* the edit landed. LLM-judge proxy, not a deterministic gate; directional and model-dependent. Judged on a large-tier model via the harness's subagent dispatch, 2026-06-10.
+**Method.** Routing proxy via `tests/triggering-harness.sh`: fresh subagents see only the live `name :: description` catalogue plus one opening message and answer `CHOICE:`/`WHY:`. Four fresh verdicts per condition; old-description baselines were measured *before* the edit landed. LLM-judge proxy, not a deterministic gate; directional and model-dependent. All verdicts measured from Claude Code, judged on a large-tier model via its subagent dispatch, 2026-06-10.
 
 ## Scenarios
 
