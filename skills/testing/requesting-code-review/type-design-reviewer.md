@@ -26,6 +26,7 @@ For each new or changed type, the question is **can external code put this into 
 
 ## Rules
 
+- **Read-only review** — you share the author's checkout: never modify the working tree or git state; inspect with non-mutating commands only.
 - Read before you claim; cite `file:line`. Show the *specific* call that could violate the invariant — a concrete breakage, not "could be stricter".
 - Scope to types the diff introduced or changed; don't redesign pre-existing types it merely touches.
 

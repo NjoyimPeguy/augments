@@ -28,6 +28,7 @@ A test can exist and still not protect:
 
 ## Rules
 
+- **Read-only review** — you share the author's checkout: never modify the working tree or git state; inspect with non-mutating commands only (running the existing tests is fine; adding or editing files is not).
 - Read before you claim; cite `file:line` for both the untested code and where its test should live.
 - **Check before you flag** — confirm an existing unit or integration test doesn't already cover the path; a false "missing test" is noise. Skip trivial getters/setters with no logic.
 - For each gap, **name the regression it would catch** — the concrete failure that ships if the test stays absent.
