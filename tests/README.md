@@ -4,7 +4,7 @@ Two kinds of test live here, because only one kind *can* be deterministic.
 
 ## 1. Structural — deterministic, automatable
 
-`validate-skills.sh` checks the shape of every skill: frontmatter present, `name` matches the directory, description ≤ 1024 chars, body line limits, and no external references, vendor model names, or bare `<angle>` placeholders. It exits non-zero on any violation, so it can run in CI.
+`validate-skills.sh` checks the shape of every skill: frontmatter present, `name` matches the directory, description ≤ 1024 chars, body line limits, and no external references, vendor model names, or bare `<angle>` placeholders. It also checks the harness-collision surface: no scanner trigger-words in shipped text (skill bodies and the nudge — a literal a harness keyword-scans for can hijack the session every time the text loads) and no skill name that shadows a common built-in slash command (a shadowed name gets mis-invoked). It exits non-zero on any violation, so it can run in CI.
 
 This is automatable precisely *because* it inspects files, not behaviour — it asks nothing of any model or harness.
 
