@@ -21,6 +21,8 @@ Each record is the same shape: **Scenario → Pass criteria → "Last result (da
 
 **Where a result was measured.** A record's verdicts come from some real harness and model, and that environment is part of the result — the same measurement from a different harness or tier is a new data point, not a repeat. Every dated entry names the harness it was dispatched from and the model tier that judged it; a re-run from another harness appends a new dated entry to the *same* record rather than forking a per-harness copy. **Entries dated 2026-06-09 or earlier predate this convention and were all measured from Claude Code with a large-tier model; entries after that date name their environment inline.** The library has not yet been measured from any other harness.
 
+**When a record goes stale.** A skill change is not the only thing that invalidates a verdict — the measuring model is half the measurement, and it changes on its own schedule. Routing and discipline-compliance shift across model generations, so when the harness's model moves a generation, treat existing verdicts as that *previous* generation's data and append a fresh dated entry the next time the skill is touched — starting with the descriptions that needed tuning to pass at all, since a trigger tuned against one generation's reading is the first thing to drift. Old entries are never rewritten; the time series is the drift evidence.
+
 ### The triggering harness
 
 `triggering-harness.sh` automates the *mechanical* half of that proxy, so a record stays cheap to re-run and never drifts from the live skill set. It does **not** call a model and does **not** assert pass/fail — it only prepares the inputs and counts the outputs:
