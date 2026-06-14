@@ -2,6 +2,12 @@
 
 Notable changes to augments, newest first. Versions follow semantic versioning; the narrative for each release lives on its release page — this file is the terse, cumulative record.
 
+## [1.0.5] — 2026-06-14
+
+### Changed
+
+- **The proactive-use nudge makes invoking a skill the visible first act.** The Claude Code SessionStart nudge (`hooks/claude-code/context.md`) was reworded from a passive "check whether a skill fits … and invoke it" — which an agent can satisfy silently and skip — to "before you touch the code, invoke the skill that fits, and say which as you do it (`Using augments:<name> to <purpose>`)", with the no-skill escape now *spoken* rather than silent. The collaboration stance is unchanged: no coercion ("must / no choice"), no whole-skill injection, still ~800 tokens. Driven by a field session where the nudge reached context yet no skill was invoked; old-vs-new measured in `tests/triggering/session-nudge.md` — the announcement is adopted reliably (7/7, including 3/3 under the verbatim competing output-style injections that drowned the nudge in the field), with no activation regression and a live re-test recorded as owed.
+
 ## [1.0.4] — 2026-06-14
 
 ### Fixed

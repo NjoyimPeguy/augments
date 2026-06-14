@@ -9,7 +9,7 @@
     {
       "name": "augments",
       "description": "Skills library for Claude Code: SDLC, TDD, debugging, collaboration patterns.",
-      "version": "1.0.4",
+      "version": "1.0.5",
       "source": "./",
       "author": {
         "name": "Njoyim Peguy",
