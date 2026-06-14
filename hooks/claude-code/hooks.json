@@ -2,11 +2,11 @@
   "hooks": {
     "SessionStart": [
       {
-        "matcher": "startup|clear|compact",
+        "matcher": "startup|resume|clear|compact",
         "hooks": [
           {
             "type": "command",
-            "command": "cat \"${CLAUDE_PLUGIN_ROOT}/hooks/claude-code/context.md\""
+            "command": "bash \"${CLAUDE_PLUGIN_ROOT}/hooks/claude-code/session-start.sh\""
           }
         ]
       }
