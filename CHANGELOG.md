@@ -2,6 +2,12 @@
 
 Notable changes to augments, newest first. Versions follow semantic versioning; the narrative for each release lives on its release page — this file is the terse, cumulative record.
 
+## [1.0.4] — 2026-06-14
+
+### Fixed
+
+- **The proactive-use nudge reaches more sessions, more reliably.** The Claude Code SessionStart matcher gained `resume`, so the nudge fires on resumed sessions (`--continue`/`--resume`/`/resume`), not just fresh starts; and the hook now wraps `context.md` in the harness's JSON context envelope via `hooks/claude-code/session-start.sh` instead of relying on raw stdout being read as context. Delivery only — the nudge text is byte-identical, so activation is unchanged; recorded in `tests/triggering/session-nudge.md`.
+
 ## [1.0.3] — 2026-06-11
 
 ### Added
