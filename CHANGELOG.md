@@ -2,6 +2,20 @@
 
 Notable changes to augments, newest first. Versions follow semantic versioning; the narrative for each release lives on its release page — this file is the terse, cumulative record.
 
+## [1.0.6] — 2026-06-18
+
+### Changed
+
+- **The proactive-use nudge states one action: invoke.** The Claude Code SessionStart nudge (`hooks/claude-code/context.md`) drops the v1.0.5 "say which … `Using augments:<name>`" announcement — it conflated *invoke* with *announce*, and only the announcement was fakeable (a field session named a skill, served the request another way, and never called `Skill`). The single action is now the invocation itself, whose tool call is the unfakeable trace. Also reworded "before you touch the code" → "before you start", which presupposed a pre-implementation phase and mis-framed maintenance work. Re-tested old-vs-new by transcript grep for a real `Skill` call: no activation regression, feature→`spec-it` 3/3 and maintenance→`debugging` 3/3 under the new wording, and 3/3 `debugging` against the real 172k-LoC `mobile-client`; the native-SessionStart confirmation is recorded as owed post-install. `tests/triggering/session-nudge.md`.
+
+### Added
+
+- **Triggering-record coverage is gated.** `tests/coverage.sh` checks that every skill has a `tests/triggering/<name>.md` record (and warns when one shows no skip scenario); the existence half is now enforced by `validate-skills.sh` — the check that would have caught a skill shipping with no record. The 12 skills that lacked a record are backfilled (routing measured 3/3 unanimous per skill, fire + skip). `tests/token-budget.sh` reports the approximate context cost (chars/4) of the always-loaded surface — every `SKILL.md` plus the nudge — making "earn every line" a measurable number.
+
+### Fixed
+
+- **Dispatch and review packets stop parking bulk in the costliest context.** `dispatching-parallel-agents` now passes bulky context (a diff, a spec, a log) as a file path the agent reads rather than pasted text, and names the tier explicitly (omitted, an agent inherits the session's costliest). `requesting-code-review` hands the reviewer the diff *range* to expand itself (not a pasted diff) and a review tier chosen to match the diff's risk. Watched before/after in `tests/behavioral/`: the file-handoff line moved behaviour 2/2 vs. inline paste; the review-tier rewording moved agents 0/2 → 3/3 from deferring to the session tier to choosing one by risk.
+
 ## [1.0.5] — 2026-06-14
 
 ### Changed
