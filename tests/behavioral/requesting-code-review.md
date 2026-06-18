@@ -48,3 +48,27 @@ Structural gate (`validate-skills.sh`) passes for all five files.
 **Note (2026-06-09, portability wording — no re-run owed):** `SKILL.md` step 3 and `code-reviewer.md` named one harness's conventions file by its specific filename; replaced with harness-neutral wording ("the project's conventions file" / "its agent-instructions file") per the authoring rules. The claim-distrust rule this record tests, the verdict format, and all discipline content are untouched — a naming substitution, not a behaviour change.
 
 **Depth audit (same day).** The first drafts were written from condensed source summaries, which had dropped real checks. Re-read the four source agents verbatim and added the behaviour-shaping checks that were missing: silent-failures — fallback-to-a-fake, skipped cleanup, silent give-up, unactionable surfacing, enumerate-what-a-broad-catch-hides; type-design — what counts as an invariant (cross-field, state transitions), immutability as enforcement, inconsistent enforcement; comment — false perf/edge claims; test-coverage — check existing/integration coverage before flagging, name the regression each gap catches. Deliberately *not* imported (principled, not omission): numeric rating scales (verdict-as-precision, per `../../docs/augments/philosophy.md`), one project's internal logging/error-id conventions (not portable), and frontmatter example blocks. Specialists run 32–44 lines — on-demand siblings, so unbudgeted; "earn every line" here means no padding, not brevity at the cost of a check.
+
+## Update (2026-06-18) — step 2 edits: range-not-paste + name-the-tier
+
+Proves the two `SKILL.md` step-2 edits: hand the reviewer the diff **range** to expand itself, not a pasted diff; and **name the tier** (unstated, it inherits the session's). Watch-it-work, before/after — fresh general-purpose subagents from Claude Code, large-tier, each given the procedure (a faithful excerpt) plus one scenario — *finished a 6-file ~400-line refactor on `feature/retry`, spec in `specs/retry.md`, about to review* — asked to emit the literal reviewer brief. 2 trials per arm; directional, not a tally; text-only.
+
+| Dimension | Old body | New body |
+| --- | --- | --- |
+| Diff handed as **range**, not pasted | 2/2 (range) | 2/2 (range — "expand it yourself with `git diff main..HEAD`, do not wait for a pasted diff") |
+| **Tier** addressed in the brief | 0/2 — tier never mentioned | 2/2 — tier stated… but both **deferred to the session's tier** rather than choosing one |
+
+- **Range reinforcement: no separation.** Step 1 already pins the unit as `base..HEAD`, so both arms expanded a range; the added "not a pasted diff" clause is a guard, kept under the same encode-for-weaker-tiers rationale as the findings above.
+- **Tier addition: partial separation, with a finding.** It moved the agents from *ignoring* tier (0/2) to *addressing* it (2/2) — but both filled the slot with "inherit the session's tier," the exact default the parenthetical names. The wording raised salience without prompting a *choice*. **Follow-up candidate (not yet made):** reword to push an actively-chosen tier matched to the diff's risk rather than mentioning inheritance — the parenthetical may have licensed the default. Owes its own re-run if changed.
+
+**Decision: both edits kept; the tier-wording refinement is flagged, not yet applied.** Structural gate (`validate-skills.sh`) passes. Caveats: large tier, excerpted bodies, N=2.
+
+## Update (2026-06-18) — tier wording applied + re-tested (separation confirmed)
+
+Acting on the follow-up above: step 2's tier clause was reworded from the salience-only parenthetical to a risk-keyed *choice* — "a review tier you choose to match the diff's risk — a subtle or wide-reaching change earns a large tier; don't just inherit the session's." Re-tested before/after on the same risky-refactor scenario (6-file payment-retry refactor), fresh general-purpose subagents from Claude Code, large-tier.
+
+| Reviewer brief… | Old parenthetical ("unstated, it inherits the session's") | New risk-keyed wording |
+| --- | --- | --- |
+| **names a chosen tier** | 0/2 — both deferred ("inherit the session's tier unless told otherwise") | **3/3 — all chose `large`, each justifying it by the diff's risk** ("payment-retry logic… subtle… spend the budget; do not down-tier") |
+
+**Clear separation — the rewording changed behaviour and is kept.** Where the salience-only wording let the agents fill the tier slot with the session default, the risk-keyed wording made all three pick a tier *and* tie it to the change's risk. Structural gate passes. Caveat: large tier, text-only, N=3 vs 2.

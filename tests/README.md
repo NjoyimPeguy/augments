@@ -41,6 +41,13 @@ This library is **harness-agnostic** (see `../CLAUDE.md`): it must not assume an
 
 This is the testing face of `docs/augments/philosophy.md`: an instruction (a skill) only shifts a probability, so its effect is measured, not guaranteed. The guarantee comes from a **deterministic gate** — and the only gate that stays portable is the structural one above. Authoring guidance for writing these records is in `../skills/common/writing-skills/testing.md`.
 
+### Coverage and budget (deterministic helpers)
+
+Two file-inspection scripts — no model, no harness — that report on the surface the records above describe; both can become gates once the gaps they surface are closed:
+
+- `coverage.sh` — every skill owes a triggering record; this lists any that are missing and heuristically warns when a record shows no skip/negative scenario (a record should prove the trigger stays *quiet* on a trivial opening, not only that it fires). The **existence** half is now enforced by `validate-skills.sh` — every skill must have a record, the check that would have caught a skill shipping without one. `coverage.sh` stays the detailed companion: it surfaces the skip-scenario warnings the gate deliberately does *not* enforce (they are heuristic, not deterministic).
+- `token-budget.sh` — the companion to the line budget in §1: it reports the approximate context cost (chars/4, no tokenizer — portable, not exact) of the always-loaded surface, every `SKILL.md` body plus the SessionStart nudge, so "earn every line" becomes a number you can watch for drift. `--max N` flags any body over N approx-tokens (discipline skills legitimately run large); report-only by default.
+
 ## 3. Harness activation — per-adapter records
 
 `harness/{{harness-name}}.md` records the one thing every record above assumes: that on a given harness, the installed library actually **loads and activates** in a clean session — files present on disk is not a working integration. One dated record per adapter; an adapter with no record here is unproven, and `docs/augments/harness-support.md` must say so. This folder is the designated home for the activation transcript a new-harness PR owes.

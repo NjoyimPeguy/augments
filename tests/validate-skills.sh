@@ -50,6 +50,10 @@ for skill in "${skills[@]}"; do
   elif [ "$lines" -gt 80 ];  then note "warn: $lines lines (>80; acceptable only if a discipline skill)"
   fi
 
+  # Every skill owes a triggering record (see tests/README.md). Existence is
+  # deterministic and gate-able; the routing verdict itself lives in the record.
+  [ -n "$fname" ] && [ ! -f "tests/triggering/$fname.md" ] && err "no triggering record at tests/triggering/$fname.md — every skill owes one (see tests/README.md)"
+
   # No external references, vendor model names, or <angle> placeholders — in every file of the skill.
   for f in "$dir"/*.md; do
     body=$(sed 's/`[^`]*`//g' "$f")   # ignore inline code spans

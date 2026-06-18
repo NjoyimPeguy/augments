@@ -35,3 +35,17 @@ A field report from another skills library described a **phantom completion**: a
 - **RED, current body: 3/3 caught the phantom path.** Every coordinator's stated procedure diffed the tree against the pre-dispatch baseline and read **each agent's diff against its claim** before reporting — "read the diffs, not the summaries", "three DONE reports are three claims, not a green branch", "the gate is the combined check's output, not my confidence or theirs". A DONE report whose scope shows an empty diff cannot survive that procedure; none of the three relied on the reports or on a bare combined-suite run alone.
 
 **Decision: no edit.** Same shape as the 2026-06-09 finding above — the proposed line is not warranted when the current body produces the behaviour 3/3 under pressure. Method caveats, honestly: these were text-only planning probes (procedures stated, not executed), and naming the baseline commit in the scenario may have cued diffing against it — if a real run ever reproduces the phantom, re-test with a scenario that names no baseline before concluding the body holds.
+
+## Update (2026-06-18) — packet edits: file-handoff + tier-default guard
+
+Proves the two `SKILL.md` packet edits: pass bulky context **as a file path the agent reads**, not pasted text; and **name the tier** (omit it and the agent silently inherits the session's costliest one). Watch-it-work, before/after — fresh general-purpose subagents from Claude Code, large-tier, each given the relevant `SKILL.md` sections (a faithful excerpt, not the full file) plus one scenario — *three failing tests, each with ~200 lines of pytest output, disjoint files, fan out to three agents* — and asked to emit the literal dispatch packets. 2 trials per arm; directional, not a tally; text-only (packets authored, not executed).
+
+| Dimension | Old body | New body |
+| --- | --- | --- |
+| Bulky log handed **by file path** | 0/2 — both pasted the ~200 lines inline (`<<<PASTE … HERE>>>`, `[paste … here]`) | **2/2 — pointed each agent at a `.log` file** ("saved at `billing/tests/…log` — read that file") |
+| **Tier named** | 2/2 (small / medium) | 2/2 (small) |
+
+- **File-handoff line: clear separation — it changed behaviour and earns its place.** Unguided, the agents inlined the expensive paste 2/2; with the line they passed a path 2/2.
+- **Tier parenthetical: no separation.** The base bullet already said "the tier to run at," and both arms named one. Kept anyway as explicit encoding for weaker tiers — the same "kept anyway (one line)" rationale as the findings above; it documents a real silent-default failure mode in ~10 inline words. Revisit if a weaker-tier run omits the tier.
+
+**Decision: both edits kept.** Structural gate (`validate-skills.sh`) passes. Caveats: large-tier model and excerpted bodies, N=2 — the file-handoff result is strong but a weaker tier may differ; re-test there before relying on it.

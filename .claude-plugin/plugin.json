@@ -1,7 +1,7 @@
 {
   "name": "augments",
   "description": "An AI agents skills library for software development lifecycle with Claude Code: planning, designing, TDD, debugging and collaboration patterns.",
-  "version": "1.0.5",
+  "version": "1.0.6",
   "author": {
     "name": "Njoyim Peguy",
     "email": "pnjoyim@gmail.com"
