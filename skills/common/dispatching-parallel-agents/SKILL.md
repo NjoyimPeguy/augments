@@ -26,8 +26,10 @@ Each agent starts cold — hand it everything, never your session history:
 
 - **Scope** — the exact problem and files this agent owns, and what it must NOT touch.
 - **Objective + deliverable** — what "done" means, and the precise shape to report back, so results reconcile.
-- **Constraints** — the tier to run at, the quality rules, and "stay in scope; report out-of-scope rather than reaching."
+- **Constraints** — name the tier to run at (omit it and the agent silently inherits the session's costliest one), the quality rules, and "stay in scope; report out-of-scope rather than reaching."
 - **Isolation** — if it builds or runs anything, its own workspace/port/DB.
+
+Pass bulky context — a diff, a spec, a log — as a **file path the agent reads**, not pasted text: a paste sits in the most expensive context for the whole run, a path costs nothing until opened.
 
 ## Reconcile (the coordinator's job, not the agents')
 
