@@ -1,6 +1,6 @@
 ---
 name: test-driven-development
-description: Use when implementing any feature or bugfix that has real logic or behavior — before writing implementation code, and whenever you feel the pull to skip writing a test first. Skip for throwaway spikes, pure config, or content with no logic.
+description: ALWAYS invoke before writing implementation code for any feature or bugfix with real logic or behavior — the failing test comes first, and writing code before the test is the mistake. Fires hardest whenever you feel the pull to skip the test "just this once." The ONE exception: throwaway spikes, pure config, or content with no logic.
 ---
 
 # Test-Driven Development

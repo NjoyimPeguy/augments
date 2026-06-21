@@ -22,3 +22,10 @@ A flaky test that passed matches none of "bug, test failure, or unexpected behav
 Trigger extended to name a test that passes only intermittently (the body already handled flaky bugs).
 
 - **Routing to `debugging`: 0/3 (before) → 4/4 (after).** Before, all three judges routed to `verifying-completion` (treating flakiness as "don't claim done"); none reached for root-cause. After, all four routed to `debugging`, quoting the new clause ("the current green state is irrelevant — why does it fail 1 in 5 runs?").
+
+## Last result (2026-06-21 · Claude Code · large-tier judge) — firmed to an imperative trigger
+
+The description was rewritten from the gentle "Use when…" to an imperative: "ALWAYS invoke before proposing or applying ANY fix … reaching for a fix without it is the mistake … The ONE exception: a one-line error you can fully explain." Rationale: relocate firing pressure into the **always-loaded catalogue**, which — unlike the SessionStart nudge — does not decay over a long session (the diagnosed cause of skills going silent in multi-hour sessions). Maintainer explicitly accepted the over-fire cost (firing > ceremony-avoidance).
+
+- **Positive (real bug — 500 + failing auth test):** 3/3 → `debugging`. Routing intact.
+- **Skip (one-line missing-paren — the description's own "ONE exception"):** firm **3/3 → `debugging` (over-fire)** vs gentle baseline **2/3 → NONE**. The "ALWAYS / by default / the mistake" framing overrides its own carve-out: judges explicitly noted the one-liner qualifies for the exception, then routed to `debugging` anyway ("the trigger still routes the fix here by default"). This over-fire is the **accepted** price of firmer firing, recorded honestly — not a regression to fix. The forced-choice harness also biases skip-cases toward the nearest skill, so read it as directional.
