@@ -3,3 +3,5 @@
 .DS_Store
 node_modules/
 .serena/
+# raw claude -p stream dumps from the harness runners — never committed
+tests/harness/claude-code/*.jsonl
