@@ -1,6 +1,6 @@
 ---
 name: debugging
-description: Use when encountering any bug, test failure, or unexpected behavior — including a test that passes only intermittently (a flaky test is an unexplained bug to root-cause, not a green to trust) — before proposing or applying a fix, and whenever you feel the pull to guess-and-patch. Finds the root cause through a reproduction you can run. Skip only for a one-line error you can see and fully explain.
+description: ALWAYS invoke before proposing or applying ANY fix to a bug, test failure, or unexpected behavior — this is the default, and reaching for a fix without it is the mistake. Includes a flaky/intermittent test (an unexplained bug to root-cause, not a green to trust). Root-cause through a reproduction you can run, never guess-and-patch. The ONE exception: a one-line error whose cause you can see and fully explain.
 ---
 
 # Debugging

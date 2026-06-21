@@ -18,3 +18,10 @@ First activation record — backfilled so every skill carries one (see `../READM
 
 - **Fire:** 3/3 `receiving-code-review`.
 - **Skip:** 3/3 `requesting-code-review` — off-target, so the skip holds; the routers cleanly separated the two sides of review.
+
+## Last result (2026-06-21 · Claude Code · large-tier judge) — firmed to an imperative trigger
+
+Rewritten to "ALWAYS invoke when review feedback arrives … before you respond or act on any finding … agreeing or editing without checking is the mistake" — firing pressure relocated into the always-loaded catalogue (which does not decay over a long session). Maintainer accepted over-fire as the price of reliable firing.
+
+- **Fire (five review comments arrived, about to address them):** 3/3 `receiving-code-review`. Routing intact.
+- **Skip side (being asked to *perform* a review):** not re-measured; the trigger still names "feedback arrives … on code you wrote," which the requesting side does not match.

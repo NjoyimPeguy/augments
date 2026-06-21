@@ -1,6 +1,6 @@
 ---
 name: verifying-completion
-description: Use before claiming work is complete, fixed, passing, or done — and before committing or opening a PR. Run the actual check and read its output before the claim, never "should work". Fires whenever you feel the pull to declare success without running anything.
+description: ALWAYS invoke before claiming work is complete, fixed, passing, or done — and before any commit or PR. Running the actual check and reading its output is mandatory; "should work" without a run is the mistake. Fires whenever you feel the pull to declare success without running anything — and if you can't run the check, say so rather than claim done.
 ---
 
 # Verifying Completion

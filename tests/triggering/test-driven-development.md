@@ -18,3 +18,10 @@ First activation record — backfilled so every skill carries one (see `../READM
 
 - **Fire:** 3/3 `test-driven-development`.
 - **Skip:** 3/3 `NONE` — the trigger stays quiet on a no-logic content edit.
+
+## Last result (2026-06-21 · Claude Code · large-tier judge) — firmed to an imperative trigger
+
+Rewritten from "Use when…" to "ALWAYS invoke before writing implementation code … writing code before the test is the mistake … The ONE exception: throwaway spikes, pure config, or content with no logic." Rationale: relocate firing pressure into the always-loaded catalogue, which (unlike the SessionStart nudge) does not decay over a long session. Maintainer accepted over-fire on trivial cases as the price of reliable firing.
+
+- **Fire (about to code a feature with logic):** 3/3 `test-driven-development`. Routing intact.
+- **Skip/over-fire:** not separately re-measured; per the representative `debugging` A/B (`debugging.md`), the `ALWAYS` framing is expected to override the "ONE exception" and fire on no-logic edits too — the accepted cost, not a regression.

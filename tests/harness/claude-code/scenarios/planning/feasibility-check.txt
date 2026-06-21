@@ -1,0 +1,1 @@
+Before we commit the team's quarter to this, I'm nervous: it needs real-time sync with our ten-year-old CRM, and nobody here has run websockets in production. Tell me whether we should green-light it at all.

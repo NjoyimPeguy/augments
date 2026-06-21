@@ -2,6 +2,16 @@
 
 Notable changes to augments, newest first. Versions follow semantic versioning; the narrative for each release lives on its release page — this file is the terse, cumulative record.
 
+## [1.0.7] — 2026-06-21
+
+### Changed
+
+- **The four discipline triggers fire by default, not on invitation.** `debugging`, `test-driven-development`, `verifying-completion`, and `receiving-code-review` were rewritten from gentle "Use when…" descriptions to imperative "ALWAYS invoke…" ones. The driver was real use: gentle descriptions under-fire because the SessionStart nudge decays over a long session while the always-loaded catalogue does not — so the firing pressure belongs in the descriptions, the one surface that stays salient. Only the descriptions changed (discipline bodies untouched, so no behavioural re-prove owed); triggering re-measured at positive **3/3** each. The cost is real and **accepted**: the firm framing over-fires on trivial cases its own exception exempts (firm `debugging` routed a one-line error **3/3** vs a gentle baseline of **2/3 NONE**) — firing over ceremony-avoidance, recorded honestly in `tests/triggering/`.
+
+### Added
+
+- **An invocation proxy and a real-CLI activation layer.** `tests/invocation/` + `invocation-harness.sh` measure the *decision to invoke* — the step the triggering proxy presumes — with the shipped nudge on/off and "proceed" offered as a co-equal outcome (its over-measurement is noted in the records). `tests/harness/claude-code/` drives the real `claude -p` headless against the installed plugin and detects a structured `Skill` tool_use (`run-activation.sh` single-shot, `run-flow.sh` multi-turn resumed); scenarios live by filename under `scenarios/` mirroring `skills/` (phase folders plus `common/`). Records the first observed native activations for the Claude Code adapter, including the planning wing firing `define-goals → feasibility-check → scope-it` across one resumed session.
+
 ## [1.0.6] — 2026-06-18
 
 ### Changed

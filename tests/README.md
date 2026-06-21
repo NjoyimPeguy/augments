@@ -33,6 +33,23 @@ Each record is the same shape: **Scenario → Pass criteria → "Last result (da
 
 You still dispatch the prompt to fresh subagents in your own harness and write the dated tally into the record — the deterministic part stays deterministic, the judgment part stays honest.
 
+### The invocation harness (a third record kind)
+
+`triggering/` measures the wrong half on its own. Its harness *commands* a
+subagent to "pick the SINGLE skill that best fits" — a forced classification
+that presumes the agent already decided to reach for a skill, and measures only
+whether it discriminates. The step that fails in the field — deciding to invoke
+*at all* on a terse "build me X" rather than just starting — it assumes away.
+
+`invocation-harness.sh` measures that step: the shipped nudge on/off, the skills
+as *available* tools (not a menu), a realistic terse opening, and "proceed
+without a skill" as a co-equal outcome. Records land in `invocation/<skill>.md`.
+It is the same model-judged proxy (not a gate) and, by construction,
+*over*-measures the firing rate — see `invocation/README.md` for why a high
+number is a ceiling, not a field rate. Selective: most relevant for skills whose
+absence leaves no failing artifact (the planning wing), where the nudge is the
+only thing that makes them fire.
+
 ### Why these can only be records
 
 A deterministic "did the skill fire / did the discipline hold" test would have to drive a specific harness — invoke *its* CLI, pass *its* plugin and permission flags, and parse *its* output format to see which skill activated. That binds the test to one harness.
