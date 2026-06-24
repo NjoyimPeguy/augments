@@ -2,6 +2,22 @@
 
 Notable changes to augments, newest first. Versions follow semantic versioning; the narrative for each release lives on its release page — this file is the terse, cumulative record.
 
+## [2.0.0] — 2026-06-24
+
+### Changed
+
+- **Activation moves from coercion to structure; Claude-Code-first.** The firing pressure v1.0.7 put in descriptions (`ALWAYS invoke…`) was a workaround for a SessionStart nudge that decays over a long session. v2.0 carries it structurally: a slim procedural SessionStart bootstrap **plus a per-turn `UserPromptSubmit` floor** so the routing check can't decay mid-session (`docs/augments/activation.md`). The four discipline descriptions drop `ALWAYS` → plain "Use when…"; re-measured on a real `claude -p` sweep of all 30 skills (28/30 fired first try, effectively 30/30 on fair scenarios), activation holds without the coercion.
+- **Tests flip from harness-agnostic proxies to real per-harness runs.** The proxies measured a ceiling, not the floor, so an ignored skill shipped green. The real `claude -p` harness (`tests/harness/claude-code/`; `--working-tree`, an offline `selftest`, `--verbose`, `--max-turns`) is now the activation layer; `behavioral/` discipline-pressure tests move under it. Identity rewritten to **portable skills + per-harness real tests** (Codex frozen; its manifest-sync relaxed to a note while `.claude-plugin` stays strict).
+
+### Added
+
+- **`yagni`** — build only what's needed and make it work, guarding both over-engineering and its opposite, laziness dressed as simplicity (stubs, TODOs, the smallest diff in the wrong place). Ships with a `references/` folder; `using-augments` gains a phase-chaining cue.
+
+### Removed
+
+- **`caveman`** (terse-output mode) — the skill-surface change that makes this a major release.
+- **The harness-agnostic proxy test layer** (`tests/triggering/`, `tests/invocation/`, `triggering-harness.sh`, `invocation-harness.sh`, `coverage.sh`) and the growing per-adapter record file — superseded by the real per-harness runs.
+
 ## [1.0.7] — 2026-06-21
 
 ### Changed

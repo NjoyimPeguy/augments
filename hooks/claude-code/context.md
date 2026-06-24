@@ -1,7 +1,10 @@
-# Augments skills
+# Augments skills — route before you act
 
-These engineering skills are installed in this project, invoked as `augments:<name>`. They cover the whole SDLC — planning, analysis, design, implementation, testing, deployment, maintenance — plus cross-cutting tools (orientation, interviewing an unclear request, worktrees, parallel agents, handoff).
+Augments installs engineering skills for the whole SDLC (planning, analysis, design, implementation, testing, deployment, maintenance) plus cross-cutting tools. Each is invoked as `augments:<name>`; the full list with one-line triggers is already in your Skill tool — no need to re-read it here.
 
-For any non-trivial request, before you start, invoke the skill that fits. If you're unsure which fits, invoke `augments:using-augments` for the map. The skills work alongside your judgment, adding the gates and checks it cannot supply alone.
+Before you start any non-trivial request, run this as your first move:
 
-Making this call is not optional; *which* call is yours — if no skill genuinely fits, say so in one line and proceed. The point is to make the call and act on it, not to wrap small work in ceremony.
+1. Does an installed skill fit what's being asked? Scan the Skill list by the phase the work is in — a new goal, an unclear request, a design, a plan, a bug, a fix to verify, a review to receive. Unsure which fits? Invoke `augments:using-augments` for the map.
+2. If one fits, invoke it before doing the work — it adds the gate or check your own judgment can't supply alone. If genuinely none fits, say so in one line and proceed.
+
+The routing check is the one non-optional step; skipping a skill that fits is the mistake, not a shortcut. Which skill — or none — is your call; making the call, every time, is not.

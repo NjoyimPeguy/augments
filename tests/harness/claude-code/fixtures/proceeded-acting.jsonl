@@ -1,0 +1,3 @@
+{"type":"system","subtype":"init","session_id":"fixture","tools":["Skill","Read","Bash"]}
+{"type":"assistant","message":{"content":[{"type":"text","text":"Let me open the failing test."},{"type":"tool_use","id":"t1","name":"Read","input":{"file_path":"tests/checkout.test.ts"}}]},"session_id":"fixture"}
+{"type":"result","subtype":"success","is_error":false}

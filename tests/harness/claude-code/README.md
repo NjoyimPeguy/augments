@@ -1,18 +1,16 @@
 # tests/harness/claude-code/ — real activation tooling
 
-The faithful, harness-bound counterpart to the portable proxies. Where
-`tests/triggering/` and `tests/invocation/` ask a fresh *subagent* what it
-*would* do, `run-activation.sh` drives the actual `claude` CLI headless against
-the really-installed plugin and observes whether a skill **actually** activates
-— a structured `Skill` tool_use, parsed from `--output-format stream-json`, not
-a prose grep and not a self-report.
+The real activation layer for the Claude Code adapter. `run-activation.sh`
+drives the actual `claude` CLI headless against the working tree and observes
+whether a skill **actually** activates — a structured `Skill` tool_use, parsed
+from `--output-format stream-json`, not a prose grep and not a self-report.
 
 ## Why it lives here, not in the core gate
 
 It binds to one harness (the `claude` binary) and makes a **real API call** — it
 costs tokens and is not deterministic. So it is a manual/record tool, never CI
-pass/fail. The harness-agnostic core (`validate-skills.sh`, the proxies) stays
-free and portable; this adds the one thing they structurally can't: ground truth
+pass/fail. The portable structural gate (`validate-skills.sh`) stays free and
+harness-agnostic; this adds the one thing it structurally can't: ground truth
 for *this* adapter. See `../../README.md` and `../../../docs/augments/philosophy.md`.
 
 ## Scenarios live by filename, not inline
@@ -23,31 +21,33 @@ plus `common/` for cross-cutting skills. **The filename is the contract:**
 
 ```
 scenarios/
-  planning/                 # the planning phase
-    define-goals.txt        # opening expected to activate augments:define-goals
-    feasibility-check.txt    #   "          "            augments:feasibility-check
-    scope-it.txt             #   "          "            augments:scope-it
-    _negative.txt            # leading "_" => expects NOTHING to fire
-    _flow.txt                # lists the above in order = the planning sequence
+  planning/                  # the planning phase
+    define-goals           # name == a skill => expects augments:define-goals
+    feasibility-check      #   "                          augments:feasibility-check
+    scope-it               #   "                          augments:scope-it
+    unrelated-dep-bump     # name is NOT a skill => expects NOTHING to fire
+    flow                   # lists the above in order = the planning sequence
   common/
-    dispatching-parallel-agents.txt
+    dispatching-parallel-agents
 ```
 
-A `_flow.txt` names its phase's scenario files in order; the engine runs them as
-one resumed conversation and checks each turn against its filename. To change
-what a turn says, edit the per-skill `.txt`; to add a skill to a phase, drop in a
-`<skill>.txt` and list it in `_flow.txt`. No script edit, no inline text.
+A `flow` names its phase's scenario files in order; the engine runs them as one
+resumed conversation and checks each turn against its filename. The expected
+skill IS the filename when it matches a real skill; any other name (a filler, a
+negative) expects nothing — no marker char. To change what a turn says, edit the
+per-skill file; to add a skill to a phase, drop in a `<skill>` file and list it
+in `flow`. No script edit, no inline text.
 
 ## Run it
 
 ```bash
 # Whole planning phase (define-goals -> feasibility-check -> scope-it, + negative):
-tests/harness/claude-code/run-flow.sh --flow scenarios/planning/_flow.txt --keep
-tests/harness/claude-code/run-flow.sh --flow scenarios/planning/_flow.txt --print   # parse only, no API call
+tests/harness/claude-code/run-flow.sh --flow scenarios/planning/_flow --keep
+tests/harness/claude-code/run-flow.sh --flow scenarios/planning/_flow --print   # parse only, no API call
 
 # A single cross-cutting skill:
 tests/harness/claude-code/run-activation.sh \
-  --scenario-file scenarios/common/dispatching-parallel-agents.txt --keep
+  --scenario-file scenarios/common/dispatching-parallel-agents --keep
 ```
 
 - Runs the nested session in an **isolated empty temp dir** — safe (writes can't
@@ -61,6 +61,25 @@ tests/harness/claude-code/run-activation.sh \
   (gitignored scratch); copy to a dated `YYYY-MM-DD-<skill>-activation.jsonl` as
   evidence. `--no-augments` (run-activation) runs the auth-safe Skill-blocked arm.
 
+## Working tree, the offline self-test, and the decay scenario
+
+Three additions for the v2 activation work:
+
+- **`--working-tree`** (both scripts) loads THIS repo via `claude --plugin-dir`
+  instead of the installed release cache — so a run validates live edits to the
+  nudge/hooks, not the last published version. Confirmed: with it, the session
+  `init` lists only the repo path; the cached plugin is overridden.
+- **`run-activation.sh selftest`** runs the jq detector over committed
+  `fixtures/*.jsonl` (a fired case, a none case, a proceeded-by-acting case) and
+  asserts the verdicts — a deterministic, no-API check of the detection logic
+  itself, the one part that can be gated without a model.
+- **`scenarios/decay/`** is the long-session reproduction: `_flow` runs
+  filler turns (expect-none) to grow the context so the SessionStart nudge
+  fades, then a debugging-shaped turn that fires FRESH. A MISS on that last turn
+  reproduces "skills ignored in a long session"; if it still fires, headless
+  `-p` resume isn't inducing decay (itself a finding). This is the regime the
+  fresh-session records above never exercised. Run with `--working-tree`.
+
 ## Detection (and a bug worth remembering)
 
 Verdict comes **only** from a `Skill` tool_use in an *assistant* event. A naive
@@ -70,7 +89,9 @@ skill — both contain `augments:` tokens that are not actions. The first cut of
 this script grepped the raw stream and "detected" `augments:using-augments`
 straight out of the injected nudge. Trust the structured tool_use, nothing else.
 
-## Records
+## Results
 
-Dated activation results are appended to `../claude-code.md` (the adapter
-record), with the raw transcript kept beside this README as evidence.
+Results are ephemeral — re-run the scripts for current truth (the script is the
+record, not a committed log). With `--keep`, the raw stream is saved beside this
+README (gitignored); copy one out to a dated file if you want to keep a specific
+transcript as evidence.

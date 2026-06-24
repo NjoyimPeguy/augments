@@ -10,10 +10,10 @@ There is exactly **one** set of skills, and they are harness- and model-agnostic
 
 | Harness | Adapter | Proactive-use nudge | Status |
 | ------- | ------- | ------------------- | ------ |
-| Claude Code | `.claude-plugin/` (plugin manifest + `marketplace.json`) | SessionStart hook → `hooks/claude-code/session-start.sh` wraps `hooks/claude-code/context.md` in the harness's JSON context envelope (matcher `startup\|resume\|clear\|compact`, so the nudge survives **resume** and **compaction**) | Exercised — evidence in `tests/harness/claude-code.md` |
+| Claude Code | `.claude-plugin/` (plugin manifest + `marketplace.json`) | SessionStart hook → `hooks/claude-code/session-start.sh` wraps `hooks/claude-code/context.md` in the harness's JSON context envelope (matcher `startup\|resume\|clear\|compact`, so the nudge survives **resume** and **compaction**) | Exercised — runnable tests in `tests/harness/claude-code/` (`run-activation.sh`, `run-flow.sh`) |
 | Codex | `.codex-plugin/` (plugin manifest) | — | Manifest present, **not yet exercised** — no activation record under `tests/harness/`; provisional until one lands (see *Be honest about status* below) |
 
-Both manifests list the **same** skills array; `tests/validate-skills.sh` fails CI if a manifest drifts from the skill directories on disk, so the two cannot silently diverge.
+The `.claude-plugin` manifest must list every skill on disk — the gate fails CI if it drifts. The `.codex-plugin` manifest is **experimental and may lag**: the gate reports Codex drift as a note, not a failure (Claude-Code-first; Codex is unproven until its own `tests/harness/` runner lands).
 
 ## Repo-instruction files
 

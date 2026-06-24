@@ -50,18 +50,18 @@ for skill in "${skills[@]}"; do
   elif [ "$lines" -gt 80 ];  then note "warn: $lines lines (>80; acceptable only if a discipline skill)"
   fi
 
-  # Every skill owes a triggering record (see tests/README.md). Existence is
-  # deterministic and gate-able; the routing verdict itself lives in the record.
-  [ -n "$fname" ] && [ ! -f "tests/triggering/$fname.md" ] && err "no triggering record at tests/triggering/$fname.md — every skill owes one (see tests/README.md)"
+  # (Per-skill triggering records retired — activation is proven by the runnable
+  # tests/harness/<adapter>/ tests, not a static record. See tests/README.md.)
 
-  # No external references, vendor model names, or <angle> placeholders — in every file of the skill.
-  for f in "$dir"/*.md; do
+  # No external references, vendor model names, or <angle> placeholders — in every
+  # .md of the skill, RECURSIVELY (covers references/ and scripts/ subfolders).
+  while IFS= read -r f; do
     body=$(sed 's/`[^`]*`//g' "$f")   # ignore inline code spans
     echo "$body" | grep -qiE "$EXT_REFS"        && err "$(basename "$f"): external reference (repo/issue/URL) — state the principle directly"
     echo "$body" | grep -qiE "$VENDORS"         && err "$(basename "$f"): vendor model name — use a capability tier (small|medium|large)"
     echo "$body" | grep -qiE "$SCANNER_TRIGGERS" && err "$(basename "$f"): harness scanner trigger-word — rephrase so a keyword scan can't hijack the session"
     echo "$body" | grep -qE  '<[a-z][a-z0-9 -]*>' && err "$(basename "$f"): bare <angle> placeholder — use {{double-curly}}"
-  done
+  done < <(find "$dir" -name '*.md')
 done
 
 # The nudge ships too — and is injected into every session, so a scanner
@@ -85,8 +85,15 @@ for manifest in .claude-plugin/plugin.json .codex-plugin/plugin.json; do
   declared=$(grep -oE '"\./skills/[^"]+"' "$manifest" | tr -d '"' | sort -u)
   missing=$(comm -23 <(printf '%s\n' "$actual") <(printf '%s\n' "$declared"))
   dead=$(comm -13 <(printf '%s\n' "$actual") <(printf '%s\n' "$declared"))
-  [ -n "$missing" ] && while IFS= read -r m; do err "skill not in $manifest 'skills' (won't load): $m"; done <<< "$missing"
-  [ -n "$dead" ]    && while IFS= read -r d; do err "$manifest 'skills' entry has no SKILL.md: $d"; done <<< "$dead"
+  # Codex is experimental/frozen (Claude-Code-first) — its array may lag the
+  # skill dirs; report but DON'T fail. .claude-plugin stays strict (it ships).
+  if [ "$manifest" = ".codex-plugin/plugin.json" ]; then
+    [ -n "$missing" ] && while IFS= read -r m; do note "codex (experimental) lags: $m not yet listed"; done <<< "$missing"
+    [ -n "$dead" ]    && while IFS= read -r d; do note "codex (experimental) dead entry: $d"; done <<< "$dead"
+  else
+    [ -n "$missing" ] && while IFS= read -r m; do err "skill not in $manifest 'skills' (won't load): $m"; done <<< "$missing"
+    [ -n "$dead" ]    && while IFS= read -r d; do err "$manifest 'skills' entry has no SKILL.md: $d"; done <<< "$dead"
+  fi
 done
 
 # Version sync: the release version is declared in three manifests and bumped

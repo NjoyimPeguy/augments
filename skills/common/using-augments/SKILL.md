@@ -21,7 +21,7 @@ These are tools, not a pipeline: reach for the one that fits the moment; there i
 
 Reach for a skill when its trigger fits.
 
-Whenever a request, plan, or design is unclear, `interview-me` grills it into a short alignment brief — in any phase. When a question is faster to build than to argue, `prototyping` answers it with a throwaway spike, then deletes it. To get oriented in code you don't know, `zoom-out` maps the modules and callers a layer up. When a session ends mid-work, `handoff` writes a resumable summary for the next one. And `caveman` switches to ultra-terse output when you ask for brevity.
+Whenever a request, plan, or design is unclear, `interview-me` grills it into a short alignment brief — in any phase. When a question is faster to build than to argue, `prototyping` answers it with a throwaway spike, then deletes it. To get oriented in code you don't know, `zoom-out` maps the modules and callers a layer up. When a session ends mid-work, `handoff` writes a resumable summary for the next one.
 
 **Planning** (a new project or initiative)
 
@@ -45,6 +45,7 @@ Whenever a request, plan, or design is unclear, `interview-me` grills it into a 
 **Implementation**
 
 - `test-driven-development` — building any feature or bugfix with real logic; the test comes first, and you watch it fail.
+- `yagni` — about to write or change code; build only what's needed and make it work, guarding both over-engineering and laziness-as-simplicity.
 - `executing-plans` — you have a plan directory; run it one task at a time, gating each on its Evaluator.
 
 **Testing**
@@ -72,3 +73,5 @@ Whenever a request, plan, or design is unclear, `interview-me` grills it into a 
 ## How they compose
 
 The skills hand off to one another: `interview-me` → `writing-plans` → (your go) → `executing-plans`; `debugging` turns its reproduction into a `test-driven-development` cycle; and `verifying-completion` is the gate the others assume — it runs the Evaluator a plan defined, and confirms a debugged fix actually holds.
+
+A request can also span a whole phase's arc: planning runs `define-goals` → `feasibility-check` → `scope-it` in turn, each feeding the next. When it does, route to the skill that fits the *current* step and **chain to the next as each completes** — don't invoke one and stop with the phase half-done. (The skills stay separable: reach for just the one you need when the request is narrow.)

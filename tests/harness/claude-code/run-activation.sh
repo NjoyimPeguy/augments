@@ -1,11 +1,10 @@
 #!/usr/bin/env bash
 # Real end-to-end activation test for the Claude Code adapter.
 #
-# Unlike the portable proxies in tests/triggering/ and tests/invocation/ — which
-# ask a fresh SUBAGENT what it WOULD do — this drives the actual `claude` CLI
-# headless against the really-installed plugin and observes whether a skill
-# ACTUALLY activates. It is the faithful layer: real harness, real SessionStart
-# hook, real Skill tool, behaviour observed not self-reported.
+# This drives the actual `claude` CLI headless against the working tree and
+# observes whether a skill ACTUALLY activates (a structured Skill tool_use), not
+# what a subagent says it would do. Real harness, real SessionStart hook, real
+# Skill tool, behaviour observed not self-reported.
 #
 # It is deliberately NOT portable and NOT in the core gate:
 #   - it binds to one harness (the `claude` binary) — that is why it lives under
@@ -28,15 +27,47 @@
 # instant a real Skill tool_use is logged, so cost ≈ one turn.
 #
 # Usage:
-#   run-activation.sh --scenario-file scenarios/common/dispatching-parallel-agents.txt [--keep]
-#   run-activation.sh --scenario "TEXT" [--expect NAME] [--timeout SECONDS] [--keep]
-#   run-activation.sh --scenario-file scenarios/planning/define-goals.txt --no-augments
+#   run-activation.sh selftest        # offline detection check over fixtures (no API)
+#   run-activation.sh --scenario-file scenarios/common/dispatching-parallel-agents [--keep]
+#   run-activation.sh --scenario "TEXT" [--expect NAME] [--working-tree] [--verbose] [--max-turns N] [--timeout SECONDS] [--keep]
+#   run-activation.sh --scenario-file scenarios/planning/define-goals --no-augments
+# --working-tree loads THIS repo via --plugin-dir (tests live edits, not the install cache).
 
 set -uo pipefail
 scriptdir="$(cd "$(dirname "$0")" && pwd)"; orig_pwd="$PWD"
 cd "$scriptdir/../../.." || exit 2   # repo root (for output paths under tests/)
+repo="$PWD"                          # working-tree root, for --plugin-dir
 
-scenario=""; sfile=""; expect=""; timeout_s=120; keep=""; bare=""
+# A scenario file's name is its expected skill IF that skill exists; any other
+# name (a filler, a negative) expects nothing. No marker char in the filename.
+is_skill() { find "$repo/skills" -maxdepth 2 -type d -name "$1" 2>/dev/null | grep -q .; }
+
+# jq filter: the skill name of the first real Skill tool_use in an ASSISTANT
+# event. system/hook/init events are never consulted — they carry augments:
+# tokens that are not actions. Shared by the live run and the offline selftest.
+SKILL_FILTER='select(.type=="assistant") | .message.content[]?
+  | select(.type=="tool_use" and .name=="Skill")
+  | (.input.skill // .input.command // "?")'
+
+# Offline, deterministic detection check over committed fixtures — NO API call.
+# The gate the jq detector never had; safe to run anywhere jq exists.
+if [ "${1:-}" = "selftest" ]; then
+  command -v jq >/dev/null 2>&1 || { echo "selftest needs jq" >&2; exit 3; }
+  cd "$scriptdir" || exit 2
+  st_fail=0
+  st_check() {  # $1 fixture, $2 expected (skill name, or "" for none)
+    local got; got="$(jq -rc "$SKILL_FILTER" "fixtures/$1" 2>/dev/null | head -n1)"
+    if [ "$got" = "$2" ]; then printf 'ok    %-26s -> %s\n' "$1" "${got:-<none>}"
+    else printf 'FAIL  %-26s -> got "%s" want "%s"\n' "$1" "$got" "$2"; st_fail=1; fi
+  }
+  st_check fired-debugging.jsonl  "augments:debugging"
+  st_check none.jsonl             ""
+  st_check proceeded-acting.jsonl ""
+  [ "$st_fail" -eq 0 ] && echo "detection self-test: PASS" || echo "detection self-test: FAIL"
+  exit "$st_fail"
+fi
+
+scenario=""; sfile=""; expect=""; timeout_s=120; keep=""; bare=""; wt=""; verbose=""; maxturns="6"
 while [ "$#" -gt 0 ]; do
   case "$1" in
     --scenario)      scenario="$2"; shift 2;;
@@ -46,6 +77,9 @@ while [ "$#" -gt 0 ]; do
     --expect)        expect="$2"; shift 2;;
     --timeout)       timeout_s="$2"; shift 2;;
     --keep)          keep="1"; shift;;
+    --working-tree)  wt="1"; shift;;   # load the WORKING TREE via --plugin-dir
+    --verbose)       verbose="1"; shift;;      # dump full assistant output after the run
+    --max-turns)     maxturns="$2"; shift 2;;  # bound non-firing runs (default 6)
     --no-augments) bare="1"; shift;;   # auth-safe stand-in for "augments absent":
                                        # block the Skill tool so invocation is
                                        # impossible, and watch the fallback. (A
@@ -63,7 +97,7 @@ if [ -n "$sfile" ]; then
   done
   [ -n "$resolved" ] || { echo "no such scenario file: $sfile" >&2; exit 2; }
   scenario="$(cat "$resolved")"
-  if [ -z "$expect" ]; then b="$(basename "$resolved")"; b="${b%.*}"; case "$b" in _*) : ;; *) expect="$b";; esac; fi
+  if [ -z "$expect" ]; then b="$(basename "$resolved")"; is_skill "$b" && expect="$b"; fi
 fi
 [ -z "$scenario" ] && { echo "needs --scenario \"TEXT\" or --scenario-file FILE" >&2; exit 2; }
 command -v claude >/dev/null 2>&1 || { echo "no \`claude\` CLI on PATH" >&2; exit 3; }
@@ -72,10 +106,7 @@ command -v jq >/dev/null 2>&1 || { echo "this harness needs \`jq\` to parse stre
 workdir="$(mktemp -d)"; stream="$(mktemp)"
 trap '[ -z "$keep" ] && rm -f "$stream"; rm -rf "$workdir"' EXIT
 
-# jq filter: emit the skill name of the first real Skill tool_use, if any.
-SKILL_FILTER='select(.type=="assistant") | .message.content[]?
-  | select(.type=="tool_use" and .name=="Skill")
-  | (.input.skill // .input.command // "?")'
+# (SKILL_FILTER is defined near the top — shared with `selftest`.)
 
 # Launch the real harness headless, full stream to file (no lossy pipe). `exec`
 # makes $cpid the timeout process, so killing it stops claude cleanly.
@@ -84,6 +115,8 @@ if [ -n "$bare" ]; then   # invocation blocked: real session, Skill tool denied
 else
   flags=(--output-format stream-json --verbose --allowedTools Skill Read Glob Grep)
 fi
+[ -n "$wt" ] && flags+=(--plugin-dir "$repo")   # --working-tree: live code, not cache
+flags+=(--max-turns "$maxturns")                 # bound runaway / non-firing runs
 ( cd "$workdir" && exec timeout "$timeout_s" claude -p "$scenario" "${flags[@]}" ) > "$stream" 2>/dev/null &
 cpid=$!
 
@@ -119,6 +152,14 @@ echo "scenario : ${scenario}"
 [ -n "$expect" ] && echo "expected : augments:${expect}"
 echo "verdict  : ${verdict}"
 [ -n "$firstmove" ] && echo "first move: ${firstmove}…"
+if [ -n "$verbose" ]; then
+  echo "--- full assistant output ---"
+  jq -rc 'select(.type=="assistant") | .message.content[]?
+    | if .type=="text" then .text
+      elif .type=="tool_use" then "[tool_use " + .name + " " + (.input|tostring) + "]"
+      else empty end' "$stream" 2>/dev/null
+  echo "--- end output ---"
+fi
 echo "captured : $(grep -c . "$stream" 2>/dev/null || echo 0) stream events (${asst_events} assistant)"
 if [ -n "$keep" ]; then
   out="tests/harness/claude-code/last-stream.jsonl"

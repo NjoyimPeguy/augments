@@ -1,0 +1,1 @@
+And summarize the main caching strategies — write-through, write-back, cache-aside — with the consistency failure modes of each and how you'd mitigate them.

@@ -1,0 +1,10 @@
+# Decay / long-session reproduction — run as ONE resumed conversation.
+# The first turns are non-skill names (expect nothing) and grow the context so
+# the SessionStart nudge fades; the final turn, debugging, is a real skill name
+# and fires FRESH. A MISS there reproduces "skills ignored in a long session";
+# if it still fires, headless -p resume isn't inducing decay (a finding).
+# Run with --working-tree to exercise live hooks.
+backend-request-flow
+locking-tradeoffs
+caching-strategies
+debugging

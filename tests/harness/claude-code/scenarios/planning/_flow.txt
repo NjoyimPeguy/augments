@@ -1,8 +1,0 @@
-# Planning phase — run in order as one resumed conversation.
-# Each line names a scenario file in this folder; the FILENAME is the skill
-# expected to activate on that turn. A name starting with "_" (e.g. _negative)
-# expects NOTHING to fire. Edit the wording in the per-skill files, not here.
-define-goals.txt
-feasibility-check.txt
-scope-it.txt
-_negative.txt

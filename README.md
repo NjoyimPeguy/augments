@@ -43,7 +43,6 @@ A skill is invoked as `augments:<name>` regardless of which phase folder holds i
 | common | `prototyping` | Answer one uncertain design or feasibility question with a throwaway spike, then delete it |
 | common | `zoom-out` | Before changing unfamiliar code, go up a layer and map the relevant modules and their callers in the project's own vocabulary |
 | common | `handoff` | Write a durable, resumable handoff when a session ends — goal, state, decisions, gotchas, and the one concrete next step |
-| common | `caveman` | Ultra-compressed output mode on request — drop filler, keep every technical fact, code block, and error exact; persists until stopped |
 | common | `using-git-worktrees` | Isolate work in a git worktree (or your harness's native isolation) — own branch, ports, and data — so commits never land on the wrong branch; covers setup, runtime isolation, and teardown |
 | common | `dispatching-parallel-agents` | Fan out two or more provably-independent pieces of work to concurrent agents — scope each, isolate state, then reconcile with a combined check |
 | design | `system-architecture` | Design how a non-trivial system is structured — components, boundaries, data flow, and testable seams |
@@ -53,6 +52,7 @@ A skill is invoked as `augments:<name>` regardless of which phase folder holds i
 | design | `architecture-decisions` | Record significant, hard-to-reverse choices as ADRs — options weighed, decision, why the alternatives were rejected |
 | design | `writing-plans` | Turns intent into a durable plan: a one-page map plus thin per-task contracts, each with its own acceptance check |
 | implementation | `test-driven-development` | Red-green-refactor as a discipline that holds under pressure, with test-craft and mocking references |
+| implementation | `yagni` | Build only what's needed and make it work — guards over-engineering and its opposite, laziness dressed as simplicity (stubs, TODOs, wrong-place diffs); "needed" means it solves the task and runs |
 | implementation | `executing-plans` | Runs a plan to done one task at a time, gating each on its Evaluator and the index, with optional subagent dispatch |
 | testing | `verifying-completion` | Evidence before claims — run the check and read its output before saying complete/fixed/passing; catches hollow verifications |
 | testing | `requesting-code-review` | Dispatch an independent, diff-scoped reviewer — checks convention-conformance and whether the change does what was asked, with a clear merge verdict |
@@ -68,13 +68,13 @@ Every SDLC phase ships at least one skill, alongside the cross-cutting `common/`
 
 ## Status
 
-Early and growing. All seven SDLC phases — planning, analysis, design, implementation, testing, deployment, and maintenance — now ship at least one working skill, alongside the nine `common` skills (orientation, skill-authoring, and the cross-cutting tools: interviewing, prototyping, zoom-out, handoff, worktrees, parallel dispatch, and terse output). The repo ships a Claude Code plugin (`.claude-plugin/`, with a SessionStart nudge hook) and a Codex plugin manifest (`.codex-plugin/`); `AGENTS.md` and `GEMINI.md` symlink to `CLAUDE.md` so a harness that reads its own instructions file gets the same guidance. Because the skills are harness-agnostic Markdown invoked by name, any other harness works too — see [`docs/augments/harness-support.md`](docs/augments/harness-support.md). Install in Claude Code with `/plugin marketplace add NjoyimPeguy/augments` then `/plugin install augments@augments`, and invoke skills by name.
+Early and growing. All seven SDLC phases — planning, analysis, design, implementation, testing, deployment, and maintenance — now ship at least one working skill, alongside the eight `common` skills (orientation, skill-authoring, and the cross-cutting tools: interviewing, prototyping, zoom-out, handoff, worktrees, and parallel dispatch). The repo ships a Claude Code plugin (`.claude-plugin/`, with a SessionStart nudge hook) and a Codex plugin manifest (`.codex-plugin/`); `AGENTS.md` and `GEMINI.md` symlink to `CLAUDE.md` so a harness that reads its own instructions file gets the same guidance. Because the skills are portable Markdown invoked by name, other harnesses can adopt them — each proven by its own tests when added; see [`docs/augments/harness-support.md`](docs/augments/harness-support.md). Install in Claude Code with `/plugin marketplace add NjoyimPeguy/augments` then `/plugin install augments@augments`, and invoke skills by name.
 
 ## Proactive skill use (Claude Code)
 
-A coding agent treats an installed skill library as available-but-optional and usually walks past it unless you name a skill. So on Claude Code, augments ships a **SessionStart hook** (`hooks/claude-code/`) that injects a short, firm nudge each session: *check whether a skill fits the task and invoke it to anchor the work — the skills work alongside your judgment; if unsure, reach for `using-augments`.* The agent then orients you — "implementation, or planning + docs?" — instead of diving straight in.
+A coding agent treats an installed skill library as available-but-optional and usually walks past it unless you name a skill. So on Claude Code, augments ships two hooks (`hooks/claude-code/`): a **SessionStart bootstrap** that injects a short routing procedure each session, and a **per-turn floor** — a one-line `UserPromptSubmit` reminder so the routing check doesn't decay over a long session. The agent checks whether a skill fits before acting, and orients you — "implementation, or planning + docs?" — instead of diving straight in.
 
-The nudge is deliberately **firm, not coercive** (no "you must / 1% chance" framing) and has one escape: if no skill genuinely applies, it proceeds normally. It's a single plain-text file — `hooks/claude-code/context.md` — so soften, sharpen, or delete it to taste. It is Claude-Code-specific (a hook); the skills themselves stay harness-agnostic, so on other harnesses you invoke skills by name or wire an equivalent nudge.
+The nudge is deliberately **firm, not coercive** (no "you must / 1% chance" framing) and keeps one honest escape: if no skill genuinely applies, it proceeds. Both layers are plain-text files — `hooks/claude-code/context.md` and `per-turn.md` — so soften, sharpen, or remove them to taste; see [`docs/augments/activation.md`](docs/augments/activation.md) for the rationale and the per-turn cost. The hooks are Claude-Code-specific; the skills themselves stay portable Markdown.
 
 ## Acknowledgements
 
@@ -85,3 +85,5 @@ multi-agent ecosystem:
   A complete software development methodology for coding agents.
 - [**Matt Pocock skills**](https://github.com/mattpocock/skills) —
   Agent skills for real engineering.
+- [**Ponytail**](https://github.com/DietrichGebert/ponytail) —
+  The "laziest senior dev" discipline that inspired the `yagni` skill.
