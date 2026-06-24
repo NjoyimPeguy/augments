@@ -2,6 +2,16 @@
 
 Notable changes to augments, newest first. Versions follow semantic versioning; the narrative for each release lives on its release page — this file is the terse, cumulative record.
 
+## [2.1.0] — 2026-06-24
+
+### Added
+
+- **`governance/` — deterministic gate templates.** Adoptable CI / branch-protection / pre-commit templates that make the production-critical skills non-skippable at the commit/PR/CI boundary, where persuasion can't — branch-protection (CI-green + review + conversation-resolution, bulletproof), `tests-accompany-code`, `release-readiness`, `trust-boundary-flag` (heuristics, honestly labelled). Each maps to the skill it enforces; dogfooded on augments itself.
+
+### Changed
+
+- **Routing is firm and non-negotiable; the per-turn floor is gone.** The field test of v2.0's gentle/per-turn approach failed — the model skipped the loaded skill under momentum. The SessionStart bootstrap is rewritten firm (skip-rationalizations named, no easy-out); the `UserPromptSubmit` per-turn floor is removed (re-asserting a line every turn didn't stop the skip and cost tokens per turn); the four discipline descriptions return to firm `ALWAYS invoke`. Persuasion is the firm-but-leaky floor; the gates are the wall. Honest limit recorded: the execution-momentum regime that failed isn't reproducible in the headless harness — which is precisely why the gates exist.
+
 ## [2.0.0] — 2026-06-24
 
 ### Changed

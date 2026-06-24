@@ -72,9 +72,9 @@ Early and growing. All seven SDLC phases — planning, analysis, design, impleme
 
 ## Proactive skill use (Claude Code)
 
-A coding agent treats an installed skill library as available-but-optional and usually walks past it unless you name a skill. So on Claude Code, augments ships two hooks (`hooks/claude-code/`): a **SessionStart bootstrap** that injects a short routing procedure each session, and a **per-turn floor** — a one-line `UserPromptSubmit` reminder so the routing check doesn't decay over a long session. The agent checks whether a skill fits before acting, and orients you — "implementation, or planning + docs?" — instead of diving straight in.
+A coding agent treats an installed skill library as available-but-optional and walks past it unless you name a skill. So on Claude Code, augments ships a **SessionStart bootstrap** (`hooks/claude-code/`) that injects a short, firm routing procedure each session (and on resume / compact): before any non-trivial work, check whether a skill — or a chain of skills — could apply, and invoke it before acting. Skipping one that applies is treated as the mistake, not a shortcut.
 
-The nudge is deliberately **firm, not coercive** (no "you must / 1% chance" framing) and keeps one honest escape: if no skill genuinely applies, it proceeds. Both layers are plain-text files — `hooks/claude-code/context.md` and `per-turn.md` — so soften, sharpen, or remove them to taste; see [`docs/augments/activation.md`](docs/augments/activation.md) for the rationale and the per-turn cost. The hooks are Claude-Code-specific; the skills themselves stay portable Markdown.
+The routing is **non-negotiable by default, not a gentle suggestion** — it names the rationalizations for skipping ("too simple", "no time") as signals to check, not skip. It's a single plain-text file — `hooks/claude-code/context.md` — so tune it to taste; see [`docs/augments/activation.md`](docs/augments/activation.md) for how routing (firm persuasion) and enforcement (deterministic gates) fit together. The hook is Claude-Code-specific; the skills themselves stay portable Markdown.
 
 ## Acknowledgements
 
