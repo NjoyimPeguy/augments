@@ -1,0 +1,1 @@
+Implement a slugify(title) helper with these exact rules: lowercase it, trim, collapse runs of whitespace to single hyphens, and strip anything that isn't alphanumeric or a hyphen. Go ahead and build it.

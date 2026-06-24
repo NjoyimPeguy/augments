@@ -4,9 +4,9 @@
 # This script is a generic engine — it carries NO scenario text. The scenarios
 # live as named files under scenarios/, mirroring skills/ (a phase folder per
 # SDLC phase, plus common/). The FILENAME is the contract: scenarios/planning/
-# define-goals.txt is the opening expected to activate augments:define-goals; a
-# name starting with "_" (e.g. _negative.txt) expects NOTHING to fire. A phase's
-# _flow.txt lists its scenario files in order; this engine runs them as one
+# define-goals is the opening expected to activate augments:define-goals; a
+# name starting with "_" (e.g. _negative) expects NOTHING to fire. A phase's
+# _flow lists its scenario files in order; this engine runs them as one
 # RESUMED `claude -p` conversation and checks each turn against its filename.
 #
 # Faithfulness/safety identical to run-activation.sh: real CLI, isolated empty
@@ -16,15 +16,21 @@
 # see ./README.md).
 #
 # Usage:
-#   run-flow.sh --flow scenarios/planning/_flow.txt [--timeout N] [--keep] [--print]
-#   run-flow.sh --turn "MSG" --turn "MSG" [--expect a,b] [--timeout N] [--keep]
-#   --print  parse the flow and show the turns + per-turn expectations; no API call.
+#   run-flow.sh --flow scenarios/planning/_flow [--working-tree] [--timeout N] [--keep] [--print]
+#   run-flow.sh --turn "MSG" --turn "MSG" [--expect a,b] [--working-tree] [--timeout N] [--keep]
+#   --print         parse the flow and show the turns + per-turn expectations; no API call.
+#   --working-tree  load THIS repo via --plugin-dir (tests live edits, not the install cache).
 
 set -uo pipefail
 scriptdir="$(cd "$(dirname "$0")" && pwd)"
 orig_pwd="$PWD"
+repo="$(cd "$scriptdir/../../.." && pwd)"   # working-tree root, for --plugin-dir
 
-flow=""; turns=(); exps=(); expect=""; timeout_s=120; keep=""; printonly=""
+# A turn's filename is its expected skill IF that skill exists; any other name
+# (a filler, a negative) expects nothing. No marker char needed in the filename.
+is_skill() { find "$repo/skills" -maxdepth 2 -type d -name "$1" 2>/dev/null | grep -q .; }
+
+flow=""; turns=(); exps=(); expect=""; timeout_s=120; keep=""; printonly=""; wt=""
 while [ "$#" -gt 0 ]; do
   case "$1" in
     --flow)    flow="$2"; shift 2;;
@@ -32,6 +38,7 @@ while [ "$#" -gt 0 ]; do
     --expect)  expect="$2"; shift 2;;
     --timeout) timeout_s="$2"; shift 2;;
     --keep)    keep="1"; shift;;
+    --working-tree) wt="1"; shift;;   # load the WORKING TREE via --plugin-dir
     --print)   printonly="1"; shift;;
     *) echo "unknown argument: $1" >&2; exit 2;;
   esac
@@ -50,8 +57,8 @@ if [ -n "$flow" ]; then
     sf="$flowdir/$line"
     [ -f "$sf" ] || { echo "flow references missing scenario: $sf" >&2; exit 2; }
     turns+=("$(cat "$sf")")
-    base="$(basename "$line")"; base="${base%.*}"
-    case "$base" in _*) exps+=("none");; *) exps+=("$base");; esac
+    base="$(basename "$line")"
+    if is_skill "$base"; then exps+=("$base"); else exps+=("none"); fi
   done < "$flow"
 fi
 [ "${#turns[@]}" -eq 0 ] && { echo "needs --flow FILE or at least one --turn \"TEXT\"" >&2; exit 2; }
@@ -73,17 +80,16 @@ trap '[ -z "$keep" ] && rm -f "$allstream"; rm -rf "$workdir"' EXIT
 SKILL_FILTER='select(.type=="assistant") | .message.content[]?
   | select(.type=="tool_use" and .name=="Skill") | (.input.skill // .input.command // "?")'
 
+cflags=(--output-format stream-json --verbose --allowedTools Skill Read Glob Grep)
+[ -n "$wt" ] && cflags+=(--plugin-dir "$repo")   # --working-tree: live code, not cache
+
 sid=""; fails=0
 for i in "${!turns[@]}"; do
   msg="${turns[$i]}"; want="${exps[$i]}"; turnstream="$(mktemp)"
   if [ -z "$sid" ]; then
-    ( cd "$workdir" && exec timeout "$timeout_s" claude -p "$msg" \
-        --output-format stream-json --verbose \
-        --allowedTools Skill Read Glob Grep ) > "$turnstream" 2>/dev/null
+    ( cd "$workdir" && exec timeout "$timeout_s" claude -p "$msg" "${cflags[@]}" ) > "$turnstream" 2>/dev/null
   else
-    ( cd "$workdir" && exec timeout "$timeout_s" claude -p "$msg" --resume "$sid" \
-        --output-format stream-json --verbose \
-        --allowedTools Skill Read Glob Grep ) > "$turnstream" 2>/dev/null
+    ( cd "$workdir" && exec timeout "$timeout_s" claude -p "$msg" --resume "$sid" "${cflags[@]}" ) > "$turnstream" 2>/dev/null
   fi
   cat "$turnstream" >> "$allstream"
   [ -z "$sid" ] && sid="$(jq -rc 'select(.session_id) | .session_id' "$turnstream" 2>/dev/null | head -n1)"

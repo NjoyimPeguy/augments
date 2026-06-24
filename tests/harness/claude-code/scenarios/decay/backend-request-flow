@@ -1,0 +1,1 @@
+Before we get into anything specific — walk me through, in depth, how a request flows through a typical layered backend: routing, middleware, controller, service, repository, and back. Be thorough.

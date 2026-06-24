@@ -1,0 +1,8 @@
+# Planning phase — run in order as one resumed conversation.
+# Each line names a scenario file in this folder. The expected skill is the
+# filename when it matches a real skill (define-goals, feasibility-check,
+# scope-it); any other name (e.g. unrelated-dep-bump) expects NOTHING to fire.
+define-goals
+feasibility-check
+scope-it
+unrelated-dep-bump

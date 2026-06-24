@@ -21,7 +21,6 @@
   "hooks": "./hooks/claude-code/hooks.json",
   "skills": [
     "./skills/analysis/spec-it",
-    "./skills/common/caveman",
     "./skills/common/dispatching-parallel-agents",
     "./skills/common/handoff",
     "./skills/common/interview-me",
@@ -40,6 +39,7 @@
     "./skills/design/writing-plans",
     "./skills/implementation/executing-plans",
     "./skills/implementation/test-driven-development",
+    "./skills/implementation/yagni",
     "./skills/maintenance/debugging",
     "./skills/maintenance/post-mortem",
     "./skills/maintenance/refactor-architecture",

@@ -1,6 +1,6 @@
 ---
 name: receiving-code-review
-description: ALWAYS invoke when review feedback arrives — from a human or another agent — on code you wrote, before you respond or act on any finding. Verifying each finding against the code first is mandatory; agreeing or editing without checking is the mistake. Push back with evidence when a finding is wrong; refuse performative agreement.
+description: Use when review feedback arrives — from a human or another agent — on code you wrote, before you respond or act on any finding: verify each finding against the code first. Push back with evidence when a finding is wrong; refuse performative agreement.
 ---
 
 # Receiving Code Review
