@@ -30,7 +30,7 @@ repo="$(cd "$scriptdir/../../.." && pwd)"   # working-tree root, for --plugin-di
 # (a filler, a negative) expects nothing. No marker char needed in the filename.
 is_skill() { find "$repo/skills" -maxdepth 2 -type d -name "$1" 2>/dev/null | grep -q .; }
 
-flow=""; turns=(); exps=(); expect=""; timeout_s=120; keep=""; printonly=""; wt=""
+flow=""; turns=(); exps=(); expect=""; timeout_s=120; keep=""; printonly=""; wt=""; verbose=""; maxturns="6"
 while [ "$#" -gt 0 ]; do
   case "$1" in
     --flow)    flow="$2"; shift 2;;
@@ -39,6 +39,8 @@ while [ "$#" -gt 0 ]; do
     --timeout) timeout_s="$2"; shift 2;;
     --keep)    keep="1"; shift;;
     --working-tree) wt="1"; shift;;   # load the WORKING TREE via --plugin-dir
+    --verbose) verbose="1"; shift;;   # dump each turn's full assistant output
+    --max-turns) maxturns="$2"; shift 2;;
     --print)   printonly="1"; shift;;
     *) echo "unknown argument: $1" >&2; exit 2;;
   esac
@@ -80,7 +82,7 @@ trap '[ -z "$keep" ] && rm -f "$allstream"; rm -rf "$workdir"' EXIT
 SKILL_FILTER='select(.type=="assistant") | .message.content[]?
   | select(.type=="tool_use" and .name=="Skill") | (.input.skill // .input.command // "?")'
 
-cflags=(--output-format stream-json --verbose --allowedTools Skill Read Glob Grep)
+cflags=(--output-format stream-json --verbose --allowedTools Skill Read Glob Grep --max-turns "$maxturns")
 [ -n "$wt" ] && cflags+=(--plugin-dir "$repo")   # --working-tree: live code, not cache
 
 sid=""; fails=0
@@ -101,6 +103,12 @@ for i in "${!turns[@]}"; do
     *)    [ "$hit" = "$want" ] && mark="ok" || { mark="MISS (wanted $want)"; fails=$((fails+1)); };;
   esac
   printf 'turn %d -> %-26s %-20s | %s\n' "$((i+1))" "${hit:+augments:}${hit:-<none>}" "$mark" "${msg:0:48}"
+  if [ -n "$verbose" ]; then
+    jq -rc 'select(.type=="assistant") | .message.content[]?
+      | if .type=="text" then "  | " + .text
+        elif .type=="tool_use" then "  | [tool_use " + .name + " " + (.input|tostring) + "]"
+        else empty end' "$turnstream" 2>/dev/null
+  fi
   rm -f "$turnstream"
 done
 

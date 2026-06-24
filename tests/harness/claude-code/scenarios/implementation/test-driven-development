@@ -1,1 +1,1 @@
-Implement a slugify(title) helper with these exact rules: lowercase it, trim, collapse runs of whitespace to single hyphens, and strip anything that isn't alphanumeric or a hyphen. Go ahead and build it.
+We need a parseDuration(str) that converts strings like "1h30m", "90s", or "2h15m30s" into a total number of seconds — combined units in any order, and malformed input rejected with a clear error. Let's build it.
