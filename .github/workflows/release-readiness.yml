@@ -1,0 +1,28 @@
+# Dogfood of governance/ci/release-readiness.yml for augments itself.
+# augments has no "release" label flow — it releases via a manifest version bump on a
+# dev->main PR. So: when a PR to main bumps the plugin version, require a CHANGELOG entry.
+name: release-readiness
+on:
+  pull_request:
+    branches: [main]
+jobs:
+  release-readiness:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with: { fetch-depth: 0 }
+      - name: Require a CHANGELOG entry when the version bumps
+        env:
+          BASE: ${{ github.event.pull_request.base.sha }}
+          HEAD: ${{ github.event.pull_request.head.sha }}
+        run: |
+          if git diff "$BASE" "$HEAD" -- .claude-plugin/plugin.json | grep -qE '^\+[[:space:]]*"version"'; then
+            if git diff --name-only "$BASE" "$HEAD" | grep -qE '(^|/)CHANGELOG\.md$'; then
+              echo "ok: version bumped and CHANGELOG updated."
+            else
+              echo "::error::Plugin version bumped without a CHANGELOG entry (see RELEASING.md)."
+              exit 1
+            fi
+          else
+            echo "ok: no version bump on this PR."
+          fi
