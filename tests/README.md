@@ -10,7 +10,7 @@ Two kinds of test live here, split by what they can guarantee.
 
 ## 2. Per-harness real activation — runnable, not portable, not CI
 
-The skills are portable Markdown, but **whether one actually activates is a fact about a specific harness** — so each harness earns its own real test layer under `tests/harness/<adapter>/`. Today only **Claude Code** is wired (`tests/harness/claude-code/`); Codex, Kimi, OpenCode, and others each get their own folder when they're added and proven.
+The skills are portable Markdown, but **whether one actually activates is a fact about a specific harness** — so each harness earns its own real test layer under `tests/harness/<adapter>/`. Today only **Claude Code** is wired (`tests/harness/claude-code/`); other harnesses each get their own folder when they're added and proven.
 
 `tests/harness/claude-code/` drives the real `claude` CLI headless against the working tree and observes whether a skill **actually fires** — a structured `Skill` tool_use parsed from `--output-format stream-json`, never a prose grep or a self-report. See its README for the runners (`run-activation.sh`, `run-flow.sh`), the scenario convention, `--working-tree`, `--verbose`, and the offline detection `selftest`.
 
