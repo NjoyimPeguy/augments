@@ -1,0 +1,2 @@
+{"type":"assistant","message":{"content":[{"type":"text","text":"I'll route this through the augments skill system first."},{"type":"tool_use","name":"Skill","input":{"skill":"augments:using-augments"}}]}}
+{"type":"assistant","message":{"content":[{"type":"text","text":"The router confirms the fit. Fanning out to parallel agents."},{"type":"tool_use","name":"Skill","input":{"skill":"augments:dispatching-parallel-agents"}}]}}
