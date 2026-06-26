@@ -24,7 +24,7 @@ Turn an intent into a requirements spec (SRS): gather and analyze what the softw
 7. **Record the assumptions and dependencies** — what you're taking as true, and what external systems, data, or people this relies on. An unstated assumption is a hidden risk.
 8. **Surface the open questions and risks** — the unresolved ambiguities and requirement-level challenges that could derail the build. Naming them now is the cheapest they'll ever be.
 9. **State what is out of scope** — the requirements you are deliberately *not* covering this round.
-10. **Write the spec** to the project's specs location — default `.augments/specs/{{YYYY-MM-DD}}-{{topic}}.md`.
+10. **Write the spec** to `.augments/specs/{{YYYY-MM-DD}}-{{topic}}.md` (the standard specs location; another path only if the user has set one).
 
 ## Common mistakes
 

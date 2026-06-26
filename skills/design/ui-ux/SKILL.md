@@ -19,7 +19,7 @@ Design the experience before the components. A UI is the set of flows a user mov
 3. **Cover the unhappy states** — empty, loading, error, no-permission, offline. These are most of the real experience and where designs fail.
 4. **Write the human acceptance criteria** — the things automated tests can't judge (does it feel responsive, is the journey clear), each linked to a manual check.
 5. **For genuinely uncertain look-and-feel, run a `prototyping` spike** — structurally different variants (layout, hierarchy, affordance), not colour tweaks — and record which won and why.
-6. **Write the UI/UX section** of the design document — default `.augments/designs/{{YYYY-MM-DD}}-{{topic}}.md`.
+6. **Write the UI/UX section** of the shared design document `.augments/designs/{{YYYY-MM-DD}}-{{topic}}.md` (the standard designs location; another path only if the user has set one).
 
 ## Common mistakes
 

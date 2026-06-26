@@ -18,7 +18,7 @@ Set the conventions once so every contributor — human or agent — writes code
 2. **Name the patterns to use** — error handling, validation, async, dependency injection, testing seams — the *one* way this project does each, with a short example.
 3. **State the hard "never"s** — the small list of things that must not happen here (no business logic in the UI layer, no raw queries outside the data layer). Keep it short; a long list is ignored.
 4. **Point to the exemplar** — one existing file that already does it right, so the standard is shown, not just told.
-5. **Write the coding-standards section** of the design document, or a standing conventions file — default `.augments/designs/{{YYYY-MM-DD}}-{{topic}}.md`.
+5. **Write the coding-standards section** of the shared design document `.augments/designs/{{YYYY-MM-DD}}-{{topic}}.md` (the standard designs location; a standing conventions file or other path only if the user has set one).
 
 ## Common mistakes
 
