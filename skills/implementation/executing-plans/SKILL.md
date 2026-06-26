@@ -19,7 +19,7 @@ Work tasks in order, honoring each task's `Depends-on`. For each:
 
 1. **Load only that task's contract file** — don't re-read completed tasks; keep context small.
 2. **Note the current commit**, so a review (if any) can scope to this task's diff.
-3. **Build the change** at the task's suggested tier. A fully-specified mechanical task (create a file, a rename, a config change) runs inline with just the self-check; reserve subagents and review for tasks with real design decisions or wide integration (optional — see `subagent-dispatch.md`).
+3. **Build the change** at the task's suggested tier. A fully-specified mechanical task (create a file, a rename, a config change) runs inline with just the self-check. When your context is filling on a long run, or a task is large and self-contained, offload it to a fresh-context subagent — see `subagent-dispatch.md`.
 4. **Self-check before done:** every requirement met, behavior covered by a real test, existing patterns followed, no scope you weren't asked for.
 5. **Run the task's Evaluator.** Only when it passes, tick `[x]` for that task in the index.
 6. If you learned something that affects later tasks, append a line to a `## Learnings` section in the index — and carry it into any later subagent dispatch.

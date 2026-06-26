@@ -1,18 +1,17 @@
-# Executing Plans — Optional Subagent Dispatch
+# Executing Plans — Subagent Dispatch
 
-Dispatching a task to a subagent gives it a fresh context window — useful for a **large-tier, self-contained task in a long run**, when the coordinator's own context is filling up. This is *sequential*: offload one task, gate it on its Evaluator, then move on. It is optional: small and medium tasks are usually faster inline. Don't dispatch a fully-specified mechanical task, and don't force a review pass on one.
+Dispatching a task to a subagent gives it a fresh context window. Reach for it when your own context is filling on a long run, or when a single task is large and self-contained enough to run in its own window — then offload it, gate it on its Evaluator, and move on. This is *sequential*, one task at a time. A small, fully-specified mechanical task is faster inline; don't dispatch one, and don't force a review pass on it.
 
-*One-at-a-time offload, not fan-out.* "Self-contained" means the task carries no inherited history — not that it is independent of the *other* tasks. When several tasks are independent *of each other* — disjoint files, state, and order — and could run at once, fan them out with `dispatching-parallel-agents` instead; that skill owns the collision check and the combined verification.
+*One-at-a-time offload, not fan-out.* "Self-contained" means the task carries no inherited history — not that it is independent of the *other* tasks. When several tasks are independent *of each other* and could run at once, fan them out with `dispatching-parallel-agents` instead — it owns the independence check and the combined verification.
 
 ## The dispatch packet
 
-Build the prompt from these fields — don't make the subagent hunt for any of them:
+Build it from `dispatching-parallel-agents`' dispatch packet — scope, explicit capability tier, isolation, and the exact report shape — that skill owns the contract for handing work to a cold agent. A plan task pastes four more things in, because a subagent inherits none of your context:
 
-- **Task contract** — paste the full task text. Never tell it to "go read the task file"; give it the text, so it starts from a known snapshot with no inherited history.
-- **Capability tier** — state it explicitly (small / medium / large) and tell the subagent to run at that tier, not reach above it. A tier left implicit defaults to the expensive parent model.
+- **Task contract** — paste the full task text. It is the small, authoritative thing the agent starts from, so per that packet's paste-vs-path rule you paste it rather than point at the task file.
 - **Accumulated discoveries** — paste the current `## Learnings` from the index (or "none yet"). This is what stops a later task re-debugging what an earlier one already solved.
 - **Quality rules** — paste verbatim: *escalate rather than guess; bad work is worse than no work; write the test unless the contract says otherwise; honor the tier.* Behavioral rules don't reach a subagent unless you send them.
-- **Expected outcome** — ask for one of: done / done-with-concerns / blocked / needs-context, with file and line references for anything flagged.
+- **Expected outcome** — one of the four execution states (done / done-with-concerns / blocked / needs-context — see `SKILL.md`), with file and line references for anything flagged.
 
 ## Git safety (silent-data-loss guards)
 
