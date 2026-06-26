@@ -95,14 +95,23 @@ for i in "${!turns[@]}"; do
   fi
   cat "$turnstream" >> "$allstream"
   [ -z "$sid" ] && sid="$(jq -rc 'select(.session_id) | .session_id' "$turnstream" 2>/dev/null | head -n1)"
-  hit="$(jq -rc "$SKILL_FILTER" "$turnstream" 2>/dev/null | head -n1)"; hit="${hit#augments:}"
+  # Routing-first: the model invokes `using-augments` (router) before the specific
+  # skill, so judge the whole turn's chain, not the first call. The "terminal" is
+  # the first non-router skill the route resolved to.
+  chain="$(jq -rc "$SKILL_FILTER" "$turnstream" 2>/dev/null | sed 's/^augments://')"
+  terminal="$(printf '%s\n' "$chain" | grep -vx 'using-augments' | grep -v '^$' | head -n1)"
+  routed=""; printf '%s\n' "$chain" | grep -qx 'using-augments' && routed="using-augments"
   mark=""
   case "$want" in
     \?)   mark="(no contract)";;
-    none) [ -z "$hit" ] && mark="ok (quiet)" || { mark="MISS (expected none)"; fails=$((fails+1)); };;
-    *)    [ "$hit" = "$want" ] && mark="ok" || { mark="MISS (wanted $want)"; fails=$((fails+1)); };;
+    none) [ -z "$terminal" ] && mark="ok (no specific skill)" || { mark="MISS (fired $terminal)"; fails=$((fails+1)); };;
+    using-augments) [ -n "$routed" ] && mark="ok" || { mark="MISS (wanted using-augments)"; fails=$((fails+1)); };;
+    *)    if printf '%s\n' "$chain" | grep -qx "$want"; then mark="ok"; else mark="MISS (wanted $want)"; fails=$((fails+1)); fi;;
   esac
-  printf 'turn %d -> %-26s %-20s | %s\n' "$((i+1))" "${hit:+augments:}${hit:-<none>}" "$mark" "${msg:0:48}"
+  if [ -n "$terminal" ]; then shown="augments:$terminal"
+  elif [ -n "$routed" ]; then shown="augments:using-augments (router only)"
+  else shown="<none>"; fi
+  printf 'turn %d -> %-34s %-22s | %s\n' "$((i+1))" "$shown" "$mark" "${msg:0:48}"
   if [ -n "$verbose" ]; then
     jq -rc 'select(.type=="assistant") | .message.content[]?
       | if .type=="text" then "  | " + .text

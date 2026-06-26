@@ -60,9 +60,16 @@ if [ "${1:-}" = "selftest" ]; then
     if [ "$got" = "$2" ]; then printf 'ok    %-26s -> %s\n' "$1" "${got:-<none>}"
     else printf 'FAIL  %-26s -> got "%s" want "%s"\n' "$1" "$got" "$2"; st_fail=1; fi
   }
+  st_chain() {  # $1 fixture, $2 skill that must appear ANYWHERE in the chain (routing-first)
+    if jq -rc "$SKILL_FILTER" "fixtures/$1" 2>/dev/null | grep -qx "$2"; then printf 'ok    %-26s chain has %s\n' "$1" "$2"
+    else printf 'FAIL  %-26s chain lacks %s\n' "$1" "$2"; st_fail=1; fi
+  }
   st_check fired-debugging.jsonl  "augments:debugging"
   st_check none.jsonl             ""
   st_check proceeded-acting.jsonl ""
+  # Routing-first: the first call is the router; the route resolves onward to the skill.
+  st_check routed-dpa.jsonl       "augments:using-augments"
+  st_chain routed-dpa.jsonl       "augments:dispatching-parallel-agents"
   [ "$st_fail" -eq 0 ] && echo "detection self-test: PASS" || echo "detection self-test: FAIL"
   exit "$st_fail"
 fi
@@ -120,24 +127,46 @@ flags+=(--max-turns "$maxturns")                 # bound runaway / non-firing ru
 ( cd "$workdir" && exec timeout "$timeout_s" claude -p "$scenario" "${flags[@]}" ) > "$stream" 2>/dev/null &
 cpid=$!
 
-# Poll the growing transcript; kill the run the moment a real Skill tool_use
-# lands (jq -e succeeds). A partial trailing line just makes jq fail this tick.
+# Poll the growing transcript and stop once the route has RESOLVED. Under
+# routing-first the model invokes `using-augments` (the router) before the
+# specific skill, so the FIRST Skill call is the router, not the answer — we must
+# follow the chain. Kill when: the --expect skill appears anywhere in the chain;
+# OR (no --expect) any non-router skill fires; OR --expect IS the router and it
+# fired. A run that only ever fires the router is bounded by --max-turns.
+router="augments:using-augments"
+want=""; [ -n "$expect" ] && want="augments:${expect}"
 while kill -0 "$cpid" 2>/dev/null; do
-  if jq -e "$SKILL_FILTER" "$stream" >/dev/null 2>&1; then
-    kill "$cpid" 2>/dev/null; break
+  chain="$(jq -rc "$SKILL_FILTER" "$stream" 2>/dev/null)"
+  if [ -n "$want" ]; then
+    if printf '%s\n' "$chain" | grep -qx "$want" \
+       || printf '%s\n' "$chain" | grep -vx "$router" | grep -q .; then
+      kill "$cpid" 2>/dev/null; break
+    fi
+  else
+    printf '%s\n' "$chain" | grep -vx "$router" | grep -q . && { kill "$cpid" 2>/dev/null; break; }
   fi
   sleep 2
 done
 wait "$cpid" 2>/dev/null
 
 # Verdict from assistant events only — system/hook events are never consulted.
-skill_call="$(jq -rc "$SKILL_FILTER" "$stream" 2>/dev/null | head -n1)"
+# The CHAIN is the ordered list of Skill calls; under routing-first it is
+# typically `using-augments` -> the specific skill. Judge by the whole chain, not
+# the first call (which is just the router).
+chain="$(jq -rc "$SKILL_FILTER" "$stream" 2>/dev/null)"
+chain_str="$(printf '%s' "$chain" | paste -sd' ' -)"
+first_call="$(printf '%s\n' "$chain" | grep -v '^$' | head -n1)"
+terminal="$(printf '%s\n' "$chain" | grep -vx "$router" | grep -v '^$' | head -n1)"
 prose="$(jq -rc 'select(.type=="assistant") | .message.content[]?
   | select(.type=="text") | .text' "$stream" 2>/dev/null \
   | grep -oiE 'augments:[a-z0-9-]+' | head -n1)"
 
-if [ -n "$skill_call" ]; then
-  verdict="ACTIVATED via Skill tool: ${skill_call}"
+if [ -n "$want" ] && printf '%s\n' "$chain" | grep -qx "$want"; then
+  verdict="ACTIVATED — chain: ${chain_str} (reached ${want})"
+elif [ -z "$want" ] && [ -n "$first_call" ]; then
+  verdict="ACTIVATED — chain: ${chain_str} (routed to ${terminal:-$first_call})"
+elif [ -n "$first_call" ]; then
+  verdict="ROUTED ELSEWHERE — chain: ${chain_str} (expected ${want})"
 elif [ -n "$prose" ]; then
   verdict="MENTIONED in prose only, not invoked: ${prose}"
 else

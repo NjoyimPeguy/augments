@@ -2,6 +2,19 @@
 
 Notable changes to augments, newest first. Versions follow semantic versioning; the narrative for each release lives on its release page — this file is the terse, cumulative record.
 
+## [2.1.1] — 2026-06-26
+
+### Changed
+
+- **Routing-first delivery: a thin pointer to the `using-augments` router.** The SessionStart bootstrap (`hooks/claude-code/context.md`) slims to a one-line pointer that re-fires on compaction; the routing discipline it used to carry — red-flags, the rationalization table, a deterministic-engineer mental-model graph — moves into the `using-augments` body, removing the duplication between them. The philosophy is reconciled, not softened: a firm floor where there is only process, a deterministic gate where there is proof, never one dressed as the other (`docs/augments/philosophy.md`).
+- **The dispatch skills activate at the right moment.** `dispatching-parallel-agents`' trigger moves from a burden-of-proof description ("provably independent… quick enough inline") to a positive, observable one; the independence check stays in the body. `subagent-dispatch.md` drops the "optional" framing, points to the shared dispatch packet instead of duplicating it, and resolves a paste-vs-path contradiction.
+- **The `.augments/` output location is mandatory.** Across the nine writing skills the artifact path stops being an optional "default" and becomes the standard location, overridable only by the user, with one canonical phrasing; the five design skills write sections of one shared dated design doc. A validator assertion keeps it from drifting back.
+- **The activation runners are routing-first aware.** Both harness runners judge the whole `using-augments → X` chain (route-then-fire) instead of the first Skill call, with an offline fixture + selftest for the chain.
+
+### Removed
+
+- **The Codex adapter.** `.codex-plugin/` and the Codex references in the docs are removed — augments is Claude-Code-only for now; a real Codex harness returns when it is exercised and proven. (Past release history in this file is unchanged.)
+
 ## [2.1.0] — 2026-06-24
 
 ### Added

@@ -61,6 +61,9 @@ for skill in "${skills[@]}"; do
     echo "$body" | grep -qiE "$VENDORS"         && err "$(basename "$f"): vendor model name — use a capability tier (small|medium|large)"
     echo "$body" | grep -qiE "$SCANNER_TRIGGERS" && err "$(basename "$f"): harness scanner trigger-word — rephrase so a keyword scan can't hijack the session"
     echo "$body" | grep -qE  '<[a-z][a-z0-9 -]*>' && err "$(basename "$f"): bare <angle> placeholder — use {{double-curly}}"
+    # The .augments/ output location is mandatory (overridable only by the user),
+    # never an optional "default" — keep the convention from drifting back.
+    grep -nE '\.augments/' "$f" | grep -qi 'default' && err "$(basename "$f"): frames an .augments/ path as a 'default' — that location is mandatory (overridable only by the user), not a default"
   done < <(find "$dir" -name '*.md')
 done
 
@@ -72,36 +75,27 @@ while IFS= read -r f; do
 done < <(find hooks -name '*.md' 2>/dev/null)
 
 # Manifest sync: a harness discovers skills only through its manifest, so every
-# leaf skill dir must be listed explicitly in each adapter's "skills" array — a
+# leaf skill dir must be listed explicitly in the plugin's "skills" array — a
 # skill missing from it silently fails to load; a dead entry points nowhere.
-# Every manifest is checked so the adapters cannot silently diverge.
 actual=$(printf '%s\n' "${skills[@]}" | sed 's|/SKILL.md$||; s|^|./|' | sort -u)
-for manifest in .claude-plugin/plugin.json .codex-plugin/plugin.json; do
-  echo "• $manifest (skills array sync)"
-  if [ ! -f "$manifest" ]; then
-    err "missing $manifest"
-    continue
-  fi
+manifest=.claude-plugin/plugin.json
+echo "• $manifest (skills array sync)"
+if [ ! -f "$manifest" ]; then
+  err "missing $manifest"
+else
   declared=$(grep -oE '"\./skills/[^"]+"' "$manifest" | tr -d '"' | sort -u)
   missing=$(comm -23 <(printf '%s\n' "$actual") <(printf '%s\n' "$declared"))
   dead=$(comm -13 <(printf '%s\n' "$actual") <(printf '%s\n' "$declared"))
-  # Codex is experimental/frozen (Claude-Code-first) — its array may lag the
-  # skill dirs; report but DON'T fail. .claude-plugin stays strict (it ships).
-  if [ "$manifest" = ".codex-plugin/plugin.json" ]; then
-    [ -n "$missing" ] && while IFS= read -r m; do note "codex (experimental) lags: $m not yet listed"; done <<< "$missing"
-    [ -n "$dead" ]    && while IFS= read -r d; do note "codex (experimental) dead entry: $d"; done <<< "$dead"
-  else
-    [ -n "$missing" ] && while IFS= read -r m; do err "skill not in $manifest 'skills' (won't load): $m"; done <<< "$missing"
-    [ -n "$dead" ]    && while IFS= read -r d; do err "$manifest 'skills' entry has no SKILL.md: $d"; done <<< "$dead"
-  fi
-done
+  [ -n "$missing" ] && while IFS= read -r m; do err "skill not in $manifest 'skills' (won't load): $m"; done <<< "$missing"
+  [ -n "$dead" ]    && while IFS= read -r d; do err "$manifest 'skills' entry has no SKILL.md: $d"; done <<< "$dead"
+fi
 
-# Version sync: the release version is declared in three manifests and bumped
+# Version sync: the release version is declared in two manifests and bumped
 # together in one release commit (see RELEASING.md). A half-done bump ships
-# different versions to different harnesses, so any disagreement fails.
+# disagreeing versions, so any disagreement fails.
 echo "• manifest versions agree"
 versions=""
-for manifest in .claude-plugin/plugin.json .claude-plugin/marketplace.json .codex-plugin/plugin.json; do
+for manifest in .claude-plugin/plugin.json .claude-plugin/marketplace.json; do
   if [ ! -f "$manifest" ]; then err "missing $manifest"; continue; fi
   v=$(grep -m1 -oE '"version"[[:space:]]*:[[:space:]]*"[^"]+"' "$manifest" | sed -E 's/.*"([^"]+)"$/\1/')
   if [ -z "$v" ]; then err "$manifest: no \"version\" field"; continue; fi

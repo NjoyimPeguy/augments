@@ -18,7 +18,7 @@ A project without a clear goal ships features no one needed. Before scope or des
 2. **Name the primary users or stakeholders** and what changes for them.
 3. **Make success measurable.** For each goal, a criterion you could check later: a number, an observable behavior, a yes/no. "Users can X in under N seconds", not "better UX".
 4. **State the value in one sentence** — the elevator version.
-5. **Write the `## Goals` section** of the project brief — objective, users, success criteria, one-line value — to the project's briefs location (default `.augments/briefs/{{YYYY-MM-DD}}-{{name}}.md`).
+5. **Write the `## Goals` section** of the project brief — objective, users, success criteria, one-line value — to `.augments/briefs/{{YYYY-MM-DD}}-{{topic}}.md` (the standard briefs location; another path only if the user has set one).
 
 ## Common mistakes
 

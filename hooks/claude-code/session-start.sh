@@ -5,14 +5,17 @@
 set -euo pipefail
 
 here="$(cd "$(dirname "$0")" && pwd)"
-nudge="$(cat "${here}/context.md")"
+context="$(cat "${here}/context.md")"
 
 # JSON-escape, in order: backslash, double-quote, then the control characters.
-esc="$nudge"
+esc="$context"
 esc="${esc//\\/\\\\}"
 esc="${esc//\"/\\\"}"
 esc="${esc//$'\n'/\\n}"
 esc="${esc//$'\r'/\\r}"
 esc="${esc//$'\t'/\\t}"
 
-printf '{\n  "hookSpecificOutput": {\n    "hookEventName": "SessionStart",\n    "additionalContext": "%s"\n  }\n}\n' "$esc"
+if [ -n "${CLAUDE_PLUGIN_ROOT:-}" ]; then
+    # Claude Code sets CLAUDE_PLUGIN_ROOT
+    printf '{\n  "hookSpecificOutput": {\n    "hookEventName": "SessionStart",\n    "additionalContext": "%s"\n  }\n}\n' "$esc"
+fi

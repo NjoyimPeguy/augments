@@ -1,6 +1,6 @@
 ---
 name: dispatching-parallel-agents
-description: Use when you have two or more genuinely independent pieces of work — separate failing tests, unrelated bugs, parallel research threads — that share no files, no state, and no ordering. Fan them out to concurrent agents, each with its own scope and deliverable, then reconcile. Skip when tasks depend on each other or share a file (sequence them with executing-plans), or when the work is quick enough inline.
+description: Use when more than one piece of work sits in front of you and they don't touch the same files — separate failing tests, unrelated bugs, parallel research threads. The moment you notice a second, unrelated task, fan them out to concurrent agents instead of grinding through them in series — scope each, isolate state, then reconcile with a combined check. Skip when one task needs another's output (sequence them with executing-plans), or when there's just one thing to do.
 ---
 
 # Dispatching Parallel Agents
@@ -29,7 +29,7 @@ Each agent starts cold — hand it everything, never your session history:
 - **Constraints** — name the tier to run at (omit it and the agent silently inherits the session's costliest one), the quality rules, and "stay in scope; report out-of-scope rather than reaching."
 - **Isolation** — if it builds or runs anything, its own workspace/port/DB.
 
-Pass bulky context — a diff, a spec, a log — as a **file path the agent reads**, not pasted text: a paste sits in the most expensive context for the whole run, a path costs nothing until opened.
+Two ways to hand over context, and the choice matters: **paste** the small, authoritative thing the agent must start from verbatim — its task contract, the exact spec — so it works from a known snapshot; pass **bulky reference** — a diff, a log, a large file — as a **path the agent reads**, since a paste sits in the most expensive context for the whole run while a path costs nothing until opened. Paste what *defines* the task; point at what merely *informs* it.
 
 ## Reconcile (the coordinator's job, not the agents')
 

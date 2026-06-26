@@ -19,7 +19,7 @@ Record the decisions you'd regret not being able to explain in six months. An AD
 3. **Record the choice and its rationale** — and, explicitly, **the rejected alternatives and why**. The rejection is the load-bearing part: it stops the decision being silently reversed later.
 4. **Note the consequences** — what this commits you to, and what it closes off.
 5. **Mark its status** — `proposed` when recorded ahead of the work, flipped to `in force` once the decision is built, `superseded by {{adr}}` when replaced. A reader must be able to tell a decision in force from a plan that never landed — otherwise a later session reads unbuilt intentions as the current architecture.
-6. **Append the ADR** to the design document's decisions section (or a standing decisions log) — the project's location, default `.augments/designs/{{YYYY-MM-DD}}-{{topic}}.md`.
+6. **Append the ADR** to the decisions section of the shared design document `.augments/designs/{{YYYY-MM-DD}}-{{topic}}.md` (the standard designs location; another path, e.g. a standing decisions log, only if the user has set one).
 
 ## Common mistakes
 

@@ -88,10 +88,10 @@ A PR adding a harness MUST include a runnable test layer under `tests/harness/<n
 ## Layout
 
 - `skills/<phase>/<name>/` — the skills, by SDLC phase (canonical order is in `README.md`; folders are unnumbered).
-- `.claude-plugin/`, `.codex-plugin/` — per-harness install manifests; their skills arrays must stay in sync (the gate checks both). Adding a harness: `docs/augments/harness-support.md`.
+- `.claude-plugin/` — the install manifest; its skills array must list every skill on disk (the gate checks it). Adding a harness: `docs/augments/harness-support.md`.
 - `AGENTS.md`, `GEMINI.md` — symlinks to this file, so a harness that reads its own instructions file gets the same guidance from one source.
 - `.github/` — CI (`workflows/validate.yml`) and the PR template (`PULL_REQUEST_TEMPLATE.md`).
 - `tests/` — the portable gate (`validate-skills.sh`, `token-budget.sh`) plus `harness/<adapter>/` — per-harness **runnable** tests that drive the real CLI to prove skills activate, with `behavioral/` discipline-pressure records alongside. Claude Code is the only adapter wired today.
 - `governance/` — adoptable **deterministic-gate** templates (CI workflows, branch-protection, pre-commit) that make the production-critical skills non-skippable at the commit/PR/CI boundary, where firm persuasion can't. Each gate maps to the skill it enforces, labelled bulletproof vs heuristic.
-- `CHANGELOG.md`, `RELEASING.md` — the release record, and how releases are versioned and cut (semver over the skill surface; the gate checks the three manifest versions agree).
+- `CHANGELOG.md`, `RELEASING.md` — the release record, and how releases are versioned and cut (semver over the skill surface; the gate checks the two manifest versions agree).
 - `.claude/` — local config and notes; gitignored, never shipped.

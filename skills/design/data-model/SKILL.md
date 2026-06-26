@@ -19,7 +19,7 @@ Design the data before the code that moves it. A schema is more than columns —
 3. **Map the relationships** — their **cardinality** (one-to-many, many-to-many) and **ownership** (whose lifecycle controls the other; what cascades on delete).
 4. **Write down the invariants** — rules that must always hold (a balance is never negative; an order always has a customer). These become constraints and tests.
 5. **Note what's deliberately denormalized or cached, and why** — every copy of data is a consistency risk you're choosing to accept.
-6. **Write the data-model section** of the design document — default `.augments/designs/{{YYYY-MM-DD}}-{{topic}}.md`.
+6. **Write the data-model section** of the shared design document `.augments/designs/{{YYYY-MM-DD}}-{{topic}}.md` (the standard designs location; another path only if the user has set one).
 
 ## Common mistakes
 
