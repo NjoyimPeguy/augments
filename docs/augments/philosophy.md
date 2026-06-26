@@ -42,11 +42,13 @@ This is the thread that runs through the whole library. None of these skills ask
 | `writing-plans` / `executing-plans` | the model doing a task | the per-task Evaluator and the plan Acceptance |
 | `debugging` | the model's hypothesis | the reproduction loop |
 
-## Instruction-injection is not a gate
+## Instruction and gate are different tools
 
-A tempting mistake is to make the model reliable by injecting more instructions — an enforcer that says "you must, before everything, every time". That tries to change the generator's *behavior*: probabilistic, fragile, and tied to one tool.
+A tempting mistake is to make the model's *verdict* reliable by injecting more instructions — an enforcer that says "you must, before everything, confirm it works". That tries to settle by instruction the one thing only a check can settle: probabilistic, fragile, and tied to one tool.
 
-The engineering-correct enforcement is the opposite — a deterministic gate on the **artifact**. A version-control or CI step that runs the tests and refuses the bad output does not care how confident the model was, does not vanish for a sub-agent, and is portable, because it lives in git and CI rather than in any one tool's session. Prefer a gate on the output over an instruction about behavior.
+The engineering-correct enforcement of a verdict is the opposite — a deterministic gate on the **artifact**. A version-control or CI step that runs the tests and refuses the bad output does not care how confident the model was, does not vanish for a sub-agent, and is portable, because it lives in git and CI rather than in any one tool's session. Prefer a gate on the output over an instruction about the verdict.
+
+This does not make instruction worthless — it makes it the *wrong tool for the verdict* and the *right tool for routing*. Whether the model reaches for the applicable skill at the right moment has no deterministic check behind it (see the next section), so there a firm instruction is the strongest lever there is — and augments uses one deliberately: the routing stance is non-negotiable by default, because a soft, optional nudge is walked past. The discipline is to keep the two honest and separate — **a firm floor where you have only process; a deterministic gate where you have proof; and never the language of one dressed on the other.**
 
 ## Where there is proof, and where there is only process
 
@@ -62,8 +64,8 @@ What does not shrink with capability is the verdict problem. However intelligent
 
 ## What this means for the library
 
-This is why `using-augments` is not a compliance enforcer. Its job is to install the mental model that makes every other skill cohere:
+This is why `using-augments` carries a firm routing stance *and* refuses to overclaim. Its first job is to install the mental model that makes every other skill cohere:
 
 > You are a generator. These skills surround your work with deterministic gates. Truth comes from the gate — a test, a check, a reproduction — never from your confidence. "Done" means a check passed, not that you believe it is done.
 
-The reliability of augments does not live in a bootstrap that tries to force you. It lives in the gates the skills define — and, where you want enforcement, in deterministic checks wired into git and CI, where enforcement is real and portable.
+Its second job is to route — firmly, because a skipped skill is the failure the library exists to prevent, and a gentle suggestion is skipped. But routing is process, not proof: it carries no deterministic verdict, so its firmness is persuasion, honestly labeled, never a claim to be a gate. The reliability of augments does not live in that firmness. It lives in the gates the skills define — and, where you want enforcement, in deterministic checks wired into git and CI, where enforcement is real and portable.
