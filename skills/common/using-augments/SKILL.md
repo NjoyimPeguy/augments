@@ -42,9 +42,11 @@ digraph engineer {
 }
 ```
 
+**Before building on `main`/`master`:** if the change has real logic or more than one step, isolate it on its own branch or worktree first — never start non-trivial implementation on the main branch without the user's explicit consent (`using-git-worktrees`).
+
 ## The map
 
-Reach for a skill when its trigger fits. Cross-cutting: `interview-me` grills an unclear request into an alignment brief (any phase); `prototyping` answers a build-faster-than-argue question with a throwaway spike; `zoom-out` maps unfamiliar code a layer up; `handoff` writes a resumable summary when a session ends mid-work.
+Reach for a skill when its trigger fits. Cross-cutting: `interview-me` grills an unclear request into an alignment brief (any phase); `yagni` holds any change — feature, fix, or refactor — to only what's needed and makes it actually work; `prototyping` answers a build-faster-than-argue question with a throwaway spike; `zoom-out` maps unfamiliar code a layer up; `handoff` writes a resumable summary when a session ends mid-work.
 
 **Planning** (a new project or initiative)
 
@@ -66,7 +68,6 @@ Reach for a skill when its trigger fits. Cross-cutting: `interview-me` grills an
 **Implementation**
 
 - `test-driven-development` — any feature or bugfix with real logic; the failing test comes first.
-- `yagni` — build only what's needed and make it work; guards over-engineering and laziness-as-simplicity.
 - `executing-plans` — run a plan directory one task at a time, gating each on its Evaluator.
 
 **Testing**

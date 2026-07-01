@@ -1,6 +1,6 @@
 ---
 name: yagni
-description: Use when about to write or change code for a feature or fix — build only what's needed and make sure it actually works. Guards both directions: over-engineering (speculative abstraction, unused config, "for later") and its opposite, laziness dressed as simplicity (stubs, TODOs, the smallest diff in the wrong place). "Needed" means it solves the task and runs. Skip for throwaway spikes or pure config with no logic.
+description: Use the moment you reach for more than the task needs — a new abstraction, interface, config knob, or dependency, or anything kept "for later" — OR when the simple path tempts you to under-deliver: a stub, a TODO, or the smallest diff that patches a symptom while a sibling caller stays broken. Build only what the task needs, and make it actually run. Guards both directions: over-engineering and laziness dressed as simplicity; "needed" means it solves the task and runs. Distinct from test-driven-development, which proves the code runs — yagni governs how much to build, so pair them rather than pick one. Skip for throwaway spikes or pure config with no logic.
 ---
 
 # YAGNI — build only what's needed, and make it work

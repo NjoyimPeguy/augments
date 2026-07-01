@@ -7,6 +7,8 @@ description: Use when work needs isolation from your current checkout — a mult
 
 Isolate work so it can't collide with your main checkout or another agent's. A worktree is a second working directory on its own branch, sharing one repository — the cheap way to get isolation without a second clone.
 
+**Never start non-trivial work on `main`/`master`.** Isolate it on a dedicated branch or worktree *before* the first edit, unless the user explicitly okayed working on the main branch. A trivial one-liner the user asked for can commit on the current branch; anything with real logic or more than one step gets its own branch first, so commits can't land on `main` by accident.
+
 ## When to use
 
 - A plan of several tasks, a risky refactor, or parallel agents that must not share a working tree.
