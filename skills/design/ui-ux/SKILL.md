@@ -1,6 +1,6 @@
 ---
 name: ui-ux
-description: Use when designing a user-facing interface — the flows, layout, and experience — before building it. Produces the UI/UX section of the design document as concrete user flows with acceptance criteria. Skip for backend-only or non-interactive work.
+description: Use when designing a user-facing interface — the flows, layout, and experience — before building it. Skip for backend-only or non-interactive work.
 ---
 
 # UI/UX
@@ -24,5 +24,4 @@ Design the experience before the components. A UI is the set of flows a user mov
 ## Common mistakes
 
 - Designing only the happy path — empty/error/loading states are the real work.
-- Variants that differ only in colour — that's a tweak, not a design choice.
 - Acceptance criteria a test can't check, with no manual step assigned.

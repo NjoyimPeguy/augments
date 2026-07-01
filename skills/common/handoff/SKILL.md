@@ -1,6 +1,6 @@
 ---
 name: handoff
-description: Use when a session is ending or work is passing to a fresh session or another agent — write a durable handoff so the next one resumes without re-deriving context: goal, state, decisions, the concrete next step. Skip for a finished, self-contained task that needs no continuation.
+description: Use when a session is ending or work is passing to a fresh session or another agent — so the next one resumes without re-deriving goal, state, decisions, and the next step. Skip for a finished, self-contained task that needs no continuation.
 ---
 
 # Handoff

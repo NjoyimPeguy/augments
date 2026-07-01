@@ -1,6 +1,6 @@
 ---
 name: release-readiness
-description: Use after a change is merged and before it ships to production — a portable pre-deploy gate for what you can reason about on any platform: CI green, migrations reversible, rollback named, flags set, changelog written, breaking changes flagged. The deploy command itself belongs to your environment, not here. Skip for a change that doesn't ship to a running system.
+description: Use after a change is merged and before it ships to production — a portable pre-deploy gate for what you can reason about on any platform. Skip for a change that doesn't ship to a running system.
 ---
 
 # Release Readiness

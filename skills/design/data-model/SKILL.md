@@ -1,6 +1,6 @@
 ---
 name: data-model
-description: Use when designing the data a system stores and how it relates — entities, attributes, relationships, and the invariants that keep it correct. Produces the data-model section of the design document. Skip for a feature that adds no persistent state.
+description: Use when designing the data a system stores and how it relates — entities, attributes, relationships, and the invariants that keep it correct. Skip for a feature that adds no persistent state.
 ---
 
 # Data Model

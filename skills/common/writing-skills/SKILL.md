@@ -1,6 +1,6 @@
 ---
 name: writing-skills
-description: Use when creating a new skill or editing an existing one in this library. Defines the lean format — thin SKILL.md, progressive disclosure, trigger-style descriptions, complexity gates — and how to prove a skill works. This is for AUTHORING skills, not using them.
+description: Use when creating or editing a skill in this library — the lean format, progressive disclosure, and how to prove a skill works. For AUTHORING skills, not using them.
 ---
 
 # Writing Skills

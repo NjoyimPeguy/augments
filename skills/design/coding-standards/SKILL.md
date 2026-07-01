@@ -1,6 +1,6 @@
 ---
 name: coding-standards
-description: Use once per project, or when conventions drift, to set the coding standards agents and humans follow — the domain vocabulary, the patterns to use, and the things to never do. Produces the coding-standards section of the design document or a standing conventions file. Skip if the project already has clear, followed standards.
+description: Use once per project, or when conventions drift, to set the standards agents and humans follow — domain vocabulary, patterns to use, things to never do. Skip if the project already has clear, followed standards.
 ---
 
 # Coding Standards

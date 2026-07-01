@@ -23,7 +23,7 @@ Root cause before fix. A patch you can't explain isn't a fix — it's a guess th
 
 ## After three failed fixes, stop
 
-Three failures is a signal: the problem is the architecture, not the bug. The tells — each fix reveals new coupling, each needs a big refactor, or each creates a new symptom elsewhere. Stop and discuss before attempt four.
+Three failures is a signal: the problem is the architecture, not the bug. The tells — each fix reveals new coupling, each needs a big refactor, or each creates a new symptom elsewhere. Stop and discuss before attempt four; the fix is structural (`refactor-architecture`), not another patch.
 
 ## Hard stops
 

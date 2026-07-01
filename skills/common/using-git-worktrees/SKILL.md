@@ -1,6 +1,6 @@
 ---
 name: using-git-worktrees
-description: Use when work needs isolation from your current checkout — a multi-task plan, parallel agents, or a risky change you don't want touching the main working tree. Sets up a worktree (or your harness's native isolation) with its own branch, ports, and data, so commits never land on the wrong branch. Skip when isolation already exists or the change is a quick one-liner on the current branch.
+description: Use when work needs isolation from your current checkout — a multi-task plan, parallel agents, or a risky change you don't want touching the main working tree. Skip when isolation already exists or the change is a quick one-liner on the current branch.
 ---
 
 # Using Git Worktrees

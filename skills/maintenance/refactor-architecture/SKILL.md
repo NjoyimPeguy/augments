@@ -1,6 +1,6 @@
 ---
 name: refactor-architecture
-description: Use when an existing codebase has architectural friction — changes touch many files, modules are shallow, seams leak — and you want to improve its structure. Reviews for module depth and locality, then proposes targeted refactors. Skip for new design (use system-architecture) or a quick local fix.
+description: Use when an existing codebase has architectural friction — changes touch many files, modules are shallow, seams leak — and you want to improve its structure. Skip for new design (use system-architecture) or a quick local fix.
 ---
 
 # Refactor Architecture

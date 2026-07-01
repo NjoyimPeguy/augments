@@ -1,6 +1,6 @@
 ---
 name: feasibility-check
-description: Use before committing to a project or initiative — to decide whether the goal is achievable within the real constraints, and to surface the risks that could sink it. Produces a go / no-go / go-if verdict and points the riskiest unknowns at a prototype.
+description: Use before committing to a project or initiative — to decide whether the goal is achievable within the real constraints, and surface the risks that could sink it. Points the riskiest unknowns at a prototype.
 ---
 
 # Feasibility Check
@@ -20,6 +20,8 @@ Optimism is not a plan. Before a project is greenlit, find the thing most likely
 3. **Reduce the top unknowns cheaply** — usually a small spike (see `prototyping`), not more discussion.
 4. **Give a verdict:** go / no-go / go-if (with the conditions that must hold). A no-go now is far cheaper than a failure later.
 5. **Write the `## Feasibility` section** of the project brief: constraints, top risks, the verdict and its conditions.
+
+A **go** hands off to `scope-it` — draw the boundary before design.
 
 ## Common mistakes
 

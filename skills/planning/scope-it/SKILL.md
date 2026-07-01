@@ -1,6 +1,6 @@
 ---
 name: scope-it
-description: Use after the goals are set and before design — to draw the boundary of a project or initiative — what is in, what is explicitly out, and the smallest cut that still meets the goal. Skip for a single feature; use interview-me.
+description: Use after the goals are set and before design — to draw a project's boundary: what's in, what's explicitly out, and the smallest cut that still meets the goal. Skip for a single feature; use interview-me.
 ---
 
 # Scope It
@@ -20,6 +20,8 @@ Scope is decided by what you say no to. An unbounded project never ships — nam
 3. **The MVP cut:** if you had to ship in a fraction of the time, what is the thinnest version that still meets the goal? Make that the spine.
 4. **Assumptions and dependencies:** what must be true or available for this scope to hold.
 5. **Write the `## Scope` section** of the project brief: in, out, the MVP cut, assumptions.
+
+With the boundary set, requirements come next (`spec-it`), then design.
 
 ## Common mistakes
 

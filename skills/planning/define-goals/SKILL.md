@@ -1,6 +1,6 @@
 ---
 name: define-goals
-description: Use at the start of a new project or initiative — before scoping or building — to pin down what success means. Extracts the core objective and measurable success criteria into the project brief. Skip for a single feature; use interview-me for feature requirements.
+description: Use at the start of a new project or initiative — before scoping or building — to pin down what success means and its measurable criteria. Skip for a single feature; use interview-me for feature requirements.
 ---
 
 # Define Goals
@@ -19,6 +19,8 @@ A project without a clear goal ships features no one needed. Before scope or des
 3. **Make success measurable.** For each goal, a criterion you could check later: a number, an observable behavior, a yes/no. "Users can X in under N seconds", not "better UX".
 4. **State the value in one sentence** — the elevator version.
 5. **Write the `## Goals` section** of the project brief — objective, users, success criteria, one-line value — to `.augments/briefs/{{YYYY-MM-DD}}-{{topic}}.md` (the standard briefs location; another path only if the user has set one).
+
+With the goal agreed, the arc continues: `feasibility-check` if viability is genuinely uncertain, then `scope-it` to draw the boundary.
 
 ## Common mistakes
 

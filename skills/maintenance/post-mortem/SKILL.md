@@ -1,6 +1,6 @@
 ---
 name: post-mortem
-description: Use after a failure escaped to production or was caught late — a regression, outage, data corruption, or a defect found long after it shipped — to find why the process let it through and turn that into a structural fix. Also for an end-of-cycle retrospective on work that went badly. Skip for a bug you can simply fix — that is debugging; this asks why it escaped, not what the code did wrong.
+description: Use after a failure escaped to production or was caught late — a regression, outage, data corruption, or a defect found long after it shipped — to find why the process let it through, not just fix the code. Also for an end-of-cycle retrospective on work that went badly. Skip a bug you can simply fix — that is debugging.
 ---
 
 # Post-Mortem
