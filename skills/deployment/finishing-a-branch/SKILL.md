@@ -1,6 +1,6 @@
 ---
 name: finishing-a-branch
-description: Use when a change's checks have been run and verified green and you're ready to wrap the branch — clean commits, a real PR description, and a clear merge/keep/discard decision. If "done" or "tested" is only asserted and not yet confirmed by running the check, verify first (verifying-completion) — don't wrap on an unverified claim. Gates on green before anything destructive; never force-pushes or discards without explicit say-so. Skip mid-development — this is the wrap-up.
+description: Use when a change's checks are verified green and you're ready to wrap the branch — clean commits, a real PR description, and a merge/keep/discard decision. If done or tested is only asserted, not yet run, verify first (verifying-completion). Skip mid-development — this is the wrap-up.
 ---
 
 # Finishing a Branch
@@ -21,7 +21,7 @@ Take a working branch to a merge-ready state. The order is fixed — gate, tidy,
    - `## Test Plan` — how it was verified.
    A reader should grasp the change without opening the diff.
 4. **Decide, explicitly** — surface the choice once; don't open-end it:
-   - **Merge** it — only after green checks and review (`requesting-code-review`; its self-review path covers a trivial mechanical diff).
+   - **Merge** it — only after green checks and review (`requesting-code-review`; its self-review path covers a trivial mechanical diff). If it ships to a running system, `release-readiness` is the next gate before deploy.
    - **Open a PR** and leave the branch for review.
    - **Keep** it as-is, or **discard** it.
 5. **Clean up only what you created**, and only after the merge is confirmed. Remove a workspace/worktree before deleting its branch, never the reverse (see `using-git-worktrees`). Never delete a branch or workspace you didn't create, and never discard without explicit confirmation.

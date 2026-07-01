@@ -10,7 +10,7 @@ There is exactly **one** set of skills, and they are harness- and model-agnostic
 
 | Harness | Adapter | Proactive-use nudge | Status |
 | ------- | ------- | ------------------- | ------ |
-| Claude Code | `.claude-plugin/` (plugin manifest + `marketplace.json`) | SessionStart hook → `hooks/claude-code/session-start.sh` wraps `hooks/claude-code/context.md` in the harness's JSON context envelope (matcher `startup\|resume\|clear\|compact`, so the nudge survives **resume** and **compaction**) | Exercised — runnable tests in `tests/harness/claude-code/` (`run-activation.sh`, `run-flow.sh`) |
+| Claude Code | `.claude-plugin/` (plugin manifest + `marketplace.json`) | SessionStart hook → `hooks/claude-code/session-start.sh` wraps `hooks/claude-code/context.md` in the harness's JSON context envelope (matcher `startup\|resume\|clear\|compact`, so the nudge survives **resume** and **compaction**); plus a **Stop** re-nudge → `hooks/claude-code/stop-nudge.sh` re-routes to the done-boundary skills when a turn wraps up claiming done (fires once) | Exercised — runnable tests in `tests/harness/claude-code/` (`run-activation.sh`, `run-flow.sh`, `test-stop-nudge.sh`) |
 
 The `.claude-plugin` manifest must list every skill on disk — the gate fails CI if it drifts. Claude Code is the only adapter today; a new harness's manifest is added alongside it and the gate extended to check its sync too (see *Adding a harness adapter*).
 
@@ -28,10 +28,10 @@ The skills need no runtime — they are plain Markdown invoked by **name** (the 
 
 ## Hardening a boundary locally (optional)
 
-The proactive-use nudge is additive context, never a blocker — that is deliberate: the skills work *alongside* the agent's judgment, and augments ships nothing that blocks an action (see the [philosophy](philosophy.md)). If you want a **deterministic interrupt** at a specific boundary in your own project — say, pausing a commit or merge until the diff has been independently reviewed — build it as *project-local configuration in your repository* (a pre-tool hook, a git hook, or your harness's equivalent). It does not belong in augments core:
+augments ships its routing nudge at two boundaries — **session start** (the SessionStart injection above) and the **done boundary** (a `Stop` re-nudge that, when a turn wraps up claiming the work is done, re-surfaces `verifying-completion` and the review/wrap skills once, then steps aside). Both are *routing* reminders: they re-point the agent at the right skill, block no action, certify no verdict, and fire with an escape — persuasion at the moment of need, honestly labelled, never a gate (see the [philosophy](philosophy.md)). A **verdict interrupt** is a different animal and stays out of core. If you want to pause a commit or merge until the diff has been independently reviewed, build it as *project-local configuration in your repository* (a pre-tool hook, a git hook, or your harness's equivalent):
 
 - **It binds to one harness's mechanism.** A hook written for one runner's event model is inert everywhere else; the skills must stay portable, so enforcement glue stays out of them and out of the shipped adapters.
-- **It changes the contract.** Shipping a blocking hook to every installer turns an opt-in library into an enforcer — the inverse of the nudge's "firm, not coercive, with one escape."
+- **It changes the contract.** Shipping an *action-blocking* hook to every installer turns an opt-in library into an enforcer — the inverse of a nudge's "firm, not coercive, with one escape." (The done-boundary re-nudge stays on the nudge side of that line: it blocks no action and fires at most once.)
 - **It usually isn't the gate it looks like.** If the same agent that skipped the discipline can acknowledge or bypass the interrupt, you have built a deterministic *reminder*, not a deterministic *gate*. That can still be worth having — an interrupt at the boundary is an event-conditioned trigger, useful belt-and-suspenders — but be honest that the truth still comes from the review or check it points at, not from the hook.
 
 Keep such a hook dependency-free and scoped to your project. If it grows genuinely reusable, publish it as its own plugin rather than proposing it for core ([`../../CLAUDE.md`](../../CLAUDE.md), *What won't be accepted*).

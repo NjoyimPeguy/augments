@@ -11,7 +11,7 @@ Dispatch a subagent with access to the plan directory and the codebase, and this
 > 1. **Completeness** — list each requirement in the brief or spec and the task that implements it. Name any requirement with no covering task, and any task that traces to no requirement.
 > 2. **Correctness** — do the files, function names, and data shapes the tasks reference match the actual codebase? Quote each mismatch.
 > 3. **Decomposition** — is each task independently verifiable, ~one commit, with no hidden placeholders?
-> 4. **Consistency** — are names and interfaces consistent across tasks?
+> 4. **Consistency** — does every task's *Consumes* resolve to an earlier task's *Produces* under the same name and type? Quote each mismatch.
 >
 > Return a short list, one line each: `task — issue — suggested fix`. If nothing blocks implementation, say so in one line.
 

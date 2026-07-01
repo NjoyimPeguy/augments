@@ -1,6 +1,6 @@
 ---
 name: security-audits
-description: Use when a change touches a trust boundary — authentication, authorization, attacker-controlled input, secrets, or data exposure — and you need to review it for security problems before it ships. Traces untrusted data from source to sink rather than eyeballing. Skip for a change with no security surface.
+description: Use when a change touches a trust boundary — authentication, authorization, attacker-controlled input, secrets, or data exposure — and needs a security review before it ships. Skip for a change with no security surface.
 ---
 
 # Security Audits

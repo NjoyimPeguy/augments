@@ -1,6 +1,6 @@
 ---
 name: zoom-out
-description: Use when you're about to work in a region of the codebase you don't know well — before changing anything, go up a layer and map the relevant modules and their callers in the project's own vocabulary. Skip when you already understand the area.
+description: Use when you're about to work in a region of the codebase you don't know well — map the relevant modules and their callers in the project's own vocabulary before changing anything. Skip when you already understand the area.
 ---
 
 # Zoom Out

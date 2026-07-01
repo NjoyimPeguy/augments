@@ -1,6 +1,6 @@
 ---
 name: prototyping
-description: Use when a design or feasibility question is genuinely uncertain and cheaper to answer by building a throwaway than by arguing — a tricky bit of logic, a layout choice, a library's real behaviour. Answers ONE question, then is deleted. Skip when you already know the answer.
+description: Use when a design or feasibility question is genuinely uncertain and cheaper to answer by building a throwaway than by arguing — a tricky bit of logic, a layout choice, a library's real behaviour. Skip when you already know the answer.
 ---
 
 # Prototyping
@@ -19,7 +19,7 @@ A prototype answers one question and dies. Its only job is to turn an uncertaint
 2. **Build the smallest thing that answers it** — in memory, with no persistence, no tests, no generality. "What if we needed X later" is banned; that's not the question.
 3. **For logic:** isolate it in a portable module behind a tiny throwaway driver (a CLI or loop). The driver dies; the validated logic can be lifted into the real code.
 4. **For UI:** build 2–3 *structurally different* variants (different layout, hierarchy, primary affordance — not colour) inside a real, populated page, not an empty route where everything looks fine.
-5. **Record the answer** — the question and what you learned — durably (a note, or an ADR if it settles a decision). Then **delete the prototype.**
+5. **Record the answer** — the question and what you learned — durably (a note, or an ADR via `architecture-decisions` if it settles a decision). Then **delete the prototype.**
 
 ## Common mistakes
 

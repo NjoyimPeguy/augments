@@ -1,6 +1,6 @@
 ---
 name: interview-me
-description: Use whenever a request, plan, or design is unclear or underspecified — in any phase, before you build on it. Grills you one question at a time, answering from the codebase first and asking only what it genuinely cannot determine, then writes a short alignment brief. Skip for trivial or already-precise requests.
+description: Use whenever a request, plan, or design is unclear or underspecified — in any phase, before you build on it. Answers from the codebase first, asks only what it can't determine. Skip for trivial or already-precise requests.
 ---
 
 # Interview Me

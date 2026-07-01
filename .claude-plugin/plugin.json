@@ -1,7 +1,7 @@
 {
   "name": "augments",
   "description": "An AI agents skills library for software development lifecycle with Claude Code: planning, designing, TDD, debugging and collaboration patterns.",
-  "version": "2.1.1",
+  "version": "2.2.0",
   "author": {
     "name": "Njoyim Peguy",
     "email": "pnjoyim@gmail.com"
@@ -28,6 +28,7 @@
     "./skills/common/using-augments",
     "./skills/common/using-git-worktrees",
     "./skills/common/writing-skills",
+    "./skills/common/yagni",
     "./skills/common/zoom-out",
     "./skills/deployment/finishing-a-branch",
     "./skills/deployment/release-readiness",
@@ -39,7 +40,6 @@
     "./skills/design/writing-plans",
     "./skills/implementation/executing-plans",
     "./skills/implementation/test-driven-development",
-    "./skills/implementation/yagni",
     "./skills/maintenance/debugging",
     "./skills/maintenance/post-mortem",
     "./skills/maintenance/refactor-architecture",

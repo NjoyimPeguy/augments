@@ -1,6 +1,6 @@
 ---
 name: architecture-decisions
-description: Use when making a significant, hard-to-reverse technical decision — a datastore, sync vs async, a framework, a public contract, a security model — to record it as an ADR before building on it. Captures the options weighed, the choice, and why the alternatives were rejected. Skip for easily-reversible choices.
+description: Use when making a significant, hard-to-reverse technical decision — a datastore, sync vs async, a framework, a public contract, a security model — to record it as an ADR before building on it. Skip for easily-reversible choices.
 ---
 
 # Architecture Decisions

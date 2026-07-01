@@ -2,6 +2,21 @@
 
 Notable changes to augments, newest first. Versions follow semantic versioning; the narrative for each release lives on its release page — this file is the terse, cumulative record.
 
+## [2.2.0] — 2026-07-01
+
+### Added
+
+- **Done-boundary `Stop` re-nudge.** New `hooks/claude-code/stop-nudge.sh`, wired as a `Stop` hook, closes the long-standing "the verify/review skills don't fire after a long task" gap: augments routes once at SessionStart, but the done boundary arrives at turn-end with nothing to re-route. When a turn wraps up claiming the work is done, the hook re-routes **once** to `using-augments` → `verifying-completion` (and, at a feature boundary, `requesting-code-review` / `finishing-a-branch`). It is a *routing* re-nudge, not a gate: it blocks no action, certifies no verdict, fires at most once (`stop_hook_active` guard), reads only the Stop payload, and fails open. Disable by removing the `Stop` entry from `hooks/claude-code/hooks.json`. Proof: offline `tests/harness/claude-code/test-stop-nudge.sh` + `2026-07-01-stop-nudge-done-boundary.md`.
+- **Review-depth ladder in `requesting-code-review`.** Shallow / Standard / Deep tiers keyed to a change's risk and blast radius (not wall-clock), with an adversarial refute-pass at the Deep tier.
+- **Plan-as-contract in `writing-plans`.** Per-task Consumes/Produces interface blocks, an index-level Constraints block, reviewer-gate task sizing, and an Execution Handoff (inline vs subagent-driven) at the present-and-pause.
+
+### Changed
+
+- **Leaner skill triggers (~620 always-loaded tokens).** 26 skill `description`s drop the embedded what-it-does summary that buried the trigger — which, per `writing-skills` doctrine, made the model follow the summary and skip the body; the `Use when…` trigger, the `Skip…` clause, and genuine this-vs-that disambiguation stay. Re-measured on the harness; the four ALWAYS discipline triggers were left untouched (trimming `yagni` measurably dropped its activation, so it was reverted). Record: `2026-07-01-description-token-efficiency.md`.
+- **Explicit gap handoffs between adjacent skills** — `verifying-completion` → `requesting-code-review`, `spec-it` → design, `finishing-a-branch` → `release-readiness`, and others — so a chain does not stall half-done.
+- **`executing-plans` de-serialized.** Three execution modes (inline / sequential offload / parallel fan-out), user-posture honoring, and per-task gate cadence clarified (sequential default; independent tasks fan out).
+- **`yagni` relocated** `skills/implementation/` → `skills/common/` as a cross-cutting discipline — the invocation address `augments:yagni` is unchanged — plus a consent-based never-work-on-`main` guard in `using-git-worktrees`, and a slimmer `using-augments` router.
+
 ## [2.1.1] — 2026-06-26
 
 ### Changed

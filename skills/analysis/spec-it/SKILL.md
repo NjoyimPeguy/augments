@@ -1,6 +1,6 @@
 ---
 name: spec-it
-description: Use when you have a goal or feature and need the detailed requirements before design — what it must do, how each is verified, and the assumptions and risks involved. Produces a requirements spec (SRS) under .augments/specs/. Grill unknowns with interview-me; this captures the WHAT, never the HOW.
+description: Use when you have a goal or feature and need detailed requirements before design — what it must do, how each is verified, and the assumptions and risks. Captures the WHAT, not the HOW; grill unknowns with interview-me first.
 ---
 
 # Spec It
@@ -33,3 +33,5 @@ Turn an intent into a requirements spec (SRS): gather and analyze what the softw
 - A thin happy-path spec with no edge cases, assumptions, or risks — that's exactly where builds break.
 
 For a high-stakes spec, optionally dispatch `spec-review.md` (a fresh subagent that checks the requirements before anything is built against them).
+
+Next: for a non-trivial system the requirements flow into design (`system-architecture`, `data-model`, `ui-ux`); otherwise straight to `writing-plans`.
