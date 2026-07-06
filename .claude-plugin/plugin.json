@@ -1,7 +1,7 @@
 {
   "name": "augments",
-  "description": "An AI agents skills library for software development lifecycle with Claude Code: planning, designing, TDD, debugging and collaboration patterns.",
-  "version": "2.2.0",
+  "description": "A cross-platform SDLC skills library for coding agents: planning, design, TDD, debugging, review, and delivery workflows.",
+  "version": "2.3.0",
   "author": {
     "name": "Njoyim Peguy",
     "email": "pnjoyim@gmail.com"
@@ -18,7 +18,7 @@
     "workflows",
     "sdlc"
   ],
-  "hooks": "./hooks/claude-code/hooks.json",
+  "hooks": "./hooks/hooks.json",
   "skills": [
     "./skills/analysis/spec-it",
     "./skills/common/dispatching-parallel-agents",

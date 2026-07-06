@@ -1,0 +1,20 @@
+{
+  "name": "augments-dev",
+  "interface": {
+    "displayName": "Augments Dev"
+  },
+  "plugins": [
+    {
+      "name": "augments",
+      "source": {
+        "source": "local",
+        "path": "./plugins/augments"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_INSTALL"
+      },
+      "category": "Developer Tools"
+    }
+  ]
+}

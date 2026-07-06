@@ -2,6 +2,18 @@
 
 Notable changes to augments, newest first. Versions follow semantic versioning; the narrative for each release lives on its release page — this file is the terse, cumulative record.
 
+## [2.3.0] — 2026-07-06
+
+### Added
+
+- **Codex plugin adapter.** New `plugins/augments/.codex-plugin/` manifest, local `.agents/plugins/marketplace.json`, generated flat skill mirror, and `scripts/sync-codex-plugin-skills.sh` make the same 30 canonical skills installable in Codex without forking skill content. The structural gate now validates the Codex mirror and manifest versions.
+- **Codex CLI harness evidence.** New `tests/harness/codex-cli/` covers install smoke, activation fixture selftests, 30 real activation scenarios, Stop-hook wrapper tests, and Codex-specific behavioral records for the discipline skills.
+
+### Changed
+
+- **Hooks are shared at the root `hooks/` layer.** The Claude Code hook manifest now points to `hooks/hooks.json`, while Codex project-hook config mirrors `hooks/hooks-codex.json`; both use the shared `hooks/context.md` and `hooks/stop-nudge.sh` where their event models allow it.
+- **Docs no longer frame augments as Claude-only.** Harness-support docs, README status, and activation notes now describe Claude Code and Codex as exercised adapters, with Codex hook limitations stated explicitly.
+
 ## [2.2.0] — 2026-07-01
 
 ### Added

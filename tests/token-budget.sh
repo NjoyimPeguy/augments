@@ -23,7 +23,7 @@ max=0
 
 approx() { local c; c=$(wc -m <"$1"); echo $(((c + 3) / 4)); }
 
-nudge="hooks/claude-code/context.md"
+nudge="hooks/context.md"
 
 echo "token-budget: always-loaded context  (approx tokens ≈ chars/4, not exact)"
 echo

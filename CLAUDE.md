@@ -81,7 +81,7 @@ Closed without extended review — most are the inverse of a rule above:
 
 ## New harness support
 
-Adding a harness (an IDE, CLI, or agent runner) means more than dropping skill files where the tool can see them — they must actually *load and activate*. Augments' skills are inert unless the harness both discovers them and is nudged to reach for one at the right moment (on Claude Code, the `hooks/claude-code/` SessionStart nudge; elsewhere, an equivalent). See `docs/augments/harness-support.md`.
+Adding a harness (an IDE, CLI, or agent runner) means more than dropping skill files where the tool can see them — they must actually *load and activate*. Augments' skills are inert unless the harness both discovers them and is nudged to reach for one at the right moment (on Claude Code, the `hooks/` SessionStart nudge; elsewhere, an equivalent). See `docs/augments/harness-support.md`.
 
 A PR adding a harness MUST include a runnable test layer under `tests/harness/<name>/` — a runner that drives that harness's CLI and shows a skill *actually activating* on a representative opening, not a description of how it should work. Files present but never invoked is not a working integration.
 
@@ -91,7 +91,7 @@ A PR adding a harness MUST include a runnable test layer under `tests/harness/<n
 - `.claude-plugin/` — the install manifest; its skills array must list every skill on disk (the gate checks it). Adding a harness: `docs/augments/harness-support.md`.
 - `AGENTS.md`, `GEMINI.md` — symlinks to this file, so a harness that reads its own instructions file gets the same guidance from one source.
 - `.github/` — CI (`workflows/validate.yml`) and the PR template (`PULL_REQUEST_TEMPLATE.md`).
-- `tests/` — the portable gate (`validate-skills.sh`, `token-budget.sh`) plus `harness/<adapter>/` — per-harness **runnable** tests that drive the real CLI to prove skills activate, with `behavioral/` discipline-pressure records alongside. Claude Code is the only adapter wired today.
+- `tests/` — the portable gate (`validate-skills.sh`, `validate-codex-plugin.sh`, `token-budget.sh`) plus `harness/<adapter>/` — per-harness **runnable** tests. Claude Code has live activation tests and `behavioral/` discipline-pressure records; Codex CLI has marketplace/install smoke coverage and a live activation scenario.
 - `governance/` — adoptable **deterministic-gate** templates (CI workflows, branch-protection, pre-commit) that make the production-critical skills non-skippable at the commit/PR/CI boundary, where firm persuasion can't. Each gate maps to the skill it enforces, labelled bulletproof vs heuristic.
 - `CHANGELOG.md`, `RELEASING.md` — the release record, and how releases are versioned and cut (semver over the skill surface; the gate checks the two manifest versions agree).
 - `.claude/` — local config and notes; gitignored, never shipped.

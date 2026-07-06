@@ -4,7 +4,7 @@ Closes the structural gap behind "the testing/verify skills don't fire after a l
 task": augments routes **once**, at SessionStart, but the done boundary — where
 `verifying-completion` (then `requesting-code-review` / `finishing-a-branch`) should
 fire — arrives at turn-end, after that one-shot routing, with nothing to re-route.
-`hooks/claude-code/stop-nudge.sh` is the missing re-trigger. Prior art check first:
+`hooks/stop-nudge.sh` is the missing re-trigger. Prior art check first:
 **superpowers has the same gap and does not solve it** — its `hooks.json` wires
 `SessionStart` only, no `Stop`/turn-end logic — so this goes beyond it, not to parity.
 

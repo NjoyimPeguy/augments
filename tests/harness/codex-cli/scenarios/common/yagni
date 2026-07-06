@@ -1,0 +1,1 @@
+I'm tempted to build a generic plugin system for notifications, but right now we only ever send email. Just add the email notification — don't over-engineer it.
