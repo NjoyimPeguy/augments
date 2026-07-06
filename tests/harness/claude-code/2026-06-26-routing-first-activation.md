@@ -6,7 +6,7 @@ current truth. This file states what was changed and what the runs showed on the
 
 ## What changed (the always-loaded routing surface)
 
-- **`hooks/claude-code/context.md`** slimmed from a full routing procedure to a thin
+- **`hooks/context.md`** slimmed from a full routing procedure to a thin
   **pointer**: "before any non-trivial request, invoke `using-augments` to route." It
   re-fires on resume/compact, so it is the durable re-trigger.
 - **`skills/common/using-augments/SKILL.md`** now carries the routing *discipline* the

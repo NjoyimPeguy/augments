@@ -90,6 +90,9 @@ else
   [ -n "$dead" ]    && while IFS= read -r d; do err "$manifest 'skills' entry has no SKILL.md: $d"; done <<< "$dead"
 fi
 
+echo "• Codex adapter"
+if ! bash tests/validate-codex-plugin.sh; then fail=1; fi
+
 # Version sync: the release version is declared in two manifests and bumped
 # together in one release commit (see RELEASING.md). A half-done bump ships
 # disagreeing versions, so any disagreement fails.

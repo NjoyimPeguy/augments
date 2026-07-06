@@ -1,13 +1,6 @@
 #!/usr/bin/env bash
-# Stop-hook done-boundary re-nudge (Claude-Code-only; lives under hooks/claude-code/).
-#
-# Augments routes once, at SessionStart. The done boundary — where `verifying-completion`
-# (and, at a feature boundary, `requesting-code-review` / `finishing-a-branch`) should
-# fire — arrives at turn-end, after that one-shot routing, with nothing to re-route. When
-# a wrap-up claims the task is done, this re-routes once. A firm nudge, not a per-turn
-# floor: it fires ONLY on a completion claim, and AT MOST ONCE (the stop_hook_active
-# guard lets the agent finish after it has been nudged). If it cannot read the payload,
-# it does nothing. Everything it needs is in the Stop payload — no transcript parsing.
+# Stop-hook done-boundary re-nudge for harnesses that provide the Claude-style
+# Stop payload fields this script reads.
 set -euo pipefail
 command -v jq >/dev/null 2>&1 || exit 0
 input="$(cat)"

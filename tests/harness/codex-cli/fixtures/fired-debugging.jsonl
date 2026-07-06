@@ -1,0 +1,2 @@
+{"type":"item.started","item":{"id":"item_1","type":"command_execution","command":"/bin/bash -lc \"sed -n '1,260p' /home/user/.codex/plugins/cache/augments-dev/augments/2.2.0/skills/debugging/SKILL.md\"","aggregated_output":"","exit_code":null,"status":"in_progress"}}
+{"type":"item.completed","item":{"id":"item_1","type":"command_execution","command":"/bin/bash -lc \"sed -n '1,260p' /home/user/.codex/plugins/cache/augments-dev/augments/2.2.0/skills/debugging/SKILL.md\"","aggregated_output":"---\nname: debugging\n---\n","exit_code":0,"status":"completed"}}

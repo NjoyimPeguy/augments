@@ -18,5 +18,5 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Structural validation (skills + manifest sync)
+      - name: Structural validation (skills + adapter sync)
         run: bash tests/validate-skills.sh

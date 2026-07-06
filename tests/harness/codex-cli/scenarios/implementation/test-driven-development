@@ -1,0 +1,1 @@
+We need a parseDuration(str) that converts strings like "1h30m", "90s", or "2h15m30s" into a total number of seconds — combined units in any order, and malformed input rejected with a clear error. Let's build it.

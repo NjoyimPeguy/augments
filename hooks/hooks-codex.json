@@ -1,0 +1,16 @@
+{
+  "hooks": {
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash \"$(git rev-parse --show-toplevel)/hooks/stop-nudge.sh\"",
+            "timeout": 15,
+            "statusMessage": "Checking Augments done boundary"
+          }
+        ]
+      }
+    ]
+  }
+}

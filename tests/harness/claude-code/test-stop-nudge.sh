@@ -5,7 +5,7 @@
 # end-to-end run (real `claude`) is a separate manual check, recorded alongside.
 set -uo pipefail
 here="$(cd "$(dirname "$0")" && pwd)"
-hook="$here/../../../hooks/claude-code/stop-nudge.sh"
+hook="$here/../../../hooks/stop-nudge.sh"
 command -v jq >/dev/null 2>&1 || { echo "test needs jq" >&2; exit 3; }
 [ -f "$hook" ] || { echo "missing hook: $hook" >&2; exit 3; }
 fail=0

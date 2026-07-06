@@ -4,15 +4,17 @@ Two kinds of test live here, split by what they can guarantee.
 
 ## 1. Structural — deterministic, portable, CI-gated
 
-`validate-skills.sh` checks the shape of every skill: frontmatter present, `name` matches the directory, description ≤ 1024 chars, body line limits, and — recursively, across each skill's `references/` and `scripts/` subfolders — no external references, vendor model names, scanner trigger-words, or bare `<angle>` placeholders. It also checks that no skill name shadows a common built-in slash command, that the manifests list every skill on disk, and that the manifest versions agree. It inspects files, asks nothing of any model, and exits non-zero on any violation — so it runs in CI on every push and PR.
+`validate-skills.sh` checks the shape of every skill: frontmatter present, `name` matches the directory, description <= 1024 chars, body line limits, and - recursively, across each skill's `references/` and `scripts/` subfolders - no external references, vendor model names, scanner trigger-words, or bare `<angle>` placeholders. It also checks that no skill name shadows a common built-in slash command, that adapter manifests expose every skill on disk, and that manifest versions agree. It inspects files, asks nothing of any model, and exits non-zero on any violation, so it runs in CI on every push and PR.
 
 `token-budget.sh` reports the approximate context cost (chars/4) of the always-loaded surface — every `SKILL.md` body plus the SessionStart nudge — so "earn every line" is a number you can watch. Report-only; `--max N` flags any body over N approx-tokens.
 
 ## 2. Per-harness real activation — runnable, not portable, not CI
 
-The skills are portable Markdown, but **whether one actually activates is a fact about a specific harness** — so each harness earns its own real test layer under `tests/harness/<adapter>/`. Today only **Claude Code** is wired (`tests/harness/claude-code/`); other harnesses each get their own folder when they're added and proven.
+The skills are portable Markdown, but **whether one actually activates is a fact about a specific harness** - so each harness earns its own real test layer under `tests/harness/<adapter>/`. Today **Claude Code** has live activation tests (`tests/harness/claude-code/`), and **Codex CLI** has installability plus a live activation scenario (`tests/harness/codex-cli/`).
 
-`tests/harness/claude-code/` drives the real `claude` CLI headless against the working tree and observes whether a skill **actually fires** — a structured `Skill` tool_use parsed from `--output-format stream-json`, never a prose grep or a self-report. See its README for the runners (`run-activation.sh`, `run-flow.sh`), the scenario convention, `--working-tree`, `--verbose`, and the offline detection `selftest`.
+`tests/harness/claude-code/` drives the real `claude` CLI headless against the working tree and observes whether a skill **actually fires** - a structured `Skill` tool_use parsed from `--output-format stream-json`, never a prose grep or a self-report. See its README for the runners (`run-activation.sh`, `run-flow.sh`), the scenario convention, `--working-tree`, `--verbose`, and the offline detection `selftest`.
+
+`tests/harness/codex-cli/` runs a no-model plugin smoke test with an isolated `CODEX_HOME`: register this checkout as a local marketplace, list `augments`, and install it. Its activation runner drives `codex exec --json` and counts a command event that reads `.../skills/{{skill}}/SKILL.md` from the installed plugin cache as the activation signal. Its Stop hook wrapper test is offline and payload-only.
 
 Two kinds of check live under the harness:
 
@@ -24,6 +26,6 @@ Two kinds of check live under the harness:
 ## Adding a test, and adding a harness
 
 - **A new activation scenario:** drop a file under `tests/harness/<adapter>/scenarios/<phase>/`. The **filename is the contract** — name it after the skill it should trigger; any other name (a filler, a negative) expects nothing to fire. List it in the phase's `flow` file to include it in a multi-turn run. No code change. (Mechanics in the adapter's own README.)
-- **A new harness:** create `tests/harness/<name>/` with a runner that drives that harness's CLI and detects activation its way, plus scenarios. The adapter stays **unproven** until its tests pass on it, and `docs/augments/harness-support.md` must say so — files on disk are not a working integration.
+- **A new harness:** create `tests/harness/<name>/` with a runner that drives that harness's CLI and detects activation its way, plus scenarios. The adapter stays **unproven** until its tests pass on it, and `docs/augments/harness-support.md` must say so - files on disk are not a working integration.
 
 This is the testing face of `docs/augments/philosophy.md`: an instruction only shifts a probability, so a skill's effect is **measured** on a real harness, not assumed — and the deterministic guarantee that stays portable is the structural gate above.
