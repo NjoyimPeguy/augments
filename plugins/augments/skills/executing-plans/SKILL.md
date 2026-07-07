@@ -10,7 +10,7 @@ Run a plan to done, gating every task on its Evaluator before building on it. Th
 ## Before you start
 
 1. **Confirm the plan was approved before you touch task 1.** If you just wrote it, `writing-plans` owns the present-and-pause — don't start executing in that turn. If you arrived here fresh (a resumed or handed-off session), present the index, end your turn with a go/no-go question, and wait.
-2. **Confirm you are not on the main branch.** For a plan of 3+ tasks, set up an isolated worktree *now* (see `using-git-worktrees`) — don't rationalize "it's quick" into skipping this. Silent commits to main are the failure this prevents.
+2. **Confirm task-branch isolation.** Before task 1, create or enter the task branch/workspace (see `using-task-branches`). For a plan of 3+ tasks or any parallel/runtime-heavy work, decide whether a plain branch is enough or a worktree is needed. Silent commits to main are the failure this prevents.
 3. **Load the index (`00-index.md`)** and read it critically: raise any concern (missing dependency, unclear or contradictory task, design conflict) *before* writing code, and confirm the task contracts together actually deliver the Acceptance. Gaps are cheap to fix now and expensive ten tasks in.
 
 ## The loop
@@ -50,5 +50,5 @@ When every task is `[x]`, run the plan-level **Acceptance** from the index. Only
 
 - Executing on main, or holding the whole plan in context at once.
 - Ticking `[x]` before the Evaluator is green.
-- A subagent committing to the wrong branch — a gitignored worktree makes `git status` look empty; pass absolute git paths (see `subagent-dispatch.md`).
+- A subagent committing to the wrong branch or workspace — pass absolute git paths (see `subagent-dispatch.md`).
 - Forcing heavy review on a trivial task, or guessing past a blocker instead of surfacing it.

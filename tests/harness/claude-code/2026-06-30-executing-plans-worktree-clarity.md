@@ -17,9 +17,9 @@ Activation results are ephemeral — re-run for current truth.
    (`dispatching-parallel-agents`)** with the trigger for each, and that every mode
    gates on the Evaluator. This is the crisp decision the subagent path was missing.
 3. **main-branch guard, consent-based (#4).** Surfaced beyond executing-plans:
-   `using-git-worktrees` now opens with a prominent rule — *never start non-trivial
-   work on `main`/`master` without explicit user consent; a trivial one-liner can
-   stay on the current branch* — and the `using-augments` router carries a
+   `using-task-branches` now opens with a prominent rule — *never start repo
+   edits on `main`/`master`, `dev`/`develop`, a release branch, or unrelated work
+   without explicit user consent* — and the `using-augments` router carries a
    build-entry reminder pointing to it, so the guard reaches ad-hoc (non-plan) builds.
 
 ## Runs and results (real `claude` CLI; new = `--working-tree`, old = installed 2.1.1 cache)
@@ -40,7 +40,7 @@ Activation results are ephemeral — re-run for current truth.
   did not regress (parity A/B). The behavioral effect rests on the corrected prose
   reaching the model, not on a measured run.
 - **#4 is also behavioral.** The branch guard is prose on the routing surface and in
-  `using-git-worktrees`; whether the model isolates before building on `main` is not
+  `using-task-branches`; whether the model isolates before building on `main` is not
   a detectable tool_use. No harness claim is made that it changes that behavior — only
   that the guard is now present at the build entry, consent-based, beyond plan execution.
 - Single runs, not N-of-N.
