@@ -17,7 +17,7 @@ Run independent work concurrently instead of in series. The win is wall-clock; t
 Check every pair; if any fails, group them into one agent or sequence them instead:
 
 - **Files** — they edit disjoint paths. Two agents on the same file race.
-- **State** — disjoint ports, databases, fixtures. If they run a server or migrations, isolate each (`using-git-worktrees`).
+- **State** — disjoint ports, databases, fixtures. If they run a server or migrations, isolate each (`using-task-branches`).
 - **Order** — none consumes another's output. A dependency is a sequence, not a fan-out.
 
 ## The dispatch packet (per agent)
@@ -40,4 +40,4 @@ When agents return: read each deliverable, integrate them yourself, then run the
 - Fanning out work that shares a file or an ordering — the race corrupts both.
 - Passing session history instead of a self-contained packet — the agent inherits your blind spots.
 - No combined check — independently-green changes can still break together.
-- Parallel agents sharing one dev server or database — isolate each (`using-git-worktrees`).
+- Parallel agents sharing one dev server or database — isolate each (`using-task-branches`).

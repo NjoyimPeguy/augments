@@ -14,7 +14,7 @@ including the part where I was initially wrong.
 ## What changed
 
 - **24 capability descriptions** trimmed (spec-it, dispatching-parallel-agents,
-  handoff, interview-me, prototyping, using-augments, using-git-worktrees,
+  handoff, interview-me, prototyping, using-augments, using-task-branches,
   writing-skills, zoom-out, finishing-a-branch, release-readiness,
   architecture-decisions, coding-standards, data-model, system-architecture,
   ui-ux, writing-plans, executing-plans, post-mortem, refactor-architecture,

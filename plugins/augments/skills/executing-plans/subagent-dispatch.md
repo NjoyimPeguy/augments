@@ -15,7 +15,7 @@ Build it from `dispatching-parallel-agents`' dispatch packet — scope, explicit
 
 ## Git safety (silent-data-loss guards)
 
-- **Write with an absolute worktree path** — every commit-ish command uses `git -C <absolute-path-to-worktree>`. A gitignored worktree makes a bare `git status` look empty, and the subagent silently falls back to **main**.
+- **Write with an absolute workspace path** — every commit-ish command uses `git -C {{absolute-path-to-task-workspace}}`. A gitignored worktree or wrong cwd makes a bare `git status` look empty, and the subagent silently falls back to **main**.
 - **Inspect read-only** — use `git show <ref>` or `git diff <a>..<b>`. Never bare `git checkout` / `switch` / `reset` in a subagent; they detach HEAD and orphan commits with no error.
 
 ## Reviewing a dispatched task (only when it earns it)

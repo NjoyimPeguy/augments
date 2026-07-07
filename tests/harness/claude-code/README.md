@@ -53,6 +53,8 @@ tests/harness/claude-code/run-activation.sh \
 - Runs the nested session in an **isolated empty temp dir** — safe (writes can't
   reach this repo) and faithful (reproduces a brand-new-project opening). The
   user-level plugin and SessionStart hook apply regardless of cwd.
+- `--fixture-git-repo` turns that temp dir into a disposable git repo on `main`
+  when the scenario needs real branch/status context without touching this repo.
 - Permission gates are **not** bypassed: an explicit allowlist (`Skill` +
   read-only) lets activation happen while denying any Write/Edit/Bash.
 - `run-activation.sh` kills on the first real `Skill` tool_use (cost ≈ one turn);

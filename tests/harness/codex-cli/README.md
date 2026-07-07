@@ -30,10 +30,20 @@ bash tests/harness/codex-cli/run-activation.sh selftest
 bash tests/harness/codex-cli/test-stop-nudge.sh
 bash tests/harness/codex-cli/run-activation.sh \
   --scenario-file scenarios/maintenance/debugging --keep
+bash tests/harness/codex-cli/run-activation.sh \
+  --scenario-file scenarios/implementation/using-task-branches \
+  --expect using-task-branches --working-tree --fixture-git-repo --keep
 ```
 
 These checks are adapter-specific. They do not replace the portable structural
 gate in `tests/validate-skills.sh`.
+
+Use `--working-tree` when a live Codex activation probe should install this
+checkout into a temporary `CODEX_HOME` instead of reading the user's installed
+plugin cache; the runner copies the user's Codex auth/config into that temporary
+home so the model call can authenticate without mutating the real plugin setup.
+Use `--fixture-git-repo` when the scenario needs a disposable git repo on `main`
+rather than an empty temp directory.
 
 Behavioral records are not automated pass/fail gates. They are dated evidence:
 the prompt, the pressure, the observed RED/GREEN behavior, and any inconclusive
@@ -45,7 +55,9 @@ Codex exposes plugin skills in the model-visible skills list with file locators.
 In `codex exec --json`, the stable activation evidence observed so far is not a
 `Skill` tool call; it is a `command_execution` item whose command reads
 `.../skills/{{skill}}/SKILL.md` from the installed plugin cache. The detector
-counts that file read as activation and ignores prose mentions.
+counts that file read as activation and ignores prose mentions. A single command
+may read several skill files, so the detector scans every matching path in the
+command, not just the first one.
 
 ## Result Notes
 
