@@ -2,6 +2,17 @@
 
 Notable changes to augments, newest first. Versions follow semantic versioning; the narrative for each release lives on its release page — this file is the terse, cumulative record.
 
+## [3.0.0] — 2026-07-07
+
+### Changed
+
+- **`using-git-worktrees` is now `using-task-branches`.** The skill surface now reflects the actual workflow: start repo edits on a meaningful task branch or harness workspace, and use a worktree only when user/project preference or runtime isolation calls for one. This is a breaking invocation-address change for callers of `augments:using-git-worktrees`.
+- **Repo-edit routing starts with branch/status discipline.** `using-augments` now routes edit, fix, refactor, and plan-execution requests through `using-task-branches` before repo exploration or implementation, with activation evidence recorded for Claude Code and Codex.
+
+### Added
+
+- **Branch-start activation fixtures.** The Claude Code and Codex activation harnesses can run scenarios inside a disposable git repo on `main`; Codex can also install the current checkout into a temporary authenticated `CODEX_HOME` for live working-tree probes.
+
 ## [2.3.0] — 2026-07-06
 
 ### Added
