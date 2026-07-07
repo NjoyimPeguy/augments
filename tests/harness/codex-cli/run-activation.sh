@@ -5,12 +5,13 @@ set -uo pipefail
 scriptdir="$(cd "$(dirname "$0")" && pwd)"
 orig_pwd="$PWD"
 repo="$(cd "$scriptdir/../../.." && pwd)"
+source_codex_home="${CODEX_HOME:-${HOME:-}/.codex}"
 
 SKILL_FILTER='
   if (.type == "item.started" or .type == "item.completed")
      and .item.type == "command_execution" then
     (.item.command // "") as $cmd
-    | (($cmd | capture("/skills/(?<skill>[A-Za-z0-9_-]+)/SKILL[.]md")? | .skill) // empty)
+    | ($cmd | scan("/skills/(?<skill>[A-Za-z0-9_-]+)/SKILL[.]md")? | .[0])
     | if . == "" then empty else "augments:" + . end
   else
     empty
@@ -33,8 +34,19 @@ if [ "${1:-}" = "selftest" ]; then
       fail=1
     fi
   }
+  check_has() {
+    fixture="$1"
+    want="$2"
+    if jq -rc "$SKILL_FILTER" "fixtures/$fixture" 2>/dev/null | grep -qx "$want"; then
+      printf 'ok    %-24s contains %s\n' "$fixture" "$want"
+    else
+      printf 'FAIL  %-24s lacks "%s"\n' "$fixture" "$want"
+      fail=1
+    fi
+  }
   check fired-debugging.jsonl "augments:debugging"
   check none.jsonl ""
+  check_has routed-multi-skill-command.jsonl "augments:using-task-branches"
   [ "$fail" -eq 0 ] && echo "Codex activation detector self-test: PASS" || echo "Codex activation detector self-test: FAIL"
   exit "$fail"
 fi
@@ -44,6 +56,8 @@ sfile=""
 expect=""
 timeout_s=180
 keep=""
+fixture_git=""
+wt=""
 while [ "$#" -gt 0 ]; do
   case "$1" in
     --scenario) scenario="$2"; shift 2;;
@@ -51,6 +65,8 @@ while [ "$#" -gt 0 ]; do
     --expect) expect="$2"; shift 2;;
     --timeout) timeout_s="$2"; shift 2;;
     --keep) keep="1"; shift;;
+    --fixture-git-repo) fixture_git="1"; shift;;
+    --working-tree) wt="1"; shift;;
     *) echo "unknown argument: $1" >&2; exit 2;;
   esac
 done
@@ -75,13 +91,37 @@ command -v jq >/dev/null 2>&1 || { echo "needs \`jq\`" >&2; exit 3; }
 workdir="$(mktemp -d)"
 stream="$(mktemp)"
 errlog="$(mktemp)"
-trap '[ -z "$keep" ] && rm -f "$stream" "$errlog"; rm -rf "$workdir"' EXIT
+codex_home=""
+trap '[ -z "$keep" ] && rm -f "$stream" "$errlog"; rm -rf "$workdir" "$codex_home"' EXIT
+
+if [ -n "$fixture_git" ]; then
+  (
+    cd "$workdir" || exit 2
+    git init -q -b main 2>/dev/null || { git init -q && git checkout -qb main; }
+    printf '# Activation fixture\n\nA disposable repository for skill-routing probes.\n' > README.md
+    git add README.md
+    git -c user.name='Augments Harness' -c user.email='harness@example.invalid' commit -q -m 'fixture baseline'
+  ) || { echo "failed to create disposable git repo fixture" >&2; exit 2; }
+fi
+
+if [ -n "$wt" ]; then
+  codex_home="$(mktemp -d)"
+  for f in auth.json config.toml models_cache.json; do
+    [ -f "$source_codex_home/$f" ] && cp "$source_codex_home/$f" "$codex_home/$f"
+  done
+  env CODEX_HOME="$codex_home" codex plugin marketplace add "$repo" --json >/dev/null 2>>"$errlog" || exit $?
+  env CODEX_HOME="$codex_home" codex plugin add augments@augments-dev --json >/dev/null 2>>"$errlog" || exit $?
+fi
 
 prompt="$scenario
 
-Use the relevant Augments skill according to the skill instructions: read its SKILL.md completely before answering. Do not edit files."
+Use the relevant Augments skill according to the skill instructions: read its SKILL.md completely before answering."
 
-( cd "$workdir" && exec timeout "$timeout_s" codex exec --json --ephemeral --skip-git-repo-check -s read-only -C "$workdir" "$prompt" ) < /dev/null >"$stream" 2>"$errlog"
+if [ -n "$wt" ]; then
+  ( cd "$workdir" && exec timeout "$timeout_s" env CODEX_HOME="$codex_home" codex exec --json --ephemeral --skip-git-repo-check -s read-only -C "$workdir" "$prompt" ) < /dev/null >"$stream" 2>>"$errlog"
+else
+  ( cd "$workdir" && exec timeout "$timeout_s" codex exec --json --ephemeral --skip-git-repo-check -s read-only -C "$workdir" "$prompt" ) < /dev/null >"$stream" 2>>"$errlog"
+fi
 status=$?
 
 chain="$(jq -rc "$SKILL_FILTER" "$stream" 2>/dev/null | awk '!seen[$0]++')"
@@ -97,6 +137,9 @@ elif [ -z "$want" ] && [ -n "$chain" ]; then
   result=0
 elif [ "$status" -ne 0 ]; then
   verdict="ERROR — codex exec exited $status"
+  result=1
+elif [ -n "$chain" ]; then
+  verdict="ROUTED ELSEWHERE — chain: ${chain_str} (expected ${want})"
   result=1
 else
   verdict="NONE (no installed Augments SKILL.md read)"

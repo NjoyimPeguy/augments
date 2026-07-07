@@ -29,7 +29,7 @@
 # Usage:
 #   run-activation.sh selftest        # offline detection check over fixtures (no API)
 #   run-activation.sh --scenario-file scenarios/common/dispatching-parallel-agents [--keep]
-#   run-activation.sh --scenario "TEXT" [--expect NAME] [--working-tree] [--verbose] [--max-turns N] [--timeout SECONDS] [--keep]
+#   run-activation.sh --scenario "TEXT" [--expect NAME] [--working-tree] [--fixture-git-repo] [--verbose] [--max-turns N] [--timeout SECONDS] [--keep]
 #   run-activation.sh --scenario-file scenarios/planning/define-goals --no-augments
 # --working-tree loads THIS repo via --plugin-dir (tests live edits, not the install cache).
 
@@ -74,7 +74,7 @@ if [ "${1:-}" = "selftest" ]; then
   exit "$st_fail"
 fi
 
-scenario=""; sfile=""; expect=""; timeout_s=120; keep=""; bare=""; wt=""; verbose=""; maxturns="6"
+scenario=""; sfile=""; expect=""; timeout_s=120; keep=""; bare=""; wt=""; fixture_git=""; verbose=""; maxturns="6"
 while [ "$#" -gt 0 ]; do
   case "$1" in
     --scenario)      scenario="$2"; shift 2;;
@@ -85,6 +85,7 @@ while [ "$#" -gt 0 ]; do
     --timeout)       timeout_s="$2"; shift 2;;
     --keep)          keep="1"; shift;;
     --working-tree)  wt="1"; shift;;   # load the WORKING TREE via --plugin-dir
+    --fixture-git-repo) fixture_git="1"; shift;; # start the probe in a disposable git repo on main
     --verbose)       verbose="1"; shift;;      # dump full assistant output after the run
     --max-turns)     maxturns="$2"; shift 2;;  # bound non-firing runs (default 6)
     --no-augments) bare="1"; shift;;   # auth-safe stand-in for "augments absent":
@@ -112,6 +113,16 @@ command -v jq >/dev/null 2>&1 || { echo "this harness needs \`jq\` to parse stre
 
 workdir="$(mktemp -d)"; stream="$(mktemp)"
 trap '[ -z "$keep" ] && rm -f "$stream"; rm -rf "$workdir"' EXIT
+
+if [ -n "$fixture_git" ]; then
+  (
+    cd "$workdir" || exit 2
+    git init -q -b main 2>/dev/null || { git init -q && git checkout -qb main; }
+    printf '# Activation fixture\n\nA disposable repository for skill-routing probes.\n' > README.md
+    git add README.md
+    git -c user.name='Augments Harness' -c user.email='harness@example.invalid' commit -q -m 'fixture baseline'
+  ) || { echo "failed to create disposable git repo fixture" >&2; exit 2; }
+fi
 
 # (SKILL_FILTER is defined near the top — shared with `selftest`.)
 

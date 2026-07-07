@@ -21,7 +21,7 @@ You are a non-deterministic generator — but a good engineer's *process* is det
 
 ## How they compose
 
-When multiple skills apply, they compose in a chain: the output of one skill is the input to the next. For instance, `debugging` turns its reproduction into a `test-driven-development` cycle; `verifying-completion` is the gate the others assume. A request can also span a phase's arc — planning runs `define-goals` → `feasibility-check` → `scope-it` in turn. Route to the skill that fits the *current* step and **chain to the next as each completes** — don't fire one and stop with the phase half-done.
+When multiple skills apply, they compose in a chain: the output of one skill is the input to the next. If the user asks you to edit, implement, fix, refactor, or execute a plan in a repo, invoke `using-task-branches` before repo exploration or implementation unless the user opted out or the current branch/workspace already names the task; that skill owns the branch/status check. Then `test-driven-development` or the plan executor can safely build. For instance, `debugging` turns its reproduction into a `test-driven-development` cycle; `verifying-completion` is the gate the others assume. A request can also span a phase's arc — planning runs `define-goals` → `feasibility-check` → `scope-it` in turn. Route to the skill that fits the *current* step and **chain to the next as each completes** — don't fire one and stop with the phase half-done.
 
 ## Red flags
 
@@ -33,6 +33,7 @@ Each of these is the signal to route, not a reason to skip:
 | "I already know how to do this" | The skill is not a tutorial — it is the gate that proves the result, which confidence cannot. |
 | "No time / the user is in a hurry" | Routing is seconds; the rework from skipping a gate is not. Speed is *why* you route. |
 | "I'll add the process afterward" | After the code exists, a test records what it does, not what it should — the gate is gone. |
+| "I'll inspect the repo before deciding on a branch" | For edit requests, the branch/status check is the first step; use `using-task-branches` first. |
 | "No skill fits this / a skill would be overkill" | Maybe — but only *after* you actually scan the list. Decide none on evidence, not on momentum. |
 | "I remember this skill" | You may have seen it before, but the catalogue is updated; check the current list. |
 

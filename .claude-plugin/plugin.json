@@ -1,7 +1,7 @@
 {
   "name": "augments",
   "description": "A cross-platform SDLC skills library for coding agents: planning, design, TDD, debugging, review, and delivery workflows.",
-  "version": "2.3.0",
+  "version": "3.0.0",
   "author": {
     "name": "Njoyim Peguy",
     "email": "pnjoyim@gmail.com"
@@ -26,7 +26,7 @@
     "./skills/common/interview-me",
     "./skills/common/prototyping",
     "./skills/common/using-augments",
-    "./skills/common/using-git-worktrees",
+    "./skills/common/using-task-branches",
     "./skills/common/writing-skills",
     "./skills/common/yagni",
     "./skills/common/zoom-out",
