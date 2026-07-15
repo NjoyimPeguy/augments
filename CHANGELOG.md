@@ -2,6 +2,17 @@
 
 Notable changes to augments, newest first. Versions follow semantic versioning; the narrative for each release lives on its release page — this file is the terse, cumulative record.
 
+## [4.0.0] — 2026-07-15
+
+### Changed
+
+- **`ui-ux` is now `ui-ux-design`.** The renamed invocation address reflects a broader interface-design workflow and is a breaking surface change for callers of `augments:ui-ux`.
+- **UI/UX design starts from project evidence.** Existing routes, components, tokens, content, previews, responsive conventions, accessibility rules, and tests constrain flows and directions before any new setup is proposed.
+
+### Added
+
+- **Portable visual decisions.** Progressive guides cover intentional design quality, 2–4 controlled alternatives, safe visualization fallbacks without a bundled server, and explicit human decision records. Codex activation and project-evidence behavior are recorded; live Claude activation remains unverified until account access is available.
+
 ## [3.0.0] — 2026-07-07
 
 ### Changed
