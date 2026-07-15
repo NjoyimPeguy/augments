@@ -10,7 +10,7 @@ A prototype answers one question and dies. Its only job is to turn an uncertaint
 ## When to use
 
 - A specific question is uncertain and faster to *build* than to argue: does this algorithm work, does this layout read, does this library do what its docs claim.
-- Reached from `feasibility-check` (a killer risk) or `ui-ux` (a layout choice).
+- Reached from `feasibility-check` (a killer risk) or `ui-ux-design` (a layout choice).
 - **Skip** when you already know the answer, or the question is vague — a prototype that answers the wrong question is pure waste.
 
 ## Procedure
