@@ -1,7 +1,7 @@
 {
   "name": "augments",
   "description": "A cross-platform SDLC skills library for coding agents: planning, design, TDD, debugging, review, and delivery workflows.",
-  "version": "3.0.0",
+  "version": "4.0.0",
   "author": {
     "name": "Njoyim Peguy",
     "email": "pnjoyim@gmail.com"
@@ -36,7 +36,7 @@
     "./skills/design/coding-standards",
     "./skills/design/data-model",
     "./skills/design/system-architecture",
-    "./skills/design/ui-ux",
+    "./skills/design/ui-ux-design",
     "./skills/design/writing-plans",
     "./skills/implementation/executing-plans",
     "./skills/implementation/test-driven-development",
