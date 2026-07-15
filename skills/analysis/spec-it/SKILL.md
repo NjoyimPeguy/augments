@@ -34,4 +34,4 @@ Turn an intent into a requirements spec (SRS): gather and analyze what the softw
 
 For a high-stakes spec, optionally dispatch `spec-review.md` (a fresh subagent that checks the requirements before anything is built against them).
 
-Next: for a non-trivial system the requirements flow into design (`system-architecture`, `data-model`, `ui-ux`); otherwise straight to `writing-plans`.
+Next: for a non-trivial system the requirements flow into design (`system-architecture`, `data-model`, `ui-ux-design`); otherwise straight to `writing-plans`.

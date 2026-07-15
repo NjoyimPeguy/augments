@@ -1,0 +1,1 @@
+We're adding checkout to an established web app that already has a component library, theme tokens, component previews, and accessibility tests. Before implementation, design the flows and unhappy states and give me visually comparable layout directions without replacing the existing setup.

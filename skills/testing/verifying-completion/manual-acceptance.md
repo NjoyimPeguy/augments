@@ -6,7 +6,7 @@ Some claims cannot be proven by a command that returns pass/fail: visual output,
 
 1. **Automate everything that can be.** Manual acceptance covers only behavior that is genuinely hard, expensive, or inappropriate to assert in code — never a test you could have written and skipped. If a check *can* be a command, it belongs in `verifying-completion`'s gate, not here.
 
-2. **One row per un-automatable user-facing requirement.** Trace each back to a requirement or acceptance scenario (from `ui-ux` or the spec) — a step with no requirement behind it is noise, a requirement with no step is a gap.
+2. **One row per un-automatable user-facing requirement.** Trace each back to a requirement or acceptance scenario (from `ui-ux-design` or the spec) — a step with no requirement behind it is noise, a requirement with no step is a gap.
 
 3. **A human performs the step.** You cannot self-certify a gate whose whole point is human judgment. The agent prepares the matrix and drives whatever it can; the *verdict* on look/feel/flow comes from the person.
 
