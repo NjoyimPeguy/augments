@@ -1,0 +1,2 @@
+{"role":"assistant","content":"This is a bug report, so the `debugging` skill applies. Invoking it now.","tool_calls":[{"type":"function","id":"tool_HX4rkvUCvATkjW0bzCtgLzaS","function":{"name":"Skill","arguments":"{\"skill\":\"debugging\"}"}}]}
+{"role":"tool","tool_call_id":"tool_HX4rkvUCvATkjW0bzCtgLzaS","content":"Skill \"debugging\" loaded inline. Follow its instructions."}

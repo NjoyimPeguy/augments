@@ -10,11 +10,13 @@ Two kinds of test live here, split by what they can guarantee.
 
 ## 2. Per-harness real activation — runnable, not portable, not CI
 
-The skills are portable Markdown, but **whether one actually activates is a fact about a specific harness** - so each harness earns its own real test layer under `tests/harness/<adapter>/`. Today **Claude Code** has live activation tests (`tests/harness/claude-code/`), and **Codex CLI** has installability plus a live activation scenario (`tests/harness/codex-cli/`).
+The skills are portable Markdown, but **whether one actually activates is a fact about a specific harness** - so each harness earns its own real test layer under `tests/harness/<adapter>/`. Today **Claude Code** has live activation tests (`tests/harness/claude-code/`), **Codex CLI** has installability plus a live activation scenario (`tests/harness/codex-cli/`), and **Kimi Code CLI** has a live activation probe over an isolated managed-plugin install plus an offline Stop-hook test (`tests/harness/kimi-code/`).
 
 `tests/harness/claude-code/` drives the real `claude` CLI headless against the working tree and observes whether a skill **actually fires** - a structured `Skill` tool_use parsed from `--output-format stream-json`, never a prose grep or a self-report. See its README for the runners (`run-activation.sh`, `run-flow.sh`), the scenario convention, `--working-tree`, `--verbose`, and the offline detection `selftest`.
 
 `tests/harness/codex-cli/` runs a no-model plugin smoke test with an isolated `CODEX_HOME`: register this checkout as a local marketplace, list `augments`, and install it. Its activation runner drives `codex exec --json` and counts a command event that reads `.../skills/{{skill}}/SKILL.md` from the installed plugin cache as the activation signal. Its Stop hook wrapper test is offline and payload-only.
+
+`tests/harness/kimi-code/` drives `kimi -p --output-format stream-json` in an isolated `KIMI_CODE_HOME` with this checkout installed as a managed plugin, and counts a `Skill` tool call naming the expected skill as the activation signal. Its Stop-hook test is offline over crafted payloads plus a wire-log fixture.
 
 Two kinds of check live under the harness:
 
