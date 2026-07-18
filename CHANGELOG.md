@@ -2,6 +2,18 @@
 
 Notable changes to augments, newest first. Versions follow semantic versioning; the narrative for each release lives on its release page — this file is the terse, cumulative record.
 
+## [4.1.0] — 2026-07-19
+
+### Added
+
+- **Kimi Code CLI adapter.** `.kimi-plugin/plugin.json` exposes the canonical skills directly (no mirror), loads `using-augments` at session start, binds skill language to the harness's real tools, and re-nudges at the done boundary via a manifest-declared Stop hook. Live activation and Stop-hook proofs recorded under `tests/harness/kimi-code/`; the session-start nudge does not survive mid-session compaction (recorded gap).
+- **Stop-nudge policy shared across harnesses.** `hooks/stop-nudge-detect.sh` holds the single done-boundary detector; Claude/Codex and Kimi wrappers only adapt payload and block format.
+- **Token budget enforced in CI.** `token-budget.sh --max 1600` gates the always-loaded surface.
+
+### Changed
+
+- **Field-report skill improvements.** `finishing-a-branch` checks repo PR templates first; `writing-plans` writes plan files incrementally; `requesting-code-review` returns actionable findings with blocking/advisory dispositions and files the full report; `executing-plans` stops fix loops after three failed attempts; `debugging` greps the literal error string first and requires intermittent-bug tests to replay the observed failure.
+
 ## [4.0.0] — 2026-07-15
 
 ### Changed
