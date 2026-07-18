@@ -14,6 +14,11 @@
 #   bash tests/token-budget.sh             # report only, exit 0
 #   bash tests/token-budget.sh --max 700   # also flag any body over 700 approx-tokens; exit 1 if exceeded
 #                                           # (discipline skills legitimately run large — see writing-skills)
+#
+# CI runs this with --max 1600 (see .github/workflows/validate.yml): the largest
+# body today is ~1550, so the gate catches bloat while leaving discipline skills
+# their headroom. Exceeding it means tighten the skill — or raise the budget in
+# the workflow deliberately, in the same diff, where a reviewer can see it.
 
 set -uo pipefail
 cd "$(dirname "$0")/.." || exit 2

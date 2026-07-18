@@ -34,6 +34,10 @@ Don't let "done" hide doubt: **done** (Evaluator green, self-check clean) · **d
 
 Bad work is worse than no work — escalate rather than guess.
 
+## Circuit breaker
+
+Three failed attempts at the same task — same failure class, no convergence — is a stop signal, not a prompt for attempt four (the same rule `debugging` applies to fixes). Mark the task **blocked**, record what was tried in the index, and escalate: re-plan the task, question the design, or ask the human. Repeated fix loops spend heavily without converging; proportionality is part of the gate.
+
 ## Long runs
 
 Context grows as you go. Every few tasks, or after a task with large output, it's safe to reset to a fresh session and resume — the index is the durable record. To resume: load `00-index.md`, announce the position (done vs left), find the first unticked task, and continue.

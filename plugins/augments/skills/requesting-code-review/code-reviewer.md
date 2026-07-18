@@ -33,10 +33,10 @@ You are reviewing a code change with fresh eyes. You did not write it and have n
 
 ## Output
 
-Group findings by severity:
+Write the full review to `.augments/reviews/{{YYYY-MM-DD}}-{{topic}}.md` (the standard reviews location; another path only if the user has set one) — everything checked, including what was verified clean and what was done well.
 
-- **Critical** — bugs, security holes, data loss.
-- **Important** — wrong or missing behaviour, architectural problems, test gaps.
-- **Minor** — style, naming, small simplifications.
+Then return **only the actionable part**. Your reader's context is the expensive one; the file carries the detail, your return carries the decisions:
 
-End with one line: **Ready to merge? Yes / No / With fixes** — and if it isn't Yes, the shortest path to Yes.
+- Each finding: severity (**Critical** — bugs, security holes, data loss; **Important** — wrong or missing behaviour, architectural problems, test gaps; **Minor** — style, naming, small simplifications), disposition (**blocking** — must fix before merge, or **advisory** — judge and maybe defer), the evidence (file, line, and what you ran or read), and the fix.
+- No "everything else looked fine" recap — that lives in the report file.
+- End with one line: **Ready to merge? Yes / No / With fixes** — and if it isn't Yes, the shortest path to Yes — plus the report file's path.

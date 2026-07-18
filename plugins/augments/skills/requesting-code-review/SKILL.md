@@ -29,7 +29,7 @@ Unsure? Default to Standard; escalate to Deep the moment the change is hard to u
 3. **Review on two axes, kept separate** (the reviewer can run them as parallel passes):
    - **Standards** — does it match the project's conventions, style, and quality bar? Read the project's conventions file and linter/formatter config, not memory.
    - **Spec** — does it actually do what was asked? Code can be clean and still build the wrong thing.
-4. **Read the verdict.** The reviewer returns severity-tiered findings (Critical / Important / Minor) and an explicit *Ready to merge? Yes / No / With fixes* — never a bare "looks good".
+4. **Read the verdict.** The reviewer returns severity-tiered findings (Critical / Important / Minor), each with a disposition (blocking / advisory) and its evidence, then an explicit *Ready to merge? Yes / No / With fixes* — never a bare "looks good". The return is the actionable part only; the full report (including what was verified clean) is a file the reviewer names, so re-checks and fix dispatches read the file, not a re-pasted worklog.
 5. **Act on the verdict via `receiving-code-review`** — verify each finding against the code and respond on the merits, never by deference. That skill owns the responding discipline.
 
 ## Specialist depth passes (optional)
@@ -54,3 +54,4 @@ If the diff touches a **trust boundary** — auth, attacker-controlled input, se
 - Reviewing the whole repo instead of the diff — slow, off-target, scope creep.
 - Passing the reviewer your reasoning — it then inherits your blind spots instead of catching them.
 - Accepting a vague verdict ("looks good") — no severity, no decision, no value.
+- Letting the reviewer return its whole worklog — the orchestrator's context is the costliest; actionable findings in the return, the full report in a file.
