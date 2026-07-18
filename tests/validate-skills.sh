@@ -93,12 +93,15 @@ fi
 echo "• Codex adapter"
 if ! bash tests/validate-codex-plugin.sh; then fail=1; fi
 
-# Version sync: the release version is declared in two manifests and bumped
+echo "• Kimi adapter"
+if ! bash tests/validate-kimi-plugin.sh; then fail=1; fi
+
+# Version sync: the release version is declared in three manifests and bumped
 # together in one release commit (see RELEASING.md). A half-done bump ships
 # disagreeing versions, so any disagreement fails.
 echo "• manifest versions agree"
 versions=""
-for manifest in .claude-plugin/plugin.json .claude-plugin/marketplace.json; do
+for manifest in .claude-plugin/plugin.json .claude-plugin/marketplace.json .kimi-plugin/plugin.json; do
   if [ ! -f "$manifest" ]; then err "missing $manifest"; continue; fi
   v=$(grep -m1 -oE '"version"[[:space:]]*:[[:space:]]*"[^"]+"' "$manifest" | sed -E 's/.*"([^"]+)"$/\1/')
   if [ -z "$v" ]; then err "$manifest: no \"version\" field"; continue; fi

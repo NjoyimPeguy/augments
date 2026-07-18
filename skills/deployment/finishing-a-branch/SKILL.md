@@ -16,7 +16,7 @@ Take a working branch to a merge-ready state. The order is fixed — gate, tidy,
 
 1. **Gate on green.** Run the tests and checks fresh; read the output. If anything fails, STOP and fix it before any step below. A merge-ready branch has passing checks, not "should be passing".
 2. **Tidy the history.** One logical commit per coherent change. Imperative subject ≤ ~72 chars; the body says *why*, not *what* (the diff is the what). Squash fixup noise. Do **not** force-push a branch with shared history unless explicitly asked.
-3. **Write the PR description** — two sections, no more:
+3. **Write the PR description.** First check whether the repo carries a PR template (a `PULL_REQUEST_TEMPLATE` file or directory under `.github/`, `docs/`, or the root, in any case): if one exists, fill it — its sections are the contract and override the default below, and a PR that ignores it reads as not having looked. If several templates could apply, stop and ask which. With no template, two sections, no more:
    - `## Summary` — 2–3 bullets: what changed and why.
    - `## Test Plan` — how it was verified.
    A reader should grasp the change without opening the diff.
