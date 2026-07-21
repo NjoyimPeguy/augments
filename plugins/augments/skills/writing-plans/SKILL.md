@@ -1,6 +1,6 @@
 ---
 name: writing-plans
-description: Use when you have an alignment brief or a clear multi-step task and need an executable plan before implementing — a per-task plan directory each task loads independently. Skip for single-step or trivial work — just do it.
+description: Use when requirements are agreed (a brief from interview-me or spec-it) or the task is clearly multi-step, and you need an executable plan before implementing — a per-task plan directory each task loads independently. Skip for single-step or trivial work — just do it.
 ---
 
 # Writing Plans
