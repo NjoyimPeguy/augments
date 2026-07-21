@@ -19,7 +19,7 @@ Before the first test, pin down the public interface — what goes in, what come
 
 **RED — write a failing test.** One small test for the next behavior. Run it. Watch it fail, and read the failure: it must fail because the behavior is missing, not because of a typo or an import error. A test you never saw fail proves nothing. Keep the failure you watched — quote a line of it in the cycle's commit message or task notes: an after-the-fact "I watched it fail" is an assertion, the saved output is evidence.
 
-**GREEN — make it pass, minimally.** Write the least code that turns the test green. No extra cases, no speculative generality. Run it; confirm green.
+**GREEN — make it pass, minimally.** On first entering GREEN — the moment implementation code starts — invoke `yagni`: this skill proves what you build *runs*, that one governs *how much* you build. Write the least code that turns the test green. No extra cases, no speculative generality. Run it; confirm green.
 
 **REFACTOR — clean up under green.** With the test passing, remove duplication and fix names and structure. Re-run; it stays green. Commit. Then the next RED.
 
