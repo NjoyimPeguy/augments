@@ -35,6 +35,10 @@ Start implementation on a branch or workspace named for the task. The point is n
 | "Worktrees are safer, so always use one" | User/project preference wins; a plain branch is correct for normal single-task work. |
 | "I'll make the branch after the first edit" | After the edit, you may already have mixed unrelated state. |
 
+## Checkpoint while you work
+
+A branch protects work only once the work is **committed** on it. After each coherent unit passes its check — and whenever more uncommitted work has accumulated than you would willingly redo — commit on the task branch. What counts as a unit is your judgment (a passing test cycle, one utility, one plan task); what is not negotiable is reaching the end of a long stretch with everything still sitting in the working tree: a dirty tree does not survive a power cut, a crashed session, or a bad command. WIP commit messages are fine — `finishing-a-branch` tidies history before merge.
+
 ## Finishing
 
 When the work merges, `finishing-a-branch` owns cleanup. Remove a worktree **before** deleting its branch (`git worktree remove <path>`, then delete the branch). Never delete or discard a branch/workspace you did not create without explicit confirmation.
