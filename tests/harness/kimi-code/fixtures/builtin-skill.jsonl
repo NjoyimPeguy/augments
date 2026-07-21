@@ -1,2 +1,0 @@
-{"role":"assistant","content":"Let me check the docs skill.","tool_calls":[{"type":"function","id":"tool_abc123","function":{"name":"Skill","arguments":"{\"skill\":\"check-kimi-code-docs\"}"}}]}
-{"role":"tool","tool_call_id":"tool_abc123","content":"Skill \"check-kimi-code-docs\" loaded inline. Follow its instructions."}

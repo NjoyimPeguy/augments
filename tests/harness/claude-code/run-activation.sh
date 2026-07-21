@@ -49,19 +49,40 @@ SKILL_FILTER='select(.type=="assistant") | .message.content[]?
   | select(.type=="tool_use" and .name=="Skill")
   | (.input.skill // .input.command // "?")'
 
-# Offline, deterministic detection check over committed fixtures — NO API call.
-# The gate the jq detector never had; safe to run anywhere jq exists.
+# Offline, deterministic detection check over inline fixtures — NO API call.
+# The gate the jq detector never had; safe to run anywhere jq exists. The
+# fixture streams live in this script (written to a temp dir per run) so no
+# .jsonl files sit in the tree.
 if [ "${1:-}" = "selftest" ]; then
   command -v jq >/dev/null 2>&1 || { echo "selftest needs jq" >&2; exit 3; }
-  cd "$scriptdir" || exit 2
+  fxdir="$(mktemp -d)"; trap 'rm -rf "$fxdir"' EXIT
+  cat > "$fxdir/fired-debugging.jsonl" <<'FX'
+{"type":"system","subtype":"init","session_id":"fixture","tools":["Skill","Read","Bash"]}
+{"type":"assistant","message":{"content":[{"type":"text","text":"This is a flaky test to root-cause — that's the debugging discipline. I'll invoke it first."},{"type":"tool_use","id":"t1","name":"Skill","input":{"skill":"augments:debugging","args":"Checkout integration test fails intermittently with a timeout."}}]},"session_id":"fixture"}
+{"type":"result","subtype":"success","is_error":false}
+FX
+  cat > "$fxdir/none.jsonl" <<'FX'
+{"type":"system","subtype":"init","session_id":"fixture","tools":["Skill","Read","Bash"]}
+{"type":"assistant","message":{"content":[{"type":"text","text":"Sure — the answer is 4."}]},"session_id":"fixture"}
+{"type":"result","subtype":"success","is_error":false}
+FX
+  cat > "$fxdir/proceeded-acting.jsonl" <<'FX'
+{"type":"system","subtype":"init","session_id":"fixture","tools":["Skill","Read","Bash"]}
+{"type":"assistant","message":{"content":[{"type":"text","text":"Let me open the failing test."},{"type":"tool_use","id":"t1","name":"Read","input":{"file_path":"tests/checkout.test.ts"}}]},"session_id":"fixture"}
+{"type":"result","subtype":"success","is_error":false}
+FX
+  cat > "$fxdir/routed-dpa.jsonl" <<'FX'
+{"type":"assistant","message":{"content":[{"type":"text","text":"I'll route this through the augments skill system first."},{"type":"tool_use","name":"Skill","input":{"skill":"augments:using-augments"}}]}}
+{"type":"assistant","message":{"content":[{"type":"text","text":"The router confirms the fit. Fanning out to parallel agents."},{"type":"tool_use","name":"Skill","input":{"skill":"augments:dispatching-parallel-agents"}}]}}
+FX
   st_fail=0
   st_check() {  # $1 fixture, $2 expected (skill name, or "" for none)
-    local got; got="$(jq -rc "$SKILL_FILTER" "fixtures/$1" 2>/dev/null | head -n1)"
+    local got; got="$(jq -rc "$SKILL_FILTER" "$fxdir/$1" 2>/dev/null | head -n1)"
     if [ "$got" = "$2" ]; then printf 'ok    %-26s -> %s\n' "$1" "${got:-<none>}"
     else printf 'FAIL  %-26s -> got "%s" want "%s"\n' "$1" "$got" "$2"; st_fail=1; fi
   }
   st_chain() {  # $1 fixture, $2 skill that must appear ANYWHERE in the chain (routing-first)
-    if jq -rc "$SKILL_FILTER" "fixtures/$1" 2>/dev/null | grep -qx "$2"; then printf 'ok    %-26s chain has %s\n' "$1" "$2"
+    if jq -rc "$SKILL_FILTER" "$fxdir/$1" 2>/dev/null | grep -qx "$2"; then printf 'ok    %-26s chain has %s\n' "$1" "$2"
     else printf 'FAIL  %-26s chain lacks %s\n' "$1" "$2"; st_fail=1; fi
   }
   st_check fired-debugging.jsonl  "augments:debugging"

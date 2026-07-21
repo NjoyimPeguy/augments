@@ -72,7 +72,7 @@ Three additions for the v2 activation work:
   nudge/hooks, not the last published version. Confirmed: with it, the session
   `init` lists only the repo path; the cached plugin is overridden.
 - **`run-activation.sh selftest`** runs the jq detector over committed
-  `fixtures/*.jsonl` (a fired case, a none case, a proceeded-by-acting case) and
+  inline fixture streams (a fired case, a none case, a proceeded-by-acting case) and
   asserts the verdicts — a deterministic, no-API check of the detection logic
   itself, the one part that can be gated without a model.
 - **`scenarios/decay/`** is the long-session reproduction: `_flow` runs

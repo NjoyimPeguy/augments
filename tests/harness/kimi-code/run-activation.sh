@@ -25,12 +25,25 @@ is_skill() { find "$repo/skills" -maxdepth 2 -type d -name "$1" 2>/dev/null | gr
 
 if [ "${1:-}" = "selftest" ]; then
   command -v jq >/dev/null 2>&1 || { echo "selftest needs jq" >&2; exit 3; }
-  cd "$scriptdir" || exit 2
+  # Inline fixtures, written to a temp dir per run — no .jsonl files in the tree.
+  fxdir="$(mktemp -d)"; trap 'rm -rf "$fxdir"' EXIT
+  cat > "$fxdir/fired-debugging.jsonl" <<'FX'
+{"role":"assistant","content":"This is a bug report, so the `debugging` skill applies. Invoking it now.","tool_calls":[{"type":"function","id":"tool_HX4rkvUCvATkjW0bzCtgLzaS","function":{"name":"Skill","arguments":"{\"skill\":\"debugging\"}"}}]}
+{"role":"tool","tool_call_id":"tool_HX4rkvUCvATkjW0bzCtgLzaS","content":"Skill \"debugging\" loaded inline. Follow its instructions."}
+FX
+  cat > "$fxdir/none.jsonl" <<'FX'
+{"role":"assistant","content":"I'll answer directly — no skill is needed for a simple listing request."}
+{"role":"assistant","content":"Here is the list you asked for."}
+FX
+  cat > "$fxdir/builtin-skill.jsonl" <<'FX'
+{"role":"assistant","content":"Let me check the docs skill.","tool_calls":[{"type":"function","id":"tool_abc123","function":{"name":"Skill","arguments":"{\"skill\":\"check-kimi-code-docs\"}"}}]}
+{"role":"tool","tool_call_id":"tool_abc123","content":"Skill \"check-kimi-code-docs\" loaded inline. Follow its instructions."}
+FX
   fail=0
   check() {
     fixture="$1"
     want="$2"
-    got="$(jq -rc "$SKILL_FILTER" "fixtures/$fixture" 2>/dev/null | head -n1)"
+    got="$(jq -rc "$SKILL_FILTER" "$fxdir/$fixture" 2>/dev/null | head -n1)"
     if [ "$got" = "$want" ]; then
       printf 'ok    %-24s -> %s\n' "$fixture" "${got:-<none>}"
     else

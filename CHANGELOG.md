@@ -2,6 +2,12 @@
 
 Notable changes to augments, newest first. Versions follow semantic versioning; the narrative for each release lives on its release page — this file is the terse, cumulative record.
 
+## [4.1.2] — 2026-07-21
+
+### Changed
+
+- **Selftest fixtures inlined.** The three activation-detector selftests now write their fixture streams from inline heredocs to a temp dir per run; the committed `fixtures/*.jsonl` dirs are gone, leaving zero `.jsonl`/`.log` files under `tests/`. Identical content, identical checks, all three selftests pass.
+
 ## [4.1.1] — 2026-07-21
 
 ### Fixed

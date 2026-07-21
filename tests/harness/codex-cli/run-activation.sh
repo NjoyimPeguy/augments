@@ -21,12 +21,23 @@ is_skill() { find "$repo/skills" -maxdepth 2 -type d -name "$1" 2>/dev/null | gr
 
 if [ "${1:-}" = "selftest" ]; then
   command -v jq >/dev/null 2>&1 || { echo "selftest needs jq" >&2; exit 3; }
-  cd "$scriptdir" || exit 2
+  # Inline fixtures, written to a temp dir per run — no .jsonl files in the tree.
+  fxdir="$(mktemp -d)"; trap 'rm -rf "$fxdir"' EXIT
+  cat > "$fxdir/fired-debugging.jsonl" <<'FX'
+{"type":"item.started","item":{"id":"item_1","type":"command_execution","command":"/bin/bash -lc \"sed -n '1,260p' /home/user/.codex/plugins/cache/augments-dev/augments/2.2.0/skills/debugging/SKILL.md\"","aggregated_output":"","exit_code":null,"status":"in_progress"}}
+{"type":"item.completed","item":{"id":"item_1","type":"command_execution","command":"/bin/bash -lc \"sed -n '1,260p' /home/user/.codex/plugins/cache/augments-dev/augments/2.2.0/skills/debugging/SKILL.md\"","aggregated_output":"---\nname: debugging\n---\n","exit_code":0,"status":"completed"}}
+FX
+  cat > "$fxdir/none.jsonl" <<'FX'
+{"type":"response_item","payload":{"type":"message","role":"assistant","content":[{"type":"output_text","text":"I can inspect the code first."}]}}
+FX
+  cat > "$fxdir/routed-multi-skill-command.jsonl" <<'FX'
+{"type":"item.completed","item":{"type":"command_execution","command":"/bin/bash -lc \"sed -n '1,240p' /tmp/codex/plugins/cache/augments/skills/using-augments/SKILL.md && sed -n '1,240p' /tmp/codex/plugins/cache/augments/skills/using-task-branches/SKILL.md\""}}
+FX
   fail=0
   check() {
     fixture="$1"
     want="$2"
-    got="$(jq -rc "$SKILL_FILTER" "fixtures/$fixture" 2>/dev/null | head -n1)"
+    got="$(jq -rc "$SKILL_FILTER" "$fxdir/$fixture" 2>/dev/null | head -n1)"
     if [ "$got" = "$want" ]; then
       printf 'ok    %-24s -> %s\n' "$fixture" "${got:-<none>}"
     else
@@ -37,7 +48,7 @@ if [ "${1:-}" = "selftest" ]; then
   check_has() {
     fixture="$1"
     want="$2"
-    if jq -rc "$SKILL_FILTER" "fixtures/$fixture" 2>/dev/null | grep -qx "$want"; then
+    if jq -rc "$SKILL_FILTER" "$fxdir/$fixture" 2>/dev/null | grep -qx "$want"; then
       printf 'ok    %-24s contains %s\n' "$fixture" "$want"
     else
       printf 'FAIL  %-24s lacks "%s"\n' "$fixture" "$want"
