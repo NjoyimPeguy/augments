@@ -1,6 +1,6 @@
 ---
 name: spec-it
-description: Use when you have a goal or feature and need detailed requirements before design — what it must do, how each is verified, and the assumptions and risks. Captures the WHAT, not the HOW; grill unknowns with interview-me first.
+description: Use when you have a goal or feature and need detailed requirements before design — what it must do, how each is verified, and the assumptions and risks. Captures the WHAT, not the HOW; grill unknowns with interview-me first. Skip when verifiable requirements are already written down.
 ---
 
 # Spec It
