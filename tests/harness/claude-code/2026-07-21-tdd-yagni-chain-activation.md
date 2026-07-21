@@ -47,6 +47,20 @@ way.
 So the router pairing is what makes the chain fire on a bare opening; the
 GREEN sentence anchors *when*. Both kept.
 
+## Round 3 — description clarity rewrite, re-measured
+
+Same day, `yagni`'s description was rewritten for clarity (maintainer found
+the double-arm sentence vague): it now leads with the WHEN (implementation
+starting, as `test-driven-development`'s pair) and names the two arms as
+building MORE than asked vs delivering LESS than asked — "build exactly what
+the task needs — no more, no less". Both arms, the pairing, and the skip
+clause are retained; the "distinct from TDD" explainer moved fully into the
+pairing framing. Re-probed bare on both harnesses: the chain held unchanged
+(this harness: `using-augments → test-driven-development → yagni` before the
+first Write; the other adapter: `using-task-branches →
+test-driven-development → yagni → using-augments → verifying-completion →
+requesting-code-review`). One run per harness.
+
 ## Discipline safety
 
 The TDD body change was pressure-re-run (skip-tests order): held, no
