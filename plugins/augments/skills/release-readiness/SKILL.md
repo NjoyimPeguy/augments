@@ -1,6 +1,6 @@
 ---
 name: release-readiness
-description: Use after a change is merged and before it ships to production — a portable pre-deploy gate for what you can reason about on any platform. Skip for a change that doesn't ship to a running system.
+description: "Use after a change is merged and before it ships to production — the pre-deploy gate an agent can check from the repo: CI green on the merged result, reversible migrations, a named rollback target, risky behaviour behind a flag, config and secrets present, downstream breakage flagged. Skip for a change that doesn't reach a running system."
 ---
 
 # Release Readiness

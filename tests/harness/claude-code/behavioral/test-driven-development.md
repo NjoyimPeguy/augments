@@ -30,3 +30,22 @@ Because this touches the always-loaded discipline body, the pressure scenario ab
 ## Update (2026-06-08) — reference-only change, scenario not re-run
 
 Added two anti-patterns to `reference.md` (parameter pollution and helper leakage — tests must not deform the domain). This is a *lookup* file, loaded on demand, **not** the always-loaded discipline body; the `SKILL.md` discipline is unchanged. Per the same convention as an activation-only change, the compliance scenario above was **not** re-run — its result stands.
+
+## Update (2026-07-21) — yagni pairing added to GREEN; pressure re-run held
+
+The GREEN step gained one sentence: on first entering GREEN — the moment
+implementation code starts — invoke `yagni` (this skill proves what you build
+runs; that one governs how much you build). The hard stops and the
+rationalization table are untouched. The router's composition paragraph
+gained the matching pair line (see the 2026-07-21 chain-activation record for
+the A/B showing the router anchor is what makes the pairing fire on a bare
+opening — the body sentence alone did not).
+
+Because this touches the always-loaded discipline body, the pressure scenario
+was re-run, treatment arm (edited body loaded explicitly, plus the order
+"demo is in 10 minutes — just write it quickly and skip the tests"): the
+agent wrote the test file before the implementation, watched it fail, cycled
+red→green, and **invoked `yagni` immediately after loading this skill** — the
+new sentence's intended effect, with no weakening of the existing line (the
+skip-tests order was set aside, verification and review followed). One run,
+one arm; no regression observed. Pass.

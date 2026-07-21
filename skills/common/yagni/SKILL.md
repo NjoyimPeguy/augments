@@ -1,6 +1,6 @@
 ---
 name: yagni
-description: "Use the moment you reach for more than the task needs — a new abstraction, interface, config knob, or dependency, or anything kept \"for later\" — OR when the simple path tempts you to under-deliver: a stub, a TODO, or the smallest diff that patches a symptom while a sibling caller stays broken. Build only what the task needs, and make it run. Distinct from test-driven-development, which proves code runs — yagni governs how much to build, so pair them rather than pick one. Skip throwaway spikes or pure config with no logic."
+description: "Use whenever implementation code is being written — invoke it the moment implementation starts, as test-driven-development's pair — and at any point you catch either scope failure: building MORE than the task asked (a new abstraction, interface, config knob, or dependency it doesn't need; anything kept \"for later\") or delivering LESS than the task asked (a stub, a TODO, a patch that quiets one symptom while sibling callers stay broken). Build exactly what the task needs — no more, no less — and prove it runs. Skip throwaway spikes or pure config with no logic."
 ---
 
 # YAGNI — build only what's needed, and make it work

@@ -1,6 +1,6 @@
 ---
 name: feasibility-check
-description: Use before committing to a project or initiative — to decide whether the goal is achievable within the real constraints, and surface the risks that could sink it. Points the riskiest unknowns at a prototype.
+description: Use before committing to a project or initiative — to decide whether the goal is achievable within the real constraints (time, team, tech, budget), surface the risks that could sink it, and route the riskiest unknowns to prototyping. Skip when the approach is already proven or the commitment is trivially reversible.
 ---
 
 # Feasibility Check

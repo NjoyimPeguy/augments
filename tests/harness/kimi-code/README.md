@@ -3,9 +3,16 @@
 This folder is the Kimi Code CLI adapter test layer. It has two scopes:
 
 - `run-activation.sh selftest` is an offline detector check over fixture JSONL.
-- `run-activation.sh --scenario-file scenarios/maintenance/debugging --keep`
+- `run-activation.sh --scenario-file scenarios/<phase>/<skill> --keep`
   drives a real `kimi -p --output-format stream-json` run and observes
   activation as a `Skill` tool call naming a canonical Augments skill.
+
+`scenarios/` mirrors the shared per-phase scenario set (the same openings the
+other adapters use — the filename is the expected skill). This runner is
+single-scenario only: the flow/decay/momentum sequences are Claude-Code-only,
+they need that harness's resumed-conversation flow engine. Negative scenarios
+(a filename that is not a skill) are also Claude-Code-only — this runner
+treats an empty `--expect` as "any activation passes", not "expect none".
 - `test-stop-nudge.sh` is an offline payload+wire test for the Kimi Stop-hook
   re-nudge in `hooks/stop-nudge-kimi.sh` (declared in the plugin manifest's
   `hooks` array). Its detection policy is shared with the other harnesses in

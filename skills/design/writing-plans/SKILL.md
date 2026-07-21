@@ -1,6 +1,6 @@
 ---
 name: writing-plans
-description: Use when you have an alignment brief or a clear multi-step task and need an executable plan before implementing — a per-task plan directory each task loads independently. Skip for single-step or trivial work — just do it.
+description: Use when requirements are agreed (a brief from interview-me or spec-it) or the task is clearly multi-step, and you need an executable plan before implementing — a per-task plan directory each task loads independently. Skip for single-step or trivial work — just do it.
 ---
 
 # Writing Plans
@@ -9,10 +9,10 @@ Turn an aligned intent into an executable plan: a small durable **map** plus thi
 
 ## When to use
 
-- You have an alignment brief (from `interview-me`) or a clear task spanning ≥3 steps or multiple files.
+- Requirements are agreed (a brief from `interview-me`/`spec-it`) or the task spans ≥3 steps or multiple files.
 - **Skip** for single-step or trivial changes — planning them costs more than doing them.
 - If requirements are still fuzzy, suggest `interview-me` first (optional, not a gate).
-- If the work spans multiple *independent* subsystems, write a separate plan per subsystem — each must produce working, testable software on its own.
+- If the work spans multiple *independent* subsystems, write a separate plan per subsystem — each must produce working, testable software alone.
 
 ## Procedure
 
@@ -30,16 +30,16 @@ Turn an aligned intent into an executable plan: a small durable **map** plus thi
 
 ### Assemble the plan directory
 
-**5. Write it** to `.augments/plans/{{YYYY-MM-DD}}-{{topic}}/` (the standard plans location; another path only if the user explicitly says otherwise). Write the files one at a time — index, then each task file — never one monolithic dump: a long write can stall or truncate, and a half-written plan reads as done. It contains:
+**5. Write it** to `.augments/plans/{{YYYY-MM-DD}}-{{topic}}/` (the standard plans location; another path only if the user says otherwise). Write the files one at a time — index, then each task file — never one monolithic dump: a long write can stall or truncate, and a half-written plan reads as done. It contains:
 - `00-index.md` — the map: goal, 2–3-sentence architecture, a **Constraints** block (project-wide rules — version floors, dependency limits, naming, security, platform — copied verbatim; every task's contract implicitly includes them), an **Acceptance** check (the end-to-end definition of done for the whole plan), checkbox task list with status, links. See `index-template.md`.
 - `NN-<task>.md` — one contract each, ≤ ~2k tokens. See `task-template.md`.
 
-**6. Tag a capability tier per task** (mechanical → small, logic/design → large) — a tier, not a vendor model name, so any harness maps it to its own model at dispatch.
+**6. Tag a capability tier per task** (mechanical → small, logic/design → large) — a tier, not a vendor model name; each harness maps tier → model at dispatch.
 
 ### Self-review before saving (inline, ~30s)
 
 - **Trace each requirement to a task by name** — don't skim from memory. List the requirements in the brief/spec and point each at the task that implements it: a requirement with no task is a silent gap; a task tracing to nothing in the brief is scope creep. (A from-memory skim is what passes plans that have already drifted.)
-- No undefined *scope*: `TBD`, `handle edge cases`, `similar to task N` each mean a task you haven't actually written. (Deferring *implementation* is fine; deferring *scope* is not.)
+- No undefined *scope*: `TBD`, `handle edge cases`, `similar to task N` each mean a task you haven't written. (Deferring *implementation* is fine; deferring *scope* is not.)
 - Every task has a deterministic Evaluator or an explicit rubric, and the plan has one top-level **Acceptance** check (whole-feature done).
 - **Every Consumes resolves to a Produces** under the *same* name and type — a `clearLayers()` consumed but only `clearFullLayers()` produced is a build-time break — and no task violates a rule in the index's Constraints block.
 
@@ -53,7 +53,7 @@ Only the user can confirm the plan's *direction*, and this is the cheapest momen
 - **What does *not* count as a go:** a green light given *before* the plan existed ("go ahead", "over to you" — that approved the work, not the unseen plan); a non-interactive session (end the turn with the plan presented — don't skip the pause because nobody can answer).
 - **Proceed unpaused only** when the user explicitly ordered a straight-through run ("plan it and build it, don't stop for approval") or requested an unattended run.
 
-If reality deviates during execution, update the task file and `00-index.md` — the plan stays the source of truth; don't silently drift.
+If reality deviates during execution, update the task file and `00-index.md` — the plan stays the source of truth.
 
 ## Common mistakes
 
