@@ -2,7 +2,7 @@
 
 This folder is the Kimi Code CLI adapter test layer. It has two scopes:
 
-- `run-activation.sh selftest` is an offline detector check over fixture JSONL.
+- `run-activation.sh selftest` is an offline detector check over inline fixture streams (no .jsonl files on disk).
 - `run-activation.sh --scenario-file scenarios/<phase>/<skill> --keep`
   drives a real `kimi -p --output-format stream-json` run and observes
   activation as a `Skill` tool call naming a canonical Augments skill.

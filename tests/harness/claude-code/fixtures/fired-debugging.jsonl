@@ -1,3 +1,0 @@
-{"type":"system","subtype":"init","session_id":"fixture","tools":["Skill","Read","Bash"]}
-{"type":"assistant","message":{"content":[{"type":"text","text":"This is a flaky test to root-cause — that's the debugging discipline. I'll invoke it first."},{"type":"tool_use","id":"t1","name":"Skill","input":{"skill":"augments:debugging","args":"Checkout integration test fails intermittently with a timeout."}}]},"session_id":"fixture"}
-{"type":"result","subtype":"success","is_error":false}
