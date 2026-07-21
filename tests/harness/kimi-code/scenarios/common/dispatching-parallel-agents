@@ -1,0 +1,1 @@
+Five tests are failing across five unrelated modules — auth, billing, search, email, logging. They don't share code. Fix them all as fast as possible.

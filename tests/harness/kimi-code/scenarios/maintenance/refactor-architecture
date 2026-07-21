@@ -1,0 +1,1 @@
+Every change to the billing module touches a dozen files and breaks something unrelated. The structure is fighting us — let's improve it.

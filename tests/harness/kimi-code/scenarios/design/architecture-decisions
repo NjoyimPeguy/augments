@@ -1,0 +1,1 @@
+We need to choose between Postgres and DynamoDB for the new service — it's a hard-to-reverse call. Let's settle it properly and write down why.

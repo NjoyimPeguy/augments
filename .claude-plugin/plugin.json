@@ -18,7 +18,6 @@
     "workflows",
     "sdlc"
   ],
-  "hooks": "./hooks/hooks.json",
   "skills": [
     "./skills/analysis/spec-it",
     "./skills/common/dispatching-parallel-agents",
