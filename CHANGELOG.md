@@ -2,6 +2,24 @@
 
 Notable changes to augments, newest first. Versions follow semantic versioning; the narrative for each release lives on its release page — this file is the terse, cumulative record.
 
+## [4.1.1] — 2026-07-21
+
+### Fixed
+
+- **Duplicate hooks load in Claude Code.** `.claude-plugin/plugin.json` named `hooks/hooks.json` in a `hooks` key while the harness auto-loads that file, so every session logged `Hook load failed: Duplicate hooks file detected`. The key is dropped; a live probe confirms the SessionStart nudge still routes.
+- **`writing-plans` body back under the CI token cap** after the trigger rewrite pushed it to 1610 (now 1598).
+
+### Changed
+
+- **`yagni` now chains from `test-driven-development` at the implementation moment.** TDD's GREEN step invokes it, and `using-augments` names the pair — the router line is the load-bearing anchor (live A/B on both harnesses; the body sentence alone did not fire). `yagni`'s trigger rewritten: build MORE than asked vs deliver LESS than asked, no more, no less.
+- **Five triggers de-vagued**, rewritten from their own bodies' vocabulary: `release-readiness` (names its real gate signals), `writing-plans` ("alignment brief" → a brief from `interview-me`/`spec-it`), `refactor-architecture` (concrete friction symptoms), `spec-it` and `feasibility-check` (Skip clauses added). Re-measured 10/10 on both harnesses.
+- **Checkpoint commits.** `using-task-branches` and `verifying-completion` now tell an agent to bank verified work on the task branch as it goes — uncommitted work is one power cut from gone.
+
+### Added
+
+- **v4.1.0 live-verification debt closed on Claude Code** (account newly available): working-tree activation probes, the owed `ui-ux-design` probe, a RED/GREEN re-run of the 2026-07-19 `debugging` additions, and honest records under `tests/harness/claude-code/`.
+- **Kimi Code scenario tree completed** (1 → 31 openings) with a live per-phase sweep record (8/8 activated, CLI 0.28.1); committed run artifacts purged and ignored.
+
 ## [4.1.0] — 2026-07-19
 
 ### Added
