@@ -55,3 +55,15 @@ A real session exposed a chain hole: this skill fired at a feature-level done bo
 - **Flaky-green regression (new body):** **2/2 "not verified"**, root-cause-first, quoting the flaky hard-stop — the new review line did not convert an unexplained flaky green into a "review then ship" path.
 
 **Conclusion:** first demonstrable behavioural separation on this skill (0/2 → 3/3 on the handoff action). Unlike runnable-check honesty — which the 2026-06-04 runs showed is a model default — *review at the boundary* is salience-dependent: the model demands it when stakes or framing surface it, and skips it on an ordinary green feature. The two added lines supply exactly that salience at the moment the gate passes. Caveat honestly: these are prompt-level application probes (the agent is told to apply the skill body), not full-session activation tests; they prove the body produces the handoff once loaded, not that the skill loads — activation is the runnable harness's territory.
+
+## Update (2026-07-21) — "Verified, then banked" paragraph added
+
+The body gained one additive paragraph after the gate: a state that just
+passed its check exists only in the working tree until committed —
+checkpoint it on the task branch before moving on. No tuned content (hard
+stops, rationalization table) was reworded. Per the additive-line
+convention, a treatment-arm run stands in for a full re-run: in the
+2026-07-21 checkpoint probe (see `checkpoint-commits.md`) the skill was
+invoked mid-chain, its gate ran fresh (tests executed, output read before
+any done claim), and the verified state was committed at the boundary — no
+weakening observed. The core pressure scenario was not re-run.

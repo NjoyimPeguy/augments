@@ -23,6 +23,8 @@ Evidence before claims. "Should work", "looks right", and "probably fine" are no
 
 Skip any step and you have not verified — you have asserted.
 
+**Verified, then banked.** A state that just passed its check exists only in the working tree until committed — checkpoint it on the task branch before moving on (a WIP message is fine; history is tidied at the branch wrap-up). Verified-but-uncommitted work is one power cut from gone.
+
 ## When no automated check exists
 
 Some claims — visual output, real-browser flows, realtime UI, subjective usability — have no command that returns pass/fail. The gate is then human-run, but it is still a gate: structure it as a traceable acceptance matrix with evidence, never self-certify a step a human must judge, and treat an unrun row as pending, not passed. Automate everything that *can* be; this covers only what genuinely can't. See `manual-acceptance.md`.
