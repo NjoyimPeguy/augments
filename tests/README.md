@@ -21,6 +21,7 @@ The skills are portable Markdown, but **whether one actually activates is a fact
 Two kinds of check live under the harness:
 
 - **Activation** — does the right skill fire on a representative opening? (scenarios + runners)
+- **Behavioural** — once invoked, does the skill change what actually gets *built*? On Claude Code this is runnable: `run-behavioral.sh` drives a two-arm comparison (RED from a `git worktree` at `--base`, GREEN from the working tree) over a seeded fixture with write access, and each scenario supplies a `probe.sh` whose **exit code** is the verdict. Behaviour has no generic verdict the way activation does, so the runner owns the plumbing and the scenario owns the judgement.
 - **Discipline-pressure** (`behavioral/`) — once invoked, does the discipline hold under pressure to cut a corner? (dated records of pressure tests)
 
 **Why these can't be the portable gate, and the honest cost.** A real "did it fire" test must drive one specific CLI, pass its flags, and make a real API call — it binds to a harness and is neither free nor deterministic. So it's a runnable tool you re-run for current truth, **not** a CI pass/fail and **not** a committed results log. And because real runs cost, coverage is **selective** — the scenarios exercise the skills that matter most, not all of them every time. Name what isn't covered rather than imply everything is.

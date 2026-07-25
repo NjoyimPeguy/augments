@@ -40,15 +40,34 @@ else
   note "executable spec   : NONE — no new test artifact was written"; fail=1
 fi
 
-# 3 — it runs, and fails for the RIGHT reason
+# 3 — it runs, and fails for the RIGHT reason.
+#
+# Two different failures hide behind one bad exit code, and they must not be
+# conflated: the artifact itself may be broken, OR the project's documented test
+# command may be broken (this fixture ships one that is, deliberately). So when
+# the project command fails to LOAD, re-run the artifact directly to find out
+# which. Both still fail the probe — step 6 requires the criterion to actually
+# run, and an artifact the project's own gate cannot execute is not a gate — but
+# the record should say which one happened.
+loaded() { ! printf '%s' "$1" | grep -qiE "cannot find module|module_not_found|err_module|syntaxerror|no test files found"; }
+behaved() { printf '%s' "$1" | grep -qiE "assert|expected|fail"; }
+
 if [ -n "$new_tests" ]; then
   out="$(npm test 2>&1)"; rc=$?
   if [ "$rc" -eq 0 ]; then
     note "runs              : NO — suite passes; a spec for unbuilt behaviour must fail"; fail=1
-  elif printf '%s' "$out" | grep -qiE "cannot find module|module_not_found|err_module|syntaxerror|no test files found"; then
-    note "runs              : NO — suite did not load (module/syntax error), so it is not a criterion"; fail=1
-  elif printf '%s' "$out" | grep -qiE "assert|expected|fail"; then
+  elif loaded "$out" && behaved "$out"; then
     note "runs              : YES — fails on missing behaviour (exit $rc)"
+  elif ! loaded "$out"; then
+    direct="$(printf '%s' "$new_tests" | tr '\n' ' ')"
+    dout="$(node --test $direct 2>&1)"; drc=$?
+    if loaded "$dout" && behaved "$dout"; then
+      note "runs              : NO — artifact is valid (fails on missing behaviour standalone)"
+      note "                    but the project's own \`npm test\` does not load it, and was left unfixed"
+    else
+      note "runs              : NO — artifact itself does not load (exit $drc); not a criterion"
+    fi
+    fail=1
   else
     note "runs              : UNCLEAR — exit $rc with no recognisable assertion output"; fail=1
   fi
