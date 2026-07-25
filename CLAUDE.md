@@ -36,7 +36,7 @@ Rules 1–3 are not honor-system. `tests/validate-skills.sh` enforces them deter
 bash tests/validate-skills.sh
 ```
 
-Rule 4 (behavior) has no deterministic gate — that is the honest limit. Prove **activation** by running your adapter's harness (`tests/harness/claude-code/` drives the real CLI and observes whether the skill fires); prove a **discipline holds** with a pressure test (`testing.md`), recorded under `tests/harness/<adapter>/behavioral/`. A record states the real outcome, including an inconclusive one — never green-wash.
+Rule 4 (behavior) has no deterministic gate — that is the honest limit. Prove **activation** by running your adapter's harness (`tests/harnesses/claude-code/` drives the real CLI and observes whether the skill fires); prove a **discipline holds** with a pressure test (`testing.md`), recorded under `tests/harnesses/<adapter>/behavioral-records/`. A record states the real outcome, including an inconclusive one — never green-wash.
 
 ## Adding a skill
 
@@ -49,8 +49,8 @@ Rule 4 (behavior) has no deterministic gate — that is the honest limit. Prove 
 
 Changing a skill is changing behaviour, so match the proof to the change:
 
-- **Description (the trigger):** an *activation* change — re-measure with your adapter's harness (`tests/harness/claude-code/run-activation.sh`) and confirm the skill still fires on its scenario.
-- **The always-loaded `SKILL.md` body of a discipline skill:** re-run the pressure test (`testing.md`) and update `tests/harness/claude-code/behavioral/<skill>.md`.
+- **Description (the trigger):** an *activation* change — re-measure with your adapter's harness (`tests/harnesses/claude-code/run-activation.sh`) and confirm the skill still fires on its scenario.
+- **The always-loaded `SKILL.md` body of a discipline skill:** re-run the pressure test (`testing.md`) and update `tests/harnesses/claude-code/behavioral-records/<skill>.md`.
 - **A sibling or reference file** (loaded on demand, not under pressure): the discipline body is unchanged — no behavioural re-run is owed; say so in the record.
 - Never reword carefully-tuned discipline content — rationalization tables, red-flag lists, hard-stops — without re-proving it still holds. And never green-wash a record: an inconclusive result *is* the finding.
 
@@ -83,7 +83,7 @@ Closed without extended review — most are the inverse of a rule above:
 
 Adding a harness (an IDE, CLI, or agent runner) means more than dropping skill files where the tool can see them — they must actually *load and activate*. Augments' skills are inert unless the harness both discovers them and is nudged to reach for one at the right moment (on Claude Code, the `hooks/` SessionStart nudge; elsewhere, an equivalent). See `docs/augments/harness-support.md`.
 
-A PR adding a harness MUST include a runnable test layer under `tests/harness/<name>/` — a runner that drives that harness's CLI and shows a skill *actually activating* on a representative opening, not a description of how it should work. Files present but never invoked is not a working integration.
+A PR adding a harness MUST include a runnable test layer under `tests/harnesses/<name>/` — a runner that drives that harness's CLI and shows a skill *actually activating* on a representative opening, not a description of how it should work. Files present but never invoked is not a working integration.
 
 ## Layout
 
@@ -91,7 +91,7 @@ A PR adding a harness MUST include a runnable test layer under `tests/harness/<n
 - `.claude-plugin/` — the install manifest; its skills array must list every skill on disk (the gate checks it). `.kimi-plugin/` — the Kimi Code manifest; its skills paths must resolve to the same canonical set. Adding a harness: `docs/augments/harness-support.md`.
 - `AGENTS.md`, `GEMINI.md` — symlinks to this file, so a harness that reads its own instructions file gets the same guidance from one source.
 - `.github/` — CI (`workflows/validate.yml`) and the PR template (`PULL_REQUEST_TEMPLATE.md`).
-- `tests/` — the portable gate (`validate-skills.sh`, `validate-codex-plugin.sh`, `validate-kimi-plugin.sh`, `token-budget.sh`) plus `harness/<adapter>/` — per-harness **runnable** tests. Claude Code has live activation tests and `behavioral/` discipline-pressure records; Codex CLI has marketplace/install smoke coverage and a live activation scenario; Kimi Code CLI has a live activation probe over an isolated managed-plugin install.
+- `tests/` — the portable gate (`validate-skills.sh`, `validate-codex-plugin.sh`, `validate-kimi-plugin.sh`, `token-budget.sh`) plus `harnesses/<adapter>/` — per-harness **runnable** tests. Claude Code has live activation tests and `behavioral-records/` discipline-pressure records; Codex CLI has marketplace/install smoke coverage and a live activation scenario; Kimi Code CLI has a live activation probe over an isolated managed-plugin install.
 - `governance/` — adoptable **deterministic-gate** templates (CI workflows, branch-protection, pre-commit) that make the production-critical skills non-skippable at the commit/PR/CI boundary, where firm persuasion can't. Each gate maps to the skill it enforces, labelled bulletproof vs heuristic.
 - `CHANGELOG.md`, `RELEASING.md` — the release record, and how releases are versioned and cut (semver over the skill surface; the gate checks the two manifest versions agree).
 - `.claude/` — local config and notes; gitignored, never shipped.

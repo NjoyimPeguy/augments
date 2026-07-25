@@ -172,7 +172,7 @@ fi
 if [ -n "$keep" ]; then
   cp "$stream" "$scriptdir/last-stream.jsonl"
   cp "$errlog" "$scriptdir/last-stderr.log"
-  echo "stream   : tests/harness/kimi-code/last-stream.jsonl"
-  echo "stderr   : tests/harness/kimi-code/last-stderr.log"
+  echo "stream   : tests/harnesses/kimi-code/last-stream.jsonl"
+  echo "stderr   : tests/harnesses/kimi-code/last-stderr.log"
 fi
 exit "$result"

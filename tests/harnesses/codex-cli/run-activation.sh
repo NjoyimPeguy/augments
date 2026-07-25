@@ -167,7 +167,7 @@ fi
 if [ -n "$keep" ]; then
   cp "$stream" "$scriptdir/last-stream.jsonl"
   cp "$errlog" "$scriptdir/last-stderr.log"
-  echo "stream   : tests/harness/codex-cli/last-stream.jsonl"
-  echo "stderr   : tests/harness/codex-cli/last-stderr.log"
+  echo "stream   : tests/harnesses/codex-cli/last-stream.jsonl"
+  echo "stderr   : tests/harnesses/codex-cli/last-stderr.log"
 fi
 exit "$result"

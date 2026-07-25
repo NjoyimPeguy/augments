@@ -19,14 +19,14 @@ Kimi's blockable `Stop` event does not provide.
   stderr. Loop guard via the payload's `stop_hook_active`; fail-open
   everywhere else.
 - Declared the hook in `.kimi-plugin/plugin.json`'s `hooks` array.
-- Added the offline test `tests/harness/kimi-code/test-stop-nudge.sh`
+- Added the offline test `tests/harnesses/kimi-code/test-stop-nudge.sh`
   (payload + wire fixtures). All three harnesses' offline tests pass against
   the shared detector.
 
 ## Offline evidence
 
 ```bash
-bash tests/harness/kimi-code/test-stop-nudge.sh
+bash tests/harnesses/kimi-code/test-stop-nudge.sh
 ```
 
 ```text

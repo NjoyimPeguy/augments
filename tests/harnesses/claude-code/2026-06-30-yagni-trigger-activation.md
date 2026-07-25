@@ -40,7 +40,7 @@ pressure re-run is owed; this is a pure **activation** change.
 **No measured activation separation between old and new.** On every opening where
 the over-engineering signal is explicit, a capable (large-tier) model already
 routes to yagni — old trigger or new. The wording is *not* the lever. This matches
-the existing discipline record (`behavioral/yagni.md`, 2026-06-24), which found the
+the existing discipline record (`behavioral-records/yagni.md`, 2026-06-24), which found the
 same parity on the behavioral axis.
 
 **The real cause of "never loads during implementation" is structural, not lexical.**

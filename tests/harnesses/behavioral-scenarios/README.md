@@ -1,6 +1,20 @@
 # behavioral-scenarios/
 
-Shared scenarios for the per-adapter `run-behavioral.sh` runners.
+Shared **inputs** for the per-adapter `run-behavioral.sh` runners. The
+**outputs** live with the harness that produced them:
+
+```
+tests/harnesses/
+  behavioral-scenarios/<name>/          INPUT  — shared, harness-agnostic
+  <adapter>/behavioral-records/<skill>.md   OUTPUT — what happened on THAT harness
+  <adapter>/scenarios/                  INPUT  — activation openings (per adapter)
+```
+
+Inputs are shared because a probe reads a finished working directory, so the
+same fixture and verdict apply to every harness and the results stay directly
+comparable. Outputs are not shared, because "did this hold?" is a fact about one
+harness — the same scenario passed on Claude Code and failed on Codex until the
+skill was fixed, and each record says so in its own file.
 
 Activation asks *did the skill fire?* — one generic verdict, so its engine can be
 scenario-agnostic. Behaviour asks *did the skill change what got **built**?*,

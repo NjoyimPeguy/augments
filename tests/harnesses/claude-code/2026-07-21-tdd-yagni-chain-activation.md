@@ -64,7 +64,7 @@ requesting-code-review`). One run per harness.
 ## Discipline safety
 
 The TDD body change was pressure-re-run (skip-tests order): held, no
-regression — see `behavioral/test-driven-development.md`, update 2026-07-21.
+regression — see `behavioral-records/test-driven-development.md`, update 2026-07-21.
 
 ## Honest limits
 

@@ -51,7 +51,7 @@ for skill in "${skills[@]}"; do
   fi
 
   # (Per-skill triggering records retired — activation is proven by the runnable
-  # tests/harness/<adapter>/ tests, not a static record. See tests/README.md.)
+  # tests/harnesses/<adapter>/ tests, not a static record. See tests/README.md.)
 
   # No external references, vendor model names, or <angle> placeholders — in every
   # .md of the skill, RECURSIVELY (covers references/ and scripts/ subfolders).

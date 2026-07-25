@@ -1,4 +1,4 @@
-# tests/harness/claude-code/ — real activation tooling
+# tests/harnesses/claude-code/ — real activation tooling
 
 The real activation layer for the Claude Code adapter. `run-activation.sh`
 drives the actual `claude` CLI headless against the working tree and observes
@@ -42,11 +42,11 @@ in `flow`. No script edit, no inline text.
 
 ```bash
 # Whole planning phase (define-goals -> feasibility-check -> scope-it, + negative):
-tests/harness/claude-code/run-flow.sh --flow scenarios/planning/_flow --keep
-tests/harness/claude-code/run-flow.sh --flow scenarios/planning/_flow --print   # parse only, no API call
+tests/harnesses/claude-code/run-flow.sh --flow scenarios/planning/_flow --keep
+tests/harnesses/claude-code/run-flow.sh --flow scenarios/planning/_flow --print   # parse only, no API call
 
 # A single cross-cutting skill:
-tests/harness/claude-code/run-activation.sh \
+tests/harnesses/claude-code/run-activation.sh \
   --scenario-file scenarios/common/dispatching-parallel-agents --keep
 ```
 
@@ -90,8 +90,8 @@ generic verdict: success differs per skill. So the work is split — the runner
 owns the plumbing, the scenario owns the verdict.
 
 ```bash
-tests/harness/claude-code/run-behavioral.sh --scenario spec-it --arm green --keep
-tests/harness/claude-code/run-behavioral.sh --scenario spec-it --arm red --base origin/dev
+tests/harnesses/claude-code/run-behavioral.sh --scenario spec-it --arm green --keep
+tests/harnesses/claude-code/run-behavioral.sh --scenario spec-it --arm red --base origin/dev
 ```
 
 Scenarios are **shared across adapters** — they live in

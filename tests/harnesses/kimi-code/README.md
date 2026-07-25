@@ -1,4 +1,4 @@
-# tests/harness/kimi-code/ - Kimi Code plugin adapter checks
+# tests/harnesses/kimi-code/ - Kimi Code plugin adapter checks
 
 This folder is the Kimi Code CLI adapter test layer. It has two scopes:
 
@@ -36,9 +36,9 @@ tool).
 
 ```bash
 bash tests/validate-kimi-plugin.sh
-bash tests/harness/kimi-code/run-activation.sh selftest
-bash tests/harness/kimi-code/test-stop-nudge.sh
-bash tests/harness/kimi-code/run-activation.sh \
+bash tests/harnesses/kimi-code/run-activation.sh selftest
+bash tests/harnesses/kimi-code/test-stop-nudge.sh
+bash tests/harnesses/kimi-code/run-activation.sh \
   --scenario-file scenarios/maintenance/debugging --keep
 ```
 

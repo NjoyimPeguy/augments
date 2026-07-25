@@ -24,8 +24,8 @@ the new name rather than a stale mirror.
 ## Detector evidence
 
 ```bash
-bash tests/harness/claude-code/run-activation.sh selftest
-bash tests/harness/codex-cli/run-activation.sh selftest
+bash tests/harnesses/claude-code/run-activation.sh selftest
+bash tests/harnesses/codex-cli/run-activation.sh selftest
 ```
 
 Both detector self-tests passed. The Claude detector recognized its fired,
@@ -37,8 +37,8 @@ Codex detector recognized its fired, empty, and combined-command fixtures.
 The working-tree command was attempted with Claude Code 2.1.210:
 
 ```bash
-bash tests/harness/claude-code/run-activation.sh \
-  --scenario-file tests/harness/claude-code/scenarios/design/ui-ux-design \
+bash tests/harnesses/claude-code/run-activation.sh \
+  --scenario-file tests/harnesses/claude-code/scenarios/design/ui-ux-design \
   --expect ui-ux-design --working-tree --keep
 ```
 
@@ -65,8 +65,8 @@ an assistant action. The identical read-only probe was rerun with network access
 using Codex CLI 0.144.4:
 
 ```bash
-bash tests/harness/codex-cli/run-activation.sh \
-  --scenario-file tests/harness/codex-cli/scenarios/design/ui-ux-design \
+bash tests/harnesses/codex-cli/run-activation.sh \
+  --scenario-file tests/harnesses/codex-cli/scenarios/design/ui-ux-design \
   --expect ui-ux-design --working-tree --keep
 ```
 
@@ -111,7 +111,7 @@ exists to prevent.
 tree adapter. Final observed activation:
 
 ```bash
-bash tests/harness/codex-cli/run-activation.sh \
+bash tests/harnesses/codex-cli/run-activation.sh \
   --scenario "$scenario" --expect ui-ux-design --working-tree --keep
 ```
 

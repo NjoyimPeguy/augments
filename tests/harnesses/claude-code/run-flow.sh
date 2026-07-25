@@ -132,4 +132,4 @@ elif [ -n "$expect" ]; then
   for w in "${want[@]}"; do jq -rc "$SKILL_FILTER" "$allstream" 2>/dev/null | grep -qiE "$w\$" || miss="${miss} $w"; done
   [ -z "$miss" ] && echo "all expected skills activated." || echo "MISSING:${miss}"
 fi
-if [ -n "$keep" ]; then cp "$allstream" "$scriptdir/last-flow.jsonl"; echo "stream              : tests/harness/claude-code/last-flow.jsonl"; fi
+if [ -n "$keep" ]; then cp "$allstream" "$scriptdir/last-flow.jsonl"; echo "stream              : tests/harnesses/claude-code/last-flow.jsonl"; fi

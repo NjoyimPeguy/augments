@@ -1,4 +1,4 @@
-# tests/harness/codex-cli/ - Codex plugin adapter checks
+# tests/harnesses/codex-cli/ - Codex plugin adapter checks
 
 This folder is the Codex CLI adapter test layer. It has four scopes:
 
@@ -13,7 +13,7 @@ This folder is the Codex CLI adapter test layer. It has four scopes:
 - `test-stop-nudge.sh` is an offline payload test for the Codex Stop hook
   wrapper. It invokes the shared done-boundary detector in
   `hooks/stop-nudge.sh`.
-- `behavioral/` records pressure tests where a discipline is invoked on Codex
+- `behavioral-records/` records pressure tests where a discipline is invoked on Codex
   and the outcome is compared with a plugins-disabled baseline.
 
 The plugin itself lives under `plugins/augments/` because Codex expects a flat
@@ -25,12 +25,12 @@ canonical phase-organized `skills/<phase>/<name>/` tree, rebuilt with
 
 ```bash
 bash tests/validate-codex-plugin.sh
-bash tests/harness/codex-cli/run-plugin-smoke.sh
-bash tests/harness/codex-cli/run-activation.sh selftest
-bash tests/harness/codex-cli/test-stop-nudge.sh
-bash tests/harness/codex-cli/run-activation.sh \
+bash tests/harnesses/codex-cli/run-plugin-smoke.sh
+bash tests/harnesses/codex-cli/run-activation.sh selftest
+bash tests/harnesses/codex-cli/test-stop-nudge.sh
+bash tests/harnesses/codex-cli/run-activation.sh \
   --scenario-file scenarios/maintenance/debugging --keep
-bash tests/harness/codex-cli/run-activation.sh \
+bash tests/harnesses/codex-cli/run-activation.sh \
   --scenario-file scenarios/implementation/using-task-branches \
   --expect using-task-branches --working-tree --fixture-git-repo --keep
 ```

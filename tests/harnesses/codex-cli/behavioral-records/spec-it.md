@@ -1,7 +1,7 @@
 # Behavioral test: spec-it reference forms (Codex CLI)
 
 The Codex arm of the 2026-07-25 `spec-it` change recorded for Claude Code in
-`../../claude-code/behavioral/spec-it.md`. Same change, same fixture, different
+`../../claude-code/behavioral-records/spec-it.md`. Same change, same fixture, different
 harness — and a **different outcome**, recorded here because it is a finding, not
 a formality.
 
@@ -114,7 +114,7 @@ fail. The agent followed the sibling. Both places now say the same thing, and ru
 **Fix 3 — confirm it runs through the project's own command.** Run #3's artifact
 was valid and failed standalone for the right reason, but `npm test` still could
 not load it and was left unfixed. Claude Code hit this **identically** (see
-`../../claude-code/behavioral/spec-it.md`, runner run #1), so it was closed on
+`../../claude-code/behavioral-records/spec-it.md`, runner run #1), so it was closed on
 two-harness evidence.
 
 **Run #4 (2026-07-26, after fix 3): PASS** — this closes the gap the paragraph

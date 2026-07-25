@@ -37,8 +37,8 @@ piece here is trigger/routing pressure, not a harness-level branch enforcer.
 Claude Code live activation, current checkout, disposable git repo fixture:
 
 ```bash
-bash tests/harness/claude-code/run-activation.sh \
-  --scenario-file tests/harness/claude-code/scenarios/implementation/using-task-branches \
+bash tests/harnesses/claude-code/run-activation.sh \
+  --scenario-file tests/harnesses/claude-code/scenarios/implementation/using-task-branches \
   --expect using-task-branches --working-tree --fixture-git-repo \
   --timeout 120 --max-turns 4 --verbose --keep
 ```
@@ -56,9 +56,9 @@ setup. That exposed a harness gap, not a useful branch-routing result.
 No-model checks:
 
 ```bash
-bash tests/harness/claude-code/run-activation.sh selftest
-bash tests/harness/codex-cli/run-activation.sh selftest
-bash tests/harness/codex-cli/run-plugin-smoke.sh
+bash tests/harnesses/claude-code/run-activation.sh selftest
+bash tests/harnesses/codex-cli/run-activation.sh selftest
+bash tests/harnesses/codex-cli/run-plugin-smoke.sh
 ```
 
 All passed. The Codex detector self-test includes a combined-command fixture so
@@ -68,8 +68,8 @@ Codex live activation, current checkout installed into a temporary authenticated
 `CODEX_HOME`, disposable git repo fixture:
 
 ```bash
-bash tests/harness/codex-cli/run-activation.sh \
-  --scenario-file tests/harness/codex-cli/scenarios/implementation/using-task-branches \
+bash tests/harnesses/codex-cli/run-activation.sh \
+  --scenario-file tests/harnesses/codex-cli/scenarios/implementation/using-task-branches \
   --expect using-task-branches --working-tree --fixture-git-repo \
   --timeout 75 --keep
 ```

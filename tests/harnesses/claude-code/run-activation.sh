@@ -8,7 +8,7 @@
 #
 # It is deliberately NOT portable and NOT in the core gate:
 #   - it binds to one harness (the `claude` binary) — that is why it lives under
-#     tests/harness/<adapter>/, not in the harness-agnostic core (tests/README.md);
+#     tests/harnesses/<adapter>/, not in the harness-agnostic core (tests/README.md);
 #   - it makes a REAL API call — it costs tokens and is not free/deterministic,
 #     so it is a manual/record tool, never a CI pass/fail.
 #
@@ -244,7 +244,7 @@ if [ -n "$verbose" ]; then
 fi
 echo "captured : $(grep -c . "$stream" 2>/dev/null || echo 0) stream events (${asst_events} assistant)"
 if [ -n "$keep" ]; then
-  out="tests/harness/claude-code/last-stream.jsonl"
+  out="tests/harnesses/claude-code/last-stream.jsonl"
   cp "$stream" "$out"; echo "stream   : ${out}"
 fi
 

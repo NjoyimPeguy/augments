@@ -21,7 +21,7 @@ that shows a skill *actually activating* on a representative opening.
 ## Detector evidence
 
 ```bash
-bash tests/harness/kimi-code/run-activation.sh selftest
+bash tests/harnesses/kimi-code/run-activation.sh selftest
 ```
 
 ```text
@@ -37,7 +37,7 @@ hand-written fixture.
 ## Live probe - activation (Kimi Code CLI 0.27.0)
 
 ```bash
-bash tests/harness/kimi-code/run-activation.sh \
+bash tests/harnesses/kimi-code/run-activation.sh \
   --scenario-file scenarios/maintenance/debugging --timeout 150 --keep
 ```
 

@@ -29,7 +29,7 @@ workflow-specific. (CLAUDE.md → "What belongs here".) -->
 
 <!-- Paste the result of `bash tests/validate-skills.sh` (must be green).
 For a behaviour-shaping change to a skill: link the dated record under tests/
-(triggering/ or behavioral/) and summarise the outcome — including an
+(triggering/ or behavioral-records/) and summarise the outcome — including an
 inconclusive one. No record → not ready. -->
 
 ## Authoring environment

@@ -122,7 +122,7 @@ spec with 12 pointers, `package.json` fixed, suite failing on missing behaviour.
 
 Run #1's failure — a valid artifact the project's own command could not execute —
 is exactly what fix 3 targets, and Codex hit the same thing independently
-(`../../codex-cli/behavioral/spec-it.md`, GREEN #3). That is two harnesses on one
+(`../../codex-cli/behavioral-records/spec-it.md`, GREEN #3). That is two harnesses on one
 gap, which is why it was closed rather than filed. Three of four GREEN runs on
 this harness now pass; the sample is still small and the honest reading is
 "usually, not reliably".

@@ -45,7 +45,7 @@ Step 5 of the method gained **"Option Zero first"**: rule out a config/env/depen
 The 2026-07-19 body additions (step 3: *grep the literal error string verbatim
 before theorizing*; step 5: *an intermittent bug's regression test must replay
 the observed failure, not an inferred trigger*) shipped with a Kimi-only
-record (`tests/harness/kimi-code/behavioral/debugging.md`). Re-run here with
+record (`tests/harnesses/kimi-code/behavioral-records/debugging.md`). Re-run here with
 the same two scenarios, rebuilt as local fixtures:
 
 - **A — grep-first.** Five-file Python service crash-looping on

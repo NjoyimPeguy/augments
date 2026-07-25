@@ -1,8 +1,8 @@
 # Behavioral test: spec-it reference forms (Kimi Code CLI)
 
 The Kimi arm of the `spec-it` reference-forms work, completing the three-harness
-sweep alongside `../../claude-code/behavioral/spec-it.md` and
-`../../codex-cli/behavioral/spec-it.md`.
+sweep alongside `../../claude-code/behavioral-records/spec-it.md` and
+`../../codex-cli/behavioral-records/spec-it.md`.
 
 Run on 2026-07-26 with `kimi 0.29.1`, against the skills **after** all three
 step-6 fixes (open contract is not an exemption · a criterion that cannot go red
