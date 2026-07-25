@@ -93,7 +93,7 @@ Limits of this record, stated plainly:
 ## Update (2026-07-25, later the same day): re-run through `run-behavioral.sh`
 
 The arms above were hand-rolled. They are now a committed scenario
-(`../behavioral-scenarios/spec-it/`) driven by `../run-behavioral.sh`, whose
+(`../../../behavioral-scenarios/spec-it/`) driven by `../run-behavioral.sh`, whose
 `probe.sh` returns the verdict as an **exit code** rather than leaving it to
 whatever the record's author writes down.
 

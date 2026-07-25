@@ -95,11 +95,11 @@ tests/harnesses/claude-code/run-behavioral.sh --scenario spec-it --arm red --bas
 ```
 
 Scenarios are **shared across adapters** — they live in
-`../behavioral-scenarios/` and Codex CLI and Kimi Code have sibling
+`../../behavioral-scenarios/` and Codex CLI and Kimi Code have sibling
 `run-behavioral.sh` scripts over the same directories. The fixture and probe are
 harness-agnostic (a probe reads a finished workdir), so verdicts stay directly
 comparable; only the opening may be overridden per adapter, and only for a
-harness constraint. See `../behavioral-scenarios/README.md`.
+harness constraint. See `../../behavioral-scenarios/README.md`.
 
 Two things it does that a hand-rolled run does not:
 
@@ -120,7 +120,7 @@ Reach for it when a skill's **body** changed; `run-activation.sh` still covers a
 `description` change.
 
 `probe.sh` is worth running offline against workdirs you already captured
-(`bash ../behavioral-scenarios/spec-it/probe.sh <dir>`) — that checks the probe
+(`bash ../../behavioral-scenarios/spec-it/probe.sh <dir>`) — that checks the probe
 itself with no API call, the way `run-activation.sh selftest` checks the detector.
 
 ## Detection (and a bug worth remembering)

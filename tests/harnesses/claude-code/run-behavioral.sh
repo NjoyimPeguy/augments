@@ -35,7 +35,7 @@
 #   run-behavioral.sh --scenario spec-it --arm green --keep
 #   run-behavioral.sh --scenario spec-it --arm red --base <ref> --timeout 1200
 #
-# Scenarios are SHARED across adapters — see ../behavioral-scenarios/README.md.
+# Scenarios are SHARED across adapters — see ../../behavioral-scenarios/README.md.
 # The fixture and probe are harness-agnostic (a probe reads a finished workdir),
 # so verdicts stay comparable between harnesses; the opening may be overridden
 # per adapter where a harness constraint demands it.
@@ -62,7 +62,7 @@ case "$arm" in red|green) ;; *) echo "needs --arm red|green" >&2; exit 2;; esac
 command -v claude >/dev/null 2>&1 || { echo "no \`claude\` CLI on PATH" >&2; exit 3; }
 command -v jq     >/dev/null 2>&1 || { echo "needs \`jq\`" >&2; exit 3; }
 
-sdir="$scriptdir/../behavioral-scenarios/$scenario"
+sdir="$scriptdir/../../behavioral-scenarios/$scenario"
 [ -d "$sdir/fixture" ] || { echo "no fixture at $sdir/fixture" >&2; exit 2; }
 # Per-adapter opening if the harness needs one, else the shared default.
 opening_file="$sdir/opening.claude-code"

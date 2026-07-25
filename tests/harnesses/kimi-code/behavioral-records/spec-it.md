@@ -10,7 +10,7 @@ is not a criterion · confirm it runs through the project's own command).
 
 ## Scenario
 
-The shared scenario `../../behavioral-scenarios/spec-it/`, driven by
+The shared scenario `../../../behavioral-scenarios/spec-it/`, driven by
 `../run-behavioral.sh`: the `billing-api` fixture (an 11-line dispatcher, an
 API-key resolver with tiers, one `node:test` suite, and a deliberately broken
 `npm test` script), copied to a disposable workdir on a task branch. Plugin

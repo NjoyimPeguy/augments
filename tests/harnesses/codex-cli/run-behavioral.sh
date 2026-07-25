@@ -2,7 +2,7 @@
 # Real end-to-end BEHAVIOURAL test for the Codex CLI adapter.
 #
 # The Codex sibling of ../claude-code/run-behavioral.sh: same two-arm shape, same
-# shared scenarios (../behavioral-scenarios/), same rule that the verdict is the
+# shared scenarios (../../behavioral-scenarios/), same rule that the verdict is the
 # scenario probe's EXIT CODE rather than prose in a record. Only the plumbing is
 # harness-specific — an isolated CODEX_HOME with this checkout installed from a
 # local marketplace, as run-activation.sh does, with `-s read-only` swapped for
@@ -16,7 +16,7 @@
 #   --arm red     installs from a throwaway `git worktree` at --base, so the
 #                 before-arm stays reproducible AFTER the change is committed.
 #
-# OPENING: this adapter uses ../behavioral-scenarios/<name>/opening.codex-cli
+# OPENING: this adapter uses ../../behavioral-scenarios/<name>/opening.codex-cli
 # when present. `codex exec` is single-turn, so a scenario that invites a
 # clarifying question ends the run with NO deliverable — the first spec-it arm
 # terminated on an interview question after routing correctly. Both arms share
@@ -49,7 +49,7 @@ case "$arm" in red|green) ;; *) echo "needs --arm red|green" >&2; exit 2;; esac
 command -v codex >/dev/null 2>&1 || { echo "no \`codex\` CLI on PATH" >&2; exit 3; }
 command -v jq    >/dev/null 2>&1 || { echo "needs \`jq\`" >&2; exit 3; }
 
-sdir="$scriptdir/../behavioral-scenarios/$scenario"
+sdir="$scriptdir/../../behavioral-scenarios/$scenario"
 [ -d "$sdir/fixture" ] || { echo "no fixture at $sdir/fixture" >&2; exit 2; }
 opening_file="$sdir/opening.codex-cli"
 [ -f "$opening_file" ] || opening_file="$sdir/opening.default"

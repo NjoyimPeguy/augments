@@ -2,7 +2,7 @@
 # Real end-to-end BEHAVIOURAL test for the Kimi Code CLI adapter.
 #
 # The Kimi sibling of ../claude-code/run-behavioral.sh: same two-arm shape, same
-# shared scenarios (../behavioral-scenarios/), same rule that the verdict is the
+# shared scenarios (../../behavioral-scenarios/), same rule that the verdict is the
 # scenario probe's EXIT CODE, not prose in a record. Only the plumbing is
 # harness-specific — an isolated KIMI_CODE_HOME with this checkout installed as a
 # managed plugin (plugins/managed/augments plus a plugins/installed.json record),
@@ -53,7 +53,7 @@ case "$arm" in red|green) ;; *) echo "needs --arm red|green" >&2; exit 2;; esac
 command -v kimi >/dev/null 2>&1 || { echo "no \`kimi\` CLI on PATH" >&2; exit 3; }
 command -v jq   >/dev/null 2>&1 || { echo "needs \`jq\`" >&2; exit 3; }
 
-sdir="$scriptdir/../behavioral-scenarios/$scenario"
+sdir="$scriptdir/../../behavioral-scenarios/$scenario"
 [ -d "$sdir/fixture" ] || { echo "no fixture at $sdir/fixture" >&2; exit 2; }
 opening_file="$sdir/opening.kimi-code"
 [ -f "$opening_file" ] || opening_file="$sdir/opening.default"
