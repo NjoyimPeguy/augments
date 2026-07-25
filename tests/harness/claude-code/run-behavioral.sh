@@ -35,13 +35,10 @@
 #   run-behavioral.sh --scenario spec-it --arm green --keep
 #   run-behavioral.sh --scenario spec-it --arm red --base <ref> --timeout 1200
 #
-# Scenario layout (behavioral-scenarios/<name>/):
-#   fixture/   a seeded project, copied per run and committed on a task branch
-#   opening    the prompt, byte-identical across arms — an arm that changes the
-#              prompt is not a comparison
-#   probe.sh   receives the finished workdir as $1; prints evidence lines and
-#              exits non-zero when the arm did not produce the target behaviour.
-#              Exit code is the verdict; prose in a record is not.
+# Scenarios are SHARED across adapters — see ../behavioral-scenarios/README.md.
+# The fixture and probe are harness-agnostic (a probe reads a finished workdir),
+# so verdicts stay comparable between harnesses; the opening may be overridden
+# per adapter where a harness constraint demands it.
 
 set -uo pipefail
 scriptdir="$(cd "$(dirname "$0")" && pwd)"
@@ -65,9 +62,12 @@ case "$arm" in red|green) ;; *) echo "needs --arm red|green" >&2; exit 2;; esac
 command -v claude >/dev/null 2>&1 || { echo "no \`claude\` CLI on PATH" >&2; exit 3; }
 command -v jq     >/dev/null 2>&1 || { echo "needs \`jq\`" >&2; exit 3; }
 
-sdir="$scriptdir/behavioral-scenarios/$scenario"
+sdir="$scriptdir/../behavioral-scenarios/$scenario"
 [ -d "$sdir/fixture" ] || { echo "no fixture at $sdir/fixture" >&2; exit 2; }
-[ -f "$sdir/opening" ] || { echo "no opening at $sdir/opening" >&2; exit 2; }
+# Per-adapter opening if the harness needs one, else the shared default.
+opening_file="$sdir/opening.claude-code"
+[ -f "$opening_file" ] || opening_file="$sdir/opening.default"
+[ -f "$opening_file" ] || { echo "no opening in $sdir" >&2; exit 2; }
 
 workdir="$(mktemp -d)"; stream="$(mktemp)"; errlog="$(mktemp)"; redtree=""
 cleanup() {
@@ -103,7 +103,7 @@ cp -r "$sdir/fixture/." "$workdir/" || exit 2
   git switch -qc task/behavioral-probe
 ) || { echo "failed to seed fixture repo" >&2; exit 2; }
 
-opening="$(cat "$sdir/opening")"
+opening="$(cat "$opening_file")"
 
 ( cd "$workdir" && exec timeout "$timeout_s" claude -p "$opening" \
     --output-format stream-json --verbose \
