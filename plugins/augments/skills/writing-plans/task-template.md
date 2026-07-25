@@ -3,7 +3,7 @@
 **Objective:** {{what this task accomplishes — one sentence}}
 **Depends on:** {{none, or task numbers that must finish first — lets a dispatcher parallelize}}
 **Files:** `path/to/file` (new) · `path/to/other` (edit)
-**Context:** {{key files or entrypoints to read first for this task — or "none"}}
+**Context:** {{key files or entrypoints to read first for this task — plus any spec artifact that defines it (a failing test, a mockup page, a reference implementation to port). Point at the path; do not paraphrase it back into prose. Or "none".}}
 **Suggested tier:** {{small | medium | large}} — {{mechanical | logic | design}}
 
 ## Change
@@ -26,5 +26,7 @@ The deterministic pass/fail gate — declared now, run on the built code.
 ```
 
 Expected: {{exit 0 / named tests pass / HTTP 200 body X / query returns Y}}
+
+{{If the spec shipped a failing test for this requirement, that test IS the Evaluator — run it by name; don't write a second one beside it. If the spec shipped a rubric, use it verbatim.}}
 
 {{No deterministic check possible (design/AI work)? Replace the command with a rubric pass-list — explicit criteria, each one checkable.}}

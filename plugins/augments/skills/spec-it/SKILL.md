@@ -19,17 +19,20 @@ Turn an intent into a requirements spec (SRS): gather and analyze what the softw
 2. **State the problem** in a line or two, and link the goal it serves.
 3. **Write functional requirements as testable behaviours.** Each is something a user or caller can observe — "rejects an expired token with a 401", not "good auth". If you can't phrase it as checkable, it's a wish, not a requirement.
 4. **Add only the non-functional requirements that matter** — performance, security, accessibility, compatibility. An unbounded NFR list is noise.
-5. **Give each requirement an acceptance criterion** — the concrete check that proves it. These become the plan's **Evaluator** and **Acceptance**, so make them runnable where you can.
-6. **List the edge cases and scenarios** that break a naive build — empty input, concurrency, the unhappy paths.
-7. **Record the assumptions and dependencies** — what you're taking as true, and what external systems, data, or people this relies on. An unstated assumption is a hidden risk.
-8. **Surface the open questions and risks** — the unresolved ambiguities and requirement-level challenges that could derail the build. Naming them now is the cheapest they'll ever be.
-9. **State what is out of scope** — the requirements you are deliberately *not* covering this round.
-10. **Write the spec** to `.augments/specs/{{YYYY-MM-DD}}-{{topic}}.md` (the standard specs location; another path only if the user has set one).
+5. **Give each requirement an acceptance criterion — in the cheapest form that makes it checkable.** Prose is the fallback, not the starting point. Behaviour with observable inputs and outputs is cheapest as a *failing test* in the project's own test tree; a layout or state requirement as a *mockup page*; behaviour that already exists elsewhere as a *reference implementation* plus its deltas; a real criterion no machine can check as a *rubric* pass-list. Read [reference-forms.md](reference-forms.md) before choosing. A richer form must remove more ambiguity than it costs to build — don't mock up a requirement nobody would misread.
+6. **Build what you named, and confirm it runs.** A criterion you promised and never wrote is worse than the prose it replaced: the spec reads as verified while nothing is. Each executable artifact must fail for the *right* reason — the behaviour is missing — not error because it never loaded.
+7. **List the edge cases and scenarios** that break a naive build — empty input, concurrency, the unhappy paths.
+8. **Record the assumptions and dependencies** — what you're taking as true, and what external systems, data, or people this relies on. An unstated assumption is a hidden risk.
+9. **Surface the open questions and risks** — the unresolved ambiguities and requirement-level challenges that could derail the build. Naming them now is the cheapest they'll ever be.
+10. **State what is out of scope** — the requirements you are deliberately *not* covering this round.
+11. **Write the spec** to `.augments/specs/{{YYYY-MM-DD}}-{{topic}}.md` (the standard specs location; another path only if the user has set one). The file is the map: every requirement names its form and the path to its artifact, so a reader gets from requirement to check in one hop. Artifacts themselves live where they are useful — tests in the test tree, not parked beside the spec.
 
 ## Common mistakes
 
 - Requirements with no criterion — "fast", "secure", "intuitive" prove nothing.
-- Smuggling design in — file names, schemas, and code belong in the plan, not the spec.
+- **Promising verification you never wrote** — "all criteria are automated tests under `test/`" above thirty requirements and zero test files. Write them, or say plainly they're deferred.
+- Prose by reflex — restating a behaviour in a sentence when a failing test would have pinned it exactly.
+- Smuggling design in — file names, schemas, and code belong in the plan, not the spec. A *failing test* asserting observable behaviour is a requirement; one asserting an internal call you haven't designed is not.
 - A thin happy-path spec with no edge cases, assumptions, or risks — that's exactly where builds break.
 
 For a high-stakes spec, optionally dispatch `spec-review.md` (a fresh subagent that checks the requirements before anything is built against them).
