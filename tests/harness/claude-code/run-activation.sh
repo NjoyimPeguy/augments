@@ -95,7 +95,7 @@ FX
   exit "$st_fail"
 fi
 
-scenario=""; sfile=""; expect=""; timeout_s=120; keep=""; bare=""; wt=""; fixture_git=""; verbose=""; maxturns="6"
+scenario=""; sfile=""; expect=""; timeout_s=120; keep=""; bare=""; wt=""; fixture_git=""; verbose=""; maxturns="6"; expect_none=""
 while [ "$#" -gt 0 ]; do
   case "$1" in
     --scenario)      scenario="$2"; shift 2;;
@@ -126,7 +126,14 @@ if [ -n "$sfile" ]; then
   done
   [ -n "$resolved" ] || { echo "no such scenario file: $sfile" >&2; exit 2; }
   scenario="$(cat "$resolved")"
-  if [ -z "$expect" ]; then b="$(basename "$resolved")"; is_skill "$b" && expect="$b"; fi
+  # The filename IS the contract: a name matching a real skill expects that skill;
+  # any other name (a filler, a negative) expects NOTHING to fire. Record which,
+  # so the exit code can score a negative — "something fired" is a failure there,
+  # and without this flag it is indistinguishable from an exploratory run.
+  if [ -z "$expect" ]; then
+    b="$(basename "$resolved")"
+    if is_skill "$b"; then expect="$b"; else expect_none="1"; fi
+  fi
 fi
 [ -z "$scenario" ] && { echo "needs --scenario \"TEXT\" or --scenario-file FILE" >&2; exit 2; }
 command -v claude >/dev/null 2>&1 || { echo "no \`claude\` CLI on PATH" >&2; exit 3; }
@@ -193,16 +200,30 @@ prose="$(jq -rc 'select(.type=="assistant") | .message.content[]?
   | select(.type=="text") | .text' "$stream" 2>/dev/null \
   | grep -oiE 'augments:[a-z0-9-]+' | head -n1)"
 
+# `result` is the machine-readable verdict: 0 met the contract, 1 did not.
+# Without it this script prints a verdict and always exits 0, so a sweep built on
+# its exit status reports every run as a pass — the Codex and Kimi runners both
+# set a result, and this one silently did not.
+result=0
 if [ -n "$want" ] && printf '%s\n' "$chain" | grep -qx "$want"; then
   verdict="ACTIVATED — chain: ${chain_str} (reached ${want})"
+elif [ -n "$expect_none" ] && [ -z "$first_call" ]; then
+  verdict="NONE as expected (filename is not a skill; nothing should fire)"
+elif [ -n "$expect_none" ]; then
+  verdict="UNEXPECTED ACTIVATION — chain: ${chain_str} (nothing should have fired)"
+  result=1
 elif [ -z "$want" ] && [ -n "$first_call" ]; then
+  # Exploratory run (--scenario TEXT with no --expect): informational, not scored.
   verdict="ACTIVATED — chain: ${chain_str} (routed to ${terminal:-$first_call})"
 elif [ -n "$first_call" ]; then
   verdict="ROUTED ELSEWHERE — chain: ${chain_str} (expected ${want})"
+  result=1
 elif [ -n "$prose" ]; then
   verdict="MENTIONED in prose only, not invoked: ${prose}"
+  [ -n "$want" ] && result=1
 else
   verdict="NONE (no Skill tool_use, no mention in any assistant turn)"
+  [ -n "$want" ] && result=1
 fi
 
 asst_events="$(jq -rc 'select(.type=="assistant")' "$stream" 2>/dev/null | grep -c . || echo 0)"
@@ -226,3 +247,8 @@ if [ -n "$keep" ]; then
   out="tests/harness/claude-code/last-stream.jsonl"
   cp "$stream" "$out"; echo "stream   : ${out}"
 fi
+
+# Exit code tracks the verdict so this is scriptable (see run-all-activation.sh).
+# An exploratory `--scenario TEXT` run with no --expect stays 0: there is no
+# contract to violate.
+exit "$result"
