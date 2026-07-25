@@ -82,6 +82,47 @@ Three additions for the v2 activation work:
   `-p` resume isn't inducing decay (itself a finding). This is the regime the
   fresh-session records above never exercised. Run with `--working-tree`.
 
+## Behavioural runs — `run-behavioral.sh`
+
+Activation asks *did the skill fire?* — one generic verdict, hence one generic
+engine. Behaviour asks *did the skill change what got **built**?*, which has no
+generic verdict: success differs per skill. So the work is split — the runner
+owns the plumbing, the scenario owns the verdict.
+
+```bash
+tests/harness/claude-code/run-behavioral.sh --scenario spec-it --arm green --keep
+tests/harness/claude-code/run-behavioral.sh --scenario spec-it --arm red --base origin/dev
+```
+
+Scenarios are **shared across adapters** — they live in
+`../behavioral-scenarios/` and Codex CLI and Kimi Code have sibling
+`run-behavioral.sh` scripts over the same directories. The fixture and probe are
+harness-agnostic (a probe reads a finished workdir), so verdicts stay directly
+comparable; only the opening may be overridden per adapter, and only for a
+harness constraint. See `../behavioral-scenarios/README.md`.
+
+Two things it does that a hand-rolled run does not:
+
+- **It materialises both arms.** `--arm red` builds a throwaway `git worktree` at
+  `--base` (default `origin/dev`) and loads *those* skills, so the before-arm
+  stays reproducible **after** the change is committed. Running RED by hand
+  before editing works exactly once and can never be re-run.
+- **The verdict is an exit code, not prose.** A record is written by the same
+  agent that wants it to be green; `probe.sh` isn't. The `spec-it` probe checks
+  that a new executable artifact exists, that it *loads* (an artifact that errors
+  on import is not a criterion), and that it fails on missing behaviour rather
+  than passing.
+
+Unlike activation it needs write access, so `Write`/`Edit`/`Bash` are allowed and
+edits auto-accepted — safe because every run happens in a disposable copy of the
+fixture under `/tmp`, never in this repo. It costs roughly a full task per arm.
+Reach for it when a skill's **body** changed; `run-activation.sh` still covers a
+`description` change.
+
+`probe.sh` is worth running offline against workdirs you already captured
+(`bash ../behavioral-scenarios/spec-it/probe.sh <dir>`) — that checks the probe
+itself with no API call, the way `run-activation.sh selftest` checks the detector.
+
 ## Detection (and a bug worth remembering)
 
 Verdict comes **only** from a `Skill` tool_use in an *assistant* event. A naive

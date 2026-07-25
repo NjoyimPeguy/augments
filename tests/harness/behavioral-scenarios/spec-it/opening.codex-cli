@@ -1,0 +1,11 @@
+We're adding per-API-key rate limiting to this billing API. The limits are
+settled product policy: free = 10 requests/minute, pro = 60/minute,
+enterprise = 600/minute, each a fixed 60-second window per API key. Clients need
+to be able to tell how much budget they have left.
+
+Before anyone designs or builds it, I want the requirements spec: what it must
+do, and how each requirement gets verified. Write it up.
+
+This is a non-interactive run: do not ask me questions. Where something is
+genuinely undetermined, record it as an assumption or open question in the spec
+and carry on to a complete deliverable.

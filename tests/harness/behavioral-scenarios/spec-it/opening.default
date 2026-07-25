@@ -1,0 +1,6 @@
+We're adding per-API-key rate limiting to this billing API. Plan tiers get
+different limits (free/pro/enterprise), and clients need to be able to tell how
+much budget they have left.
+
+Before anyone designs or builds it, I want the requirements spec: what it must
+do, and how each requirement gets verified. Write it up.

@@ -22,8 +22,14 @@ verification story reads as done and does not exist.
 API response, a state transition, a calculation, an error path.
 
 Write the tests now, against the interface the requirement implies, and leave
-them failing (or marked pending in the project's idiom). They *are* the
-acceptance criteria — the spec's prose says what and why, the test says exactly.
+them **genuinely failing**. They *are* the acceptance criteria — the spec's prose
+says what and why, the test says exactly.
+
+Do not neuter them to keep the suite green. A `skip`, `todo`, or `pending` marker
+turns a criterion into a comment: the suite exits 0, the gate can never go red,
+and the spec is back to promising verification it does not perform. A criterion
+that cannot fail is not a criterion. If the project's convention really requires
+a marker, the suite must still report red overall — check by running it.
 
 - Put them where they **run**: the project's own test tree. A test file parked in
   a spec folder is never executed by anything, which defeats the point.
@@ -82,6 +88,31 @@ checkable:
 Not `error messages should be helpful` — that is the wish the rubric replaces.
 Rubrics carry judgement that would otherwise live only in the author's head, so a
 reviewer applies the same standard the author intended.
+
+## When the contract is still open
+
+The most common reason an executable form gets skipped is that the interface it
+would assert has not been chosen — the endpoint path, the header names, the
+response shape. The reasoning feels careful: *"writing a test now would pick the
+wire contract, and this is requirements-only."* It is the loophole, not the rule.
+
+A requirement fixes something **regardless** of the contract that carries it.
+"Two keys of one tenant hold independent budgets" stays true whatever the
+endpoint is called. So:
+
+- **Assert at the level the requirement fixes**, and no lower. Test through the
+  smallest observable the requirement genuinely pins.
+- **Or assume the contract and say so.** Write the test against a stated
+  assumption, record it beside the requirement, and note that changing the
+  contract changes the test. That is a design *input*, not smuggled design — the
+  assumption is now visible and arguable instead of implicit.
+- **Never let it become "no test yet."** An open contract defers the test's
+  *shape*. It does not make the requirement unverifiable, and the spec that says
+  it does has quietly returned to prose.
+
+If the contract is so undetermined that no observable can be asserted, the
+problem is upstream: the requirement is not yet a requirement. Send it back to
+`interview-me` rather than shipping a criterion that cannot fail.
 
 ## Prose is still right for
 
