@@ -22,8 +22,14 @@ verification story reads as done and does not exist.
 API response, a state transition, a calculation, an error path.
 
 Write the tests now, against the interface the requirement implies, and leave
-them failing (or marked pending in the project's idiom). They *are* the
-acceptance criteria — the spec's prose says what and why, the test says exactly.
+them **genuinely failing**. They *are* the acceptance criteria — the spec's prose
+says what and why, the test says exactly.
+
+Do not neuter them to keep the suite green. A `skip`, `todo`, or `pending` marker
+turns a criterion into a comment: the suite exits 0, the gate can never go red,
+and the spec is back to promising verification it does not perform. A criterion
+that cannot fail is not a criterion. If the project's convention really requires
+a marker, the suite must still report red overall — check by running it.
 
 - Put them where they **run**: the project's own test tree. A test file parked in
   a spec folder is never executed by anything, which defeats the point.
