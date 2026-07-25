@@ -23,6 +23,18 @@ cd "$work" || exit 2
 fail=0
 note() { printf '%s\n' "$*"; }
 
+# Everything added since the fixture baseline, whether COMMITTED or not.
+#
+# Untracked-file detection alone is a false-negative trap: an agent that runs a
+# branch-wrapping skill commits its work, and `git status` then reports a clean
+# tree. That silently scored a real PASS as "behaviour ABSENT" once — the agent
+# had written the artifact AND fixed the test script, then committed both. The
+# baseline is the runner's root commit, so diff against that and add anything
+# still untracked.
+root="$(git rev-list --max-parents=0 HEAD 2>/dev/null | tail -1)"
+added="$( { [ -n "$root" ] && git diff --name-only --diff-filter=A "$root" HEAD 2>/dev/null
+            git status --porcelain -uall 2>/dev/null | awk '$1=="??"{print $2}'; } | sort -u )"
+
 # 1 — a spec exists
 spec="$(find .augments/specs -name '*.md' -type f 2>/dev/null | head -1)"
 if [ -n "$spec" ]; then
@@ -32,8 +44,9 @@ else
 fi
 
 # 2 — a NEW executable artifact, not the fixture's pre-existing suite
-new_tests="$(git status --porcelain -uall 2>/dev/null | awk '$1=="??"{print $2}' \
-             | grep -E '(^|/)(test|tests|spec|__tests__)/|\.(test|spec)\.[jt]sx?$' || true)"
+new_tests="$(printf '%s\n' "$added" \
+             | grep -E '(^|/)(test|tests|spec|__tests__)/|\.(test|spec)\.[jt]sx?$' \
+             | grep -v 'test/server\.test\.js' || true)"
 if [ -n "$new_tests" ]; then
   note "executable spec   : $(printf '%s' "$new_tests" | tr '\n' ' ')"
 else

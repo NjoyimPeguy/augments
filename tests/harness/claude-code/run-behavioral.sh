@@ -125,7 +125,13 @@ echo "exit       : $status"
 echo "skill chain: ${chain:-（none）}"
 echo "tool calls : $calls"
 echo "artifacts  :"
-( cd "$workdir" && git status --porcelain -uall | sed 's/^/  /' )
+# Committed AND uncommitted: an agent that wraps its branch commits the work,
+# and a status-only view then shows an empty tree and reads as "produced nothing".
+( cd "$workdir" && {
+    root="$(git rev-list --max-parents=0 HEAD 2>/dev/null | tail -1)"
+    [ -n "$root" ] && git diff --name-status --diff-filter=A "$root" HEAD 2>/dev/null | sed "s/^/  committed /"
+    git status --porcelain -uall | sed "s/^/  /"
+  } )
 
 if [ "$status" -ne 0 ]; then
   echo "verdict    : ERROR — claude exited $status (see $errlog)"

@@ -8,10 +8,15 @@
 # managed plugin (plugins/managed/augments plus a plugins/installed.json record),
 # the layout `kimi /plugins install` produces, exactly as run-activation.sh does.
 #
-# The one behavioural difference from that probe: `--auto` (fully autonomous, the
-# agent will not stop to ask). Without it a single-shot `-p` run can end on a
-# question having produced nothing — the failure mode the Codex adapter hit — and
-# write access is the whole point of a behavioural arm.
+# NO permission flag is passed, and that is deliberate — `kimi -p` already
+# auto-approves tool calls, so it can write. Both approval flags are in fact
+# REJECTED in prompt mode ("Cannot combine --prompt with --auto" / "...--yolo"),
+# so do not add one back thinking it grants write access; verified by having a
+# throwaway `-p` run create a file with no flags at all.
+#
+# `-p` is single-shot, so a run that stops to ask a question ends with no
+# deliverable. If that happens, give the scenario an `opening.kimi-code` that
+# pre-empts the interview — the way `opening.codex-cli` does.
 #
 # Same caveats: binds to the `kimi` binary, makes REAL API calls, costs about a
 # full task per arm. Manual/record tool, never CI.
@@ -119,7 +124,7 @@ cp -r "$sdir/fixture/." "$workdir/" || exit 2
 # No prompt suffix: the sessionStart nudge is part of what this exercises, so the
 # opening goes in bare, as a real user opening.
 ( cd "$workdir" && exec timeout "$timeout_s" env KIMI_CODE_HOME="$kimi_home" \
-    kimi -p "$(cat "$opening_file")" --auto --output-format stream-json ) \
+    kimi -p "$(cat "$opening_file")" --output-format stream-json ) \
     < /dev/null > "$stream" 2>>"$errlog"
 status=$?
 
@@ -137,7 +142,13 @@ echo "opening    : $(basename "$opening_file")"
 echo "exit       : $status"
 echo "skill chain: ${chain:-（none）}"
 echo "artifacts  :"
-( cd "$workdir" && git status --porcelain -uall | sed 's/^/  /' )
+# Committed AND uncommitted: an agent that wraps its branch commits the work,
+# and a status-only view then shows an empty tree and reads as "produced nothing".
+( cd "$workdir" && {
+    root="$(git rev-list --max-parents=0 HEAD 2>/dev/null | tail -1)"
+    [ -n "$root" ] && git diff --name-status --diff-filter=A "$root" HEAD 2>/dev/null | sed "s/^/  committed /"
+    git status --porcelain -uall | sed "s/^/  /"
+  } )
 
 if [ "$status" -eq 124 ]; then
   echo "verdict    : TIMEOUT after ${timeout_s}s — run was cut off, treat as inconclusive"

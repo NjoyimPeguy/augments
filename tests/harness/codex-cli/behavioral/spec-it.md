@@ -117,9 +117,26 @@ not load it and was left unfixed. Claude Code hit this **identically** (see
 `../../claude-code/behavioral/spec-it.md`, runner run #1), so it was closed on
 two-harness evidence.
 
-**Not verified here:** Codex was **not** re-run after fix 3. It was verified on
-Claude Code only (PASS). Whether run #4 on Codex would clear the probe is
-unknown, and this record does not claim it.
+**Run #4 (2026-07-26, after fix 3): PASS** — this closes the gap the paragraph
+below originally left open.
+
+```
+artifacts : M  package.json
+            ?? .augments/specs/2026-07-26-per-api-key-rate-limiting.md
+            ?? test/rate-limiting.acceptance.test.js
+probe     : executable spec   : test/rate-limiting.acceptance.test.js
+            runs              : YES — fails on missing behaviour (exit 1)
+            requirement->check: 10 pointer(s)
+            RESULT            : behaviour present
+```
+
+A 336-line spec, a real executable criterion, and `package.json` fixed so the
+project's own command runs it — the exact clause fix 3 added. Completed at exit
+0, no timeout. Driven by the now-committed `../run-behavioral.sh` rather than the
+ad-hoc script the earlier arms used.
+
+So the Codex progression is **none → todo-neutered → valid-but-ungated → PASS**,
+one fix per step, each verified rather than assumed.
 
 Method notes for anyone re-running: run #2 hit the 1200s timeout (exit 124) and
 was cut off mid-work — the timeout is now 2400s; run #3 completed at exit 0. All
