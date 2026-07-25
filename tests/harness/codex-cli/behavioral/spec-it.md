@@ -88,3 +88,41 @@ will find.
 Limits: one run per arm, one scenario. The opening differs from the Claude Code
 arm for the harness reason given above. The mockup and reference-implementation
 forms remain untested here as well. Kimi Code was not run.
+
+## Update (2026-07-25, later the same day): the follow-up was done
+
+The loophole named above was fixed, and re-running GREEN found **two more**
+behind it. Each fix removed exactly the failure it targeted and exposed the next
+— recorded in order, because the sequence is the finding:
+
+| GREEN run | Skills | Artifact produced | Why it still failed |
+| --- | --- | --- | --- |
+| #1 | pre-fix | **none** | refused: *"requirements-only… would select the wire contract"* |
+| #2 | + open-contract fix | 342 lines, real assertions | **every test marked `todo`** → `npm test` exits 0 |
+| #3 | + no-neutered-criterion fix | 328-line spec, 11 tests, **0 markers**, fails standalone | project's `npm test` left broken, so its own gate never runs it |
+
+**Fix 1 — an open contract is not an exemption.** Step 6 now says an undecided
+interface defers a test's *shape*, never its existence. Run #2 wrote a suite; the
+refusal was gone.
+
+**Fix 2 — a criterion that cannot go red is not a criterion.** Run #2's `todo`
+markers were **the skill's own fault**: `reference-forms.md` said to leave tests
+*"failing (or marked pending in the project's idiom)"* while step 6 demanded they
+fail. The agent followed the sibling. Both places now say the same thing, and run
+#3 produced zero markers.
+
+**Fix 3 — confirm it runs through the project's own command.** Run #3's artifact
+was valid and failed standalone for the right reason, but `npm test` still could
+not load it and was left unfixed. Claude Code hit this **identically** (see
+`../../claude-code/behavioral/spec-it.md`, runner run #1), so it was closed on
+two-harness evidence.
+
+**Not verified here:** Codex was **not** re-run after fix 3. It was verified on
+Claude Code only (PASS). Whether run #4 on Codex would clear the probe is
+unknown, and this record does not claim it.
+
+Method notes for anyone re-running: run #2 hit the 1200s timeout (exit 124) and
+was cut off mid-work — the timeout is now 2400s; run #3 completed at exit 0. All
+three GREEN runs were scored with the Claude Code adapter's
+`behavioral-scenarios/spec-it/probe.sh`, which is harness-agnostic (it reads a
+finished workdir, not a stream), so the verdicts are directly comparable.
