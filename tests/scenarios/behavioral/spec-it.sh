@@ -51,70 +51,7 @@ EOF
 # match, and a deliberately broken `npm test` — the skill says to confirm the
 # criterion runs through the PROJECT's own command, so the fixture must have one
 # that is wrong until fixed.
-scenario_setup() {
-  local d="$1"
-  mkdir -p "$d/src" "$d/test"
-  cat > "$d/package.json" <<'EOF'
-{
-  "name": "billing-api",
-  "version": "0.3.0",
-  "scripts": { "test": "node --test test/" }
-}
-EOF
-  cat > "$d/src/server.js" <<'EOF'
-const routes = new Map();
-
-function route(method, path, handler) {
-  routes.set(`${method} ${path}`, handler);
-}
-
-async function handle(req) {
-  const handler = routes.get(`${req.method} ${req.path}`);
-  if (!handler) return { status: 404, body: { error: 'not_found' } };
-  return handler(req);
-}
-
-module.exports = { route, handle, routes };
-EOF
-  cat > "$d/src/apikeys.js" <<'EOF'
-// API keys are resolved from the Authorization header. Each key belongs to a
-// tenant and carries a plan tier: 'free' | 'pro' | 'enterprise'.
-const keys = new Map();
-
-function register(key, tenantId, tier) {
-  keys.set(key, { tenantId, tier });
-}
-
-function resolve(authHeader) {
-  if (!authHeader?.startsWith('Bearer ')) return null;
-  return keys.get(authHeader.slice(7)) ?? null;
-}
-
-module.exports = { register, resolve, keys };
-EOF
-  cat > "$d/test/server.test.js" <<'EOF'
-const { test } = require('node:test');
-const assert = require('node:assert');
-const { route, handle } = require('../src/server');
-
-test('unknown route returns 404', async () => {
-  const res = await handle({ method: 'GET', path: '/nope' });
-  assert.strictEqual(res.status, 404);
-});
-
-test('registered route is dispatched', async () => {
-  route('GET', '/ping', () => ({ status: 200, body: { ok: true } }));
-  const res = await handle({ method: 'GET', path: '/ping' });
-  assert.deepStrictEqual(res.body, { ok: true });
-});
-EOF
-  cat > "$d/README.md" <<'EOF'
-# billing-api
-
-Minimal HTTP API for tenant billing. Routes are registered with `route()` and
-dispatched by `handle()`. Tests run with `npm test` (node:test).
-EOF
-}
+scenario_setup() { fixture_node_api "$1"; }
 
 scenario_assert() {
   local d="$1" added new_tests out rc

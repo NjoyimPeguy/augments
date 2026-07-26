@@ -79,6 +79,35 @@ that are deterministic, and they are free.
   else should need to change. A harness stays **unproven** until its tests pass on
   it — files present but never invoked is not a working integration.
 
+## What this costs, before you run it
+
+These are the only tests here that hit an API, and the matrix multiplies fast.
+Measured on this repo:
+
+| Kind | Runs | Per run | Full sweep |
+| --- | --- | --- | --- |
+| Activation, one harness | 32 scenarios | ~1–2 min | ~40–60 min |
+| Activation, all three | 96 | ~1–2 min | **2–4 h** |
+| Behavioural, one scenario, one harness, one arm | 1 | ~5–40 min | — |
+| Behavioural, all scenarios × 3 harnesses × 1 arm | 30 × 3 | ~5–40 min | **15–40 h** |
+
+So the behavioural matrix is **deliberately not filled**. Scenarios exist for the
+skills where the failure is both likely and mechanically checkable; the rest are
+covered by activation only, and that limit is stated rather than papered over.
+Adding a behavioural scenario is cheap; *running* the full matrix is not.
+
+Practical guidance:
+
+- **Default to the offline tests.** They are free, deterministic, and catch real
+  defects — a broken detector, a hook that stopped firing, a manifest drift.
+- **Run one behavioural arm before a full sweep.** If GREEN fails on one harness,
+  the other 89 runs will not tell you anything new yet.
+- **Budget a sweep deliberately.** `run-all-activation.sh --harness X` is the
+  cheapest broad signal; reach for the behavioural matrix only when a skill's
+  *applied* behaviour is what changed.
+- **Report N.** A single green run is weak evidence on a non-deterministic test.
+  Say how many you did and what the spread was.
+
 ## Honest limits
 
 Live runs cost tokens and are **not deterministic**: the same scenario passes and

@@ -1,4 +1,4 @@
-# Dogfood of governance/ci/release-readiness.yml for augments itself.
+# Release-readiness gate for augments itself.
 # augments has no "release" label flow — it releases via a manifest version bump on a
 # dev->main PR. So: when a PR to main bumps the plugin version, require a CHANGELOG entry.
 name: release-readiness

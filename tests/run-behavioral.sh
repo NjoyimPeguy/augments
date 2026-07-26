@@ -41,6 +41,7 @@ done
 
 # --- harness-agnostic plumbing ------------------------------------------------
 . "$scriptdir/assert.sh"
+. "$scriptdir/fixtures.sh"
 
 # Fills: scenario arm base timeout_s keep
 bh_parse_args() {

@@ -97,6 +97,5 @@ A PR adding a harness MUST include a runnable test layer under `tests/<name>/` �
 - `AGENTS.md`, `GEMINI.md` — symlinks to this file, so a harness that reads its own instructions file gets the same guidance from one source.
 - `.github/` — CI (`workflows/validate.yml`) and the PR template (`PULL_REQUEST_TEMPLATE.md`).
 - `tests/` — `gate/` is the portable deterministic gate CI runs on every push and PR (`validate-skills.sh`, the two plugin validators, `token-budget.sh`). `scenarios/` holds every test input **once**, shared by all harnesses: `activation/<phase>/<skill>` openings and `behavioral/<name>/` fixtures. `claude-code/`, `codex/`, `kimi-code/` hold only that harness's runners — the scenarios were byte-identical across all three, so they live in one place.
-- `governance/` — adoptable **deterministic-gate** templates (CI workflows, branch-protection, pre-commit) that make the production-critical skills non-skippable at the commit/PR/CI boundary, where firm persuasion can't. Each gate maps to the skill it enforces, labelled bulletproof vs heuristic.
 - `CHANGELOG.md`, `RELEASING.md` — the release record, and how releases are versioned and cut (semver over the skill surface; the gate checks the two manifest versions agree).
 - `.claude/` — local config and notes; gitignored, never shipped.
