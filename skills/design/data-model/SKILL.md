@@ -1,6 +1,6 @@
 ---
 name: data-model
-description: Use when the domain needs modeling before design or code — the concepts a system stores or merely computes over: entities, relationships, state transitions, and the invariants that keep them true. Fires for a stateless engine (pricing, rules, workflow) as much as for schema design. Skip for a feature that adds no domain concepts.
+description: "Use when the domain needs modeling before design or code — the concepts a system stores or merely computes over: entities, relationships, state transitions, and the invariants that keep them true. Fires for a stateless engine (pricing, rules, workflow) as much as for schema design. Skip for a feature that adds no domain concepts."
 ---
 
 # Data Model

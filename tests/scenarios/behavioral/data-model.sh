@@ -62,12 +62,16 @@ scenario_assert() {
   # Concepts named in the domain's language — a model of this engine that never
   # says "promotion" or "cart" is not a model of this domain.
   assert_contains "$body" 'promotion' 'names the domain concepts (promotion)'
-  assert_contains "$body" 'cart|order' 'names the domain concepts (cart/order)'
+  assert_contains "$body" '\b(cart|order)s?\b' 'names the domain concepts (cart/order)'
 
-  # The lifecycle made it in whole: all three states the opening dictated.
-  assert_contains "$body" 'draft' 'captures the lifecycle (draft)'
-  assert_contains "$body" 'active' 'captures the lifecycle (active)'
-  assert_contains "$body" 'expired' 'captures the lifecycle (expired)'
+  # The lifecycle made it in whole: all three states the opening dictated —
+  # and modeled AS a lifecycle, in words the opening never used. An echo of
+  # the prompt passes state-name greps; only a model names the transitions.
+  assert_contains "$body" '\bdraft\b' 'captures the lifecycle (draft)'
+  assert_contains "$body" '\bactive\b' 'captures the lifecycle (active)'
+  assert_contains "$body" '\bexpired?\b' 'captures the lifecycle (expired)'
+  assert_contains "$body" 'transition|lifecycle|state machine' \
+    'models the states as transitions, not an echo of the prompt'
 
   # Invariants written as rules that must hold — the section constraints and
   # tests get derived from.
