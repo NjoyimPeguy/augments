@@ -1,17 +1,46 @@
 #!/usr/bin/env bash
-# Shared plumbing for every adapter's run-behavioral.sh.
+# Behavioural test — ONE runner for every harness.
 #
-# A behavioural run is the same experiment everywhere: seed a disposable copy of
-# a shared scenario, load the skills for one arm, let the agent work with write
-# access, then let the scenario's probe.sh decide the verdict. Only three things
-# are harness-specific, and each adapter supplies them as a function:
+# Activation asks "did the skill fire?" — one generic verdict. This asks "did the
+# skill change what got BUILT?", which has no generic verdict: success differs
+# per skill. So the scenario owns the judgement (`scenario_assert`, exit code)
+# and the harness owns only how its CLI is driven (`harnesses/<harness>.sh`).
 #
-#   bh_install   $1=plugin_source  — put the skills where this CLI will find them
-#   bh_invoke    $1=workdir $2=opening_file $3=stream — run the CLI, return its exit
-#   bh_chain     $1=stream         — print the skills invoked, one per line
+# The plumbing below was briefly a separate lib; with one runner
+# instead of three it had a single consumer, so it lives here. assert.sh
+# stays split — every scenario uses it.
 #
-# Everything else lives here so the three runners cannot drift apart. This file
-# is sourced, never executed.
+# TWO ARMS, because a behavioural claim is a comparison:
+#   --arm green   loads the skills from the working tree (your edit)
+#   --arm red     loads them from a throwaway `git worktree` at --base, so the
+#                 before-arm stays reproducible AFTER the change is committed.
+#                 Running RED by hand before editing works exactly once.
+#
+# Real API calls, roughly a full agent task per arm. Manual tool, never CI.
+#
+# Usage:
+#   tests/run-behavioral.sh --harness claude-code --scenario spec-it --arm green
+#   tests/run-behavioral.sh --harness codex --scenario spec-it --arm red --base origin/dev
+
+set -uo pipefail
+scriptdir="$(cd "$(dirname "$0")" && pwd)"
+cd "$scriptdir/.." || exit 2
+repo="$PWD"
+
+harness=""; args=()
+while [ "$#" -gt 0 ]; do
+  case "$1" in
+    --harness) harness="$2"; shift 2;;
+    *) args+=("$1"); shift;;
+  esac
+done
+[ -n "$harness" ] || { echo "needs --harness claude-code|codex|kimi-code" >&2; exit 2; }
+[ -f "$scriptdir/harnesses/$harness.sh" ] || { echo "no harness adapter: $harness" >&2; exit 2; }
+
+. "$scriptdir/harnesses/$harness.sh"
+
+# --- harness-agnostic plumbing ------------------------------------------------
+. "$scriptdir/assert.sh"
 
 # Fills: scenario arm base timeout_s keep
 bh_parse_args() {
@@ -30,16 +59,20 @@ bh_parse_args() {
   case "$arm" in red|green) ;; *) echo "needs --arm red|green" >&2; return 2;; esac
 }
 
-# Fills: sdir opening_file   ($1 = adapter name, for the opening override)
+# Sources the scenario (one file: fixture, opening, assertions) and picks the
+# opening for this adapter. Fills: opening_file opening_kind
 bh_resolve_scenario() {
-  local adapter="$1"
-  sdir="$scriptdir/../scenarios/behavioral/$scenario"
-  [ -d "$sdir/fixture" ] || { echo "no fixture at $sdir/fixture" >&2; return 2; }
-  # A per-adapter opening exists only for a real harness constraint (codex exec is
-  # single-turn, so an opening that invites a question ends the run with nothing).
-  opening_file="$sdir/opening.$adapter"
-  [ -f "$opening_file" ] || opening_file="$sdir/opening.default"
-  [ -f "$opening_file" ] || { echo "no opening in $sdir" >&2; return 2; }
+  local adapter="$1" f="$scriptdir/scenarios/behavioral/$scenario.sh"
+  [ -f "$f" ] || { echo "no scenario at $f" >&2; return 2; }
+  # assert helpers already sourced above
+  . "$f"
+  for fn in scenario_opening scenario_setup scenario_assert; do
+    command -v "$fn" >/dev/null 2>&1 || { echo "$scenario.sh defines no $fn()" >&2; return 2; }
+  done
+  # A per-adapter opening exists only for a real harness constraint.
+  local override="scenario_opening_${adapter//-/_}"
+  if command -v "$override" >/dev/null 2>&1; then opening_kind="$override"; else opening_kind="scenario_opening"; fi
+  opening_file="$(mktemp)"; "$opening_kind" > "$opening_file"
 }
 
 # Fills: plugin_src redtree.  RED builds a throwaway worktree at $base so the
@@ -63,7 +96,7 @@ bh_setup_arm() {
 # so branch-discipline skills see a settled repo.
 bh_seed_fixture() {
   workdir="$(mktemp -d)"
-  cp -r "$sdir/fixture/." "$workdir/" || return 2
+  scenario_setup "$workdir" || return 2
   (
     cd "$workdir" || exit 2
     git init -q . 2>/dev/null || exit 2
@@ -105,7 +138,7 @@ bh_report() {
   echo "scenario   : $scenario"
   echo "adapter    : $adapter"
   echo "arm        : $arm  (skills from: $([ "$arm" = red ] && echo "$base" || echo 'working tree'))"
-  echo "opening    : $(basename "$opening_file")"
+  echo "opening    : $opening_kind"
   echo "exit       : $status"
   echo "skill chain: ${chain:-(none)}"
   echo "artifacts  :"
@@ -120,13 +153,26 @@ bh_report() {
     echo "verdict    : BLOCKED — provider refused (quota/auth); not a behavioural result"; return 1
   fi
 
-  if [ -x "$sdir/probe.sh" ]; then
-    echo "probe      :"
-    "$sdir/probe.sh" "$workdir" 2>&1 | sed 's/^/  /'
-    local pstat="${PIPESTATUS[0]}"
-    [ "$pstat" -eq 0 ] && echo "verdict    : PASS" || echo "verdict    : FAIL (probe exit $pstat)"
-    return "$pstat"
-  fi
-  echo "verdict    : UNSCORED — no executable probe.sh in $sdir"
-  return 0
+  echo "assertions :"
+  ( scenario_assert "$workdir" ) 2>&1 | sed 's/^/  /'
+  local pstat="${PIPESTATUS[0]}"
+  [ "$pstat" -eq 0 ] && echo "verdict    : PASS" || echo "verdict    : FAIL"
+  return "$pstat"
 }
+
+
+bh_parse_args ${args[@]+"${args[@]}"} || exit 2
+adapter_check || exit 3
+command -v jq >/dev/null 2>&1 || { echo "needs \`jq\`" >&2; exit 3; }
+
+stream="$(mktemp)"; errlog="$(mktemp)"; harness_home=""
+trap bh_cleanup EXIT
+
+bh_resolve_scenario "$harness" || exit 2
+bh_setup_arm || exit 2
+adapter_install "$plugin_src" || exit 3
+bh_seed_fixture || exit 2
+
+adapter_run_behavioral "$workdir" "$opening_file" "$stream"; status=$?
+bh_chain() { adapter_chain "$1"; }
+bh_report "$harness" "$status"

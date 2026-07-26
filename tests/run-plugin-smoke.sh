@@ -3,7 +3,7 @@
 
 set -uo pipefail
 scriptdir="$(cd "$(dirname "$0")" && pwd)"
-repo="$(cd "$scriptdir/../.." && pwd)"
+repo="$(cd "$scriptdir/.." && pwd)"
 
 command -v codex >/dev/null 2>&1 || { echo "no \`codex\` CLI on PATH" >&2; exit 3; }
 

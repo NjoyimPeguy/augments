@@ -39,7 +39,7 @@ bash scripts/sh/validate-skills.sh
 Rule 4 (behavior) has no deterministic gate — that is the honest limit. Prove it by **re-running the tests and reading what they return**:
 
 - **Activation** — does the right skill fire? `tests/<adapter>/run-activation.sh --scenario-file <phase>/<skill>` for one scenario, `run-all-activation.sh` for the whole set. The exit code is the verdict.
-- **Behaviour** — does the skill change what actually gets *built*? `tests/<adapter>/run-behavioral.sh --scenario <name> --arm red|green`. The scenario's `probe.sh` returns the verdict as an exit code.
+- **Behaviour** — does the skill change what actually gets *built*? `tests/<adapter>/run-behavioral.sh --scenario <name> --arm red|green`. The scenario's own `scenario_assert` returns the verdict as an exit code. A scenario is one file: `tests/scenarios/behavioral/<name>.sh`.
 
 Report the real numbers in the PR, including an inconclusive or failing result — these tests are live and non-deterministic, so a single green run is weak evidence. Say how many runs you did. Never green-wash.
 

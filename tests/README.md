@@ -1,34 +1,88 @@
 # tests/
 
-Two kinds of test live here, split by what they can guarantee.
+The skills are portable Markdown, but **whether one actually fires, and whether
+it changes what gets built, are facts about a specific harness**. So everything
+here drives a real CLI. The deterministic, portable gate lives in `scripts/sh/`
+and runs in CI; nothing in this folder does.
 
-## 1. Structural — deterministic, portable, CI-gated
+## Layout
 
-`validate-skills.sh` checks the shape of every skill: frontmatter present, `name` matches the directory, description <= 1024 chars, body line limits, and - recursively, across each skill's `references/` and `scripts/` subfolders - no external references, vendor model names, scanner trigger-words, or bare `<angle>` placeholders. It also checks that no skill name shadows a common built-in slash command, that adapter manifests expose every skill on disk, and that manifest versions agree. It inspects files, asks nothing of any model, and exits non-zero on any violation, so it runs in CI on every push and PR.
+```
+tests/
+  run-activation.sh       does the right skill fire?             (1 API call/scenario)
+  run-all-activation.sh   the whole activation set for a harness
+  run-flow.sh             multi-turn sequences, one resumed conversation
+  run-behavioral.sh       does the skill change what gets BUILT? (two arms)
+  run-stop-nudge.sh       done-boundary hook policy              (offline)
+  run-plugin-smoke.sh     install / marketplace mechanics        (offline)
+  harnesses/<name>.sh     ONLY what differs per CLI: install, invoke, detect
+  assert.sh               assertion helpers every scenario uses
+  scenarios/
+    activation/<phase>/<skill>   one opening per skill
+    flows/<name>/                multi-turn reproductions (momentum, decay)
+    behavioral/<skill>.sh        fixture + opening + assertions, one file
+```
 
-`token-budget.sh` reports the approximate context cost (chars/4) of the always-loaded surface — every `SKILL.md` body plus the SessionStart nudge — so "earn every line" is a number you can watch. Report-only; `--max N` flags any body over N approx-tokens.
+Every runner takes `--harness claude-code|codex|kimi-code`:
 
-## 2. Per-harness real activation — runnable, not portable, not CI
+```bash
+tests/run-activation.sh     --harness claude-code --scenario-file common/yagni
+tests/run-all-activation.sh --harness codex
+tests/run-behavioral.sh     --harness kimi-code --scenario spec-it --arm green
+tests/run-stop-nudge.sh     --harness codex
+tests/run-activation.sh     selftest        # offline detector check, no API
+```
 
-The skills are portable Markdown, but **whether one actually activates is a fact about a specific harness** - so each harness earns its own real test layer under `tests/<adapter>/`. Today **Claude Code** has live activation tests (`tests/claude-code/`), **Codex CLI** has installability plus a live activation scenario (`tests/codex/`), and **Kimi Code CLI** has a live activation probe over an isolated managed-plugin install plus an offline Stop-hook test (`tests/kimi-code/`).
+**Scenarios are shared by every harness.** They were byte-identical across three
+copies before this; a per-harness override exists only for a real constraint —
+`codex exec` is single-turn, so a scenario that invites a clarifying question
+ends that run with no deliverable, and `scenario_opening_codex()` pre-empts it.
+Never use an override to make an arm look better, and say so when you use one.
 
-`tests/claude-code/` drives the real `claude` CLI headless against the working tree and observes whether a skill **actually fires** - a structured `Skill` tool_use parsed from `--output-format stream-json`, never a prose grep or a self-report. See its README for the runners (`run-activation.sh`, `run-flow.sh`), the scenario convention, `--working-tree`, `--verbose`, and the offline detection `selftest`.
+## The three kinds, and what each can prove
 
-`tests/codex/` runs a no-model plugin smoke test with an isolated `CODEX_HOME`: register this checkout as a local marketplace, list `augments`, and install it. Its activation runner drives `codex exec --json` and counts a command event that reads `.../skills/{{skill}}/SKILL.md` from the installed plugin cache as the activation signal. Its Stop hook wrapper test is offline and payload-only.
+**Activation** — the verdict comes only from a structured tool call in the
+harness's own stream. A raw grep reports phantom activations: the SessionStart
+nudge and the init manifest both contain `augments:` tokens that are not
+actions, and the first version of this harness fell for exactly that. The
+**filename is the contract**: a scenario named after a real skill expects that
+skill anywhere in the routing chain (under routing-first the first call is
+`using-augments`, the router — judge the whole chain); any other name expects
+nothing to fire. Exit code is the verdict, so it is scriptable.
 
-`tests/kimi-code/` drives `kimi -p --output-format stream-json` in an isolated `KIMI_CODE_HOME` with this checkout installed as a managed plugin, and counts a `Skill` tool call naming the expected skill as the activation signal. Its Stop-hook test is offline over crafted payloads plus a wire-log fixture.
+**Behavioural** — runs the skill for real and reads the artifact it produced.
+This is the only kind that catches a skill described correctly and *applied*
+wrongly: a spec that promises "all criteria are automated tests" and ships none,
+or ships them marked `todo` so the suite can never go red. A test that asked the
+agent to *describe* the skill would pass all of those. Two arms, because a
+behavioural claim is a comparison — RED loads the skills from a `git worktree`
+at `--base`, GREEN from the working tree, so the before-arm stays reproducible
+after the change is committed.
 
-Two kinds of check live under the harness:
+**Offline** — `run-activation.sh selftest`, `run-stop-nudge.sh` and
+`run-plugin-smoke.sh` need no model. Prefer them: they are the only tests here
+that are deterministic, and they are free.
 
-- **Activation** — does the right skill fire on a representative opening? (scenarios + runners)
-- **Behavioural** — once invoked, does the skill change what actually gets *built*? Runnable on **all three** adapters: each has a `run-behavioral.sh` driving a two-arm comparison (RED from a `git worktree` at `--base`, GREEN from the working tree) over a seeded fixture with write access. Scenarios are shared in `scenarios/behavioral/`, and each supplies a `probe.sh` whose **exit code** is the verdict. Behaviour has no generic verdict the way activation does, so the runner owns the plumbing and the scenario owns the judgement — and because a probe reads a finished working directory rather than a stream, verdicts are directly comparable across harnesses.
-- **Reporting** — results are ephemeral and live. Re-run for current truth and state the numbers; nothing is committed as a record.
+## Adding things
 
-**Why these can't be the portable gate, and the honest cost.** A real "did it fire" test must drive one specific CLI, pass its flags, and make a real API call — it binds to a harness and is neither free nor deterministic. So it's a runnable tool you re-run for current truth, **not** a CI pass/fail and **not** a committed results log. And because real runs cost, coverage is **selective** — the scenarios exercise the skills that matter most, not all of them every time. Name what isn't covered rather than imply everything is.
+- **An activation scenario:** drop a file at `scenarios/activation/<phase>/<skill>`.
+  The filename is the contract; no registration, no code change.
+- **A behavioural scenario:** one file, `scenarios/behavioral/<skill>.sh`, defining
+  `scenario_opening`, `scenario_setup <dir>` and `scenario_assert <dir>`. Write the
+  assertions so the **exit code** is the verdict — a summary is written by the same
+  agent that wants it green; an exit code is not. Check what is easy to fake and
+  hard to see in a transcript: that an artifact exists, that it *loads*, and that
+  it can actually fail.
+- **A harness:** add `harnesses/<name>.sh` implementing `adapter_check`,
+  `adapter_install`, `adapter_chain`, `adapter_run_activation`,
+  `adapter_run_behavioral`, `adapter_stop_hook`, `adapter_stop_payload`. Nothing
+  else should need to change. A harness stays **unproven** until its tests pass on
+  it — files present but never invoked is not a working integration.
 
-## Adding a test, and adding a harness
+## Honest limits
 
-- **A new activation scenario:** drop a file under `tests/<adapter>/scenarios/<phase>/`. The **filename is the contract** — name it after the skill it should trigger; any other name (a filler, a negative) expects nothing to fire. List it in the phase's `flow` file to include it in a multi-turn run. No code change. (Mechanics in the adapter's own README.)
-- **A new harness:** create `tests/<name>/` with a runner that drives that harness's CLI and detects activation its way, plus scenarios. The adapter stays **unproven** until its tests pass on it, and `docs/augments/harness-support.md` must say so - files on disk are not a working integration.
-
-This is the testing face of `docs/augments/philosophy.md`: an instruction only shifts a probability, so a skill's effect is **measured** on a real harness, not assumed — and the deterministic guarantee that stays portable is the structural gate above.
+Live runs cost tokens and are **not deterministic**: the same scenario passes and
+fails across runs, and coverage is selective by design. So these are manual tools,
+never CI, and no result is committed as a record — re-run for current truth and
+report the numbers you actually got, failures included. A single green run is weak
+evidence; say how many you did.

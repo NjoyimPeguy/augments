@@ -24,7 +24,7 @@
 set -uo pipefail
 scriptdir="$(cd "$(dirname "$0")" && pwd)"
 orig_pwd="$PWD"
-repo="$(cd "$scriptdir/../.." && pwd)"   # working-tree root, for --plugin-dir
+repo="$(cd "$scriptdir/.." && pwd)"   # working-tree root, for --plugin-dir
 
 # A turn's filename is its expected skill IF that skill exists; any other name
 # (a filler, a negative) expects nothing. No marker char needed in the filename.
@@ -132,4 +132,4 @@ elif [ -n "$expect" ]; then
   for w in "${want[@]}"; do jq -rc "$SKILL_FILTER" "$allstream" 2>/dev/null | grep -qiE "$w\$" || miss="${miss} $w"; done
   [ -z "$miss" ] && echo "all expected skills activated." || echo "MISSING:${miss}"
 fi
-if [ -n "$keep" ]; then cp "$allstream" "$scriptdir/last-flow.jsonl"; echo "stream              : tests/claude-code/last-flow.jsonl"; fi
+if [ -n "$keep" ]; then cp "$allstream" "$scriptdir/last-flow.jsonl"; echo "stream              : tests/last-flow.jsonl"; fi
