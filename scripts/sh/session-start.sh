@@ -7,7 +7,7 @@ set -euo pipefail
 context="$(cat <<'AUGMENTS_NUDGE'
 # Augments skills
 
-Augments installs engineering skills for the whole SDLC, listed with their triggers in your Skill tool. Before you start any non-trivial request -- or any tool call that begins the work -- invoke the `using-augments` skill to route to the one that fits.
+Augments installs engineering skills for the whole SDLC, listed with their triggers in your Skill tool. Before you start any non-trivial request -- or any tool call that begins the work -- invoke the `using-augments` skill to route to the one that fits. An implementation task (feature, fix, refactor) starts with `test-driven-development` paired with `yagni`: invoke both before the first line of code, not after it.
 AUGMENTS_NUDGE
 )"
 
