@@ -125,13 +125,21 @@ mapfile -t xflags < <(adapter_activation_flags 2>/dev/null || true)
 # skill fires. A run that only ever fires the router is bounded by --max-turns.
 ( adapter_run_activation "$workdir" "$prompt" "$stream" ${xflags[@]+"${xflags[@]}"} ) &
 cpid=$!
+# Skills CHAIN: using-augments routes, then task-branches, then TDD, then yagni.
+# So stopping at the first non-router skill truncates a correct chain and scores
+# it as a miss — that is exactly what happened to test-driven-development
+# (killed at using-task-branches, which the router correctly sends you to first)
+# and to finishing-a-branch (killed at verifying-completion). When a specific
+# skill is expected, wait for THAT skill; --max-turns bounds a run that never
+# reaches it. Only an exploratory run stops at the first non-router call.
 router="augments:using-augments"; want=""; [ -n "$expect" ] && want="augments:${expect}"
 while kill -0 "$cpid" 2>/dev/null; do
   chain="$(adapter_chain "$stream")"
   if [ -n "$want" ]; then
     printf '%s\n' "$chain" | grep -qx "$want" && { kill "$cpid" 2>/dev/null; break; }
+  else
+    printf '%s\n' "$chain" | grep -vx "$router" | grep -q . && { kill "$cpid" 2>/dev/null; break; }
   fi
-  printf '%s\n' "$chain" | grep -vx "$router" | grep -q . && { kill "$cpid" 2>/dev/null; break; }
   sleep 2
 done
 wait "$cpid" 2>/dev/null; status=$?

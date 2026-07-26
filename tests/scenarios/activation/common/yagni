@@ -1,1 +1,3 @@
-I'm tempted to build a generic plugin system for notifications, but right now we only ever send email. Just add the email notification — don't over-engineer it.
+Add a sendEmail(to, subject, body) function to the notifier so we can send the
+signup confirmation. We'll almost certainly want SMS and Slack later, so set it
+up in a way those can drop into.

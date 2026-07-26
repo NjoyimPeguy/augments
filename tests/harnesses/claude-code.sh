@@ -27,8 +27,11 @@ adapter_chain() {
 # Bash a skill attempts is denied, so activation is observed without side effects.
 adapter_run_activation() { # $1 workdir  $2 prompt  $3 stream  $4 extra flags...
   local wd="$1" prompt="$2" stream="$3"; shift 3
+  # --max-turns bounds a run that never reaches the expected skill; without it a
+  # miss burns a full session instead of stopping.
   ( cd "$wd" && exec timeout "$timeout_s" claude -p "$prompt" \
       --output-format stream-json --verbose "$@" \
+      --max-turns "${maxturns:-6}" \
       --allowedTools Skill Read Glob Grep ) < /dev/null > "$stream" 2>>"$errlog"
 }
 
