@@ -120,11 +120,13 @@ EOF
   fi
 
   # --- Craft: the addition must read like the file around it. The corpus is
-  # what the agent ADDED only: diff-added lines for tracked files, full contents
-  # for untracked ones. Catting modified files would pull the fixture's own
-  # pre-existing comments into scope and make the comment check unfalsifiable.
+  # what the agent ADDED only: diff-added lines against the baseline root
+  # (worktree diff — covers committed AND uncommitted modifications; catting
+  # modified files would pull the fixture's own pre-existing comments into
+  # scope and make the comment check unfalsifiable), plus full contents of
+  # untracked files, which the diff cannot see.
   local untracked_src; untracked_src="$(git status --porcelain -uall -- src/ 2>/dev/null | awk '$1=="??"{print $2}')"
-  local new_code; new_code="$( { git diff "$root" HEAD -- src/ 2>/dev/null | grep -E '^\+' | grep -v '^+++' || true; \
+  local new_code; new_code="$( { git diff "$root" -- src/ 2>/dev/null | grep -E '^\+' | grep -v '^+++' || true; \
                                  for f in $untracked_src; do [ -f "$f" ] && cat "$f"; done; } )"
   if [ -z "${new_code// }" ]; then
     fail "touched the pricing code — no src change found at all"
@@ -148,7 +150,7 @@ EOF
   # --- Scope: minimal is still the discipline. No new dependency for a
   # two-tier discount, and no abstraction sprawl (factories, strategies,
   # config files) around one function's worth of logic.
-  local new_deps; new_deps="$(git diff "$root" HEAD -- package.json 2>/dev/null | grep -E '^\+' | grep -E '"(dependencies|devDependencies)"|"[a-z@][^"]*": *"\^?[0-9]' || true)"
+  local new_deps; new_deps="$(git diff "$root" -- package.json 2>/dev/null | grep -E '^\+' | grep -E '"(dependencies|devDependencies)"|"[a-z@][^"]*": *"\^?[0-9]' || true)"
   [ -z "$new_deps" ] && pass "no new dependencies" \
                      || fail "no new dependencies — added: $(printf '%s' "$new_deps" | head -2 | tr '\n' ' ')"
   local added_count; added_count="$(added_since_baseline "$d" | grep -vc '^$')"
