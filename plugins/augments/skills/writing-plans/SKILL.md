@@ -5,7 +5,7 @@ description: Use when requirements are agreed (a brief from interview-me or spec
 
 # Writing Plans
 
-Turn an aligned intent into an executable plan: a small durable **map** plus thin per-task **contracts**. Be ambitious on scope, light on implementation — pre-written code rots, balloons tokens, and produces a plan too long for a human to read. The executor writes code at run time, with the most context.
+Turn an aligned intent into an executable plan: a small durable **map** plus thin per-task **contracts**. Be ambitious on scope, light on implementation — pre-written code rots and produces a plan too long to read. The executor writes code at run time, with the most context.
 
 ## When to use
 
@@ -34,7 +34,7 @@ Turn an aligned intent into an executable plan: a small durable **map** plus thi
 - `00-index.md` — the map: goal, 2–3-sentence architecture, a **Constraints** block (project-wide rules — version floors, dependency limits, naming, security, platform — copied verbatim; every task's contract implicitly includes them), an **Acceptance** check (the end-to-end definition of done for the whole plan), checkbox task list with status, links. See `references/index-template.md`.
 - `NN-<task>.md` — one contract each, ≤ ~2k tokens. See `references/task-template.md`.
 
-**6. Tag a capability tier per task** (mechanical → small, logic/design → large) — a tier, not a vendor model name; each harness maps tier → model at dispatch.
+**6. Tag a capability tier per task** (mechanical → small, logic/design → large) — a tier, never a vendor model name; harnesses map tier → model.
 
 ### Self-review before saving (inline, ~30s)
 
@@ -48,7 +48,7 @@ Turn an aligned intent into an executable plan: a small durable **map** plus thi
 Only the user can confirm the plan's *direction*, and this is the cheapest moment to redirect. A hard gate, not a formality:
 
 - **Show the index** — goal, architecture, Constraints, Acceptance, the task list.
-- **End your turn with one question that both approves and chooses how to run it:** *"Ready to execute this as written, or want changes? If it's a go — run it **inline** here (you watch each task land) or **subagent-driven** (a fresh subagent per task, reviewed between tasks — better for long plans and context isolation)?"* Then wait.
+- **End your turn with one question that both approves and chooses how to run it:** *"Ready to execute this as written, or want changes? If it's a go — run it **inline** here (you watch each task land) or **subagent-driven** (a fresh subagent per task, reviewed between tasks — better for long plans)?"* Then wait.
 - **Presenting and executing are two separate turns**, with the user's "go" between them — do not invoke `executing-plans`, create a task branch/workspace, or write a line of code in the same turn you present the plan.
 - **What does *not* count as a go:** a green light given *before* the plan existed ("go ahead", "over to you" — that approved the work, not the unseen plan); a non-interactive session (end the turn with the plan presented — don't skip the pause because nobody can answer).
 - **Proceed unpaused only** when the user explicitly ordered a straight-through run ("plan it and build it, don't stop for approval") or requested an unattended run.
