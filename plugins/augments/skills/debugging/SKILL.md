@@ -9,7 +9,7 @@ Root cause before fix. A patch you can't explain isn't a fix — it's a guess th
 
 ## The method
 
-**1. Build the feedback loop — this is the skill; the rest is mechanical.** Get a fast, deterministic, runnable pass/fail signal for the bug, and spend disproportionate effort here. If you can't build one, *stop and say so* — list what you tried and ask for access or a captured artifact; don't debug on vibes. Once you have a loop, sharpen it (faster, more deterministic). A flaky bug isn't exempt — raise its reproduction rate (loop it, add stress, narrow the timing) until it's debuggable. See `feedback-loop-options.md`.
+**1. Build the feedback loop — this is the skill; the rest is mechanical.** Get a fast, deterministic, runnable pass/fail signal for the bug, and spend disproportionate effort here. If you can't build one, *stop and say so* — list what you tried and ask for access or a captured artifact; don't debug on vibes. Once you have a loop, sharpen it (faster, more deterministic). A flaky bug isn't exempt — raise its reproduction rate (loop it, add stress, narrow the timing) until it's debuggable. See `references/feedback-loop-options.md`.
 
 **2. Reproduce.** Confirm the loop triggers *this* bug, not something near it.
 

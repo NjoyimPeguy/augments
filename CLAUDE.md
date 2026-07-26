@@ -26,7 +26,7 @@ Files under `skills/` and `docs/` ship to users. They must be self-contained, po
 1. **No external references.** Do not name other repositories, projects, articles, or authors, and do not cite issue/PR numbers or tracker links. State the principle directly ("a monolithic plan is re-read on every compaction") — never attribute it. Provenance belongs in private notes, not a shipped skill.
 2. **Model- and harness-agnostic.** Refer to models by capability tier — `small | medium | large` — never vendor names (haiku, sonnet, gpt, gemini, …). Don't assume a specific harness's tooling or paths. Each harness binds tier → model and action → command.
 3. **Lean format.** Every skill follows `skills/common/writing-skills`: a thin `SKILL.md` (≤ ~80 lines), a trigger-style `description`, progressive disclosure to sibling files, a complexity gate, and `{{double-curly}}` placeholders. Discipline skills (those that hold an agent to a discipline under pressure) are the one exception to the line limit — that skill explains why.
-4. **Prove behavior-shaping changes.** A new or edited skill is not done until you have watched it work — see `skills/common/writing-skills/testing.md`.
+4. **Prove behavior-shaping changes.** A new or edited skill is not done until you have watched it work — see `skills/common/writing-skills/references/testing.md`.
 
 ## Verify against the gate
 
@@ -46,7 +46,7 @@ Report the real numbers in the PR, including an inconclusive or failing result �
 ## Adding a skill
 
 1. Pick the phase folder (`planning … maintenance`) or `common/`.
-2. Copy `skills/common/writing-skills/skill-template.md` and fill it in.
+2. Copy `skills/common/writing-skills/references/skill-template.md` and fill it in.
 3. Keep `SKILL.md` lean; push templates, examples, and rationale to sibling files.
 4. Verify before done: line count, lint-clean Markdown, no external or vendor references.
 

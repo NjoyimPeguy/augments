@@ -27,14 +27,14 @@ Skip any step and you have not verified — you have asserted.
 
 ## When no automated check exists
 
-Some claims — visual output, real-browser flows, realtime UI, subjective usability — have no command that returns pass/fail. The gate is then human-run, but it is still a gate: structure it as a traceable acceptance matrix with evidence, never self-certify a step a human must judge, and treat an unrun row as pending, not passed. Automate everything that *can* be; this covers only what genuinely can't. See `manual-acceptance.md`.
+Some claims — visual output, real-browser flows, realtime UI, subjective usability — have no command that returns pass/fail. The gate is then human-run, but it is still a gate: structure it as a traceable acceptance matrix with evidence, never self-certify a step a human must judge, and treat an unrun row as pending, not passed. Automate everything that *can* be; this covers only what genuinely can't. See `references/manual-acceptance.md`.
 
 ## Hard stops
 
 - Never claim a test passes without seeing it pass *this* run.
 - Never claim a bug is fixed without reproducing it first, then confirming the fix removes it.
 - Never claim done when the only evidence is a subagent's "success" report — read the actual diff and output yourself.
-- A check that has never been seen to fail is suspect — see `hollow-verification.md`.
+- A check that has never been seen to fail is suspect — see `references/hollow-verification.md`.
 - A test known to fail intermittently is **not** verified by one green run — a flaky pass is unexplained nondeterminism, not proof. Root-cause it (`debugging`); don't build on it.
 - Verified is not reviewed: the gate proves your claim about the checks, not that the change is right. At a feature-level done boundary — merging, opening a PR, or reporting a non-trivial change complete — green hands off to independent review (`requesting-code-review`); don't end the chain at "verified".
 
@@ -62,4 +62,4 @@ A per-task **Evaluator** and a plan-level **Acceptance** name *which* check to r
 - Expressing satisfaction ("perfect!") before the check has run.
 - Reporting a subagent's claim as your own evidence.
 - Treating a green linter as a green test suite.
-- Writing a regression test you never watched fail — see `hollow-verification.md`.
+- Writing a regression test you never watched fail — see `references/hollow-verification.md`.

@@ -31,8 +31,8 @@ Turn an aligned intent into an executable plan: a small durable **map** plus thi
 ### Assemble the plan directory
 
 **5. Write it** to `.augments/plans/{{YYYY-MM-DD}}-{{topic}}/` (the standard plans location; another path only if the user says otherwise). Write the files one at a time — index, then each task file — never one monolithic dump: a long write can stall or truncate, and a half-written plan reads as done. It contains:
-- `00-index.md` — the map: goal, 2–3-sentence architecture, a **Constraints** block (project-wide rules — version floors, dependency limits, naming, security, platform — copied verbatim; every task's contract implicitly includes them), an **Acceptance** check (the end-to-end definition of done for the whole plan), checkbox task list with status, links. See `index-template.md`.
-- `NN-<task>.md` — one contract each, ≤ ~2k tokens. See `task-template.md`.
+- `00-index.md` — the map: goal, 2–3-sentence architecture, a **Constraints** block (project-wide rules — version floors, dependency limits, naming, security, platform — copied verbatim; every task's contract implicitly includes them), an **Acceptance** check (the end-to-end definition of done for the whole plan), checkbox task list with status, links. See `references/index-template.md`.
+- `NN-<task>.md` — one contract each, ≤ ~2k tokens. See `references/task-template.md`.
 
 **6. Tag a capability tier per task** (mechanical → small, logic/design → large) — a tier, not a vendor model name; each harness maps tier → model at dispatch.
 

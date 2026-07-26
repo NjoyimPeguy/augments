@@ -11,7 +11,7 @@ Build it from `dispatching-parallel-agents`' dispatch packet — scope, explicit
 - **Task contract** — paste the full task text. It is the small, authoritative thing the agent starts from, so per that packet's paste-vs-path rule you paste it rather than point at the task file.
 - **Accumulated discoveries** — paste the current `## Learnings` from the index (or "none yet"). This is what stops a later task re-debugging what an earlier one already solved.
 - **Quality rules** — paste verbatim: *escalate rather than guess; bad work is worse than no work; write the test unless the contract says otherwise; honor the tier.* Behavioral rules don't reach a subagent unless you send them.
-- **Expected outcome** — one of the four execution states (done / done-with-concerns / blocked / needs-context — see `SKILL.md`), with file and line references for anything flagged.
+- **Expected outcome** — one of the four execution states (done / done-with-concerns / blocked / needs-context — see `../SKILL.md`), with file and line references for anything flagged.
 
 ## Git safety (silent-data-loss guards)
 
