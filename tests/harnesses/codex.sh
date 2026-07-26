@@ -59,5 +59,5 @@ adapter_run_behavioral() { # $1 workdir  $2 opening file  $3 stream
       < /dev/null > "$3" 2>>"$errlog"
 }
 
-adapter_stop_hook() { printf '%s\n' "$repo/hooks/stop-nudge.sh"; }
+adapter_stop_hook() { printf '%s\n' "$repo/scripts/sh/stop-nudge.sh"; }
 adapter_stop_payload() { jq -cn --argjson a "$1" --arg m "$2" '{stop_hook_active:$a, last_assistant_message:$m}'; }

@@ -38,9 +38,9 @@ echo "• Codex hook config"
 [ -f "$codex_hook_template" ] || err "missing reusable Codex hook config"
 if [ -f "$codex_hook" ] && [ -f "$codex_hook_template" ]; then
   diff -q "$codex_hook_template" "$codex_hook" >/dev/null || err "repo Codex hook config differs from hooks/hooks-codex.json"
-  grep -q 'hooks/stop-nudge.sh' "$codex_hook" || err "Codex hook config does not invoke hooks/stop-nudge.sh"
+  grep -q 'scripts/sh/stop-nudge.sh' "$codex_hook" || err "Codex hook config does not invoke scripts/sh/stop-nudge.sh"
 fi
-[ -x hooks/stop-nudge.sh ] || err "hooks/stop-nudge.sh is not executable"
+[ -x scripts/sh/stop-nudge.sh ] || err "scripts/sh/stop-nudge.sh is not executable"
 
 echo "• Codex skill mirror"
 while IFS= read -r skill; do

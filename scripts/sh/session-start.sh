@@ -1,0 +1,31 @@
+#!/usr/bin/env bash
+# Emit the augments routing bootstrap as a SessionStart context injection.
+# The nudge text lives inline below (between the AUGMENTS_NUDGE markers) so the
+# hook is self-contained; token-budget.sh measures it from the same markers.
+set -euo pipefail
+
+context="$(cat <<'AUGMENTS_NUDGE'
+# Augments skills
+
+Augments installs engineering skills for the whole SDLC, listed with their triggers in your Skill tool. Before you start any non-trivial request -- or any tool call that begins the work -- invoke the `using-augments` skill to route to the one that fits.
+AUGMENTS_NUDGE
+)"
+
+# JSON-escape, in order: backslash, double-quote, then the control characters.
+esc="$context"
+esc="${esc//\\/\\\\}"
+esc="${esc//\"/\\\"}"
+esc="${esc//$'\n'/\\n}"
+esc="${esc//$'\r'/\\r}"
+esc="${esc//$'\t'/\\t}"
+
+if [ -n "${CURSOR_PLUGIN_ROOT:-}" ]; then
+    # Cursor-style hooks consume snake_case additional context.
+    printf '{\n  "additional_context": "%s"\n}\n' "$esc"
+elif [ -n "${CLAUDE_PLUGIN_ROOT:-}" ] && [ -z "${COPILOT_CLI:-}" ]; then
+    # Claude Code consumes the nested SessionStart envelope.
+    printf '{\n  "hookSpecificOutput": {\n    "hookEventName": "SessionStart",\n    "additionalContext": "%s"\n  }\n}\n' "$esc"
+else
+    # SDK-style hooks consume top-level camelCase additional context.
+    printf '{\n  "additionalContext": "%s"\n}\n' "$esc"
+fi
