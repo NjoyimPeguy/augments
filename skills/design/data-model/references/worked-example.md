@@ -45,6 +45,16 @@ Note the deliberate choice: a loan is never deleted and never edited into a new 
 - **Patron 1—N Loan.** A loan names exactly one patron. Ownership: the loan's lifecycle is independent — a closed loan outlives nothing and nothing; it is a record, not a possession.
 - **Copy 1—N Loan (over time), Copy 1—0..1 open Loan (at any instant).** This is the relationship everyone gets wrong: the *lifetime* cardinality is one-to-many, but the *at-any-moment* cardinality is one-to-one. Both must be written down; the second is the invariant below.
 
+## State transitions
+
+`Copy.status` is a lifecycle, not just an enumeration — write down the moves, because a transition you don't draw is one the code will permit by accident:
+
+- `available → on_loan` — borrow; the only way a copy leaves the shelf legitimately.
+- `on_loan → available` — return closes the open loan and frees the copy in the same transaction.
+- `on_loan → lost` — reported lost mid-loan; the open loan stays open (see edge cases).
+- `lost → available` — found; a lost copy is found *before* it can be borrowed again — never `lost → on_loan`.
+- `available | lost → withdrawn` — terminal; a withdrawn copy never re-enters circulation, and a copy on loan must come back (or go lost) before withdrawal.
+
 ## Invariants
 
 Rules that must always hold — each becomes a constraint where the store can enforce it, and a test everywhere:
