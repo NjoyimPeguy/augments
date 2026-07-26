@@ -6,7 +6,7 @@ Notable changes to augments, newest first. Versions follow semantic versioning; 
 
 ### Fixed
 
-- **`data-model` no longer disqualifies itself on stateless domains.** The trigger read "the data a system stores / skip when no persistent state", so a realistic stateless-but-domain-rich opening (a workflow engine holding no state) never routed to the skill — measured 0/2, landing on `interview-me`. The description now fires on concepts a system stores *or merely computes over* (3/3 post-fix, storage opening 2/2, 7/7 neighbors unaffected); the body gains a state-transitions step and makes the storage step conditional. Known gap, reported not hidden: the Kimi router still misses the stateless opening (0/3), so its activation sweep shows `design/data-model` red.
+- **`data-model` no longer disqualifies itself on stateless domains.** The trigger read "the data a system stores / skip when no persistent state", so a realistic stateless-but-domain-rich opening (a workflow engine holding no state) never routed to the skill — measured 0/2, landing on `interview-me`. The description now fires on concepts a system stores *or merely computes over* (3/3 post-fix, storage opening 2/2, 7/7 neighbors unaffected); the body gains a state-transitions step and makes the storage step conditional. (The initially reported Kimi 0/3 miss was a measurement artifact of an expiring auth session — corrected same day: 5/5 after re-login, all three harnesses green.)
 
 ### Added
 
