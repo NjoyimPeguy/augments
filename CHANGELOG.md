@@ -2,6 +2,12 @@
 
 Notable changes to augments, newest first. Versions follow semantic versioning; the narrative for each release lives on its release page — this file is the terse, cumulative record.
 
+## [4.2.1] — 2026-07-26
+
+### Fixed
+
+- **`writing-plans` body back under the CI token budget.** The `references/` pointer prefixes from the sibling uniformization pushed it to 1603/1600 approx-tokens and failed the token-budget step on main; three surgical trims (no behaviour change) bring it to 1587.
+
 ## [4.2.0] — 2026-07-26
 
 ### Added
