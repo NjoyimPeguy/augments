@@ -25,3 +25,5 @@ Set the conventions once so every contributor — human or agent — writes code
 - A long list of rules no one reads — keep it to what actually matters here.
 - Standards told but never shown — point to a real exemplar file.
 - Generic vocabulary that lets one concept drift into many names.
+
+For a fill-in template for the standards section, a worked example, and the failure patterns, see `references/standards-template.md`.

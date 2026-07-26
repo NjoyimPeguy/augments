@@ -34,3 +34,5 @@ Write it to a scratch location outside the workspace (the OS temp directory), so
 - A summary of the conversation instead of the state to resume from.
 - Duplicating a plan or spec that already exists — link it.
 - Omitting the one concrete next step, leaving the next session to guess.
+
+For a fill-in template, a worked bad-vs-good example, and what to leave out, see `references/handoff-template.md`.

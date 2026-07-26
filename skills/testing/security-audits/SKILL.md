@@ -30,3 +30,5 @@ Report findings evidence-backed and severity-tiered (Critical / Important / Mino
 - Auditing the whole app instead of the change — review the diff's surface, deeply.
 - "Looks unsafe" with no source-to-sink path — that's a guess, not a finding.
 - Checking only added lines — a removed or weakened guard is the more dangerous diff.
+
+For per-category checklists, the failure patterns most often missed, and the finding format, see `references/audit-checklists.md`.

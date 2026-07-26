@@ -27,3 +27,5 @@ Record the decisions you'd regret not being able to explain in six months. An AD
 - No rejected alternatives — the next person re-explores the same dead ends.
 - An ADR for a reversible choice — only the decisions you'd defend belong here.
 - A `proposed` ADR never flipped to `in force` (or retired) when the work lands — downstream readers treat the unbuilt plan as what the system actually does.
+
+For a copyable ADR template, a filled example, and common failure patterns, see `references/adr-template.md`.

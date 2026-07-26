@@ -34,3 +34,5 @@ An unchecked item is a blocker or an explicit, owned risk — never something yo
 - Shipping a forward-only migration with no way back.
 - A big-bang rollout of risky behaviour with no flag and no canary.
 - A silent breaking change — the dependent finds out in production.
+
+For per-item checks, fill-in templates, and the common silent failure of each gate item, see `references/gate-details.md`.

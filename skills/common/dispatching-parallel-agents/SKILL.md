@@ -41,3 +41,5 @@ When agents return: read each deliverable, integrate them yourself, then run the
 - Passing session history instead of a self-contained packet — the agent inherits your blind spots.
 - No combined check — independently-green changes can still break together.
 - Parallel agents sharing one dev server or database — isolate each (`using-task-branches`).
+
+When writing the actual briefs, `references/brief-examples.md` has a fill-in template and weak-vs-strong pairs for the three typical cases (failing tests, unrelated bugs, parallel research).
