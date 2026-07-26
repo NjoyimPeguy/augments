@@ -46,7 +46,7 @@ A skill is invoked as `augments:<name>` regardless of which phase folder holds i
 | common | `using-task-branches` | Start repo edits on a meaningful task branch or harness workspace, using a worktree only when the user/project prefers it or runtime isolation requires it |
 | common | `dispatching-parallel-agents` | Fan out two or more pieces of work that don't touch the same files to concurrent agents — scope each, isolate state, then reconcile with a combined check |
 | design | `system-architecture` | Design how a non-trivial system is structured — components, boundaries, data flow, and testable seams |
-| design | `data-model` | Design the entities, relationships, and invariants the system stores — before the code that moves them |
+| design | `data-model` | Model the domain's concepts, relationships, state transitions, and invariants — stored or not — before the code that manipulates them |
 | design | `ui-ux-design` | Design user flows, visual direction, layout, unhappy states, and evidence-backed interface alternatives before implementation |
 | design | `coding-standards` | Set the project's conventions and domain vocabulary so all contributors write code like one author |
 | design | `architecture-decisions` | Record significant, hard-to-reverse choices as ADRs — options weighed, decision, why the alternatives were rejected |
