@@ -2,6 +2,21 @@
 
 Notable changes to augments, newest first. Versions follow semantic versioning; the narrative for each release lives on its release page — this file is the terse, cumulative record.
 
+## [4.2.0] — 2026-07-26
+
+### Added
+
+- **Implementation-time enforcement.** A PreToolUse guard (`scripts/sh/implementation-guard.sh`) denies a session's first code edit until `test-driven-development` and `yagni` have fired — transcript-based on Claude Code, ledger-based on Kimi (whose hook payloads carry no transcript). Codex ships a per-prompt reminder instead: no project-level hook event fires in headless `codex exec` (measured), and the codex arm of the `yagni` behavioural scenario carries the pair rule as an `AGENTS.md` — the one channel Codex always reads. Fail-open everywhere; 25-case offline suite in `tests/run-implementation-guard.sh`.
+- **On-demand references for eight thin skills** — ADR and coding-standards templates, security-audit checklists, release-gate details, handoff and post-mortem templates, dispatch-brief examples, and a data-model worked example.
+- **`yagni` behavioural scenario** with assertions a description-recall test cannot make: an injected probe suite for correctness, naming/idiom/why-comment greps for craft, and a dependency/file-count cap for scope.
+- **Craft discipline in `yagni`** — minimal ≠ unreadable: match the file, name for the domain, comment the why, simple over clever; the SessionStart nudge now names the TDD+yagni pair.
+
+### Changed
+
+- **All skill siblings live under `references/`** — one convention; pointer lines, cross-references, and `writing-skills` updated.
+- **Hook scripts moved to `scripts/sh/`** (hook configs stay in `hooks/`); the nudge text is inline in `session-start.sh`.
+- **`harness-support.md`:** the implementation boundary is now enforced in core — a deliberate, evidence-driven change to the former nudge-only policy, with the hook-honesty rules preserved.
+
 ## [4.1.3] — 2026-07-26
 
 ### Added
