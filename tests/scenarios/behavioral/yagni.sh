@@ -2,10 +2,10 @@
 # Behavioural scenario: yagni.
 #
 # The failure this catches: an agent that reads "build the minimum" and writes
-# minimal-but-cryptic code — single-letter names, compressed ternary chains, no
-# why-comment, style foreign to the file — or, overcorrecting the other way,
-# gold-plates a two-tier discount into a rules engine. yagni holds BOTH: scope
-# is minimised, craft and correctness never are.
+# minimal-but-cryptic code — single-letter names, no why-comment, style foreign
+# to the file — or, overcorrecting the other way, gold-plates a two-tier
+# discount into a rules engine. yagni holds BOTH: scope is minimised, craft
+# and correctness never are.
 #
 # Asking the agent to *describe* that balance cannot catch it. So the checks are
 # mechanical and hostile: a probe suite we inject proves the tiers actually work
@@ -82,11 +82,9 @@ EOF
 }
 
 scenario_assert() {
-  local d="$1" changed added_src probe_out
+  local d="$1" probe_out
   cd "$d" || return 2
   local root; root="$(git rev-list --max-parents=0 HEAD 2>/dev/null | tail -1)"
-  changed="$( { git diff --name-only "$root" HEAD 2>/dev/null; git status --porcelain -uall 2>/dev/null | awk '{print $2}'; } | sort -u )"
-  added_src="$(printf '%s\n' "$changed" | grep -E '(^|/)src/.*\.js$' || true)"
 
   # --- Correctness: the tiers must actually work, whatever shape the code took.
   # THE REAL CHECK. We inject a probe suite the agent never saw; it cannot be
@@ -121,9 +119,13 @@ EOF
     pass "discount tiers work (injected probe suite green: 99/100/500 boundaries, both items)"
   fi
 
-  # --- Craft: the addition must read like the file around it.
+  # --- Craft: the addition must read like the file around it. The corpus is
+  # what the agent ADDED only: diff-added lines for tracked files, full contents
+  # for untracked ones. Catting modified files would pull the fixture's own
+  # pre-existing comments into scope and make the comment check unfalsifiable.
+  local untracked_src; untracked_src="$(git status --porcelain -uall -- src/ 2>/dev/null | awk '$1=="??"{print $2}')"
   local new_code; new_code="$( { git diff "$root" HEAD -- src/ 2>/dev/null | grep -E '^\+' | grep -v '^+++' || true; \
-                                 for f in $added_src; do [ -f "$f" ] && cat "$f"; done; } )"
+                                 for f in $untracked_src; do [ -f "$f" ] && cat "$f"; done; } )"
   if [ -z "${new_code// }" ]; then
     fail "touched the pricing code — no src change found at all"
   else
