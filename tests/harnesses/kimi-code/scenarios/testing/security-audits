@@ -1,1 +1,0 @@
-This PR adds a file-upload endpoint that takes user input and writes it to disk. Review it for security holes before we ship.

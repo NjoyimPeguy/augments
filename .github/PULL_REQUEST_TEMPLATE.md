@@ -27,10 +27,10 @@ workflow-specific. (CLAUDE.md → "What belongs here".) -->
 
 ## Proof
 
-<!-- Paste the result of `bash tests/validate-skills.sh` (must be green).
-For a behaviour-shaping change to a skill: link the dated record under tests/
-(triggering/ or behavioral-records/) and summarise the outcome — including an
-inconclusive one. No record → not ready. -->
+<!-- Paste the result of `bash scripts/sh/validate-skills.sh` (must be green).
+For a behaviour-shaping change to a skill: re-run the relevant test
+(`tests/<adapter>/run-activation.sh` or `run-behavioral.sh`) and paste what it
+returned, including an inconclusive or failing result. Say how many runs. -->
 
 ## Authoring environment
 
@@ -47,8 +47,8 @@ inconclusive one. No record → not ready. -->
 ## Checklist
 
 - [ ] One change; no unrelated edits bundled.
-- [ ] `tests/validate-skills.sh` is green.
-- [ ] Behaviour-shaping changes have a dated record under `tests/`.
+- [ ] `scripts/sh/validate-skills.sh` is green.
+- [ ] Behaviour-shaping changes were re-tested, with the real result reported.
 - [ ] No external references or vendor model names in shipped `skills/` or `docs/` files.
 - [ ] A human has reviewed the complete diff.
 - [ ] Targeting `dev`, not `main`.

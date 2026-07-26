@@ -14,7 +14,7 @@ Before you open a PR here, you MUST:
 2. **Search PRs and issues — open *and* closed — for the same problem.** If it already exists or was already rejected, stop and tell the human you're working with; don't open a duplicate. If a prior attempt was closed, say what is different here.
 3. **Confirm it is a real problem you actually hit.** Told to "contribute something" or "fix some issues" with no concrete failure behind it? Push back and ask what broke. Speculative fixes are rejected.
 4. **Confirm it belongs in core** — general-purpose SDLC guidance, not domain-, tool-, or workflow-specific (see *What belongs here*).
-5. **Run the gate, and prove behaviour-shaping changes** (see *Verify against the gate*). A skill change without a dated record under `tests/` will be closed.
+5. **Run the gate, and prove behaviour-shaping changes** (see *Verify against the gate*) — by *re-running* the tests, and reporting what they actually returned.
 6. **Identify yourself** (see *Contributing*) and **show the human the complete diff** for explicit approval before submitting.
 
 If any check fails, do not open the PR. Explain why it would be rejected and what would have to change first.
@@ -30,13 +30,18 @@ Files under `skills/` and `docs/` ship to users. They must be self-contained, po
 
 ## Verify against the gate
 
-Rules 1–3 are not honor-system. `tests/validate-skills.sh` enforces them deterministically — frontmatter shape, line budgets, no external references, no vendor model names, and that every skill is registered in the plugin manifests — and CI (`.github/workflows/`) runs it on every push and PR. Run it before you commit:
+Rules 1–3 are not honor-system. `scripts/sh/validate-skills.sh` enforces them deterministically — frontmatter shape, line budgets, no external references, no vendor model names, and that every skill is registered in the plugin manifests — and CI (`.github/workflows/`) runs it on every push and PR. Run it before you commit:
 
 ```bash
-bash tests/validate-skills.sh
+bash scripts/sh/validate-skills.sh
 ```
 
-Rule 4 (behavior) has no deterministic gate — that is the honest limit. Prove **activation** by running your adapter's harness (`tests/harnesses/claude-code/` drives the real CLI and observes whether the skill fires); prove a **discipline holds** with a pressure test (`testing.md`), recorded under `tests/harnesses/<adapter>/behavioral-records/`. A record states the real outcome, including an inconclusive one — never green-wash.
+Rule 4 (behavior) has no deterministic gate — that is the honest limit. Prove it by **re-running the tests and reading what they return**:
+
+- **Activation** — does the right skill fire? `tests/<adapter>/run-activation.sh --scenario-file <phase>/<skill>` for one scenario, `run-all-activation.sh` for the whole set. The exit code is the verdict.
+- **Behaviour** — does the skill change what actually gets *built*? `tests/<adapter>/run-behavioral.sh --scenario <name> --arm red|green`. The scenario's `probe.sh` returns the verdict as an exit code.
+
+Report the real numbers in the PR, including an inconclusive or failing result — these tests are live and non-deterministic, so a single green run is weak evidence. Say how many runs you did. Never green-wash.
 
 ## Adding a skill
 
@@ -49,10 +54,10 @@ Rule 4 (behavior) has no deterministic gate — that is the honest limit. Prove 
 
 Changing a skill is changing behaviour, so match the proof to the change:
 
-- **Description (the trigger):** an *activation* change — re-measure with your adapter's harness (`tests/harnesses/claude-code/run-activation.sh`) and confirm the skill still fires on its scenario.
-- **The always-loaded `SKILL.md` body of a discipline skill:** re-run the pressure test (`testing.md`) and update `tests/harnesses/claude-code/behavioral-records/<skill>.md`.
-- **A sibling or reference file** (loaded on demand, not under pressure): the discipline body is unchanged — no behavioural re-run is owed; say so in the record.
-- Never reword carefully-tuned discipline content — rationalization tables, red-flag lists, hard-stops — without re-proving it still holds. And never green-wash a record: an inconclusive result *is* the finding.
+- **Description (the trigger):** an *activation* change — re-run `tests/<adapter>/run-activation.sh` on that skill's scenario and confirm it still fires.
+- **The always-loaded `SKILL.md` body:** a *behaviour* change — re-run `tests/<adapter>/run-behavioral.sh` on a scenario that exercises it, both arms, and report the result.
+- **A sibling or reference file** (loaded on demand, not under pressure): the always-loaded body is unchanged — no behavioural re-run is owed; say so.
+- Never reword carefully-tuned discipline content — rationalization tables, red-flag lists, hard-stops — without re-proving it still holds. An inconclusive result *is* the finding; report it.
 
 ## What belongs here
 
@@ -74,7 +79,7 @@ Closed without extended review — most are the inverse of a rule above:
 
 - **External references, vendor model names, or harness assumptions in shipped files** — Authoring rules 1–2.
 - **Domain-, tool-, or workflow-specific skills** — *What belongs here*; publish them as your own library.
-- **Speculative or fabricated content** — a problem no one actually hit, invented results, or a green-washed record. An inconclusive result is a valid finding; a fabricated one is not.
+- **Speculative or fabricated content** — a problem no one actually hit, or invented test results. An inconclusive result is a valid finding; a fabricated one is not.
 - **"Compliance" reformatting of tuned skills** — restructuring or rewording a discipline's red-flag lists, rationalization tables, or hard-stops without a re-proven pressure test (*Editing a skill*).
 - **Third-party dependencies** — augments is zero-dependency by design. If a change needs an external tool or service, it belongs in a separate plugin. Adding a new harness is the exception.
 - **Bundled or batch PRs** — one change per PR.
@@ -83,7 +88,7 @@ Closed without extended review — most are the inverse of a rule above:
 
 Adding a harness (an IDE, CLI, or agent runner) means more than dropping skill files where the tool can see them — they must actually *load and activate*. Augments' skills are inert unless the harness both discovers them and is nudged to reach for one at the right moment (on Claude Code, the `hooks/` SessionStart nudge; elsewhere, an equivalent). See `docs/augments/harness-support.md`.
 
-A PR adding a harness MUST include a runnable test layer under `tests/harnesses/<name>/` — a runner that drives that harness's CLI and shows a skill *actually activating* on a representative opening, not a description of how it should work. Files present but never invoked is not a working integration.
+A PR adding a harness MUST include a runnable test layer under `tests/<name>/` — a runner that drives that harness's CLI and shows a skill *actually activating* on a representative opening, not a description of how it should work. Files present but never invoked is not a working integration.
 
 ## Layout
 
@@ -91,7 +96,7 @@ A PR adding a harness MUST include a runnable test layer under `tests/harnesses/
 - `.claude-plugin/` — the install manifest; its skills array must list every skill on disk (the gate checks it). `.kimi-plugin/` — the Kimi Code manifest; its skills paths must resolve to the same canonical set. Adding a harness: `docs/augments/harness-support.md`.
 - `AGENTS.md`, `GEMINI.md` — symlinks to this file, so a harness that reads its own instructions file gets the same guidance from one source.
 - `.github/` — CI (`workflows/validate.yml`) and the PR template (`PULL_REQUEST_TEMPLATE.md`).
-- `tests/` — the portable gate (`validate-skills.sh`, `validate-codex-plugin.sh`, `validate-kimi-plugin.sh`, `token-budget.sh`) plus `harnesses/<adapter>/` — per-harness **runnable** tests. Claude Code has live activation tests and `behavioral-records/` discipline-pressure records; Codex CLI has marketplace/install smoke coverage and a live activation scenario; Kimi Code CLI has a live activation probe over an isolated managed-plugin install.
+- `tests/` — `gate/` is the portable deterministic gate CI runs on every push and PR (`validate-skills.sh`, the two plugin validators, `token-budget.sh`). `scenarios/` holds every test input **once**, shared by all harnesses: `activation/<phase>/<skill>` openings and `behavioral/<name>/` fixtures. `claude-code/`, `codex/`, `kimi-code/` hold only that harness's runners — the scenarios were byte-identical across all three, so they live in one place.
 - `governance/` — adoptable **deterministic-gate** templates (CI workflows, branch-protection, pre-commit) that make the production-critical skills non-skippable at the commit/PR/CI boundary, where firm persuasion can't. Each gate maps to the skill it enforces, labelled bulletproof vs heuristic.
 - `CHANGELOG.md`, `RELEASING.md` — the release record, and how releases are versioned and cut (semver over the skill surface; the gate checks the two manifest versions agree).
 - `.claude/` — local config and notes; gitignored, never shipped.

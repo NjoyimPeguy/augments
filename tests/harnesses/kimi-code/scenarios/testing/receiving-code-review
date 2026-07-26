@@ -1,1 +1,0 @@
-A reviewer left three comments on my PR — they say my error handling swallows exceptions, the auth check is in the wrong place, and a variable name is misleading. Go through their feedback and address it.

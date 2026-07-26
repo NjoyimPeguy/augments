@@ -12,7 +12,7 @@ augments routes skills by **firm persuasion** (the SessionStart bootstrap + firm
 | `ci/tests-accompany-code.yml` | `test-driven-development`, `debugging` (outcome) | **heuristic** | a PR changing impl code must change a test — gameable with a trivial test |
 | `ci/release-readiness.yml` | `release-readiness` | partial | a release PR must update the changelog — extend with your migration/rollback checks |
 | `ci/trust-boundary-flag.yml` | `security-audits` (outcome) | **heuristic** | a diff touching auth/input/secret patterns needs a `security-reviewed` label |
-| (`tests/validate-skills.sh`, augments' own) | `writing-skills` | bulletproof | skill files must pass the structural gate |
+| (`scripts/sh/validate-skills.sh`, augments' own) | `writing-skills` | bulletproof | skill files must pass the structural gate |
 
 **Bulletproof** = config the agent cannot bypass. **Heuristic** = a real signal that reduces but doesn't eliminate gaming — never sold as a wall. The classification behind this lives in the governance design.
 
