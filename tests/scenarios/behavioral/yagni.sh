@@ -81,6 +81,23 @@ Catalogue pricing in integer cents. Tests run with `npm test` (node:test).
 EOF
 }
 
+# Codex-only fixture: codex exec fires no hook events (measured), so the guard
+# cannot enforce there — the one durable channel codex always reads is the
+# project's own instructions file. The shared fixture stays untouched; this
+# override adds the pair rule as an AGENTS.md so the codex arm measures the
+# enforcement codex can actually receive.
+scenario_setup_codex() {
+  scenario_setup "$1"
+  cat > "$1/AGENTS.md" <<'EOF'
+# Project instructions
+
+Before writing any implementation code in this repository, invoke the
+`test-driven-development` and `yagni` skills (Skill tool), in that order.
+No code before the pair. Skip only for a throwaway spike or pure config
+with no logic.
+EOF
+}
+
 scenario_assert() {
   local d="$1" probe_out
   cd "$d" || return 2

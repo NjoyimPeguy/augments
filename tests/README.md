@@ -37,7 +37,7 @@ tests/run-activation.sh     selftest        # offline detector check, no API
 copies before this; a per-harness override exists only for a real constraint —
 `codex exec` is single-turn, so a scenario that invites a clarifying question
 ends that run with no deliverable, and `scenario_opening_codex()` pre-empts it.
-Never use an override to make an arm look better, and say so when you use one.
+A per-adapter `scenario_setup_<harness>()` override works the same way for fixtures. Never use an override to make an arm look better, and say so when you use one.
 
 ## The three kinds, and what each can prove
 
