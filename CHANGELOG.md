@@ -2,6 +2,16 @@
 
 Notable changes to augments, newest first. Versions follow semantic versioning; the narrative for each release lives on its release page — this file is the terse, cumulative record.
 
+## [4.2.2] — 2026-07-27
+
+### Fixed
+
+- **`data-model` no longer disqualifies itself on stateless domains.** The trigger read "the data a system stores / skip when no persistent state", so a realistic stateless-but-domain-rich opening (a workflow engine holding no state) never routed to the skill — measured 0/2, landing on `interview-me`. The description now fires on concepts a system stores *or merely computes over* (3/3 post-fix, storage opening 2/2, 7/7 neighbors unaffected); the body gains a state-transitions step and makes the storage step conditional. Known gap, reported not hidden: the Kimi router still misses the stateless opening (0/3), so its activation sweep shows `design/data-model` red.
+
+### Added
+
+- **`data-model` behavioural scenario** — asserts the shared design document names the concepts, models the lifecycle in words the opening never uses (an echo of the prompt fails it), and states invariants; the activation scenario now carries the opening that actually failed pre-fix.
+
 ## [4.2.1] — 2026-07-26
 
 ### Fixed
