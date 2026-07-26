@@ -21,7 +21,7 @@ Work tasks in order, honoring each task's `Depends-on`. For each:
 2. **Note the current commit**, so a review (if any) can scope to this task's diff.
 3. **Build the change** at the task's suggested tier — pick the execution mode:
    - **Inline** — a fully-specified mechanical task (create a file, a rename, a config change): build it here, just the self-check.
-   - **Sequential offload** — a large or self-contained task, or when your context is filling on a long run: hand it to a fresh-context subagent, one task at a time (`subagent-dispatch.md`).
+   - **Sequential offload** — a large or self-contained task, or when your context is filling on a long run: hand it to a fresh-context subagent, one task at a time (`references/subagent-dispatch.md`).
    - **Parallel fan-out** — tasks independent *of each other* (disjoint files and state, no `Depends-on` between them): run them at once (`dispatching-parallel-agents`); each still gates on its own Evaluator, with the plan-level Acceptance as the combined check.
    If the user picked a posture at the plan handoff — **inline** vs **subagent-driven** — honour it as the default (still dropping to inline for trivial mechanical tasks, and fanning out genuinely independent ones). Whichever mode, the task is not done until its Evaluator passes (step 5).
 4. **Self-check before done:** every requirement met, behavior covered by a real test, existing patterns followed, no scope you weren't asked for.
@@ -54,5 +54,5 @@ When every task is `[x]`, run the plan-level **Acceptance** from the index. Only
 
 - Executing on main, or holding the whole plan in context at once.
 - Ticking `[x]` before the Evaluator is green.
-- A subagent committing to the wrong branch or workspace — pass absolute git paths (see `subagent-dispatch.md`).
+- A subagent committing to the wrong branch or workspace — pass absolute git paths (see `references/subagent-dispatch.md`).
 - Forcing heavy review on a trivial task, or guessing past a blocker instead of surfacing it.

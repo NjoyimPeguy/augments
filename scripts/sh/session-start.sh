@@ -1,9 +1,15 @@
 #!/usr/bin/env bash
 # Emit the augments routing bootstrap as a SessionStart context injection.
+# The nudge text lives inline below (between the AUGMENTS_NUDGE markers) so the
+# hook is self-contained; token-budget.sh measures it from the same markers.
 set -euo pipefail
 
-here="$(cd "$(dirname "$0")" && pwd)"
-context="$(cat "${here}/context.md")"
+context="$(cat <<'AUGMENTS_NUDGE'
+# Augments skills
+
+Augments installs engineering skills for the whole SDLC, listed with their triggers in your Skill tool. Before you start any non-trivial request -- or any tool call that begins the work -- invoke the `using-augments` skill to route to the one that fits. An implementation task (feature, fix, refactor) starts with `test-driven-development` paired with `yagni`: invoke both before the first line of code, not after it.
+AUGMENTS_NUDGE
+)"
 
 # JSON-escape, in order: backslash, double-quote, then the control characters.
 esc="$context"

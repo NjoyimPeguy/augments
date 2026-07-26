@@ -21,6 +21,25 @@ Task: debounce one text input's change handler.
 
 The minimal version isn't "lazier" in the bad sense: it fully debounces the input. It just declines to build a library for a problem you have exactly once.
 
+## Craft is not scope — the checklist
+
+The ladder answers *how much* to build; this answers *how well* to write it. None of these add scope — they decide whether the minimal code stays minimal over its life.
+
+- **Match the file you're in.** Its naming, structure, and idioms are the standard for this change; a diff that reads like a foreign author is a defect even when it's short. If the file's conventions are themselves the problem, say so — don't silently import a second style.
+- **Name for the domain, not for brevity.** A two-letter variable inside twenty lines of logic isn't lean — it's encrypted. One concept, one name, taken from the codebase's own vocabulary; a synonym you introduce is a second concept the next reader must disprove.
+- **Comment the *why*, never the *what*.** One line above logic whose reason isn't obvious from the code; nothing above the obvious — noise comments are bloat too, and stale comments are lies.
+- **Simple beats clever.** A clever one-liner you must re-derive on every read is deferred work with the same cost curve as a stub. If the clever version needs a comment to be parseable, the plain version is the minimal one.
+- **Handle the edges the task implies.** Empty input, failure paths, boundary values — robustness is correctness, and correctness is never the thing you minimise.
+
+## A worked example: minimal vs cryptic
+
+Task: parse a `key=value` config line, ignoring `#` comments.
+
+- **Cryptic:** `const [k, v] = l.replace(/#.*$/, '').split('=').map(s => s.trim())` — one line, works, and every reader stops to re-derive the regex and the destructure.
+- **Minimal and readable:** the same three steps with names (`stripComment`, `parsePair`) or a one-line *why* comment. Same size, no re-derivation cost.
+
+The ladder doesn't reward compression. Between two solutions of equal scope, the one the next reader understands is the minimal one — measured over the code's life, not its line count.
+
 ## Comprehension first — why the smallest diff can be the wrong one
 
 The lazy reflex says "smallest touch-point." But the smallest diff you don't *understand* is laziness dressed as efficiency. Trace the flow first:

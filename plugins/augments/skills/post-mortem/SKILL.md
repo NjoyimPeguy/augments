@@ -33,3 +33,5 @@ Be honest about what this is: a structured reasoning pass, not a deterministic g
 - Action items that are promises ("review more carefully") instead of gates (a check that fails on the bad input).
 - Reconstructing the timeline from memory — it launders the real sequence into a story where the outcome looks inevitable or excusable.
 - Blame. The question is always which gate was missing, never who is at fault.
+
+For the fill-in template, a worked example driven to structural depth, and failure patterns to check against, see `references/post-mortem-template.md`.

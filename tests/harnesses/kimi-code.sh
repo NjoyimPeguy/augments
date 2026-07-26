@@ -69,7 +69,7 @@ adapter_run_behavioral() { # $1 workdir  $2 opening file  $3 stream
       kimi -p "$(cat "$2")" --output-format stream-json ) < /dev/null > "$3" 2>>"$errlog"
 }
 
-adapter_stop_hook() { printf '%s\n' "$repo/hooks/stop-nudge-kimi.sh"; }
+adapter_stop_hook() { printf '%s\n' "$repo/scripts/sh/stop-nudge-kimi.sh"; }
 
 # Kimi's Stop payload carries NO last_assistant_message — only a session_id. The
 # hook recovers the final assistant text from that session's wire log, so a

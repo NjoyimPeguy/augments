@@ -47,10 +47,10 @@ Each of these means **stop, delete the unverified code, and restart the cycle** 
 
 ## Common mistakes
 
-- Testing implementation details instead of behavior — such tests break on every refactor. See `reference.md`.
-- Asserting that a mock was called instead of the real result — see `mocking.md`.
+- Testing implementation details instead of behavior — such tests break on every refactor. See `references/reference.md`.
+- Asserting that a mock was called instead of the real result — see `references/mocking.md`.
 - Writing all the tests for a feature before any code — they end up asserting imagined behavior. Keep it to one failing test at a time.
 - Over-building in GREEN — write only what the current test demands.
 - Skipping the "watch it fail" step, so a test that asserts nothing looks like it passed.
 
-See `reference.md` for tests that survive refactors, and `mocking.md` for where (and where not) to mock.
+See `references/reference.md` for tests that survive refactors, and `references/mocking.md` for where (and where not) to mock.

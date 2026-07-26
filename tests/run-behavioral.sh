@@ -61,7 +61,7 @@ bh_parse_args() {
 }
 
 # Sources the scenario (one file: fixture, opening, assertions) and picks the
-# opening for this adapter. Fills: opening_file opening_kind
+# opening and setup for this adapter. Fills: opening_file opening_kind setup_kind
 bh_resolve_scenario() {
   local adapter="$1" f="$scriptdir/scenarios/behavioral/$scenario.sh"
   [ -f "$f" ] || { echo "no scenario at $f" >&2; return 2; }
@@ -70,10 +70,12 @@ bh_resolve_scenario() {
   for fn in scenario_opening scenario_setup scenario_assert; do
     command -v "$fn" >/dev/null 2>&1 || { echo "$scenario.sh defines no $fn()" >&2; return 2; }
   done
-  # A per-adapter opening exists only for a real harness constraint.
+  # Per-adapter overrides exist only for a real harness constraint.
   local override="scenario_opening_${adapter//-/_}"
   if command -v "$override" >/dev/null 2>&1; then opening_kind="$override"; else opening_kind="scenario_opening"; fi
   opening_file="$(mktemp)"; "$opening_kind" > "$opening_file"
+  local setup_override="scenario_setup_${adapter//-/_}"
+  if command -v "$setup_override" >/dev/null 2>&1; then setup_kind="$setup_override"; else setup_kind="scenario_setup"; fi
 }
 
 # Fills: plugin_src redtree.  RED builds a throwaway worktree at $base so the
@@ -97,7 +99,7 @@ bh_setup_arm() {
 # so branch-discipline skills see a settled repo.
 bh_seed_fixture() {
   workdir="$(mktemp -d)"
-  scenario_setup "$workdir" || return 2
+  "$setup_kind" "$workdir" || return 2
   (
     cd "$workdir" || exit 2
     git init -q . 2>/dev/null || exit 2
@@ -140,6 +142,7 @@ bh_report() {
   echo "adapter    : $adapter"
   echo "arm        : $arm  (skills from: $([ "$arm" = red ] && echo "$base" || echo 'working tree'))"
   echo "opening    : $opening_kind"
+  echo "setup      : $setup_kind"
   echo "exit       : $status"
   echo "skill chain: ${chain:-(none)}"
   echo "artifacts  :"

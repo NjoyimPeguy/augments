@@ -28,14 +28,18 @@ max=0
 
 approx() { local c; c=$(wc -m <"$1"); echo $(((c + 3) / 4)); }
 
-nudge="hooks/context.md"
+# The nudge text lives inline in session-start.sh between the AUGMENTS_NUDGE
+# markers; extract it so its cost is measured like any other file.
+nudge_src="scripts/sh/session-start.sh"
+nudge="$(mktemp)"; trap 'rm -f "$nudge"' EXIT
+sed -n "/<<'AUGMENTS_NUDGE'/,/^AUGMENTS_NUDGE$/p" "$nudge_src" | sed '1d;$d' > "$nudge"
 
 echo "token-budget: always-loaded context  (approx tokens ≈ chars/4, not exact)"
 echo
 
 nudge_t=0
 [ -f "$nudge" ] && nudge_t=$(approx "$nudge")
-printf 'SessionStart nudge (loaded EVERY session): %d approx tokens  [%s]\n\n' "$nudge_t" "$nudge"
+printf 'SessionStart nudge (loaded EVERY session): %d approx tokens  [%s, inline]\n\n' "$nudge_t" "$nudge_src"
 
 # Collect per-skill costs.
 names=()

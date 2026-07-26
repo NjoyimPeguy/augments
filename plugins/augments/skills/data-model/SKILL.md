@@ -26,3 +26,5 @@ Design the data before the code that moves it. A schema is more than columns —
 - Columns without invariants — the schema says what *can* be stored, not what must be *true*.
 - Ignoring null semantics and cardinality — where data bugs are born.
 - Modeling the UI's shape instead of the domain's.
+
+For a full domain modeled end to end at this level of rigor — null semantics, momentary vs lifetime cardinality, invariants, denormalization — see `references/worked-example.md`.
