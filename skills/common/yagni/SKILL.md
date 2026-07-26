@@ -31,6 +31,10 @@ No unrequested abstraction: no interface with one implementation, no factory for
 
 Read the task and the code it touches; trace the real flow end to end; *then* minimise. The smallest change in the wrong place isn't lazy — it's a second bug. A bug fix targets the **root cause**: fix the shared function every caller routes through once — that is a *smaller* diff than one patch per caller, and patching only the named path leaves siblings broken. (Pair with `debugging`.)
 
+## Minimal ≠ unreadable — craft is not scope
+
+The ladder minimises *how much* you build, never *how well* it's written. Readability is part of "it works": code the next reader can't understand stops working the moment it needs a change — and the next reader is often you, after compaction, with no memory of writing it. Match the file's conventions, name for the domain rather than brevity, comment the *why* above non-obvious logic, prefer simple over clever. The full craft checklist and examples: `references/yagni-in-depth.md`.
+
 ## When you're tempted to call it done
 
 | The thought | The reality |
@@ -41,16 +45,20 @@ Read the task and the code it touches; trace the real flow end to end; *then* mi
 | "Skipped the error/edge handling to stay lean" | Correctness is never the thing you minimise. |
 | "Simple enough to be obviously right — didn't run it" | Unverified is not done. Run it. |
 | "Deleted that code, it looked unused" | Removing needed behaviour to shrink the diff is under-delivery. |
+| "Ship the quick version, clean it up later" | Later never comes; every future change pays the re-reading cost. Readable now is the cheaper path. |
+| "Clear names and comments are gold-plating" | Gold-plating is unneeded *features*. Clarity is maintenance cost — the thing this skill exists to protect. |
+| "My usual style beats this file's conventions" | A codebase in one voice is cheaper to change than your personal best practice. Match it. |
 
 ## Hard stops
 
 - **Minimal ≠ incomplete.** If it doesn't solve the task and run, it isn't done — "smaller" is only a tiebreaker between two solutions that *both fully work*.
 - Before claiming done: it runs / passes its check; it handles the inputs the task implies; no TODO or placeholder sits on a path the task needs *now*. A stub on a required path is an automatic fail (confirm with `verifying-completion`).
 - **Never minimise away:** input validation at a trust boundary, error handling that prevents data loss, security, accessibility, or anything the user explicitly asked for.
+- **Never compress away:** names that say what things are, the *why* above non-obvious logic, the conventions of the file around the change. Before claiming done, the diff should read like one author wrote the whole file.
 
 ## Minimal vs unfinished
 
-Before shipping, put every cut on the right list. **Minimal:** fewer abstractions, files, dependencies, lines — for the *same working behaviour*. **Unfinished:** missing behaviour, stubs, unhandled cases, untested logic, deleted-but-needed code. Cutting from the first list is the skill; cutting from the second is the failure this skill exists to stop.
+Before shipping, put every cut on the right list. **Minimal:** fewer abstractions, files, dependencies, lines — for the *same working behaviour*. **Unfinished:** missing behaviour, stubs, unhandled cases, untested logic, deleted-but-needed code, code so compressed the next reader must reverse-engineer it. Cutting from the first list is the skill; cutting from the second is the failure this skill exists to stop.
 
 ## The one exception
 
