@@ -17,7 +17,7 @@ Write the test before the code. The test is how you find out the code works — 
 
 Before the first test, pin down the public interface — what goes in, what comes out, the named behaviors. If you can't yet name the test, the interface isn't decided yet.
 
-**RED — write a failing test.** One small test for the next behavior. Run it. Watch it fail, and read the failure: it must fail because the behavior is missing, not because of a typo or an import error. A test you never saw fail proves nothing. Keep the failure you watched — quote a line of it in the cycle's commit message or task notes: an after-the-fact "I watched it fail" is an assertion, the saved output is evidence.
+**RED — write a failing test.** One small test for the next behavior. Run it **through the project's own command** (`npm test`, `pytest`, whatever the project documents) — not just the file. Watch it fail, and read the failure: it must fail because the behavior is missing, not because of a typo or an import error. A test you never saw fail proves nothing. If the project's command is broken so your test never runs, fix that first or say plainly that it is broken — a test the project's own gate cannot execute is not a gate, however green it looks locally. Keep the failure you watched — quote a line of it in the cycle's commit message or task notes: an after-the-fact "I watched it fail" is an assertion, the saved output is evidence.
 
 **GREEN — make it pass, minimally.** On first entering GREEN — the moment implementation code starts — invoke `yagni`: this skill proves what you build *runs*, that one governs *how much* you build. Write the least code that turns the test green. No extra cases, no speculative generality. Run it; confirm green.
 
