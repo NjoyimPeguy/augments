@@ -6,8 +6,8 @@ The short version:
 
 - **Solve a real problem you actually hit** — speculative or theoretical fixes are closed.
 - **One change per PR**, targeting `dev` (not `main` — that is the released branch).
-- **Run the gate before you commit:** `bash tests/validate-skills.sh`. CI runs it on every push and PR.
-- **Prove behaviour-shaping changes** with a dated record under `tests/` — see [`skills/common/writing-skills/testing.md`](skills/common/writing-skills/testing.md). An inconclusive result is a valid finding; a green-washed one is not.
+- **Run the gate before you commit:** `bash scripts/sh/validate-skills.sh`. CI runs it on every push and PR.
+- **Prove behaviour-shaping changes** by re-running the tests and reporting what they returned — see [`skills/common/writing-skills/testing.md`](skills/common/writing-skills/testing.md). An inconclusive result is a valid finding; a green-washed one is not.
 - **Respect the authoring rules** for anything under `skills/` or `docs/`: no external references, no vendor model names, lean format ([`CLAUDE.md`](CLAUDE.md), "Authoring rules").
 - **AI agents:** read the "If you are an AI agent" section of [`CLAUDE.md`](CLAUDE.md) first, and fill every section of the PR template truthfully — including the authoring-environment disclosure.
 

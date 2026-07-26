@@ -2,6 +2,25 @@
 
 Notable changes to augments, newest first. Versions follow semantic versioning; the narrative for each release lives on its release page — this file is the terse, cumulative record.
 
+## [4.1.3] — 2026-07-26
+
+### Added
+
+- **`spec-it` reference forms.** A requirement's acceptance criterion now takes the cheapest form that makes it checkable — a failing test, a mockup page, a reference implementation plus deltas, or a rubric — with prose as the fallback rather than the starting point. New sibling `reference-forms.md`; `spec-review.md` gains a sixth check that every referenced artifact resolves and runs.
+- **Behavioural tests.** `tests/run-behavioral.sh` runs a two-arm comparison (RED loads the skills from a `git worktree` at `--base`, GREEN from the working tree) and the scenario's own assertions return the verdict as an exit code. Scenarios for `spec-it`, `test-driven-development` and `debugging`, each using a check a description-recall test cannot make: remove the subject and the test must go red.
+
+### Changed
+
+- **`test-driven-development`:** RED must run through the project's *own* command, and a broken project command must be fixed or named — a test the project's gate cannot execute is not a gate.
+- **`spec-it`:** three step-6 loopholes closed, each found by running it — an open contract is not an exemption; a criterion that cannot go red is not a criterion; confirm it runs through the project's own command.
+- **`tests/` rebuilt around one runner per test kind.** Scenarios were byte-identical across three harness copies (93 files → 44) and `run-behavioral.sh` was ~60% duplicated in each. Now one dispatcher per kind taking `--harness`, with `tests/harnesses/<name>.sh` holding only what differs per CLI. The deterministic gate moved to `scripts/sh/`.
+- **Activation runner no longer truncates skill chains.** It killed the run at the first non-router skill, so a correct chain (`using-augments → using-task-branches → test-driven-development → yagni`) was cut short and scored as a miss.
+
+### Removed
+
+- **`governance/`** — the adoptable deterministic-gate templates, with their references.
+- **Dated evidence records.** `CLAUDE.md`, `CONTRIBUTING.md` and the PR template now ask for a re-run and the real numbers instead of a committed record.
+
 ## [4.1.2] — 2026-07-21
 
 ### Changed

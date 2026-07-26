@@ -23,7 +23,7 @@ Nobody bumps in a contribution PR. Versioning is decided once per release, by th
 1. Decide the tier (above) for everything on `dev` since the last tag.
 2. Bump the version in all four manifests: `.claude-plugin/plugin.json`, `.claude-plugin/marketplace.json`, `.kimi-plugin/plugin.json`, and `plugins/augments/.codex-plugin/plugin.json`. The gate fails if they disagree, so a half-done bump cannot ship.
 3. Add the `CHANGELOG.md` entry — terse, newest-first; the narrative belongs on the release page.
-4. Run the gate: `bash tests/validate-skills.sh`.
+4. Run the gate: `bash scripts/sh/validate-skills.sh`.
 5. Commit on `dev` as `chore(release): vX.Y.Z — <one-line theme>`.
 6. Open the `dev` → `main` PR and merge it as a merge commit, so the individual fixes stay in history.
 7. Tag `vX.Y.Z` on `main` and create the release: title `augments vX.Y.Z`, notes carrying the narrative — the field report that drove the change, what changed, and the proof records under `tests/`.
