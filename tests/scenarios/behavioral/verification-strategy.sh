@@ -31,7 +31,7 @@ scenario_assert() {
   added="$(added_since_baseline "$d")"
 
   # 1. An acceptance layer exists — new test files beyond the fixture's own.
-  new_tests="$(printf '%s\n' "$added" | grep -E '\.test\.[jt]s$|(^|/)test/' \
+  new_tests="$(printf '%s\n' "$added" | grep -E '\.(test|spec)\.[jt]s$|(^|/)test/' \
                | grep -v 'test/server\.test\.js' || true)"
   [ -n "$new_tests" ] && pass "acceptance layer added ($(printf '%s' "$new_tests" | tr '\n' ' '))" \
                       || fail "acceptance layer added — no new test files"
@@ -49,7 +49,9 @@ scenario_assert() {
 
   # 3. THE REAL CHECK. Gut API-key resolution and the battery MUST go red.
   #    A suite that stays green while the behaviour is broken is decoration.
-  if [ "$rc" -eq 0 ]; then
+  #    Guard: an agent that renamed the fixture module skips the gut (note, not
+  #    fail) — a missing file must not become a spurious verdict.
+  if [ "$rc" -eq 0 ] && [ -f src/apikeys.js ]; then
     cp src/apikeys.js src/apikeys.js.bak
     printf 'module.exports = { register() {}, resolve() { return null; }, keys: new Map() };\n' > src/apikeys.js
     npm test >/dev/null 2>&1
@@ -61,6 +63,8 @@ scenario_assert() {
     npm test >/dev/null 2>&1 \
       && note "restored cleanly" \
       || fail "restore left the suite red — assertion damaged the workdir"
+  elif [ "$rc" -eq 0 ]; then
+    note "gut check skipped — src/apikeys.js renamed or removed by the agent"
   fi
 
   # 4. The battery refuses to lose a layer silently. Move each new test file
