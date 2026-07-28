@@ -58,6 +58,7 @@ A skill is invoked as `augments:<name>` regardless of which phase folder holds i
 | testing | `requesting-code-review` | Dispatch an independent, diff-scoped reviewer — checks convention-conformance and whether the change does what was asked, with a clear merge verdict |
 | testing | `receiving-code-review` | The author's side of review — verify each finding against the code before acting, push back with evidence, refuse performative agreement |
 | testing | `security-audits` | Review a change for security holes by tracing attacker-controlled input source-to-sink — authz, injection, secrets, data exposure, weakened guards |
+| testing | `verification-strategy` | Once per project — designs the verification battery every change must pass: acceptance behaviour tests, falsifiability audit, metric floors, CI wiring |
 | deployment | `finishing-a-branch` | Take a working branch to merge-ready — green-check gate, clean commits, a real PR description, and a clear merge / keep / discard decision |
 | deployment | `release-readiness` | A portable pre-deploy gate — CI green, migrations reversible, rollback named, flags set, changelog, breaking changes flagged; defers the deploy command to your environment |
 | maintenance | `debugging` | Root cause before fix — build a runnable reproduction, test ranked hypotheses, fix the cause; stop and rethink architecture after three failed fixes |

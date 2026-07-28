@@ -48,6 +48,7 @@
     "./skills/testing/receiving-code-review",
     "./skills/testing/requesting-code-review",
     "./skills/testing/security-audits",
+    "./skills/testing/verification-strategy",
     "./skills/testing/verifying-completion"
   ]
 }

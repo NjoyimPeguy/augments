@@ -1,6 +1,6 @@
 ---
 name: coding-standards
-description: Use once per project, or when conventions drift, to set the standards agents and humans follow — domain vocabulary, patterns to use, things to never do. Skip if the project already has clear, followed standards.
+description: Use once per project, or when conventions drift, to set the conventions agents and humans follow — domain vocabulary, naming, patterns to use, things to never do. Skip if the project already has clear, followed standards, or when the question is proving the code correct — tests, quality gates, CI — which is verification-strategy's territory.
 ---
 
 # Coding Standards
