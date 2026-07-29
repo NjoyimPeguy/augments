@@ -2,6 +2,16 @@
 
 Notable changes to augments, newest first. Versions follow semantic versioning; the narrative for each release lives on its release page — this file is the terse, cumulative record.
 
+## [4.3.0] — 2026-07-29
+
+### Added
+
+- **`verification-strategy` skill (testing)** — designs the project's verification battery once per project, and again whenever the proof of correctness comes into question: acceptance behaviour tests against observable behaviour, a falsifiability audit with a closing mutation check, metric floors that fail the build (never targets), and CI wiring. Strict boundary: test mechanics stay with `test-driven-development`, honest claims with `verifying-completion`, per-feature gates with `writing-plans`' Evaluators. Activation 5/5 across all three harnesses; behavioural pair on Kimi — GREEN builds acceptance tests, a mutation floor, and a CI workflow (suite goes red when behaviour is gutted); RED fails the floor assertion as designed.
+
+### Changed
+
+- **`coding-standards` description narrowed to its conventions lane** — vocabulary, naming, patterns, never-do's — explicitly excluding proof-of-correctness, which is `verification-strategy`'s territory. The trigger overlap only became visible once the new skill existed. Own-scenario regression 3/3 across harnesses.
+
 ## [4.2.2] — 2026-07-27
 
 ### Fixed
