@@ -167,6 +167,11 @@ echo "harness  : $harness"
 echo "scenario : ${scenario}"
 [ -n "$expect" ] && echo "expected : augments:${expect}"
 echo "verdict  : ${verdict}"
+# This guard only catches the HARD refusal. An expiring session can degrade
+# routing quality for several runs BEFORE it refuses outright — measured on
+# Kimi: 0/3 misses minutes before `auth.login_required`, then 5/5 on the
+# identical scenario after re-login. If a harness inexplicably goes red,
+# re-authenticate and re-run before scoring it as a regression.
 if grep -qiE 'usage limit|login_required|api_error: 4' "$stream" "$errlog" 2>/dev/null; then
   echo "note     : provider refused (quota/auth) — INCONCLUSIVE, not a skills result"
   result=1

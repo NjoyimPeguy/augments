@@ -1,7 +1,7 @@
 {
   "name": "augments",
   "description": "A cross-platform SDLC skills library for coding agents: planning, design, TDD, debugging, review, and delivery workflows.",
-  "version": "4.2.2",
+  "version": "4.3.0",
   "author": {
     "name": "Njoyim Peguy",
     "email": "pnjoyim@gmail.com"
@@ -48,6 +48,7 @@
     "./skills/testing/receiving-code-review",
     "./skills/testing/requesting-code-review",
     "./skills/testing/security-audits",
+    "./skills/testing/verification-strategy",
     "./skills/testing/verifying-completion"
   ]
 }
