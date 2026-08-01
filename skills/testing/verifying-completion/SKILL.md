@@ -1,65 +1,101 @@
 ---
 name: verifying-completion
-description: ALWAYS invoke before claiming work is complete, fixed, passing, or done — and before any commit or PR. Running the actual check and reading its output is mandatory; "should work" without a run is the mistake. Fires whenever you feel the pull to declare success without running anything — and if you can't run the check, say so rather than claim done.
+description: "ALWAYS use before any claim that work is complete, fixed, passing, done, or satisfactory, and before any commit or PR. Also use when evidence may be stale, partial, or bound to another state. No exception; unavailable required gates make the claim pending."
 ---
 
 # Verifying Completion
 
-Evidence before claims. "Should work", "looks right", and "probably fine" are not verification — they're guesses in a confident voice. This is a discipline skill: you will be tempted to claim done without checking, especially when tired or rushed, and the point is not to.
+Evidence before claims. A green result proves only the exact state, gate,
+environment, and transition it actually checked. Confidence, summaries, and a
+nearby run do not widen that evidence.
 
 ## When to use
 
-- Before any statement that work is complete, fixed, passing, or done — including paraphrases and expressions of satisfaction ("great, that's sorted").
+- Before any claim that work is complete, fixed, passing, done, merge-ready, or
+  otherwise satisfactory.
 - Before committing or opening a PR.
-- This gate does **not** scale down with task size; only *which* check is appropriate does.
+- This discipline never scales down; only the required gate set does.
 
 ## The gate
 
-1. **Identify** — what check would actually prove this claim?
-2. **Run** it fresh and in full — not a cached result, not a similar run from before.
-3. **Read** the real output: exit status, pass/fail counts, the actual values.
-4. **Confirm** the output supports the *exact* claim — not a near neighbour.
-5. **Only then** state it, with the evidence.
+1. **Name the exact claim and transition.** Task green, integrated acceptance,
+   reviewed candidate, and releasable artifact are different states.
+2. **Resolve the required gate set.** Use the task/plan Evaluators and applicable
+   assurance-matrix cadence. Missing, planned, blocked, or unjustifiably omitted
+   gates make the claim pending.
+3. **Capture state identity.** Record repository/workspace, base and HEAD, a
+   source/working-tree digest covering staged, unstaged, untracked, and relevant
+   ignored paths, plus generated/external gate-input identities, artifact digest,
+   cwd, configuration, environment, platform, build mode, gate version, and
+   controlled data/process/external-effect pre-state.
+4. **Contain and run each required action.** Bind attempt ID, exact environment/
+   data/effects, authority, resources, timeout/kill, cleanup/recovery, and
+   evaluator identity. Sequence overlapping gates; parallelize only disjoint
+   effect boundaries. Run fresh. Timeout/failure is cancellation-requested until
+   process/effect quiescence; quarantine partials. A rerun is a linked successor
+   attempt and rejects predecessor late output. Capture
+   post-state; any unintended mutation invalidates the evidence and must be
+   restored/re-run or surfaced pending. Cache counts only under its gate contract.
+5. **Read and protect raw output.** Record command/action, timestamp, exit
+   status, pass/fail counts, threshold comparison, output/artifact location, and
+   operator. Classify sensitivity and set access, integrity/digest,
+   retention/expiry, exact cleanup targets/effects/recoverability, cleanup
+   authority, and disposition; redact only the presented copy.
+6. **Audit execution completeness.** Reconcile required suites, shards,
+   attempt/lease histories, source-change and live-state queues, platform/build
+   cells, TDD RED/falsification/restoration and unchanged judge, plan
+   done-with-concerns/cancelled/superseded dispositions, and changed/skipped/
+   quarantined/deleted tests/corpora. Aggregate green is red when required work
+   did not run or reconcile.
+7. **Return evidence without changing the candidate.** Use
+   `references/evidence-ledger.md`, but never copy it into a frozen candidate or
+   review workspace. Store it outside that identity or return it directly; keep
+   failures and inconclusive results rather than green-washing them.
+8. **Make only the supported claim.** State what passed, on which identity, and
+   what remains pending. If any required row failed or did not run, do not say
+   complete.
 
-Skip any step and you have not verified — you have asserted.
+Any relevant source, test, configuration, dependency, environment, generated
+artifact, integration, or threshold change invalidates affected evidence. A
+commit with the identical source tree may retain content-check evidence, but
+commit/CI/review gates still bind to their own revision. An authorized checkpoint
+banks work; it does not make it reviewed, merge-ready, or releasable.
 
-**Verified, then banked.** A state that just passed its check exists only in the working tree until committed — checkpoint it on the task branch before moving on (a WIP message is fine; history is tidied at the branch wrap-up). Verified-but-uncommitted work is one power cut from gone.
+## Manual acceptance
 
-## When no automated check exists
-
-Some claims — visual output, real-browser flows, realtime UI, subjective usability — have no command that returns pass/fail. The gate is then human-run, but it is still a gate: structure it as a traceable acceptance matrix with evidence, never self-certify a step a human must judge, and treat an unrun row as pending, not passed. Automate everything that *can* be; this covers only what genuinely can't. See `references/manual-acceptance.md`.
+When a requirement genuinely needs human judgment, use
+`references/manual-acceptance.md`. Bind every observation to the same candidate
+and environment. An unrun row is pending; the agent cannot self-certify a
+human-owned judgment.
 
 ## Hard stops
 
-- Never claim a test passes without seeing it pass *this* run.
-- Never claim a bug is fixed without reproducing it first, then confirming the fix removes it.
-- Never claim done when the only evidence is a subagent's "success" report — read the actual diff and output yourself.
-- A check that has never been seen to fail is suspect — see `references/hollow-verification.md`.
-- A test known to fail intermittently is **not** verified by one green run — a flaky pass is unexplained nondeterminism, not proof. Root-cause it (`debugging`); don't build on it.
-- Verified is not reviewed: the gate proves your claim about the checks, not that the change is right. At a feature-level done boundary — merging, opening a PR, or reporting a non-trivial change complete — green hands off to independent review (`requesting-code-review`); don't end the chain at "verified".
+- Never claim a test passes without seeing it pass for the recorded state.
+- Never claim a bug fixed without a reproduction that failed before and passes
+  after, with exact restoration/control evidence.
+- Never turn a worker's “success” report into evidence; inspect its diff/state
+  and raw output.
+- Never mutate a candidate with the bookkeeping meant to prove that candidate.
+- A never-falsified gate is suspect—see `references/hollow-verification.md`.
+- A flaky green is unexplained nondeterminism; route it through `debugging`.
+- Verified is not reviewed. A non-trivial candidate at a completion or
+  integration boundary requires `requesting-code-review`; task-local evaluator
+  status is not that boundary unless its plan says so.
 
-## When you are tempted to skip
+## When tempted to skip
 
-| The thought | The reality |
+| Thought | Reality |
 | --- | --- |
-| "It should work now" | Then running it costs seconds and makes it a fact. Run it. |
-| "I'm confident" | Confidence is not evidence. The output is. |
-| "The types check, so it works" | Types ≠ compiles ≠ tests pass ≠ requirement met. Each is a different claim. |
-| "A partial check is enough" | Partial proves the part you checked and nothing else. |
-| "I already ran something like it" | Stale or similar is not fresh and exact. Run this one. |
-| "The agent said it succeeded" | Its report is a claim, not evidence. Check the diff and output. |
-| "I'm tired / out of time" | Exhaustion does not make an unrun check pass. |
-| "I said it a different way" | The rule covers implications and synonyms, not just trigger words. |
-| "It's green right now" | A flaky test passing once is luck, not proof — the red you haven't explained is still there. Root-cause it. |
-| "All gates are green, so it's done" | Green proves the checks pass, not that the change is right. A non-trivial change still owes fresh eyes before "done" — `requesting-code-review`. |
+| "It should work" | Run the gate and make it a fact. |
+| "I ran it earlier" | Earlier state or evidence age may not support this transition. |
+| "The types pass" | Types, build, behavior, requirements, and release are distinct claims. |
+| "The agent said green" | A report is a claim; inspect raw state and output. |
+| "The summary says all passed" | Reconcile skipped tests, shards, and matrix cells. |
+| "I committed it, so evidence is banked" | A checkpoint is neither review nor integration proof. |
+| "All checks are green, so done" | Green supports only the checks; independent review challenges completeness. |
 
 ## Relationship to plans
 
-A per-task **Evaluator** and a plan-level **Acceptance** name *which* check to run. This discipline is what makes sure that check is actually run fresh, its output read, and the claim made only after.
-
-## Common mistakes
-
-- Expressing satisfaction ("perfect!") before the check has run.
-- Reporting a subagent's claim as your own evidence.
-- Treating a green linter as a green test suite.
-- Writing a regression test you never watched fail — see `references/hollow-verification.md`.
+Evaluators and assurance matrices define what must run and which promotion each
+gate protects. This skill binds those runs to exact evidence; it does not design
+the battery, review the change, integrate the branch, or decide release.

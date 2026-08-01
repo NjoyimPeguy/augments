@@ -2,11 +2,18 @@
 
 Most worthless tests come from mocking the wrong thing. The rules:
 
-## Mock only at the boundary
+## Substitute only at a real boundary
 
-Mock where your code meets something you don't own and can't control in a test: external services, the database, the clock, randomness, the network, the filesystem. Everything inside that boundary — your own modules — runs for real.
+Use a fake, stub, or mock where the test's scope meets a justified seam:
+external services, database, clock, randomness, network, filesystem, or an owned
+component whose contract is independently verified. Run ordinary owned logic
+inside that scope for real.
 
-**Never mock your own code.** If a unit is hard to test without mocking modules you wrote, the design is too coupled. Inject the dependency instead (pass it in) so the test supplies a simple stand-in only at the boundary.
+**Never substitute the unit under test or its private helpers.** If every owned
+collaborator is mocked, the test proves a call script rather than behavior.
+Inject a genuine boundary dependency so the test can supply a small stand-in,
+and cover an owned substituted boundary with a separate contract or integration
+gate. Ownership alone neither justifies nor forbids the seam.
 
 ## Test the behavior, not the mock
 

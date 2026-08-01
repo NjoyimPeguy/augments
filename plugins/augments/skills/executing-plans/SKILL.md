@@ -1,58 +1,80 @@
 ---
 name: executing-plans
-description: "Use when you have a plan directory from writing-plans (a 00-index map plus per-task contract files) and need to execute it to done, gating every task on its Evaluator. Per-task gating, not a concurrency ban: sequential by default, independent tasks can fan out. Skip for a single task — just do it."
+description: "Use when asked to execute or resume a multi-task plan directory, including when its claimed approval, version, mode, or entry state must first be verified. High-risk target work remains blocked until approved current migration and assurance contracts plus passed entry gates exist; directly authorized gate-enabling tasks may consume their exact proposed gate contract but cannot edit target shards. Skip a single task."
 ---
 
 # Executing Plans
 
-Run a plan to done, gating every task on its Evaluator before building on it. The index is the source of truth: a task is done only when its Evaluator passes, and the plan only when the plan-level Acceptance passes.
+Advance only through real state transitions; nothing is done until its evaluator is green on the exact result.
 
 ## Before you start
 
-1. **Confirm the plan was approved before you touch task 1.** If you just wrote it, `writing-plans` owns the present-and-pause — don't start executing in that turn. If you arrived here fresh (a resumed or handed-off session), present the index, end your turn with a go/no-go question, and wait.
-2. **Confirm task-branch isolation.** Before task 1, create or enter the task branch/workspace (see `using-task-branches`). For a plan of 3+ tasks or any parallel/runtime-heavy work, decide whether a plain branch is enough or a worktree is needed. Silent commits to main are the failure this prevents.
-3. **Load the index (`00-index.md`)** and read it critically: raise any concern (missing dependency, unclear or contradictory task, design conflict) *before* writing code, and confirm the task contracts together actually deliver the Acceptance. Gaps are cheap to fix now and expensive ten tasks in.
+1. **Verify authority and lineage.** Match exact plan/mode and complete approver
+   rule to a current user-role answer or scoped standing receipt. Confirm every
+   predecessor consumer is reconciled; the plan cannot authenticate itself.
+2. **Refresh the workspace.** Confirm branch/workspace ownership, HEAD, intended
+   base, status, baseline, and runtime identities through
+   `using-task-branches`. Never infer them from the plan.
+3. **Audit executability.** Check stable task IDs/delta, current bound inputs,
+   dependencies, Consumes/Produces, exclusive files/effects, evaluator identity/
+   edit authority and RED/falsification, trace, review, concerns rule, and
+   Acceptance. Stop on a contradiction before changing code.
+4. **Select the execution form.** Bounded tasks use the loop below. A plan with
+   phases or machine-derived shards also loads `references/phase-queues.md`;
+   never flatten a queue into copied tasks. Directly authorized gate prerequisites
+   may consume their exact proposal before phase entry but cannot modify target
+   shards, approve the contract, or satisfy target entry. Target tasks require
+   approved current migration and assurance contracts plus passed entry gates.
 
-## The loop
+## Bounded task loop
 
-Work tasks in order, honoring each task's `Depends-on`. For each:
+Honor `Depends on` and the directly approved execution mode. Changing between
+inline and delegated execution requires a direct mode decision; independence
+alone does not override it.
 
-1. **Load only that task's contract file** — don't re-read completed tasks; keep context small.
-2. **Note the current commit**, so a review (if any) can scope to this task's diff.
-3. **Build the change** at the task's suggested tier — pick the execution mode:
-   - **Inline** — a fully-specified mechanical task (create a file, a rename, a config change): build it here, just the self-check.
-   - **Sequential offload** — a large or self-contained task, or when your context is filling on a long run: hand it to a fresh-context subagent, one task at a time (`references/subagent-dispatch.md`).
-   - **Parallel fan-out** — tasks independent *of each other* (disjoint files and state, no `Depends-on` between them): run them at once (`dispatching-parallel-agents`); each still gates on its own Evaluator, with the plan-level Acceptance as the combined check.
-   If the user picked a posture at the plan handoff — **inline** vs **subagent-driven** — honour it as the default (still dropping to inline for trivial mechanical tasks, and fanning out genuinely independent ones). Whichever mode, the task is not done until its Evaluator passes (step 5).
-4. **Self-check before done:** every requirement met, behavior covered by a real test, existing patterns followed, no scope you weren't asked for.
-5. **Run the task's Evaluator.** Only when it passes, tick `[x]` for that task in the index.
-6. If you learned something that affects later tasks, append a line to a `## Learnings` section in the index — and carry it into any later subagent dispatch.
+1. Load the task, exact referenced inputs/interfaces/evaluator, and relevant
+   identity-bound learnings from the external execution ledger.
+2. Record stable task/attempt ID, allowed prior state, exact pre-task revision/
+   effects, external task state, evaluator identity, and expected observable.
+3. Execute under every discipline that governs the action now. For delegated
+   work use `references/subagent-dispatch.md`; for approved parallel work,
+   `dispatching-parallel-agents` owns isolation and reconciliation.
+4. Inspect the result against the task's file/scope contract. For an offload,
+   inspect its raw diff, authorized checkpoints (or none), result revision, and
+   evaluator output rather than accepting a summary.
+5. Invoke `verifying-completion` to run the task Evaluator in the authoritative
+   workspace and bind its output to the exact state. That skill owns the
+   evidence ledger; this skill owns the task-state transition.
+6. Append `done` only after the evaluator passes on the accepted state. A concern
+   cannot count toward any gate until proved non-blocking or accepted under its
+   exact owning deviation/exclusion and compensating gate.
+7. Re-run a combined gate after integrating parallel results.
 
-## Name the outcome
+## Outcomes and circuit breaker
 
-Don't let "done" hide doubt: **done** (Evaluator green, self-check clean) · **done with concerns** (it works but something nags — record it in the index, don't bury it) · **blocked** (missing dependency, an Evaluator you can't pass, a contradictory task — stop and surface it) · **needs context** (reading file after file without progress — get the missing information, don't guess).
+The append-only ledger uses **done**, **done with concerns**, **blocked**,
+**needs context**, **cancelled**, or **superseded**; cancellation/supersession
+needs its owning approved plan decision and never means done.
 
-Bad work is worse than no work — escalate rather than guess.
+Every attempt has identity and terminal evidence. Failure/deadline enters
+**cancellation requested** until worker, descendants, and effects are quiescent;
+quarantine partials; linked retries reject late results/mutations. Classify
+repeated failures under a stable class ID and raw evidence.
 
-## Circuit breaker
+Task `done` means evaluator-accepted inside the plan, not integrated or merge-ready; required task review and final-candidate review remain separate gates.
 
-Three failed attempts at the same task — same failure class, no convergence — is a stop signal, not a prompt for attempt four (the same rule `debugging` applies to fixes). Mark the task **blocked**, record what was tried in the index, and escalate: re-plan the task, question the design, or ask the human. Repeated fix loops spend heavily without converging; proportionality is part of the gate.
+Three non-converging terminal attempts in one stable class stop the task. High-
+risk contracts own thresholds/pause scope; never patch shard symptoms separately.
 
-## Long runs
+## Resume and plan changes
 
-Context grows as you go. Every few tasks, or after a task with large output, it's safe to reset to a fresh session and resume — the index is the durable record. To resume: load `00-index.md`, announce the position (done vs left), find the first unticked task, and continue.
+On resume, refresh plan/decision state, workspace/base/HEAD/dirty state, ledgers/
+queues, contract versions, and evidence freshness; never infer progress by order.
 
-## When reality differs from the plan
+When reality differs, update its owner. Every normative scope, interface,
+evaluator, phase, ownership, cutover, rollback, decommission, or mode change
+requires a successor and direct reapproval.
+Runtime attempts, leases, and outcomes update only their external ledgers.
 
-If a task is wrong or outdated, update the task file and the index before continuing — the plan stays the source of truth. Don't silently drift.
-
-## Finishing
-
-When every task is `[x]`, run the plan-level **Acceptance** from the index. Only then is the plan done — hand off to `finishing-a-branch` for the merge/PR decision.
-
-## Common mistakes
-
-- Executing on main, or holding the whole plan in context at once.
-- Ticking `[x]` before the Evaluator is green.
-- A subagent committing to the wrong branch or workspace — pass absolute git paths (see `references/subagent-dispatch.md`).
-- Forcing heavy review on a trivial task, or guessing past a blocker instead of surfacing it.
+Run plan Acceptance on the exact integrated revision, then re-route; review,
+branch integration, and release retain their own gates and decisions.

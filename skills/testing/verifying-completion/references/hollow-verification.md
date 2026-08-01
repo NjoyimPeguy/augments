@@ -2,9 +2,18 @@
 
 A check can pass and still prove nothing. The ways that happens, and how to catch them.
 
-## A test that never failed
+## A gate that was never falsified
 
-If you never watched a test fail, you don't know it tests anything — it may assert nothing, or exercise code that already existed. For a regression test, prove it bites: with the test written, undo the fix and run it — it **must** fail — then restore the fix and run again — it passes. A regression test you can't make fail is not a regression test.
+New-behavior tests should fail for the missing behavior before implementation.
+Preservation gates instead begin green, then detect a deliberate divergence in
+an isolated authorized copy with exact effect/recovery controls before complete
+candidate/data/effect restoration. A bug reproduction fails on
+the before state and passes on the fixed state.
+
+Never undo inherited work or inject a defect into production just to manufacture
+red. When direct mutation is unsafe, use a retained known-bad case or controlled
+calibration fixture. Without falsification evidence, call the gate uncalibrated
+and limit the claim it supports.
 
 ## A subagent's word
 

@@ -1,6 +1,7 @@
 # Test-Driven Development — Reference
 
-How to design tests worth keeping. (The discipline — when and why to test first — is in `SKILL.md`; this is the craft of the test itself.)
+How to design tests worth keeping. (The discipline—when and why to test first—is
+in `../SKILL.md`; this is the craft of the test itself.)
 
 ## Test behavior, not implementation
 

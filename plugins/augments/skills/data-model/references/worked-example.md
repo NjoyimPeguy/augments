@@ -52,8 +52,11 @@ Note the deliberate choice: a loan is never deleted and never edited into a new 
 - `available → on_loan` — borrow; the only way a copy leaves the shelf legitimately.
 - `on_loan → available` — return closes the open loan and frees the copy in the same transaction.
 - `on_loan → lost` — reported lost mid-loan; the open loan stays open (see edge cases).
-- `lost → available` — found; a lost copy is found *before* it can be borrowed again — never `lost → on_loan`.
-- `available | lost → withdrawn` — terminal; a withdrawn copy never re-enters circulation, and a copy on loan must come back (or go lost) before withdrawal.
+- `lost → available` — found; any open loan is closed in the same transaction.
+  A lost copy is found *before* it can be borrowed again—never
+  `lost → on_loan`.
+- `available | lost → withdrawn` — terminal and allowed only with no open loan.
+  A lost copy with an open loan must settle that loan before withdrawal.
 
 ## Invariants
 
@@ -62,24 +65,60 @@ Rules that must always hold — each becomes a constraint where the store can en
 1. A copy has **at most one open loan** (`returned_at` is null). Enforce with a uniqueness constraint over open loans per copy — application checks alone race under concurrency.
 2. `due_at` is always **after** `checked_out_at`; `returned_at`, when present, is **at or after** `checked_out_at`.
 3. A patron has **at most five open loans**. This one is a policy, not a structural rule — enforce it in the borrow operation, cover it with a test, and expect it to change; don't bake "five" into the schema.
-4. `Copy.status` **agrees with** the loans: `on_loan` exactly when an open loan exists, `available` otherwise. See denormalization below — this is the risk you accepted, so the invariant and its repair path must be written down.
+4. `Copy.status` **agrees with** the loans: `on_loan` requires exactly one open
+   loan; an open loan requires `on_loan` or `lost`; `available` and `withdrawn`
+   require no open loan. `lost` may have zero or one open loan because a copy can
+   be reported lost before its loan is closed.
 5. Every loan references an **existing** copy and patron. Referential integrity on both foreign keys.
 6. An `available` or `lost` copy cannot gain a new loan without its status changing first — borrow transitions the copy; it doesn't just insert a row.
 
 ## Deliberate denormalization
 
-`Copy.status` duplicates what the loans already say. State it plainly: **kept for fast "is this copy available?" lookups; the loans are the source of truth; status is a cache.** The cost accepted: every place that opens or closes a loan must update the copy in the same transaction, and a periodic reconciliation (or invariant 4's test) catches drift. If you can't name the source of truth, you haven't denormalized — you've forked the data.
+The `available`/`on_loan` part of `Copy.status` duplicates whether an open loan
+exists; the loan is the source of truth for occupancy. The `lost`/`withdrawn`
+part is instead the copy's authoritative disposition. State that split plainly:
+the borrow/return transaction updates the occupancy projection, loss/withdrawal
+updates disposition, and invariant 4 plus a reconciliation query detects any
+illegal combination. Calling the whole enum “a cache” would be false because a
+loan cannot derive whether a copy was lost or withdrawn.
+
+## Operational challenge
+
+- **Identity and tenancy:** identifiers are stable and globally unique. This
+  single-library example has no tenant boundary; if branches become tenants,
+  uniqueness, access, and transfer rules must be remodeled rather than assumed.
+- **Concurrency and retry:** two simultaneous borrow attempts serialize on the
+  copy and the open-loan uniqueness constraint is the final guard. A retried
+  request carries an idempotency key so it cannot create two loans.
+- **Time and ordering:** timestamps use one defined time basis. A late return
+  event cannot close a newer loan for the same copy; the operation names the
+  loan identity, not merely the copy.
+- **Retention and privacy:** loan history is retained; patron deletion
+  anonymizes identifying attributes under a stated retention policy while
+  preserving referential integrity.
+- **Compatibility and migration:** adding `Copy.status` begins by deriving and
+  checking it against loans, supports the mixed-version interval, and rolls
+  back by returning reads to the loan-derived value. A reconciliation query
+  reports every disagreement before and after cutover.
+
+The design records the representative transaction tests and reconciliation
+query that prove these claims. Until those evaluators run against representative
+existing data and concurrent operations, the model is proposed rather than
+validated.
 
 ## Edge cases the model must answer
 
 - **Due date lands while the copy is already overdue** — fine; overdue is derived (`due_at < now and returned_at is null`), not stored, so no state goes stale at midnight.
-- **A copy is reported lost mid-loan** — status `lost` with an open loan is a legal, meaningful state; closing the loan doesn't resurrect the copy. Invariant 4 needs this exception listed, or the first lost book breaks the check.
+- **A copy is reported lost mid-loan** — status `lost` with an open loan is a
+  legal, meaningful state; closing the loan does not resurrect the copy.
+  Invariant 4 includes this case explicitly.
 - **Reborrowing the same copy immediately** — a new loan row, never a reopened old one; overlapping-open-loan checks stay trivial.
 - **Patron deleted with history** — don't. Anonymize the patron; loans keep pointing at a real row so reports stay correct.
 
 ## Failure patterns this example guards against
 
-- **Two sources of "is it out"** (status column + loans, no named truth) → drift, and no query to trust.
+- **Two sources of "is it out"** (status column + loans, no named truth for
+  occupancy versus disposition) → drift, and no query to trust.
 - **Null meaning two things** ("no email" vs "email unverified") → unanswerable queries; split the attribute.
 - **Cardinality stated only for the lifetime** ("a copy has many loans") while the real rule is momentary ("one open loan") → the constraint that matters never gets written.
 - **Editing history** (updating a loan on renewal) → the audit trail silently disappears.
@@ -87,10 +126,13 @@ Rules that must always hold — each becomes a constraint where the store can en
 
 ## Fill-in skeleton for your own model
 
+Actual model records assign stable IDs to every concept, relationship,
+transition, invariant, and mapping; a successor never recycles them.
+
 ```text
 Domain: {{one-paragraph description of what is stored and why}}
 
-Entity {{entity-name}} — {{what one row represents, in the domain's language}}
+Entity {{stable-id}} / {{entity-name}} — {{what one row represents, in the domain's language}}
   - {{attribute}}: {{type}}, {{required|optional}}. {{what null means, if optional}}
   - {{attribute}}: enum {{allowed-values}}
 
@@ -99,8 +141,12 @@ Relationships
     On delete: {{cascade | restrict | anonymize}}.
 
 Invariants
-  - {{rule that must always hold}} → enforced by {{constraint | transaction | test}}
+  - {{stable-id}}: {{rule that must always hold}} → enforced by {{constraint | transaction | test | reconciliation}}; owner: {{owner}}
 
 Denormalized / cached
   - {{copied value}} — source of truth: {{where}}; updated: {{when/where}}; drift caught by: {{check}}
+
+Operational lenses
+  - {{identity | tenancy | ordering | concurrency | retry | retention | compatibility}}:
+    {{risk or explicit reason skipped}}; evaluator: {{command/query/test or future owner}}
 ```

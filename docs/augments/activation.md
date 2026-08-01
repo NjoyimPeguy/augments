@@ -1,17 +1,47 @@
 # Activation: routing and enforcement
 
-augments' skills are only useful if the agent actually reaches for them at the right moment. That happens through two layers, matched to two kinds of constraint.
+augments is useful only when the agent reaches the applicable skill and the
+result then passes a real project gate. Those are different problems.
 
-## The routing layer — firm persuasion (every skill)
+## Routing is probabilistic
 
-A **SessionStart bootstrap** wraps the shared pointer text (inline in `scripts/sh/session-start.sh`) in each harness's context format. It is injected at the start of every session where the harness supports it (and on resume / clear / compact where the harness exposes those events). It is a thin **pointer**: before any non-trivial request, invoke the `using-augments` skill to route to the one that fits. The routing *discipline* itself — the rationalizations named as signals to *check* not skip, the red-flags, the procedure — lives in `using-augments`, not the bootstrap. The split is deliberate: where the pointer re-fires on compaction, it is the durable re-trigger; the skill body (loaded only when it fires) carries the weight but decays between compactions. The skill **descriptions** — always loaded in the Skill catalogue, which does not decay — carry firm triggers.
+A session-start pointer sends the agent to `using-augments`, whose descriptions
+and procedure route from the current request and project state. The pointer is
+re-applied on lifecycle events where a harness supports that behavior.
 
-This is **persuasion**: strong, but an instruction the model can still skip — measured skill-invocation runs well under 100% across the industry. So it is the floor, not a guarantee. There is deliberately **no per-turn re-injection** (a v2.0 experiment, since removed): re-asserting a line every turn did not stop the model skipping under momentum, and it cost tokens per turn. Firmness lives in the bootstrap and the descriptions; the decay between compactions is the accepted price of leanness.
+This is persuasion applied to a nondeterministic generator. Strong wording can
+improve activation; it cannot prove that a skill fired or that its output is
+correct. A thin live harness smoke measures activation for a particular run.
 
-## The enforcement layer — deterministic gates (the production-critical subset)
+For a wide or preservation-sensitive transformation, the router sends the work
+through `migration-strategy` and `verification-strategy` before ordinary
+feature implementation. That boundary belongs in the skill contracts. A generic
+prompt classifier cannot reliably decide project risk.
 
-Where a procedure has a deterministic signal (tests pass, review done, release checklist met), persuasion is backed by a **gate the agent cannot route around** — CI / pre-commit / branch-protection (airtight), plus best-effort in-session blocks. These carry the procedures whose skip causes production incidents (verification, review, release-readiness, security, tests-with-code). They ship as adoptable templates a team wires into its repo.
+## Gates decide whether artifacts advance
+
+Tests, compilers, static analysis, review verdicts, coverage thresholds,
+differential checks, release checks, and rollback criteria operate on artifacts
+or promotion state. Projects wire the applicable gates into CI, protected
+integration paths, and release controls.
+
+augments does not ship a universal project CI template. The commands, platforms,
+thresholds, and failure responses are properties of the adopting project.
+
+## Small in-session backstops
+
+Supported adapters may provide two narrow reminders:
+
+- a pre-edit guard requiring the TDD/YAGNI pair for recognized code edits; and
+- a Stop nudge when the assistant explicitly claims completion.
+
+These catch accidental skips on observable tool paths. They are not security
+boundaries, cannot cover shell writes or every harness, and do not replace the
+artifact-level gate.
 
 ## The honest line
 
-Persuasion is firm-but-leaky; gates are airtight only at the artifact/CI layer. augments hard-gates where a real signal *and* production risk both exist, and firm-persuades everywhere else — and never paints a wall where there is nothing to check. The non-negotiable *stance* is "don't skip"; the enforcement is as strong as the signal allows.
+Routing evidence says what one nondeterministic run did. A deterministic
+structural check says whether packaging or script logic satisfies its exact
+contract. Only the adopting project's real gates can establish whether generated
+code is fit to advance.

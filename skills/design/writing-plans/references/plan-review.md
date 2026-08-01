@@ -1,18 +1,45 @@
-# Plan Review (optional)
+# Independent plan review
 
-A fresh-context subagent catches what the plan's author can't — you're anchored to your own naming and assumptions. Use for high-stakes plans (migrations, security-sensitive, wide blast radius). **Single pass, not a loop.**
+A fresh-context reviewer catches assumptions anchored into the author's plan.
+This is mandatory before executing a high-risk transformation plan and optional
+for bounded plans. The reviewer must not be the plan's sole author.
 
-This reviews the **plan** *before* execution — distinct from each task's **Evaluator**, which gates the **built code** *after* execution. Different artifact, different moment.
+Before review, bind the exact plan version, reviewer identity, allowed artifact
+access, current authority for its worker/provider/storage/egress, and report
+location/lifecycle, including data class, retention/expiry, exact cleanup
+targets/effects/recoverability, cleanup authority, and disposition. A dispatch exists only after
+the callable action returns a nonempty reviewer/job identity; unavailable,
+refused, or empty dispatch leaves review pending and cannot be replaced by
+self-review. Declare a terminal deadline and timeout/cancel owner/action; poll
+only the exact attempt identity. Failure/deadline enters cancellation-requested
+until worker, descendants, and effects are quiescent; quarantine partial output.
+Reassignment creates a linked successor and rejects predecessor late results or
+mutations. The required role completes only with a current successful
+version-bound report whose findings are dispositioned; retain every outcome.
 
-Dispatch a subagent with access to the plan directory and the codebase, and this brief:
+Review the **plan**, approved requirements/design, current codebase, and—where
+applicable—the exact migration contract and assurance matrix:
 
-> Review the plan in `{{plan directory}}`. Flag **only** issues that would cause a real implementation problem — skip style and preference. Check four things:
+> Flag only issues that can cause incorrect, incomplete, unsafe, or
+> non-executable work. For each finding give
+> `severity — task/phase — source contract — evidence — required correction`.
 >
-> 1. **Completeness** — list each requirement in the brief or spec and the task that implements it. Name any requirement with no covering task, and any task that traces to no requirement.
-> 2. **Correctness** — do the files, function names, and data shapes the tasks reference match the actual codebase? Quote each mismatch.
-> 3. **Decomposition** — is each task independently verifiable, ~one commit, with no hidden placeholders?
-> 4. **Consistency** — does every task's *Consumes* resolve to an earlier task's *Produces* under the same name and type? Quote each mismatch.
->
-> Return a short list, one line each: `task — issue — suggested fix`. If nothing blocks implementation, say so in one line.
+> 1. **Traceability:** every requirement and accepted risk gate has one owning
+>    task or phase; every task traces to a requirement, risk, or necessary gate.
+> 2. **Correctness:** paths, interfaces, types, and commands match current
+>    evidence and exact artifact revisions.
+> 3. **Decomposition:** bounded tasks are independently evaluable; large
+>    homogeneous work uses a stable inventory and exclusive shards.
+> 4. **Consistency:** every Consumes resolves to a Produces under the same name
+>    and type; dependencies and phase entries are acyclic and complete; files,
+>    data, effects, evaluators, and external state are exclusive or ordered.
+> 5. **Assurance:** Evaluators reference the accepted thresholds, environments,
+>    cadence, and failure response without weakening them.
+> 6. **Control:** trial, phase entry/exit, pause/abort, repeated-failure re-audit,
+>    cutover, rollback, and ownership transfer are executable where required.
+> 7. **Authorization:** the reviewed plan version and execution mode are pending
+>    until directly approved.
 
-Apply the fixes to the task files yourself. Don't re-dispatch unless the plan changed substantially — re-review loops are the cost trap this skill is calibrated to avoid.
+Resolve every blocking finding and record its disposition. Every normative
+correction creates a successor and requires focused re-review of affected and
+dependent sections before direct approval.

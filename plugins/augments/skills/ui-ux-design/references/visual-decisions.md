@@ -40,9 +40,17 @@ The richer medium is not automatically better. Match fidelity to the decision: l
 1. **Name the decision.** State the question, fixed constraints, open axis, fidelity, and evaluation dimensions.
 2. **Build one comparison surface.** Put variants together whenever possible so memory and viewport differences do not distort the comparison. Include viewport or state switches only when they serve the decision.
 3. **Orient the user.** Say where the surface is, what is controlled, what differs, and what feedback is needed. Preserve an equivalent text summary for accessibility and environments that cannot render it.
-4. **Collect reasons, not only a letter.** Ask what works, what fails, and which dimension drove the preference. If the surface can prepare a structured decision for copying, still treat the pasted result as feedback until confirmed.
+4. **Collect reasons, not only a letter.** Ask what works, what fails, and which
+   dimension drove the preference. Label it as stakeholder preference unless it
+   came from a defined research or usability observation. If the surface can
+   prepare a structured decision for copying, still treat the pasted result as
+   feedback until confirmed.
 5. **Iterate visibly.** Change only the axes implicated by feedback, write a new version, and keep the prior version long enough to compare. Do not silently overwrite the evidence.
-6. **Confirm and record.** Close the loop in conversation, then write the decision into the shared design document before implementation planning.
+   Bind each version to a content identity and controlled inputs; a changed
+   surface/input invalidates affected comparison evidence until reconfirmed.
+6. **Confirm and record.** Write the decision into the versioned whole design.
+   Variant confirmation alone does not approve the combined flow; obtain direct
+   approval of the exact compiled version before implementation planning.
 
 ## Decision record
 
@@ -52,9 +60,17 @@ Record enough for an implementer or reviewer to reconstruct the choice:
 - **Constraints:** existing system, content, states, devices, and accessibility floor held constant.
 - **Dimensions:** the named criteria used to compare.
 - **Variants:** each direction and its strongest trade-off.
-- **Evidence:** preview paths or images plus the user's feedback.
+- **Evidence:** preview content identity, controlled inputs, paths/images, and
+  classified project fact, research, usability observation, constraint,
+  preference, or inference.
 - **Decision:** the chosen direction and why it best serves the dimensions.
 - **Rejected:** why the other viable directions lost; avoid “not preferred” with no reason.
-- **Follow-ups:** unresolved details, implementation risks, and any question that needs a `prototyping` spike.
+- **Follow-ups:** unresolved details and usability or implementation risks, each
+  with an evaluator and owner; route feasibility uncertainty to `prototyping`.
 
-Keep final comparison evidence with the design record. Mark disposable project-native preview files clearly and remove them after the decision unless the project uses them as implementation or review fixtures.
+Keep final comparison evidence with the design record. Record retention, exact
+cleanup targets/effects/recoverability, cleanup authority, and disposition.
+Only pre-authorized scratch inside an explicitly disposable boundary may be
+removed directly. Repository/workspace disposal routes through
+`finishing-a-branch`; otherwise cleanup remains pending. Never delete
+pre-existing, shared, user-owned, or ownership-uncertain artifacts.

@@ -14,20 +14,41 @@ Write down what the next session needs to continue, so it doesn't reconstruct it
 
 ## What to capture
 
-Write it to a scratch location outside the workspace (the OS temp directory), so it doesn't pollute the repo. Include:
+Use the harness/user's durable handoff store only when current disclosure
+authority covers its recipient and storage boundary. Otherwise leave transfer
+pending and report the missing authority. For a named scratch path outside the
+workspace, record data class, allowed access, retention/expiry, exact cleanup
+targets/effects/recoverability, cleanup owner, authority, and pending/completed
+state. Do not pollute the repository or infer future cleanup. Include:
 
-1. **The goal** — what this work is trying to achieve, in a line or two.
-2. **State** — what's done, what's in flight, the current branch, and any uncommitted changes.
-3. **Decisions** — the choices made and why, so they aren't relitigated.
-4. **Gotchas** — traps discovered, with file and line references.
-5. **The next step** — the single concrete thing to do next.
-6. **Suggested skills** — which skills the next session should reach for. Put this *in the document*, not in passing chat.
+1. **Handoff identity** — stable ID/content identity, created-at time, sender,
+   intended recipient/scope, and predecessor when this replaces a prior record.
+   Keep records append-only; a successor never silently overwrites its source.
+2. **The goal** — what this work is trying to achieve, in a line or two.
+3. **State identity** — plan/artifact version, branch, commit, workspace, full
+   relevant dirty/ignored/generated inventory, external gate inputs, done/in-flight work.
+4. **Decisions and authority** — exact choice, scope, direct answer or standing
+   default that authorized it, and every decision still pending. A handoff never
+   upgrades an assumption into approval.
+5. **Evidence** — command/action, cwd, environment, tree/artifact, timestamp, and
+   result for gates being relied on; mark stale or unrun evidence plainly.
+6. **Gotchas and permissions** — traps with file/line evidence, unavailable
+   access, and external or destructive actions still awaiting permission.
+7. **Resume first action** — refresh repository/artifact/external state and
+   invalidate evidence changed since the handoff; only then name the next mutation.
+8. **Suggested skills** — advisory candidates for the next session's contextual
+   route, never proof of invocation or a fixed sequence.
 
 ## Rules
 
 - **Reference, don't duplicate.** Point to existing artifacts (specs, plans, ADRs, issues, commits) by path or URL — don't copy their content in.
 - **Redact secrets.** No keys, tokens, passwords, or personal data in the handoff.
 - A handoff is a one-shot transfer of *current* state — not a durable project-lessons store.
+- If multiple terminal successors exist or content identity does not verify,
+  stop and resolve the handoff lineage instead of guessing which record wins.
+- **Refresh before mutation.** The next session verifies identity, status,
+  approvals, and time-sensitive external state; it never executes the recorded
+  next step merely because the handoff says so.
 
 ## Common mistakes
 
