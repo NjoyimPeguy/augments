@@ -2,6 +2,24 @@
 
 Notable changes to augments, newest first. Versions follow semantic versioning; the narrative for each release lives on its release page — this file is the terse, cumulative record.
 
+## [5.0.0] — 2026-08-01
+
+### Added
+
+- **`migration-strategy` skill (design)** — governs wide rewrites and migrations through an approved preservation contract: translation rules, representative trial slices, partition ownership, convergence measures, abort conditions, cutover, rollback, and source-change reconciliation.
+- **`complexity-audit` skill (maintenance)** — performs a read-only, evidence-bound audit of existing accidental complexity and hands accepted structural findings to `refactor-architecture` instead of mutating the audited target.
+- **Dedicated YAGNI challenge boundaries** — a pre-edit challenger for material enduring surface, an exact-candidate reviewer, and an existing-code auditor, each owned by the lifecycle skill that activates it.
+
+### Changed
+
+- **Correctness-first contracts across the full skill surface.** Routing is authority-first and phase-sensitive; proposed artifacts, decisions, attempts, evidence, reviews, integration, and release verdicts carry explicit identities and cannot silently satisfy one another.
+- **High-risk transformations now have first-class assurance.** `verification-strategy` owns project and initiative assurance matrices; TDD gains a preservation cycle; plans gain partitioned work queues; code review gains equivalence and adversarial roles; completion, branch finishing, and release readiness distinguish source green, reviewed, integrated, and releasable states.
+- **Testing guidance is proportional to what deterministic gates and nondeterministic harness probes can actually prove.** Shared scenarios remain lean, live results retain failures and inconclusive outcomes, and temporary probes are removed after they expose and close the targeted gap.
+
+### Removed
+
+- **Per-prompt implementation reminder.** Lifecycle routing and existing implementation gates replace the retired reminder hook and `implementation-remind.sh`.
+
 ## [4.3.0] — 2026-07-29
 
 ### Added
