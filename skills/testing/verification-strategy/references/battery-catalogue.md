@@ -1,86 +1,176 @@
-# The Battery Catalogue
+# Assurance gate catalogue
 
-Per layer: what it proves, what it can never prove, and how to recognize the
-capability in any ecosystem. Named tools deliberately absent — ecosystems
-rotate; the capabilities do not. Ask "what does this project already have that
-does this?" before adding anything.
+Use this catalogue while filling the risk-to-gate matrix. It is a set of
+capabilities, not a universal checklist: select gates because a material risk
+needs them, and give every omitted category a reason. Prefer capabilities
+already present in the project before adding machinery.
 
-## 1. Unit layer
+## Differential equivalence and characterization
 
-**Proves:** small pieces behave as specified, in isolation, fast.
-**Never proves:** that the pieces are wired together, or that the specification
-was right.
-**Recognize it:** the project's own test runner and its `test` command. That is
-the whole decision — the discipline of writing them first belongs to
+**Proves:** source and target produce equivalent observable results over a
+representative corpus, modulo explicitly approved deviations.
+
+Define independent source and target runners, input inventory, normalization,
+comparison dimensions, tolerated deltas, and artifact retention. Include durable
+data, errors, ordering, side effects, and resource behavior when they are part of
+the contract. Before trusting the oracle, introduce a deliberate divergence it
+must detect. A target-derived expected value is not independent proof. For a
+moving source, independently derive every post-baseline change, reconcile it
+exactly once to affected target shards, and block when ownership, evidence, or
+the approved lag bound is missing. For mutable data or work, test concurrent
+writes around the snapshot/high-water boundary and reject gaps, duplicates,
+ordering loss, non-idempotent retries, and catch-up beyond its approved lag.
+
+## Unit and observable behavior
+
+**Unit gates** prove small pieces follow their local contracts quickly. They do
+not prove wiring or that the contract is right. Their construction belongs to
 `test-driven-development`.
 
-## 2. Behaviour/acceptance layer
+**Behavior and acceptance gates** exercise real entry points and observable
+outcomes independently of implementation structure. They cover happy, boundary,
+failure, recovery, and permission paths selected from requirements. A scenario
+that names internal collaborators will not survive the rewrite it is meant to
+protect.
 
-**Proves:** the running system does what was asked, end to end, in terms a
-non-author can read.
-**Never proves:** internal quality — a system can pass every scenario and be
-unmaintainable inside.
-**Recognize it:** executable scenario runners (Given/When/Then style is the
-common spelling) or plain end-to-end tests driven through the system's real
-entry points — HTTP, CLI, queue — never through its internals. The requirement
-is *observable behaviour*: the scenario survives a rewrite of the
-implementation, because it never names one.
+## Static and dynamic safety
 
-## 3. Falsifiability audit
+**Static gates** find type, contract, unreachable-path, dependency, format, and
+policy violations without executing every path. Record their exact scope and
+warning floor; a tool run over only one subtree does not cover the project.
 
-**Proves:** the other gates can fail — that they are gates at all.
-**Never proves:** anything about the code directly; it audits the *tests*.
-**Two moves, no tooling required:**
+**Dynamic safety gates** exercise runtime properties such as invalid memory
+access, leaks, races, deadlocks, undefined behavior, resource cleanup, and
+instrumented assertions. State which runtime and build mode enables the check;
+an instrumented debug run cannot silently stand in for a release build.
 
-- **Name the change.** For each gate, state the production change that would
-  make it fail. Cannot name one? The gate proves nothing.
-- **Closing mutation check.** Break the code on purpose — invert a condition,
-  delete a branch, empty a handler — run the battery, and watch it go red.
-  Restore, watch it go green. A battery that stays green under a deliberate
-  break is decoration; find which layer should have caught it and fix that
-  layer.
+## Property, fuzz, stress, and concurrency
 
-**Where the ecosystem has a mutation-testing tool** (a runner that applies
-small semantics-preserving-looking changes to the code and reports which ones
-the suite failed to catch): set its kill-rate floor in CI. The manual check
-above is the same idea without a tool; the tool only automates it.
+- **Property checks** generate cases around durable invariants rather than
+  enumerating only examples. Record generators, shrink/reproduction output, and
+  seeds.
+- **Fuzz checks** explore malformed and adversarial inputs. Retain the corpus and
+  every minimizing crash input; bound routine runs and schedule longer campaigns
+  at a cadence proportional to risk.
+- **Stress and concurrency checks** exercise saturation, ordering, retry,
+  idempotency, contention, cancellation, and recovery. Record topology, load
+  shape, duration, repetitions, and the nondeterministic failure policy.
 
-## 4. Metric floors
+## Performance and resource floors
 
-**Proves:** the change did not drag the project below its own stated minimums.
-**Never proves:** the tests are good — a suite can hit any coverage number and
-catch nothing (that is what layer 3 is for).
-**The one rule:** floors fail the build; targets do not exist. A coverage
-*target* is gamed on day one — tests written for the number, assertions
-optional. A coverage *floor* only refuses to ship below it, which is the
-correct relationship between a metric and a gate. Set floors from what the
-project already achieves, then ratchet up only when the suite earns it.
+Protect latency, throughput, startup, memory, storage, descriptor, network, and
+energy budgets that matter to the product. Compare on a controlled environment
+or against a pinned baseline, define statistical treatment and tolerated noise,
+and fail on regression beyond the accepted floor. A faster median cannot hide a
+tail-latency or peak-memory regression.
 
-## 5. CI wiring
+## Security
 
-**Proves:** the gates ran, on this change, on a machine nobody controls.
-**Never proves:** anything about a change that never went through CI.
-**The one rule:** every gate runs in CI on every change. A gate that only runs
-locally decays silently — skipped under deadline, absent on a fresh machine,
-gone in a month. If a gate cannot run in CI, say so plainly and treat it as a
-manual procedure, not a gate.
+Map trust-boundary risks to static checks, dependency and secret scans,
+attacker-controlled input tests, authorization/isolation checks, and required
+`security-audits` review. Preserve findings and re-run the relevant gate after
+fixes. Passing generic scans does not prove authorization or tenant isolation.
 
-## The two traps
+## Platform and build-mode parity
 
-- **String-presence tests.** Asserting that output or a file *contains some
-  text*. The text can be right while the behaviour is wrong, and the assertion
-  survives any refactor that keeps the wording. The observable is behaviour,
-  never text.
-- **Change-detector tests.** Assertions that can fail yet protect nothing —
-  a constant echoed back, a snapshot of noise, a mock asserted to have been
-  called. They fail when the code changes, not when the behaviour breaks, so
-  the suite goes red for the wrong reason and green for no reason. If removing
-  the behaviour does not fail the test, delete the test — it is decoration
-  with a runtime cost.
+Inventory every supported platform, architecture, runtime, feature set, build
+mode, packaging form, and compatibility direction. Define which gates run on
+each cell and what evidence permits an explicitly unsupported cell. A single
+developer build cannot stand in for the release artifact.
 
-## Reading the battery a year later
+## Production-like and operational gates
 
-A healthy battery: every layer runs from one command, each gate has been seen
-to fail, the floors sit just below current reality, and nobody remembers the
-last time they were tempted to skip it. An unhealthy one: prose about testing,
-a suite nobody runs, and a coverage badge.
+Use representative data, topology, fault injection, QA procedures, canary, soak,
+and recovery drills when lower layers cannot expose operational failures. State
+privacy and safety boundaries, duration, observability, abort thresholds, and
+the promotion each run protects. `release-readiness` consumes these results; it
+does not retroactively invent them.
+
+## Falsifiability, mutation, and metric floors
+
+For every gate, name a realistic defect it should reject. In an isolated
+authorized state, bind exact data/effects/resources, mutation, recovery/cleanup
+authority, and pre-state; run the divergence, observe red, restore the complete
+candidate/data/effect state, and observe green. If live injection is unsafe, replay a
+retained known-bad case or purpose-built calibration fixture. A gate with no
+safe falsification evidence is explicitly uncalibrated and cannot be the sole
+proof for its risk. Never inject a defect into production to test the gate.
+
+One establishment-time mutation does not continuously protect assertions.
+Schedule retained mutation/fault cells or a mutation floor at the cadence that
+protects test/control changes. Deleting or hollowing a required oracle must make
+that cadence red; assertion-shaped text or a historical calibration log is not
+continuing proof.
+
+For high-risk generated work, the target implementer cannot be the sole author,
+reviewer, and change authority for its oracle and promotion controls. Record an
+independent assurance challenger and use held-out/adversarial cases or mutation
+corpora outside the target writer's control where correlated blind spots or
+gaming are material risks. Any role-separation exception names its owner,
+consequence, compensating gate, and expiry.
+
+Coverage and other metrics are floors that fail a promotion, not targets to
+game. They show what was exercised, never whether assertions were meaningful.
+Pair them with behavioral falsification.
+
+## Test-inventory integrity
+
+Derive stable identities for required suites, cases, fixtures, corpora, shards,
+attempts/leases, platform cells, and quarantines. Reconcile required, discovered, and eligible
+runtime receipts as exact multisets. Require exactly one non-skipped, non-todo,
+non-cancelled receipt per cell; duplicate or wrapper receipts are red. Exercise
+framework-supported modifiers, options, annotations, parameterization, and
+wrappers—not one textual spelling. New exclusions, empty shards, reduced
+repetitions, or weakened assertions require a gated explicit disposition.
+For queue work, accept one current result per shard and account for every
+expired/reclaimed attempt, quarantined partial, and late result.
+
+Keep inventory definitions, baselines, thresholds, validators, and promotion
+wiring in a protected control plane outside target-writer ownership, or derive
+them from an immutable approved source. A generated target diff cannot weaken
+its own gauntlet. Control changes are separately inventoried, gated, reviewed,
+and approved; they never ride silently with the work they judge. The author
+cannot approve that control plane or self-grant its independent-challenge
+exception merely because the initiating request authorized building it.
+
+A mutable project command cannot attest that it still invokes its controller:
+replacing it with another valid green command bypasses self-checks. Bind the
+invocation through protected CI/branch/promotion configuration outside the
+candidate, or mark that protection `planned`/`blocked`. A broken missing-file
+rewire is not evidence against a valid bypass.
+
+For a tiny fixed inventory, prefer one path/count assertion in the existing
+project command and prove deleting its sole protected test/layer turns that
+command red. Do not add a controller, parser, launcher, manifest, receipt
+protocol, or dependency unless a named execution-loss risk survives that simple
+floor and `yagni`'s pre-edit challenge accepts the extra surface.
+
+For a larger or dynamic inventory with that unmet risk, make its control plane
+fail closed and resource-bounded. The top-level project command must not
+recursively invoke itself. Its external inventory controller passes the
+validated discovered set to an explicitly excluded leaf runner, or reconciles
+runtime receipts for every required cell before green. Merely validating names
+and then launching an independently narrowable runner does not prove full
+execution. Discovery traverses every declared nested test/corpus root unless the
+accepted contract forbids nesting. Risk-select the smallest attacks that decide
+these mechanisms: empty inventory, validator/manifest removal, valid invocation
+rewiring, skip/focus/todo, nested sentinels, case/cell deletion/duplication/
+addition/hollowing, and narrowed or partial execution. When the real controller
+can hang or spawn descendants, add a representative escaped child/process-group
+failure at the bounded ceiling and prove cleanup. Do not invent controllers or
+process trees solely to test them. A controller that disappears with its tests,
+passes vacuously, or exhausts resources is itself a failed gate.
+
+Challenge each inner controller from an independently owned parent. The
+outermost mutable project control cannot prove that it was not validly rewired
+or replaced wholesale with forged output; that is the external control-change
+owner's gate. Without that owner, local execution may be calibrated, but the
+claimed branch, phase, or release promotion remains `planned` or `blocked`.
+
+## Failure evidence
+
+Every gate result identifies the exact revision/artifact, command or controlled
+procedure, environment and configuration, raw result location, timestamp,
+threshold comparison, and owner. Define whether failure blocks a change, phase,
+trial expansion, cutover, decommission, release, or all work, plus the triage,
+repair, re-run, and resume authority.

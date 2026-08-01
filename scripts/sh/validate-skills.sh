@@ -50,8 +50,8 @@ for skill in "${skills[@]}"; do
   elif [ "$lines" -gt 80 ];  then note "warn: $lines lines (>80; acceptable only if a discipline skill)"
   fi
 
-  # (Per-skill triggering records retired — activation is proven by the runnable
-  # tests/<adapter>/ tests, not a static record. See tests/README.md.)
+  # (Per-skill triggering records retired — activation is proven by the shared
+  # harness-backed runners under tests/, not a static record. See tests/README.md.)
 
   # No external references, vendor model names, or <angle> placeholders — in every
   # .md of the skill, RECURSIVELY (covers references/ and scripts/ subfolders).
@@ -67,12 +67,43 @@ for skill in "${skills[@]}"; do
   done < <(find "$dir" -name '*.md')
 done
 
+# Progressive-disclosure links are executable navigation for an agent. Resolve
+# them in the canonical install tree; adapter-specific layouts run the same
+# helper against their own tree.
+echo "• skill reference paths resolve"
+if ! bash scripts/sh/validate-skill-reference-paths.sh skills; then fail=1; fi
+
+echo "• every sibling reference is directly disclosed"
+while IFS= read -r ref; do
+  skill_dir="$(dirname "$(dirname "$ref")")"
+  skill_file="$skill_dir/SKILL.md"
+  ref_name="$(basename "$ref")"
+  grep -Fq "references/$ref_name" "$skill_file" ||
+    err "$ref: not referenced directly from $skill_file"
+done < <(find skills -path '*/references/*.md' -type f | sort)
+
 # The nudge ships too — and is injected into every session, so a scanner
 # trigger-word there fires constantly, not just when one skill loads.
 echo "• hooks (scanner trigger-words)"
 while IFS= read -r f; do
   sed 's/`[^`]*`//g' "$f" | grep -qiE "$SCANNER_TRIGGERS" && err "$f: harness scanner trigger-word"
 done < <(find hooks -name '*.md' 2>/dev/null)
+
+# The retired per-prompt reminder must stay retired in every supported adapter,
+# not only Codex. A new command can otherwise reuse UserPromptSubmit and restore
+# the same token-heavy advisory path under another script name.
+echo "• no per-prompt implementation reminder"
+for hook_config in \
+  hooks/hooks.json \
+  hooks/hooks-codex.json \
+  .codex/hooks.json \
+  .kimi-plugin/plugin.json; do
+  [ -f "$hook_config" ] || continue
+  grep -q '"UserPromptSubmit"' "$hook_config" \
+    && err "$hook_config: UserPromptSubmit is retired across supported adapters"
+done
+[ ! -e scripts/sh/implementation-remind.sh ] \
+  || err "obsolete scripts/sh/implementation-remind.sh still exists"
 
 # Manifest sync: a harness discovers skills only through its manifest, so every
 # leaf skill dir must be listed explicitly in the plugin's "skills" array — a

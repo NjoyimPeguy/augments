@@ -1,6 +1,6 @@
 ---
 name: ui-ux-design
-description: Designs user-facing flows, states, interface hierarchy, visual direction, and evidence-backed alternatives. Use when creating or revising an interface before implementation, especially when visual choices need comparison. Skip for backend-only or already-decided cosmetic edits.
+description: Use when a new or revised user interface still has open flow, state, hierarchy, responsive, accessibility, content, or visual-direction decisions before implementation. Skip backend-only work and exact cosmetic edits whose direction is already decided.
 ---
 
 # UI/UX Design
@@ -23,8 +23,28 @@ Design the experience and decide its direction before implementation. In an exis
 5. **Choose an intentional direction.** For any open visual direction, read [design-quality.md](references/design-quality.md). Define layout, type, color, spacing, shape, imagery, and motion as one product-specific system; do not decorate around an unresolved hierarchy.
 6. **Show alternatives only when seeing helps.** For a spatial, visual, or motion decision, read [visual-decisions.md](references/visual-decisions.md) and compare 2–4 controlled, meaningfully different variants. Keep conceptual requirements and trade-offs in conversation. If feasibility, not preference, is uncertain, invoke `prototyping`.
 7. **Design across conditions.** Specify responsive changes, input methods, keyboard and focus behavior, semantic structure, contrast, reduced motion, content extremes, and localization pressure relevant to the interface.
-8. **Decide with evidence.** Record the chosen direction, comparison dimensions, user feedback, trade-offs, and why alternatives were rejected. A preview selection is evidence, not approval; confirm the decision explicitly.
-9. **Write the UI/UX section** of `.augments/designs/{{YYYY-MM-DD}}-{{topic}}.md` (another path only if the user set one): context, flows, state matrix, hierarchy, direction, visual decision, responsive/accessibility behavior, and human acceptance checks. Then hand off to `writing-plans`.
+   Record every omitted condition family with skip ID, rationale/evidence,
+   owner, expiry/revisit, compensating evaluator, and approval.
+8. **Classify the evidence.** Distinguish observed project fact, user research,
+   usability observation, accessibility or policy constraint, stakeholder
+   preference, and inference. A preference can select a direction; it cannot
+   masquerade as proof that users can complete the flow. Record unresolved
+   usability risks with a future evaluator and owner.
+9. **Compile one immutable proposed whole UI/UX section.** Put context, flows, state matrix,
+   hierarchy, direction, responsive/accessibility behavior, decisions,
+   deviations, and acceptance checks in
+   `.augments/designs/{{YYYY-MM-DD}}-{{topic}}.md` (or the user-set location).
+   Preserve approved sections. Record normative identity, predecessor, external
+   decision-ledger location, open risks, stable IDs for flows/states/decisions/
+   checks, per-ID delta, and one accountable decision owner or required
+   approvers, conflict resolver, and decision rule. Piecemeal selections are inputs.
+10. **Obtain the exact decision.** Record lifecycle externally; only approved
+    hands off. Preference, praise, or silence does not authorize planning.
+    Once identity is issued, never mutate it: every normative change creates a
+    successor with `added / changed / removed / preserved` IDs; removal needs
+    owning approval. An approved successor records the downstream artifact
+    inventory bound to its predecessor, invalidates stale bindings externally,
+    and blocks use until owners revalidate or reconcile.
 
 ## Common mistakes
 
@@ -32,4 +52,7 @@ Design the experience and decide its direction before implementation. In an exis
 - Showing cosmetic variations when the decision is really hierarchy or flow.
 - Visualizing a question whose answer is requirements or technical trade-offs.
 - Using placeholder content that hides overflow, density, error, and empty-state problems.
+- Calling stakeholder preference “usability evidence,” or hiding an unresolved
+  risk behind polished visuals.
+- Combining individually selected screens into an unreviewed journey.
 - Self-approving subjective criteria instead of assigning a human check.

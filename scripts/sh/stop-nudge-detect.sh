@@ -20,6 +20,6 @@ printf '%s' "$last" | grep -Eq \
   || exit 1
 
 cat <<'EOF'
-You are wrapping up as if this task is done. Before it stands as done, re-orient with `using-augments` and invoke the done-boundary skill(s) it routes to: at minimum `verifying-completion` (run the real check, read its output, and claim only what that output supports), and at a feature boundary `requesting-code-review` and `finishing-a-branch`. If you have already verified with real evidence, state the exact command and its output here, then stop.
+You are wrapping up as if this task is done. Before it stands as done, re-orient with `using-augments` and invoke the done-boundary skill(s) it routes to. At minimum, use `verifying-completion`: run the real check, read its output, and claim only what that output supports. Invoke `requesting-code-review` followed by `finishing-a-branch` only at an actual feature or integration boundary. A private read-only diagnostic, audit, or report is evidence—not an integration candidate—and creating it alone does not establish that boundary; review or branch finishing applies only when the user separately intends to ship or integrate it. If you already verified with real evidence, state the exact command and its output here, then stop.
 EOF
 exit 0

@@ -14,18 +14,44 @@ Record the decisions you'd regret not being able to explain in six months. An AD
 
 ## Procedure
 
-1. **State the decision** as a question with context: what are you deciding, and what forces it (which requirement, which constraint)?
-2. **Weigh the real options** — at least two — each on four axes: what it assumes, where it breaks down, what would rule it out, what evidence supports it. "A vs B because B is nicer" is not a decision.
-3. **Record the choice and its rationale** — and, explicitly, **the rejected alternatives and why**. The rejection is the load-bearing part: it stops the decision being silently reversed later.
-4. **Note the consequences** — what this commits you to, and what it closes off.
-5. **Mark its status** — `proposed` when recorded ahead of the work, flipped to `in force` once the decision is built, `superseded by {{adr}}` when replaced. A reader must be able to tell a decision in force from a plan that never landed — otherwise a later session reads unbuilt intentions as the current architecture.
-6. **Append the ADR** to the decisions section of the shared design document `.augments/designs/{{YYYY-MM-DD}}-{{topic}}.md` (the standard designs location; another path, e.g. a standing decisions log, only if the user has set one).
+1. **Name the decision and authority.** State the question, artifact/system
+   scope, forces, and either one accountable decision owner or required
+   approvers plus conflict resolver/decision rule.
+2. **Weigh real options** — at least two — on assumptions, failure limits,
+   disqualifiers, reversal cost, and evidence. Evaluate status quo/defer when
+   viable or record why it is not. Give every assumption stable identity,
+   evidence/state, validation action, owner, expiry/reopen, and failure response.
+3. **Record the proposed choice and rejected alternatives.** The rejection is
+   load-bearing; preserve it rather than silently editing history.
+4. **Record consequences and reversal.** What this commits you to, migration or
+   data consequences, how it could be reversed, and what it closes off.
+5. **Challenge independently.** A reviewer other than the sole author challenges
+   options, assumptions, consequences, and reversal unless a current independent
+   design review explicitly covers this exact ADR identity. Bind access,
+   artifact controls, attempt/deadline, quiescence, report, and finding
+   disposition as defined in `references/adr-template.md`.
+6. **Persist and present the complete proposal.** Append the immutable
+   `proposed` ADR to `.augments/designs/{{YYYY-MM-DD}}-{{topic}}.md` (or the
+   project decision log), preserving other sections.
+7. **Obtain the direct decision.** `proposed` means drafted and unapproved;
+   record accepted/rejected/cancelled externally with trusted exact-version
+   evidence. Praise or momentum does not accept it. Once issued, every normative
+   change creates a proposed successor with an exact delta; the old identity
+   never mutates. An accepted successor inventories and invalidates
+   predecessor-bound consumers until their owners reconcile.
+8. **Track decision and conformance separately.** Acceptance may supersede the
+   prior normative decision; it neither makes the successor `in force` nor
+   proves the old implementation absent. Transition work owns mixed state.
+   Conformance gates `in force`; retirement needs owner action and governed-
+   surface absence. A contradiction reopens every affected artifact owner.
 
 ## Common mistakes
 
 - Recording the *what* without the *why* — it reads as arbitrary and gets undone.
 - No rejected alternatives — the next person re-explores the same dead ends.
 - An ADR for a reversible choice — only the decisions you'd defend belong here.
-- A `proposed` ADR never flipped to `in force` (or retired) when the work lands — downstream readers treat the unbuilt plan as what the system actually does.
+- An accepted ADR never moved `in force` when work landed, or an obsolete
+  in-force ADR was never linked as superseded or retired.
+- Treating “the code now does this” as owner approval or conformance proof.
 
 For a copyable ADR template, a filled example, and common failure patterns, see `references/adr-template.md`.

@@ -1,155 +1,103 @@
 # Reference Forms
 
-A requirement written as prose has to be re-interpreted by every reader — the
-designer, the executor, the reviewer — and each re-interpretation is a chance to
-drift. A requirement written as something *executable* is re-checked by a machine
-instead. Same intent, no re-interpretation.
+Choose the cheapest form that makes a requirement checkable **without selecting
+unapproved design or mutating an unauthorized project**. A form is evidence only
+for what it actually contains today; never point to a future file as if it exists.
 
-So the question for each requirement is not "how do I word this?" but **"what is
-the cheapest form that makes this requirement checkable?"** Prose is the fallback
-for requirements no other form fits — not the starting point.
+## 1. Executable gate
 
-The failure this prevents is specific and common: a spec that *promises*
-verification it never delivers — "all acceptance criteria are automated tests
-under `test/`" written above thirty requirements and zero test files. The
-verification story reads as done and does not exist.
+**Use now when** observable inputs/outputs are settled, the project may be
+mutated, and the artifact will run through its real gate.
 
-## The four forms
+- New behavior: the criterion fails because behavior is missing—not from import,
+  syntax, runner, `skip`, or `todo`.
+- Preserved behavior: the independent criterion starts green. During TDD it must
+  be deliberately diverged, observed red, restored, then kept green.
+- Assert observables, never an implementation not yet designed.
+- Put it where the project's own command runs it and execute that command.
 
-### 1. Executable specification — a failing test suite
+If any precondition is absent, name the intended observable, gate owner, and
+handoff in the spec. Do not create a guessed test merely to avoid prose.
 
-**Use when** the requirement is behaviour with observable inputs and outputs: an
-API response, a state transition, a calculation, an error path.
+## 2. Disposable mockup
 
-Write the tests now, against the interface the requirement implies, and leave
-them **genuinely failing**. They *are* the acceptance criteria — the spec's prose
-says what and why, the test says exactly.
+**Use when** layout, hierarchy, density, or required interface states are hard to
+read from prose and creation of a disposable artifact is authorized.
 
-Do not neuter them to keep the suite green. A `skip`, `todo`, or `pending` marker
-turns a criterion into a comment: the suite exits 0, the gate can never go red,
-and the spec is back to promising verification it does not perform. A criterion
-that cannot fail is not a criterion. If the project's convention really requires
-a marker, the suite must still report red overall — check by running it.
+- Show realistic content and applicable empty, loading, error, overflow,
+  permission, and recovery states.
+- Fix what states and relationships must exist, not an unapproved visual direction.
+- Record ownership, retention, exact cleanup targets/effects/recoverability,
+  cleanup authority, and disposition. Only pre-authorized scratch inside an
+  explicitly disposable boundary may be removed directly. Repository/workspace
+  disposal routes through `finishing-a-branch`; otherwise cleanup stays pending.
 
-- Put them where they **run**: the project's own test tree. A test file parked in
-  a spec folder is never executed by anything, which defeats the point.
-- Match the project's existing test idiom and runner — read a neighbouring test
-  first. A spec that introduces a second test framework is a design decision
-  smuggled into requirements.
-- Assert the observable behaviour, not an implementation you have not designed
-  yet. `expects 429 after the 11th request in a 60s window` is a requirement;
-  `expects tokenBucket.consume() to return false` is a design.
-- Name each test so it reads as the requirement it encodes.
+## 3. Preservation contract
 
-### 2. Rendered mockup — a page you can open
+**Use when** behavior already exists in a prior version, source module, sibling
+system, stored data, or released contract.
 
-**Use when** the requirement is about layout, hierarchy, density, or the set of
-states a surface must handle. Prose loses exactly what matters here: how it looks
-when the name is 60 characters long and the list is empty.
+Record:
 
-- One self-contained page, inline styles, no external requests, no dependency and
-  no server added merely to display it.
-- Populate it with realistic content and show the unhappy states — empty,
-  loading, error, overflow. A mockup with tidy placeholder content hides the
-  requirements you most need to pin down.
-- Keep it a requirements artifact: it fixes *what states must exist*, not the
-  visual direction. Choosing between directions belongs to `ui-ux-design`.
+1. precise source facts with path/version/evidence identity;
+2. behavior and invariants that must remain equivalent;
+3. explicitly intentional deviations; and
+4. observable comparison points for a later differential gate.
 
-### 3. Reference implementation — code that already behaves correctly
+A reference is evidence, not a dependency and not an oracle by itself.
+`migration-strategy` owns the change contract; `verification-strategy` turns its
+facts/invariants/deltas into executable proof.
 
-**Use when** the behaviour exists somewhere already: a prior version, a sibling
-service, a module in another codebase, a library whose semantics you want.
+## 4. Rubric
 
-Point at it precisely — path, function, and the version or commit you read — and
-state the **deltas**: what must behave identically, and what must differ. "Port
-this, but per-tenant instead of global" carries more fidelity in nine words than
-a page of prose reconstructing the algorithm.
+**Use when** the requirement is real but no deterministic check exists:
+ergonomics, error-message quality, documentation completeness, or tone.
 
-Record it as a reference, not a dependency: a link to code you are not going to
-ship does not make that code a project dependency.
-
-### 4. Rubric — named criteria for what a machine cannot check
-
-**Use when** the requirement is real but has no deterministic check: interface
-ergonomics, error-message quality, documentation completeness, tone.
-
-A rubric is an ordered pass-list a reviewer — human or a fresh verifier agent —
-applies to the built result. It only works if every line is independently
-checkable:
+Each line is independently judgeable, names who decides, and records evidence:
 
 ```markdown
 ## Rubric: error responses
-1. Every 4xx body names the field or limit that was violated.
-2. No error message leaks a key, tenant id, or internal path.
-3. Every error a client can trigger is reachable from the documented flows.
-4. Wording matches the imperative voice used by existing errors.
+
+1. Every client-triggerable 4xx names the violated field or limit.
+2. No response leaks a key, tenant identifier, or internal path.
+3. Wording matches the approved product vocabulary.
 ```
 
-Not `error messages should be helpful` — that is the wish the rubric replaces.
-Rubrics carry judgement that would otherwise live only in the author's head, so a
-reviewer applies the same standard the author intended.
+“Helpful errors” is a wish, not a rubric.
 
-## When the contract is still open
+## When the contract is open
 
-The most common reason an executable form gets skipped is that the interface it
-would assert has not been chosen — the endpoint path, the header names, the
-response shape. The reasoning feels careful: *"writing a test now would pick the
-wire contract, and this is requirements-only."* It is the loophole, not the rule.
+Do not guess an endpoint, header, schema, or internal seam. State the invariant
+at the level already decided—for example, “two keys of one tenant have independent
+budgets”—then record:
 
-A requirement fixes something **regardless** of the contract that carries it.
-"Two keys of one tenant hold independent budgets" stays true whatever the
-endpoint is called. So:
+- what observation would decide it;
+- which design decision must close first;
+- the intended gate form and owner; and
+- the assumption or open question that blocks construction.
 
-- **Assert at the level the requirement fixes**, and no lower. Test through the
-  smallest observable the requirement genuinely pins.
-- **Or assume the contract and say so.** Write the test against a stated
-  assumption, record it beside the requirement, and note that changing the
-  contract changes the test. That is a design *input*, not smuggled design — the
-  assumption is now visible and arguable instead of implicit.
-- **Never let it become "no test yet."** An open contract defers the test's
-  *shape*. It does not make the requirement unverifiable, and the spec that says
-  it does has quietly returned to prose.
+An open contract defers an artifact's shape, not the requirement's verification
+obligation. If no observable can be named, return the ambiguity to
+`interview-me`; do not counterfeit precision with code.
 
-If the contract is so undetermined that no observable can be asserted, the
-problem is upstream: the requirement is not yet a requirement. Send it back to
-`interview-me` rather than shipping a criterion that cannot fail.
+## Prose is correct for
 
-## Prose is still right for
+Problem statements, policy, assumptions, dependencies, risks, open questions,
+out-of-scope statements, and requirements whose richer form would add more design
+than clarity. Prose is not second-class when it is the honest present evidence.
 
-The problem statement, assumptions, dependencies, risks, open questions, out of
-scope — and any requirement that is a policy or constraint rather than a
-behaviour ("data stays in the tenant's region"). These have no executable form;
-forcing one adds ceremony without removing ambiguity.
+## Wire every form back to the spec
 
-## Choosing, without gold-plating
-
-A richer form must remove more ambiguity than it costs to build. Two checks:
-
-- **Would anyone actually misread the prose?** If not, prose is correct. Do not
-  build a mockup for a requirement nobody would get wrong.
-- **Does the form survive to the build?** An artifact only pays off if the plan
-  and the executor reach for it — a failing test that becomes a task's Evaluator
-  earns its keep; a mockup nobody opens does not.
-
-Mixed specs are normal and expected: a failing test suite for the behavioural
-requirements, a rubric for the error-message quality bar, and prose for the
-assumptions and risks — in one spec.
-
-## Wiring artifacts back to the spec
-
-The spec file stays the map. For each requirement, name the form and the path, so
-a reader can get from requirement to check in one hop:
+For each requirement, record one of:
 
 ```markdown
-### FR-4 — Limits are enforced per API key, not per tenant
-
-Two keys belonging to one tenant consume independent budgets.
-
-**Verified by:** `test/ratelimit.spec.js` — "counts per key, not per tenant"
-(failing: not yet implemented)
+**Verified now by:** `{{real path or command}}` — {{observed result}}
 ```
 
-An artifact the spec does not point at will be missed; a pointer to an artifact
-that does not exist is worse than prose. Before the spec is done, confirm every
-referenced path resolves and every executable artifact actually runs — failing
-for the right reason, not erroring because it never loaded.
+```markdown
+**Planned gate:** {{observable and gate form}} — owner {{role}} — blocked by
+{{open decision or authorization}}
+```
+
+Before approval, resolve every claimed path and run every present executable
+artifact. A future gate stays visibly future.

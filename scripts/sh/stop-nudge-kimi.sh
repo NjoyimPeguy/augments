@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # Stop-hook done-boundary re-nudge for Kimi Code CLI — the Kimi adapter of
-# hooks/stop-nudge.sh. The detection policy is shared in
-# hooks/stop-nudge-detect.sh; this script only adapts the two harness
+# scripts/sh/stop-nudge.sh. The detection policy is shared in
+# scripts/sh/stop-nudge-detect.sh; this script only adapts the two harness
 # differences: Kimi's Stop payload carries no last_assistant_message (the
 # final assistant text is recovered from the session wire log), and Kimi's
 # blocking contract is exit 2 with the reason on stderr, not a JSON envelope.

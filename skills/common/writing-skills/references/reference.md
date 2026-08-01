@@ -9,7 +9,9 @@ Every line of a SKILL.md loads into context each time the skill fires. A 300-lin
 Not all length is bloat. A token-cutting pass can strip most lines from a skill library and claim "no behavioral loss" — but that usually measures only *activation* (which depends solely on the `description`), never *compliance under pressure*. For one skill type the verbose part is the active ingredient: in **discipline skills**, the rationalization table is what changes behavior, not decoration. The split:
 
 - **Capability / template / reference / meta** — no temptation to counter. Lean. Verbosity here is genuine bloat.
-- **Discipline** (TDD, verification, debugging) — counters a tempted agent's excuses. The table stays, in the body. Justify each line with a pressure test, never a static read.
+- **Discipline** (for example routing, TDD, YAGNI, verifying completion,
+  debugging, receiving review) — counters a tempted agent's excuses. The table
+  stays in the body. Justify each line with a pressure test, never a static read.
 
 Our large token wins come from architecture (lazy loading, no uniform ceremony, per-task plans, light bootstrap), not from gutting discipline skills — so conceding this point costs us nothing.
 
@@ -42,10 +44,6 @@ Link references only **one level deep** from SKILL.md. Deeper chains (SKILL → 
 ## Complexity gate
 
 The most common real-world complaint about heavy skill libraries is uniform ceremony on tiny tasks. Every skill states when to skip itself. A two-line config change must not trigger a seven-step process.
-
-## disable-model-invocation
-
-Set `disable-model-invocation: true` for skills that are pure prompt injections — no tools, no agentic loop, just an instruction the model reads and acts on (e.g. a four-line `zoom-out`). It prevents the skill from spawning an extra model call.
 
 ## How much to write
 

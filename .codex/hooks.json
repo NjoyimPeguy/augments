@@ -11,17 +11,6 @@
           }
         ]
       }
-    ],
-    "UserPromptSubmit": [
-      {
-        "hooks": [
-          {
-            "type": "command",
-            "command": "bash \"$(git rev-parse --show-toplevel)/scripts/sh/implementation-remind.sh\"",
-            "timeout": 5
-          }
-        ]
-      }
     ]
   }
 }

@@ -43,6 +43,19 @@ fi
 [ -x scripts/sh/stop-nudge.sh ] || err "scripts/sh/stop-nudge.sh is not executable"
 
 echo "• Codex skill mirror"
+canonical_names="$(find skills -mindepth 3 -maxdepth 3 -name SKILL.md \
+  -printf '%h\n' | xargs -r -n1 basename | sort)"
+mirror_names="$(find "$plugin_root/skills" -mindepth 2 -maxdepth 2 \
+  -name SKILL.md -printf '%h\n' | xargs -r -n1 basename | sort)"
+if [ "$canonical_names" != "$mirror_names" ]; then
+  while IFS= read -r delta; do
+    case "$delta" in
+      $'\t'*) err "mirror-only skill: ${delta#$'\t'}";;
+      *)       err "canonical skill missing from mirror: $delta";;
+    esac
+  done < <(comm -3 <(printf '%s\n' "$canonical_names") \
+                   <(printf '%s\n' "$mirror_names"))
+fi
 while IFS= read -r skill; do
   name="$(basename "$(dirname "$skill")")"
   mirror="$plugin_root/skills/$name"
@@ -50,6 +63,11 @@ while IFS= read -r skill; do
   [ -f "$mirror/SKILL.md" ] || err "mirrored skill for $name is missing SKILL.md"
   diff -qr "$(dirname "$skill")" "$mirror" >/dev/null || err "mirrored skill differs from canonical skill: $name"
 done < <(find skills -mindepth 3 -maxdepth 3 -name SKILL.md | sort)
+
+echo "• Codex mirrored reference paths"
+if ! bash scripts/sh/validate-skill-reference-paths.sh "$plugin_root/skills"; then
+  fail=1
+fi
 
 echo "• manifest versions agree"
 codex_v=""

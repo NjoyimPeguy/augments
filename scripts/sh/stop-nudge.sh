@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # Stop-hook done-boundary re-nudge for harnesses that provide the Claude-style
 # Stop payload fields this script reads. The detection policy is shared with
-# the Kimi wrapper in hooks/stop-nudge-detect.sh; this script only adapts the
+# the Kimi wrapper in scripts/sh/stop-nudge-detect.sh; this script only adapts the
 # payload (last_assistant_message inline) and the block format (JSON envelope).
 set -euo pipefail
 command -v jq >/dev/null 2>&1 || exit 0

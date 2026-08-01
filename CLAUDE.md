@@ -2,7 +2,7 @@
 
 Guidance for anyone — human or agent — working in this repository.
 
-`augments` is a cross-platform library of opt-in SDLC skills for coding agents. Read `README.md` for the philosophy, and `skills/common/writing-skills/SKILL.md` before authoring or editing any skill. The one idea behind every skill: you are a non-deterministic generator, and each skill wraps your work in a deterministic **gate** — truth comes from the gate (a test, a check, a reproduction), never from confidence. The library's reliability lives in its gates, not in coercive instructions; keep that distinction when you edit it.
+`augments` is a cross-platform library of opt-in SDLC skills for coding agents. Read `README.md` for the philosophy, and `skills/common/writing-skills/SKILL.md` before authoring or editing any skill. The one idea behind every skill: you are a non-deterministic generator, so claims leave the generator through an external **gate**, never through confidence. Executable correctness claims require executable gates (a test, check, or reproduction); judgment and authority boundaries require an explicit revision-bound decision or controlled rubric and must not masquerade as mechanical proof. The library's reliability lives in these gates, not in coercive instructions; keep that distinction when you edit it.
 
 ## If you are an AI agent
 
@@ -38,10 +38,31 @@ bash scripts/sh/validate-skills.sh
 
 Rule 4 (behavior) has no deterministic gate — that is the honest limit. Prove it by **re-running the tests and reading what they return**:
 
-- **Activation** — does the right skill fire? `tests/<adapter>/run-activation.sh --scenario-file <phase>/<skill>` for one scenario, `run-all-activation.sh` for the whole set. The exit code is the verdict.
-- **Behaviour** — does the skill change what actually gets *built*? `tests/<adapter>/run-behavioral.sh --scenario <name> --arm red|green`. The scenario's own `scenario_assert` returns the verdict as an exit code. A scenario is one file: `tests/scenarios/behavioral/<name>.sh`.
+- **Activation** — does the right skill fire? `tests/run-activation.sh --harness {{name}} --scenario-file {{phase}}/{{skill}}` for one scenario, `tests/run-all-activation.sh --harness {{name}}` for the whole set. The exit code is the verdict.
+- **Behaviour** — does the skill change what actually gets *built*? `tests/run-behavioral.sh --harness {{name}} --scenario {{name}} --arm red|green`. The scenario's own `scenario_assert` returns the verdict as an exit code. A scenario is one file: `tests/scenarios/behavioral/{{name}}.sh`.
 
 Report the real numbers in the PR, including an inconclusive or failing result — these tests are live and non-deterministic, so a single green run is weak evidence. Say how many runs you did. Never green-wash.
+
+## Keep proof proportional
+
+Testing this library must not become a second product. Match the evidence to
+the claim and stop at the smallest layer that can decide it:
+
+- Deterministic packaging or script logic gets deterministic structural or
+  unit checks.
+- Harness discovery gets one thin live activation smoke through the real CLI.
+- A behavioral scenario is retained only for a failure actually observed and
+  a verdict that can be checked mechanically.
+- Live provider checks are targeted evidence for a changed trigger, behavior,
+  adapter, or release—not CI truth and not a full skill-by-harness matrix.
+
+Do not add fixtures merely to enumerate imagined gaps. Do not emulate complete
+provider transcripts, sessions, review histories, or process trees when a
+smaller observable answers the question. If the evaluator becomes comparable
+in size or complexity to the behavior under test, simplify the evaluator first.
+Nondeterminism is a reason to repeat a focused live probe and report its spread;
+it is not a reason to build an exhaustive deterministic simulator around the
+generator.
 
 ## Adding a skill
 
@@ -54,8 +75,8 @@ Report the real numbers in the PR, including an inconclusive or failing result �
 
 Changing a skill is changing behaviour, so match the proof to the change:
 
-- **Description (the trigger):** an *activation* change — re-run `tests/<adapter>/run-activation.sh` on that skill's scenario and confirm it still fires.
-- **The always-loaded `SKILL.md` body:** a *behaviour* change — re-run `tests/<adapter>/run-behavioral.sh` on a scenario that exercises it, both arms, and report the result.
+- **Description (the trigger):** an *activation* change — re-run `tests/run-activation.sh --harness {{name}}` on that skill's scenario and confirm it still fires.
+- **The always-loaded `SKILL.md` body:** a *behaviour* change — run the smallest existing scenario or temporary before/after probe that exercises the changed behavior, and report the result. Do not add a permanent behavioral fixture merely for coverage.
 - **A sibling or reference file** (loaded on demand, not under pressure): the always-loaded body is unchanged — no behavioural re-run is owed; say so.
 - Never reword carefully-tuned discipline content — rationalization tables, red-flag lists, hard-stops — without re-proving it still holds. An inconclusive result *is* the finding; report it.
 
@@ -88,7 +109,10 @@ Closed without extended review — most are the inverse of a rule above:
 
 Adding a harness (an IDE, CLI, or agent runner) means more than dropping skill files where the tool can see them — they must actually *load and activate*. Augments' skills are inert unless the harness both discovers them and is nudged to reach for one at the right moment (on Claude Code, the `hooks/` SessionStart nudge; elsewhere, an equivalent). See `docs/augments/harness-support.md`.
 
-A PR adding a harness MUST include a runnable test layer under `tests/<name>/` — a runner that drives that harness's CLI and shows a skill *actually activating* on a representative opening, not a description of how it should work. Files present but never invoked is not a working integration.
+A PR adding a harness MUST add `tests/harnesses/{{name}}.sh` bindings for the
+shared runners and show a skill *actually activating* through that harness's
+CLI on a representative opening, not describe how it should work. Files present
+but never invoked are not a working integration.
 
 ## Layout
 
@@ -96,6 +120,7 @@ A PR adding a harness MUST include a runnable test layer under `tests/<name>/` �
 - `.claude-plugin/` — the install manifest; its skills array must list every skill on disk (the gate checks it). `.kimi-plugin/` — the Kimi Code manifest; its skills paths must resolve to the same canonical set. Adding a harness: `docs/augments/harness-support.md`.
 - `AGENTS.md`, `GEMINI.md` — symlinks to this file, so a harness that reads its own instructions file gets the same guidance from one source.
 - `.github/` — CI (`workflows/validate.yml`) and the PR template (`PULL_REQUEST_TEMPLATE.md`).
-- `tests/` — `gate/` is the portable deterministic gate CI runs on every push and PR (`validate-skills.sh`, the two plugin validators, `token-budget.sh`). `scenarios/` holds every test input **once**, shared by all harnesses: `activation/<phase>/<skill>` openings and `behavioral/<name>/` fixtures. `claude-code/`, `codex/`, `kimi-code/` hold only that harness's runners — the scenarios were byte-identical across all three, so they live in one place.
+- `scripts/sh/` — portable validators, token budget, adapter checks, and hook scripts; CI runs `validate-skills.sh` and `token-budget.sh`.
+- `tests/` — shared top-level live/offline runners plus `harnesses/{{name}}.sh` adapters. `scenarios/` holds every test input **once**: `activation/{{phase}}/{{skill}}` openings, `flows/{{flow-or-suite}}`, and `behavioral/{{name}}.sh`.
 - `CHANGELOG.md`, `RELEASING.md` — the release record, and how releases are versioned and cut (semver over the skill surface; the gate checks the two manifest versions agree).
 - `.claude/` — local config and notes; gitignored, never shipped.

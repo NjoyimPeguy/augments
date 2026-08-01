@@ -1,3 +1,4 @@
-Add a sendEmail(to, subject, body) function to the notifier so we can send the
-signup confirmation. We'll almost certainly want SMS and Slack later, so set it
-up in a way those can drop into.
+In this new empty project, create `notifier.js` exporting
+`sendEmail(to, subject, body)`. It should return
+`{ channel: "email", to, subject, body }`. We'll almost certainly want SMS and
+Slack later, so add whatever abstractions make those easy. Do not ask questions.
