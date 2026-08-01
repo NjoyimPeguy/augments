@@ -1,39 +1,74 @@
 ---
 name: yagni
-description: "Use whenever implementation code is being written — invoke it the moment implementation starts, as test-driven-development's pair — and at any point you catch either scope failure: building MORE than the task asked (a new abstraction, interface, config knob, or dependency it doesn't need; anything kept \"for later\") or delivering LESS than the task asked (a stub, a TODO, a patch that quiets one symptom while sibling callers stay broken). Build exactly what the task needs — no more, no less — and prove it runs. Skip throwaway spikes or pure config with no logic."
+description: "Use when behavior-affecting implementation—including configuration—is being written; scope drifts toward speculative or incomplete delivery; or a proposal needs strict pre-edit challenge. Needed includes accepted behavior, project craft, and inherited preservation, compatibility, safety, operations, rollback, and assurance. A green convention-breaking diff is unfinished. Skip throwaway spikes and nonbehavioral content/configuration."
 ---
 
 # YAGNI — build only what's needed, and make it work
 
-You Ain't Gonna Need It: the cheapest code is the code you never write. But "less code" measures **design**, never **correctness or effort** — a smaller solution that doesn't solve the task isn't lean, it's *unfinished*. This is a discipline skill: under pressure you'll reach for the smallest diff, and the point is to keep that reflex aimed at *scope*, not at *finishing*.
+YAGNI minimizes **scope**, never correctness or effort. A smaller solution that
+does not solve the accepted task is unfinished. Under pressure, aim the
+minimum-diff reflex at unnecessary surface, not at completion.
+For implementation, load this with `test-driven-development` before the first
+project command or edit; a later guard cannot cure a skipped entry discipline.
 
 ## The one definition everything hangs on
 
-**"Needed" = solves the task the user actually asked for, and runs.** Cutting scope is YAGNI. Cutting *behaviour the task requires* is under-delivery wearing YAGNI as a costume.
+**"Needed" = satisfies the accepted task and every commitment it inherits, and
+runs.** Inherited commitments include preserved behavior and durable data,
+public compatibility and supported environments, security/privacy/accessibility,
+operational observability and recovery, rollback, and accepted assurance gates.
+Latest prompt need not repeat them.
+
+Cutting speculative scope is YAGNI. Cutting a requested or inherited guarantee
+is under-delivery wearing YAGNI as a costume. Code size breaks ties only between
+equal guarantees and lifecycle risk.
+
+## Completion gate
+
+Before the first edit, derive a checklist from accepted contracts and the
+current `coding-standards` exemplar—or nearest analogue. Before ready,
+audit changed lines for its names, structure, idioms, and why-comments. Green
+cannot waive observed convention. Apply standards only in scope; report
+neighboring drift rather than silently migrating it. The full craft checklist
+is in `references/yagni-in-depth.md`.
+
+Before choosing a material enduring surface—a dependency, service/process,
+generalized abstraction, public extension/configuration, or verification
+system—or on explicit strict challenge, dispatch
+`references/yagni-challenger.md` read-only. Local choices stay inline.
+`revise`/`decision` block the unchanged proposal; `inconclusive` is not clearance.
+No verdict narrows scope or grants authority.
 
 ## Make the correct path the lazy path
 
-"Be thorough" doesn't hold under pressure. Instead, see the shortcut's *real* cost: a stub is not less work — it's deferred work, plus the bug it ships, plus re-reading all this context when you come back to it. **Doing it right once is the lazier path.** Aim the laziness instinct at the complete solution instead of fighting it.
+A stub is deferred work plus a bug and future re-reading. The cheapest path is
+the smallest complete solution now.
 
 ## The ladder — stop at the first rung that holds
 
-1. **Does it need to exist at all?** Speculative need → skip it, say so in one line.
-2. **Already in this codebase?** Reuse it — re-implementing what's a few files over is the most common waste.
+1. **Needed at all?** Speculative need → skip it and say so.
+2. **Already a real fit?** Reuse only with semantic, owner, dependency, and
+   support/security-lifecycle equivalence.
 3. **Standard library?** Use it.
-4. **Native platform feature?** A built-in over a dependency; a constraint over hand-rolled code.
-5. **An already-installed dependency?** Use it. Never add one for what a few lines do.
+4. **Native feature?** Prefer built-ins and constraints over owned machinery.
+5. **Installed dependency?** Use it; do not add one for a few lines.
 6. **One line?** One line.
-7. **Only then:** the minimum code that *fully works*.
+7. **Only then:** minimum code that fully works.
 
-No unrequested abstraction: no interface with one implementation, no factory for one product, no config for a value that never changes.
+No abstraction for hypothetical variation. One real volatile/external boundary
+may justify a seam when it contains measured impedance, failure policy, or test
+isolation; implementation count alone neither requires nor forbids it.
 
 ## The ladder runs AFTER comprehension, never instead of it
 
-Read the task and the code it touches; trace the real flow end to end; *then* minimise. The smallest change in the wrong place isn't lazy — it's a second bug. A bug fix targets the **root cause**: fix the shared function every caller routes through once — that is a *smaller* diff than one patch per caller, and patching only the named path leaves siblings broken. (Pair with `debugging`.)
+Trace the real flow before minimising. The smallest change in the wrong place is
+a second bug. Fix the root-cause owner once, not one named path while siblings
+stay broken; pair with `debugging` when cause is unknown.
 
 ## Minimal ≠ unreadable — craft is not scope
 
-The ladder minimises *how much* you build, never *how well* it's written. Readability is part of "it works": code the next reader can't understand stops working the moment it needs a change — and the next reader is often you, after compaction, with no memory of writing it. Match the file's conventions, name for the domain rather than brevity, comment the *why* above non-obvious logic, prefer simple over clever. The full craft checklist and examples: `references/yagni-in-depth.md`.
+Minimise how much, never how well: use domain names, explain non-obvious why,
+and prefer simple over clever.
 
 ## When you're tempted to call it done
 
@@ -51,17 +86,34 @@ The ladder minimises *how much* you build, never *how well* it's written. Readab
 
 ## Hard stops
 
-- **Minimal ≠ incomplete.** If it doesn't solve the task and run, it isn't done — "smaller" is only a tiebreaker between two solutions that *both fully work*.
-- Before claiming done: it runs / passes its check; it handles the inputs the task implies; no TODO or placeholder sits on a path the task needs *now*. A stub on a required path is an automatic fail (confirm with `verifying-completion`).
-- **Never minimise away:** input validation at a trust boundary, error handling that prevents data loss, security, accessibility, or anything the user explicitly asked for.
-- **Never compress away:** names that say what things are, the *why* above non-obvious logic, the conventions of the file around the change. Before claiming done, the diff should read like one author wrote the whole file.
+- **Minimal ≠ incomplete.** Smaller breaks ties only between solutions that both
+  solve the task and run.
+- Before done: real checks pass, implied inputs work, and no required path has a
+  stub/TODO/placeholder; confirm through `verifying-completion`.
+- Never cut trust-boundary validation, data-loss prevention, security,
+  accessibility, or explicit user scope.
+- **Never minimise away:** preservation, compatibility/parity, durable-data
+  safety, observability, recovery/rollback, or a required migration/assurance
+  gate. Their owning contracts define the guarantee; YAGNI cannot silently
+  weaken it.
+- Minimise only ceremony owning no guarantee: duplicate gates, speculative
+  abstractions, and uncommitted platforms/knobs.
+- Never compress domain names, non-obvious why, or governing conventions.
+- Never delete by confidence. Prove static/runtime/reflection/config/generated/
+  external consumer absence or completed deprecation; unknowns stay or route to
+  migration/refactor ownership.
 
-## Minimal vs unfinished
+## Final cut audit
 
-Before shipping, put every cut on the right list. **Minimal:** fewer abstractions, files, dependencies, lines — for the *same working behaviour*. **Unfinished:** missing behaviour, stubs, unhandled cases, untested logic, deleted-but-needed code, code so compressed the next reader must reverse-engineer it. Cutting from the first list is the skill; cutting from the second is the failure this skill exists to stop.
+**Minimal** removes abstractions, files, dependencies, or lines while preserving
+all guarantees. **Unfinished** removes behavior or inherited commitments, or
+leaves stubs, unhandled paths, untested logic, or unreadable code. Cut only from
+the first list.
 
 ## The one exception
 
-A throwaway spike answering a single question, or pure config/content with no logic — there's no task-correctness to protect, so minimise freely. Everything with real behaviour gets the full discipline.
+A throwaway spike answering a single question, or non-behavioral config/content,
+has no task behavior to scope; minimise freely. Everything that affects behavior
+gets the full discipline.
 
-For the ladder in depth, worked minimal-vs-bloated examples, and the full carve-out list, see `references/yagni-in-depth.md`.
+For the ladder in depth, examples, and carve-outs, see `references/yagni-in-depth.md`.

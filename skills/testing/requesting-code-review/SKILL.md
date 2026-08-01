@@ -1,57 +1,99 @@
 ---
 name: requesting-code-review
-description: Use when a non-trivial change reaches a done boundary — before calling it complete, committing, merging, or opening a PR, not only when you already want fresh eyes. Skip a trivial mechanical diff (rename, version bump, config one-liner) — self-review instead.
+description: "Use when an exact candidate reaches a done/integration boundary, or an explicit independent review is requested for one frozen state. At done, completion evidence precedes review and review precedes final claims or branch materialization, publication, and integration. Explicit keep/discard and PR-only close/reopen are branch-state actions, not readiness review. Non-trivial work needs independent review; proved mechanical work uses revision-bound self-review. Skip an unfinished reversible checkpoint unless review was explicitly requested."
 ---
 
 # Requesting Code Review
 
-Get a change reviewed by fresh eyes before it merges. The reviewer sees the diff, not your reasoning — so its judgement is independent of the story you told yourself while writing it.
+Challenge the exact candidate independently. Legal sequence: `verified →
+references read → identity frozen → nonempty dispatch receipt → poll receipt →
+report → receiving-code-review`. Never announce/wait before a receipt exists.
+Any candidate or bound review-input change voids the verdict.
 
 ## When to use
 
-- A change is finished and about to be merged, shipped, or called done — and it carries real risk: logic, a boundary, anything a reader could misread.
-- **Skip** for a trivial mechanical diff (a rename, a version bump); a quick self-review against the checklist below is enough. Not every change earns a full dispatch.
-
-## Review depth — decide before you dispatch
-
-Depth scales with the change's risk and blast radius, not wall-clock time; the user can also name it ("quick look" vs "full review"):
-
-- **Shallow** — a small, low-risk, or mechanical diff: the self-review checklist below, no dispatch.
-- **Standard** (default) — real logic or a boundary: the breadth pass (`references/code-reviewer.md`) plus the specialists the diff actually touches.
-- **Deep** — wide blast radius, hard to reverse, or a security surface (or the user asks for exhaustive): the breadth pass, *every* relevant specialist, `security-audits` if it crosses a trust boundary, plus an **adversarial pass** — independent reviewers prompted to *refute* the "ready to merge" verdict, so a confident-but-wrong review doesn't slip through.
-
-Unsure? Default to Standard; escalate to Deep the moment the change is hard to undo.
+- Before an exact candidate is called complete or moves toward integration.
+- On an explicit request to review one exact frozen state; that verdict does not
+  call an unfinished checkpoint complete.
+- `finishing-a-branch` consumes depth before source materialization,
+  publication, or integration. Explicit keep/discard and PR-only close/reopen
+  use its identity/authority gates without readiness review.
+- A reversible checkpoint is not done merely because it was authorized.
+- Only a proved no-surface-change mechanical diff uses self-review.
+- A high-risk transformation uses `references/high-risk-review.md` unless its
+  exact candidate has the direct recorded exception defined there; one final
+  review of an unreadable aggregate diff is insufficient.
 
 ## Procedure
 
-1. **Pin the scope.** Establish the review range as a diff, `base..HEAD`. The diff is the unit — the reviewer reads what changed, not the whole repo.
-2. **Dispatch a fresh-context reviewer.** Hand it `references/code-reviewer.md`, the diff *range* (`base..HEAD` for it to expand itself — not a pasted diff, which parks the whole change in the costliest context), the originating requirement (issue, spec, or plan), and the tier from *Review depth* above. It must not inherit your session — independence is the whole point.
-3. **Review on two axes, kept separate** (the reviewer can run them as parallel passes):
-   - **Standards** — does it match the project's conventions, style, and quality bar? Read the project's conventions file and linter/formatter config, not memory.
-   - **Spec** — does it actually do what was asked? Code can be clean and still build the wrong thing.
-4. **Read the verdict.** The reviewer returns severity-tiered findings (Critical / Important / Minor), each with a disposition (blocking / advisory) and its evidence, then an explicit *Ready to merge? Yes / No / With fixes* — never a bare "looks good". The return is the actionable part only; the full report (including what was verified clean) is a file the reviewer names, so re-checks and fix dispatches read the file, not a re-pasted worklog.
-5. **Act on the verdict via `receiving-code-review`** — verify each finding against the code and respond on the merits, never by deference. That skill owns the responding discipline.
+1. **Bring evidence first.** Invoke `verifying-completion`; run current required
+   checks and bind exact state/output/failures. Review challenges, never replaces,
+   completion evidence.
+2. **Freeze the candidate.** Stop writers; read/apply
+   `references/review-candidate.md`. Its one canonical result identity must equal
+   completion's state byte-for-byte or return to verification. Use exactly one
+   working-tree/checkpoint/integrated mode and full identity. Keep descriptor,
+   reports, attempts, and controlled artifact/access/storage/egress/retention/
+   cleanup state outside the candidate.
+3. **Freeze depth and roles.** Give every required/omitted role a stable ID;
+   omission needs evidence, owner, expiry, compensation, and approval.
+   - **Shallow:** trivial mechanical self-review.
+   - **Standard:** one independent breadth reviewer plus relevant specialists.
+   - **Deep:** breadth, relevant specialists/security audit, and an independent adversarial pass.
+   - **High-risk transformation:** separate implementer, equivalence specialist, at least two independent adversarial reviewers, and separate fixer.
+4. **Run depth.** Shallow uses the self-review below with no dispatch. Otherwise
+   read `references/code-reviewer.md` and send it plus raw evidence through a
+   callable action without weakening read-only/full-identity/final-receipt rules.
+   Only a returned nonempty ID means dispatched. Empty/refused/unavailable stays
+   pending—never self-review or poll an empty target. A configured action grants
+   no new disclosure boundary. Poll exact IDs to deadline; non-success waits for
+   worker/descendant/effect quiescence, quarantines partials, and links retries
+   while rejecting predecessor late results. Success needs one current report.
+5. **Traverse by evidence.** Account for the complete inventory and every
+   human-authored change. Generated/unreviewable ranges use source mapping,
+   structural gates, and risk samples under the high-risk contract; follow
+   callers/contracts/history/tests/failures only when evidence requires.
+6. **Require bound findings.** Each names severity/disposition, violated
+   requirement, project standard, or specialist invariant; reproduction/gate;
+   evidence; and correction. Verdict and final structured receipt carry full
+   candidate/context identities. Reconcile every
+   role/attempt; missing, findings, inconclusive, non-success, or conditional
+   ready blocks this candidate.
+7. **Receive every report through `receiving-code-review`** before response,
+   disposition, or conclusion—even `not ready` with no edit. Any fix or bound
+   input change invalidates the verdict. Focused re-review is a fresh invocation
+   with verification, references, identity, and receipt; never dispatch it ad hoc.
 
-## Specialist depth passes (optional)
+## Specialist passes
 
-`references/code-reviewer.md` is the breadth pass — dispatch it every time. For a higher-risk diff, run one or more specialists *in parallel* alongside it (see `dispatching-parallel-agents`): each goes deep on one axis the breadth pass only skims and folds severity-grouped findings into that single merge verdict. Pick by what the diff touches — don't run all four by reflex.
+Use risk-required axes:
+`references/silent-failures-reviewer.md`,
+`references/type-design-reviewer.md`,
+`references/test-coverage-reviewer.md`, and
+`references/comment-accuracy-reviewer.md`. High-risk equivalence uses
+`references/equivalence-reviewer.md`; trust changes invoke `security-audits`.
+When a candidate adds or expands enduring owned surface, or an explicit
+simplification review is requested, use `references/yagni-reviewer.md`. Broad
+review owns unrequested scope; type review owns invariant-specific ceremony;
+existing-code audits belong to `complexity-audit`. Assurance challenge belongs
+to `verification-strategy`; generic review cannot replace a specialist verdict.
 
-- `references/silent-failures-reviewer.md` — error handling: swallowed or over-broad catches, masking fallbacks, lost propagation.
-- `references/type-design-reviewer.md` — encapsulation and invariants: can a caller construct an illegal state?
-- `references/test-coverage-reviewer.md` — behavioural gaps in the diff (error paths, boundaries, negative cases) and tests over-coupled to implementation.
-- `references/comment-accuracy-reviewer.md` — comments that no longer match the code, or explain "what" instead of "why".
+## Self-review for trivial diffs
 
-If the diff touches a **trust boundary** — auth, attacker-controlled input, secrets, data exposure — run `security-audits` alongside the breadth pass; that axis is its own skill, not one of the reviewer files above.
-
-## Self-review checklist (for diffs too small to dispatch)
-
-- Does it do what was asked, and only that?
-- Any value read before it's set, any error swallowed, any edge unhandled?
-- Would a stranger read it the way you intend?
+- Bind `self-reviewed: ready / not ready` to the exact candidate digest and
+  confirm its complete change does only what was requested.
+- Are untracked/generated files and affected callers accounted for?
+- Did a real structural gate run on the exact candidate?
+- `not ready` never hands off: upgrade a false mechanical premise, or fix the defect and restart verification/review.
 
 ## Common mistakes
 
-- Reviewing the whole repo instead of the diff — slow, off-target, scope creep.
-- Passing the reviewer your reasoning — it then inherits your blind spots instead of catching them.
-- Accepting a vague verdict ("looks good") — no severity, no decision, no value.
-- Letting the reviewer return its whole worklog — the orchestrator's context is the costliest; actionable findings in the return, the full report in a file.
+- Treating gates, workspace size, urgency, or completion pressure as an
+  independent reviewer or downgrade permission.
+- Inventing delegation authority, or treating an action as disclosure consent.
+- Asking a reviewer to mutate the frozen candidate; destructive challenge runs
+  only in a reviewer-owned copy or against retained evidence.
+- Filling incompatible high-risk roles without a direct recorded exception.
+- Applying fixes while review continues, so nobody reviewed one stable candidate.
+- Writing receipts into the frozen candidate creates a new candidate and voids
+  the verdict.

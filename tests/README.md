@@ -1,9 +1,10 @@
 # tests/
 
 The skills are portable Markdown, but **whether one actually fires, and whether
-it changes what gets built, are facts about a specific harness**. So everything
-here drives a real CLI. The deterministic, portable gate lives in `scripts/sh/`
-and runs in CI; nothing in this folder does.
+it changes what gets built, are facts about a specific harness**. Live runners
+therefore drive a real CLI. Small offline tests cover deterministic detector,
+hook, and install logic. The portable structural gate lives in `scripts/sh/`
+and runs in CI; live provider tests do not.
 
 ## Layout
 
@@ -13,6 +14,7 @@ tests/
   run-all-activation.sh   the whole activation set for a harness
   run-flow.sh             multi-turn sequences, one resumed conversation
   run-behavioral.sh       does the skill change what gets BUILT? (two arms)
+  run-implementation-guard.sh  pre-edit hook policy             (offline)
   run-stop-nudge.sh       done-boundary hook policy              (offline)
   run-plugin-smoke.sh     install / marketplace mechanics        (offline)
   harnesses/<name>.sh     ONLY what differs per CLI: install, invoke, detect
@@ -23,7 +25,7 @@ tests/
     behavioral/<skill>.sh        fixture + opening + assertions, one file
 ```
 
-Every runner takes `--harness claude-code|codex|kimi-code`:
+The harness-backed runners take `--harness claude-code|codex|kimi-code`:
 
 ```bash
 tests/run-activation.sh     --harness claude-code --scenario-file common/yagni
@@ -59,9 +61,9 @@ behavioural claim is a comparison — RED loads the skills from a `git worktree`
 at `--base`, GREEN from the working tree, so the before-arm stays reproducible
 after the change is committed.
 
-**Offline** — `run-activation.sh selftest`, `run-stop-nudge.sh` and
-`run-plugin-smoke.sh` need no model. Prefer them: they are the only tests here
-that are deterministic, and they are free.
+**Offline** — `run-activation.sh selftest`, `run-implementation-guard.sh`,
+`run-stop-nudge.sh`, and `run-plugin-smoke.sh` need no model. Prefer them: they
+are deterministic and free.
 
 ## Adding things
 
@@ -86,22 +88,24 @@ Measured on this repo:
 
 | Kind | Runs | Per run | Full sweep |
 | --- | --- | --- | --- |
-| Activation, one harness | 32 scenarios | ~1–2 min | ~40–60 min |
-| Activation, all three | 96 | ~1–2 min | **2–4 h** |
+| Activation, one harness | 33 scenarios | ~1–2 min | ~35–70 min |
+| Activation, all three | 99 | ~1–2 min | **2–4 h** |
 | Behavioural, one scenario, one harness, one arm | 1 | ~5–40 min | — |
-| Behavioural, all scenarios × 3 harnesses × 1 arm | 30 × 3 | ~5–40 min | **15–40 h** |
+| Behavioural, all scenarios × 3 harnesses × 2 arms | 6 × 3 × 2 | ~5–40 min | **3–24 h** |
 
 So the behavioural matrix is **deliberately not filled**. Scenarios exist for the
 skills where the failure is both likely and mechanically checkable; the rest are
 covered by activation only, and that limit is stated rather than papered over.
-Adding a behavioural scenario is cheap; *running* the full matrix is not.
+Retain a behavioural scenario only for an observed failure with a stable,
+mechanically checkable verdict. Running the full matrix is deliberately not the
+default.
 
 Practical guidance:
 
 - **Default to the offline tests.** They are free, deterministic, and catch real
   defects — a broken detector, a hook that stopped firing, a manifest drift.
 - **Run one behavioural arm before a full sweep.** If GREEN fails on one harness,
-  the other 89 runs will not tell you anything new yet.
+  the remaining matrix will not tell you anything new yet.
 - **Budget a sweep deliberately.** `run-all-activation.sh --harness X` is the
   cheapest broad signal; reach for the behavioural matrix only when a skill's
   *applied* behaviour is what changed.

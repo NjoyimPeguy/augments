@@ -18,6 +18,22 @@ else
 
   [ "$(jq -r '.name // ""' "$manifest")" = "augments" ] || err "plugin name is not augments"
   [ -n "$(jq -r '.version // ""' "$manifest")" ] || err "Kimi manifest has no version"
+  while IFS= read -r field; do
+    err "unsupported Kimi manifest field present: $field"
+  done < <(
+    jq -r '
+      keys_unsorted[] as $field
+      | select(
+          [
+            "name", "version", "description", "keywords", "author",
+            "homepage", "license", "skills", "sessionStart", "mcpServers",
+            "hooks", "commands", "interface", "skillInstructions"
+          ]
+          | index($field) | not
+        )
+      | $field
+    ' "$manifest"
+  )
 
   for field in displayName shortDescription longDescription developerName websiteURL; do
     [ -n "$(jq -r ".interface.$field // \"\"" "$manifest")" ] || err "missing interface.$field"
@@ -62,10 +78,6 @@ else
   [ -n "$instructions" ] || err "missing skillInstructions"
   for token in AskUserQuestion TodoList Agent Skill; do
     case "$instructions" in *"$token"*) ;; *) err "skillInstructions does not bind $token" ;; esac
-  done
-
-  for field in tools apps inject configFile; do
-    [ "$(jq -r "has(\"$field\")" "$manifest")" = "false" ] || err "unsupported Kimi runtime field present: $field"
   done
 fi
 

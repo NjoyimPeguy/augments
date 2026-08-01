@@ -1,11 +1,26 @@
 # Coding-standards section template
 
-Copy this into the project's coding-standards section (per `../SKILL.md`, step 5) and fill every `{{placeholder}}`. Delete the guidance italics as you fill; what remains is the standard itself. Keep it short — a section nobody reads governs nothing.
+Copy this into the project's coding-standards section (see `../SKILL.md`) and
+fill every `{{placeholder}}`. Delete the guidance italics as you fill; what
+remains is the standard itself. Keep it short — a section nobody reads governs
+nothing.
 
 ## The template
 
 ````markdown
 ## Coding standards
+
+**Status:** {{draft | proposed; lifecycle stays external}}
+**Normative version:** {{immutable content identity}}
+**Predecessor:** {{prior normative identity or none; proposal only links it}}
+**External decision ledger:** {{location or returned record; pending / changes
+requested / approved / rejected / cancelled / superseded by approved normative
+identity, with trusted exact-version evidence}}
+**External adoption ledger:** {{location or returned record; pending / in force /
+suspended / superseded, with exemplar/enforcement identities and freshness}}
+**Stable rule IDs and successor delta:** {{each vocabulary/pattern/never/
+exception/exemplar/enforcement ID as added / changed / removed / preserved;
+removed IDs need owning approval}}
 
 ### Vocabulary
 
@@ -44,8 +59,22 @@ Example — the pattern as it should look:
 
 ### Exemplar
 
-`{{path/to/exemplar-file}}` does all of the above right. When in doubt, write
-the new code so it could sit next to this file without looking out of place.
+`{{path/to/exemplar-file, or pending first artifact + owner}}` does all of the
+above right. A pending greenfield exemplar blocks an adoption claim until its
+checks and rubric pass.
+
+### Enforcement
+
+| Rule | Gate or review rubric | Owner | Failure response |
+| --- | --- | --- | --- |
+| {{automatable rule}} | `{{command/check}}` | {{role}} | {{block/fix}} |
+| {{judgment rule}} | {{named rubric}} | {{review role}} | {{block/exception}} |
+
+**Precedence:** {{which project instruction wins on conflict}}
+
+**Exceptions:** {{approver, required reason/scope/expiry, compensating check}}
+
+**Drift review:** {{cadence or trigger, owner, and exemplar-validation action}}
 ````
 
 ## Worked example (filled, minimal)
@@ -74,13 +103,23 @@ the new code so it could sit next to this file without looking out of place.
 ### Exemplar
 
 `src/transfers/create-transfer.ts`
+
+### Enforcement
+
+- Formatter/linter and type checks block automatable violations.
+- The architecture reviewer applies the vocabulary/layering rubric.
+- The technical lead owns time-bounded exceptions and quarterly exemplar review.
 ```
 
 ## Edge cases and failure patterns
 
 - **A real project has legacy synonyms everywhere.** Standardize on the term going forward and rename opportunistically on touch; don't schedule a mass rename as a condition of adopting the standard.
-- **Two candidate canonical terms, both in use.** Pick one by fiat — which one matters less than that there is one. Record the loser as banned so search finds both during the transition.
+- **Two candidate canonical terms, both in use.** If domain meaning differs,
+  route to `data-model`. Otherwise propose one code representation with
+  transition evidence and obtain the standards decision; never self-select it.
 - **A pattern with two legitimate uses** (e.g. two error idioms, one for the CLI edge, one for the core) is fine — say where each applies. "One way" means one way *per situation*, not one way per universe.
-- **The exemplar drifts.** Re-point it the moment a better file exists; an exemplar that no longer passes review teaches the wrong standard.
+- **The exemplar drifts.** Suspend adoption when it fails. Propose a successor
+  standards version naming the new exemplar, approve it, then rerun adoption;
+  never silently re-point an immutable standard.
 - **Failure: the standards file becomes a style guide.** Indentation, brace placement, and import order belong to the formatter and linter — automatable, so automate them. The standards section is only for what a machine can't enforce: vocabulary, layering, pattern choice.
 - **Failure: nevers with no teeth.** Every "never" must be something a reviewer will actually send back. A never nobody enforces trains readers to ignore the whole list.

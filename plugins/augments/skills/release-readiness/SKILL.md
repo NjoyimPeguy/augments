@@ -1,38 +1,80 @@
 ---
 name: release-readiness
-description: "Use after a change is merged and before it ships to production — the pre-deploy gate an agent can check from the repo: CI green on the merged result, reversible migrations, a named rollback target, risky behaviour behind a flag, config and secrets present, downstream breakage flagged. Skip for a change that doesn't reach a running system."
+description: "Use after integration and before each release promotion verdict—initial canary/stage, expansion, full deployment, publication, or distribution—for services, applications, libraries, packages, CLIs, and artifacts. Skip only work with no releasable or running artifact."
 ---
 
 # Release Readiness
 
-The deploy command is environment-specific — run by your platform's tooling or your hands. This skill is the portable layer *before* that: the checks an agent can actually reason about, so you don't ship a change that can't be rolled back or that silently breaks something downstream.
+Merged is not releasable. Judge the exact artifact or artifact set that will be
+deployed or distributed, under the release gates and recovery conditions that
+protect its real consumers. This skill decides readiness; it does not perform
+deployment or publication.
 
 ## When to use
 
-- A change is merged (or a hotfix is cut) and about to go to production.
-- **Skip** for a change that doesn't reach a running system (internal docs, a library change behind no release).
+- An integrated candidate is approaching an initial or later release promotion.
+- **Skip** internal work with no release surface. A library/package release is
+  not a skip merely because it has no running production service.
 
 ## The readiness gate
 
-Walk each item. For each, the answer is *yes, with evidence*, *not applicable*, or *surface it to the human* — never a silent assumption.
+Use `references/release-candidate.md` and `references/gate-details.md`. Every
+required row is evidenced, not-applicable with rationale, or blocking.
 
-1. **CI is green** on the merged result — the integration checks, not just local tests.
-2. **Acceptance criteria verified** — every criterion from the spec or issue actually met, not assumed (lean on `verifying-completion`).
-3. **Migrations are reversible** — any schema or data migration has a tested down-path, or the rollback is documented.
-4. **Rollback target is named** — the exact commit or tag to revert to, and how.
-5. **Risk is gated** — non-trivial new behaviour sits behind a feature flag or a phased rollout, not flipped on for everyone at once.
-6. **Config and secrets** changes are documented and present in the target environment — no "works on my machine" variable.
-7. **Changelog / release notes** written, even one line — a release nobody can describe is one nobody can debug.
-8. **Breaking changes flagged** to dependents — an API surface, event schema, or data change something downstream relies on.
-9. **Downtime** is either none, or a window is scheduled and communicated.
+1. **Issue one immutable release-input descriptor.** Bind the exact promotion,
+   source/contracts, expected artifacts and gate cells, review/security inputs,
+   source/live queues, deviations/prior-stage inputs, target/consumer state,
+   effect contracts, and approver rule. Keep later attempts and evidence outside
+   it; never expose secret values.
+2. **Freeze the artifact set.** Through controlled attempts, accept one terminal
+   successful build per required platform/package member from the recorded
+   source; preserve every identity/digest, contents, dependencies, build inputs,
+   provenance, and storage location. Test/promote that set—not a later rebuild.
+3. **Verify the artifacts themselves.** Install/start/load each required member
+   through representative consumer paths and inspect packaging, configuration,
+   migrations, and generated content. Source-tree green cannot substitute for
+   artifact green.
+4. **Run every gate protecting this promotion.** Execute its stable expected
+   inventory through `verifying-completion`; require current differential/
+   acceptance, static/dynamic safety, security, performance/resource,
+   test-inventory, and platform/build-mode evidence. Reconcile migration shards,
+   source/live changes, and every approved omission within the matrix's lag bound.
+5. **Exercise cutover and recovery.** Prove snapshot/high-water catch-up,
+   ordering/idempotency, reconciliation/lag, mixed-version data integrity,
+   retained artifacts, rollback/restoration, and RPO/RTO by observed evidence.
+6. **Prove target readiness.** Verify configuration and secret presence/shape,
+   permissions, capacity, dependency availability, observability, and deploy or
+   publication ordering without exposing secret values.
+7. **Bind rollout control.** Require telemetry, cohorts, thresholds, soak,
+   abort, rollback, and in-flight behavior from the owning assurance,
+   migration, or release policy. Missing policy blocks; readiness does not
+   invent or lower it. Expansion/full release requires observed prior-stage
+   evidence.
+8. **Account for consumers.** Verify compatibility and required communication,
+   release/operator notes, and downstream certification. For libraries/packages,
+   install the packed artifact in a clean representative consumer and verify
+   public API/ABI/schema/runtime/metadata obligations.
+9. **Disposition every deviation.** Record impact, owner, compensating gate,
+   expiry, rollback trigger, and exact approval receipts. Lowering a gate to make
+   the candidate pass creates a new assurance decision; it is not a release fix.
+10. **Issue a promotion-bound verdict.** Bind status to release-input,
+    artifact-set, terminal-evidence, approval, and freshness identities. Recompute
+    every bound input before a decision/action; any drift invalidates both.
 
-An unchecked item is a blocker or an explicit, owned risk — never something you skip quietly.
+## Hard stops
+
+- Release tests ran on source or a different/incomplete artifact set.
+- Release-input, artifact-set, terminal-evidence, or verdict identity is missing,
+  stale, incomplete, or changed.
+- Any required cell/evidence/change is missing, duplicated, generically skipped/
+  rejected, unresolved, unowned, misordered, or beyond its bound.
+- Decommission is partial, failed, awaiting/failed validation, or unresolved.
+- Rollback names only source, not a restorable artifact and data/config state.
+- The fixer, builder, or deployer self-accepts an unapproved deviation.
+- “Ready” is treated as authority to deploy or publish.
 
 ## Common mistakes
 
-- Treating "tests passed locally" as "CI is green" — different gates.
-- Shipping a forward-only migration with no way back.
-- A big-bang rollout of risky behaviour with no flag and no canary.
-- A silent breaking change — the dependent finds out in production.
-
-For per-item checks, fill-in templates, and the common silent failure of each gate item, see `references/gate-details.md`.
+- Rebuilding after tests and assuming the bytes are equivalent.
+- Treating local/pre-merge green as release evidence, or skipping package gates.
+- Calling a bare flag a rollout plan, or an unbounded recovery promise rollback.

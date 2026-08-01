@@ -9,26 +9,43 @@ Copy this, fill every `{{placeholder}}`, delete nothing silently — a section y
 ```markdown
 # Handoff: {{work item name}}
 
+## Storage controls
+{{location, intended recipient/storage boundary, disclosure authority, data
+class, allowed access, retention/expiry, exact cleanup targets/effects/
+recoverability, cleanup owner, cleanup authority, and pending/completed state}}
+
+## Handoff identity
+- ID / content identity: {{stable ID and digest}}
+- Created / sender / intended recipient and scope: {{exact transfer facts}}
+- Predecessor: {{prior handoff identity, or "none"; records are append-only}}
+
 ## Goal
 {{what this work is trying to achieve, in one or two lines — the WHY}}
 
-## State
-- Branch: {{branch name}}
-- Uncommitted: {{files changed but not committed, or "none"}}
+## State identity
+- Plan/artifact: {{path and version}}
+- Branch / commit / workspace: {{exact identity}}
+- Workspace inputs: {{staged/unstaged/untracked/relevant ignored/generated paths
+  plus controlled external gate-input identities, or "none"}}
 - Done: {{what is complete and verified — cite the check that proved it}}
 - In flight: {{what is half-done, exactly where it stopped}}
 
-## Decisions
-{{choices already made and their reasoning, one per line — so the next session doesn't relitigate them}}
-- {{decision}} — because {{reason}}
-- Open question: {{a decision still pending, and the options on the table}}
+## Decisions and authority
+- {{decision and scope}} — because {{reason}} — authorized by {{direct answer or standing default}}
+- Pending: {{decision or permission, named options, and who can answer}}
 
-## Gotchas
+## Evidence
+- {{claim}} — `{{command/action}}` from `{{cwd}}` on {{tree/artifact,
+  environment, timestamp}} → {{result, stale, or unrun}}
+
+## Gotchas and permissions
 {{traps discovered, with file and line references so they can be verified}}
 - {{file:line}} — {{what bites and why}}
+- {{external/destructive action still awaiting permission, or "none"}}
 
-## Next step
-{{the single concrete action to take first — a command to run, a file to edit, a test to write}}
+## Resume first action
+Refresh repository, artifact, approval, and time-sensitive external state. Then:
+{{single mutation to take only if it remains authorized}}
 
 ## Suggested skills
 {{which skills the next session should reach for, and at what point}}
@@ -50,25 +67,46 @@ Good handoff — the state to resume from:
 ```markdown
 # Handoff: cache invalidation for the session store
 
+## Storage controls
+Harness handoff store; direct task transfer covers the named successor session;
+internal engineering; project-team access; delete only this handoff record after
+the task merges or in 14 days; deletion effects are loss of the resume snapshot,
+recoverable from retained task artifacts; current session owner has not yet
+received cleanup authority, so cleanup is pending.
+
+## Handoff identity
+- ID / content identity: session-idle-expiry-h4 / store-recorded digest
+- Created / sender / intended recipient and scope: 2026-07-30 10:05 UTC /
+  current task session / successor task session, resume-only
+- Predecessor: session-idle-expiry-h3; this is an append-only successor
+
 ## Goal
 Entries in the session store expire on idle timeout, not just on absolute TTL.
 
-## State
-- Branch: fix/session-idle-expiry
+## State identity
+- Plan/artifact: docs/plans/session-expiry/ at revision 3
+- Branch / commit / workspace: fix/session-idle-expiry / a1b2c3d / primary checkout
 - Uncommitted: src/store/memory.js — half-done sweep pass, not yet wired in
 - Done: TTL-based expiry (commit a1b2c3d), covered by store-expiry test
 - In flight: idle-expiry sweep — the sweep function exists but is never scheduled
 
-## Decisions
-- Sweep-based expiry over per-read checks — because per-read checks made the hot path measurable slower
-- Open question: sweep interval — 30s vs 60s, needs a load test to decide
+## Decisions and authority
+- Sweep-based expiry — direct option selected for revision 3 after the load comparison
+- Pending: sweep interval — 30s vs 60s; no answer yet
 
-## Gotchas
+## Evidence
+- TTL behavior — `npm test -- store-expiry` from the repository root on a1b2c3d,
+  local test environment, 2026-07-30 10:00 UTC → 12 passed
+
+## Gotchas and permissions
 - src/store/memory.js:88 — expiry timestamps are stored in seconds, not milliseconds; mixing them silently expires entries 1000x early
 - tests/store-expiry.test.js — the fake-clock helper must be reset between cases or tests pass individually but fail together
+- No external or destructive permission pending
 
-## Next step
-Wire `scheduleSweep()` into store construction at src/store/index.js:14, then run the store-expiry test.
+## Resume first action
+Refresh branch/status, confirm plan revision 3 is still current, and rerun the
+store-expiry baseline. Then ask for the pending interval decision; do not wire it
+from this handoff alone.
 
 ## Suggested skills
 - test-driven-development — the sweep scheduling has no failing test yet; write one first

@@ -1,5 +1,13 @@
 # Alignment Brief: {{topic}}
 
+- **Status:** {{draft | proposed; lifecycle stays external}}
+- **Normative version:** {{immutable content identity}}
+- **Predecessor:** {{prior normative identity or none; proposal only links it}}
+- **Decision owner:** {{person or accountable role}}
+- **External decision ledger:** {{controlled location or returned record;
+  pending / changes requested / approved / rejected / cancelled / superseded by
+  approved normative identity, with trusted evidence bound to this version}}
+
 **Goal:** {{1–2 sentences — what we're building and why}}
 
 **Decisions:**
@@ -17,4 +25,8 @@
 
 ---
 
-*Source: interview-me on {{request/date}}. Keep this ≤ ~40 lines. If it grows past that, you're writing a spec, not a brief — stop and hand off to `writing-plans`.*
+*Source: interview-me on {{request/date}}. Keep this ≤ ~40 lines. Draft authority
+is not approval. Lifecycle state never mutates this normative brief. Material
+invalidity marks it blocked/changes-requested externally; only an approved
+replacement supersedes it. If this grows, hand approved intent onward instead of
+hiding a spec here.*

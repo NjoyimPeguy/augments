@@ -1,10 +1,17 @@
 # Task NN: {{name}}
 
+**Task ID:** `{{stable non-positional ID; never renumber or recycle}}`
 **Objective:** {{what this task accomplishes — one sentence}}
-**Depends on:** {{none, or task numbers that must finish first — lets a dispatcher parallelize}}
+**Depends on:** {{none, or stable task IDs that must finish first}}
 **Files:** `path/to/file` (new) · `path/to/other` (edit)
+**Exclusive ownership/effects:** {{files, generated outputs, data, processes,
+external state, and evaluator artifacts this task may mutate; overlaps require
+an explicit dependency and one transition owner}}
 **Context:** {{key files or entrypoints to read first for this task — plus any spec artifact that defines it (a failing test, a mockup page, a reference implementation to port). Point at the path; do not paraphrase it back into prose. Or "none".}}
 **Suggested tier:** {{small | medium | large}} — {{mechanical | logic | design}}
+
+{{For a high-risk transformation, also fill the shard/phase fields from
+`scalable-transformation.md`; do not clone one task file per homogeneous item.}}
 
 ## Change
 
@@ -19,7 +26,12 @@
 
 ## Evaluator
 
-The deterministic pass/fail gate — declared now, run on the built code.
+The precommitted pass/fail gate—preferably executable and deterministic—run on
+the built result.
+
+**Evaluator identity/owner:** {{immutable gate/rubric identity, owner, and
+whether this task may edit it. If yes, exact permitted scope plus required
+pre-change RED or deliberate falsification evidence}}
 
 ```bash
 {{command}}
@@ -27,6 +39,10 @@ The deterministic pass/fail gate — declared now, run on the built code.
 
 Expected: {{exit 0 / named tests pass / HTTP 200 body X / query returns Y}}
 
-{{If the spec shipped a failing test for this requirement, that test IS the Evaluator — run it by name; don't write a second one beside it. If the spec shipped a rubric, use it verbatim.}}
+{{If the spec shipped a failing test for this requirement, that test IS the
+Evaluator—run it by name; don't write a second one beside it. If the spec
+shipped a rubric, use it verbatim and name the evaluator plus observation
+record.}}
 
-{{No deterministic check possible (design/AI work)? Replace the command with a rubric pass-list — explicit criteria, each one checkable.}}
+{{No deterministic check possible? Replace the command with a rubric pass-list:
+explicit criteria, named evaluator, and recorded observations.}}

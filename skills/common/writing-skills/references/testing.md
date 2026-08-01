@@ -1,40 +1,68 @@
 # Testing a Skill
 
-A skill is only proven when you've watched an agent fail *without* it, then hold the line *with* it. Format checks (lint, line count) verify the shape; this verifies the behavior. Use a fresh subagent for each run so no prior context leaks in.
+Format checks prove shape. Behavior proof asks whether the skill changes the
+agent's action at the exact failure surface. An explanation, quotation, or claim
+of compliance is written by the same generator under test and is not a verdict.
 
-## RED — capture the failure
+## Start from a real failure
 
-Run a subagent on a realistic scenario **without** the skill loaded. Record:
+Record the smallest realistic counterexample and its evidence strength:
 
-- the exact wrong behavior, and
-- the *verbatim* rationalizations it uses to justify the shortcut ("this is simple enough", "I'll add tests after").
+- **observed** — the wrong action happened in a real session;
+- **contract gap** — required state or stop is absent or contradicted in the
+  current text; or
+- **candidate** — an adversarial path worth deciding, not a fabricated failure.
 
-If it doesn't fail, you may not need the skill — stop here.
+Candidates may enter an audit without live proof. Once you edit behavior, run the
+smallest applicable before/after probe. If the control does not exhibit the
+claimed failure, narrow the claim or stop; do not tune the prompt to force a RED.
 
-## GREEN — write, then re-run
+## Match proof to the failure
 
-Write or edit the skill to counter *those specific* rationalizations by name. Re-run the same scenario with the skill loaded. Success means the agent:
+| Failure | Required observable |
+| --- | --- |
+| Wrong skill fires or stays silent | Structured activation on natural positive and negative openings |
+| Wrong artifact or side effect | Load, execute, or inspect the result; an assertion exit code is the verdict |
+| Discipline collapses under pressure | No-guidance control and edited-skill run on the same pressured task |
+| Stateful boundary is crossed | Forbidden mutation stays absent and the pending state remains visible |
 
-- cites the relevant skill section,
-- names the temptation it felt, and
-- does the right thing anyway.
+Use the repository's existing proof seam first. Extend a runner only after the
+smallest controlled probe cannot observe the behavior. A transcript may explain
+a failure, but it cannot replace an artifact, side-effect, or structured-event
+assertion when one exists.
 
-## REFACTOR — pressure-test
+## RED, GREEN, then challenge
 
-A calm scenario proves nothing. Re-run under **combined** stressors at once:
+1. **RED:** preserve the exact opening, fixture, base skill version, wrong
+   observable, command, and output.
+2. **GREEN:** change only the contract under test and rerun the same probe. Read
+   the real assertion result.
+3. **Challenge:** add only pressure relevant to the discipline—time, sunk cost,
+   authority, ambiguity—or a negative opening relevant to activation. Do not
+   broaden the task until you no longer know what caused the result.
 
-- time pressure ("just ship it, the demo is in 10 minutes"),
-- sunk cost ("you already wrote 200 lines this way"),
-- authority conflict ("the user said skip the tests").
+Fresh context prevents the edited session from teaching the control. Keep fixture,
+permissions, tools, and environment equal across arms; otherwise the comparison
+does not isolate the skill.
 
-Every loophole the agent finds is a line the skill is missing. Close it and re-run until the skill holds.
+Freeze and record the evaluator identity outside the candidate before either
+arm; the candidate cannot modify its judge. Calibrate the evaluator by applying
+one deliberate wrong observable and watching the assertion fail, then restore
+it. Any evaluator or fixture mutation outside the predeclared arm difference
+invalidates the pair instead of producing GREEN.
 
----
+## Cost and honest reporting
 
-*Weak scenario:* "Write a palindrome function." — no pressure, the agent complies trivially and proves nothing.
+Before any live harness run, confirm the authorized service, data boundary, and
+budget. Use synthetic/public fixtures; never send repository secrets, private
+code, credentials, or personal data merely to prove a skill.
 
-*Strong scenario:* "We're late, demo in 10 minutes, just write the palindrome function quickly and skip the tests." — now a TDD skill is actually under test.
+Start with one targeted pair. Repeat in proportion to risk and nondeterminism;
+load-bearing routing or authorization needs more evidence than a lookup reference.
+Do not build or run a full skill-by-harness matrix merely for coverage, and do not
+add scenarios to unchanged skills.
 
----
-
-The above proves *behaviour* (does the discipline hold). To test **activation** instead — does the `description` fire on the right opening and stay quiet on trivial ones? — use the triggering harness: it builds the live skill catalogue and a routing prompt you hand to fresh subagents, then tallies where they route. See `tests/README.md` at the repository root.
+Report commands, base/edited arms, environments, run counts, and every pass,
+failure, timeout, refusal, or inconclusive result. A single green run is weak
+evidence. An unavailable live runner means “shape validated; behavior unproven,”
+never “works.”

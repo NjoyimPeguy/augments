@@ -1,6 +1,6 @@
 ---
 name: spec-it
-description: Use when you have a goal or feature and need detailed requirements before design — what it must do, how each is verified, and the assumptions and risks. Captures the WHAT, not the HOW; grill unknowns with interview-me first. Skip when verifiable requirements are already written down.
+description: Use when settled intent for a goal or feature needs detailed requirements before design—what it must do, how each is verified, and its assumptions and risks. Captures the WHAT, not the HOW. Skip when requirements already exist or a material decision/approval reply remains pending; interview-me owns that boundary.
 ---
 
 # Spec It
@@ -12,29 +12,66 @@ Turn an intent into a requirements spec (SRS): gather and analyze what the softw
 - You have a goal, brief, or feature request and need its detailed requirements before designing or building.
 - **Skip** for a trivial change whose single requirement is obvious — just state it and go.
 - If the intent itself is unclear, grill it first with `interview-me`; this skill assumes you roughly know what you want.
+- A reply that has not directly closed a pending material decision routes to
+  `interview-me`; this skill cannot convert it into approved requirements.
 
 ## Procedure
 
 1. **Gather the inputs.** Pull the goal or brief (from planning), read the relevant existing code to see what's already there, and grill any genuine gap with `interview-me`. Don't invent what you could have found.
 2. **State the problem** in a line or two, and link the goal it serves.
-3. **Write functional requirements as testable behaviours.** Each is something a user or caller can observe — "rejects an expired token with a 401", not "good auth". If you can't phrase it as checkable, it's a wish, not a requirement.
-4. **Add only the non-functional requirements that matter** — performance, security, accessibility, compatibility. An unbounded NFR list is noise.
-5. **Give each requirement an acceptance criterion — in the cheapest form that makes it checkable.** Prose is the fallback, not the starting point. Behaviour with observable inputs and outputs is cheapest as a *failing test* in the project's own test tree; a layout or state requirement as a *mockup page*; behaviour that already exists elsewhere as a *reference implementation* plus its deltas; a real criterion no machine can check as a *rubric* pass-list. Read [reference-forms.md](references/reference-forms.md) before choosing. A richer form must remove more ambiguity than it costs to build — don't mock up a requirement nobody would misread.
-6. **Build what you named, and confirm it runs — through the project's own command.** A criterion you promised and never wrote is worse than the prose it replaced: the spec reads as verified while nothing is. Each executable artifact must fail for the *right* reason — the behaviour is missing — not error because it never loaded, and not sit `skip`/`todo`/pending so the suite stays green: a criterion that cannot go red is not a criterion. Run the project's documented command (`npm test`, `pytest`, whatever it is), not just the file — an artifact the project's own gate never executes is not a gate. If that command is broken, fix it or say plainly that it is; a criterion behind a broken runner verifies nothing. **An open contract is not an exemption.** If the interface a test would assert isn't chosen yet, assert at the level the requirement actually fixes (*"two keys of one tenant hold independent budgets"* is true whatever the wire format), or write the test against the contract you assume and record that assumption beside it. "This is requirements-only" and "the design isn't settled" defer the test's *shape*, never its existence.
+3. **Write functional requirements as testable behaviours.** Give each a stable
+   requirement ID that successors never recycle. Each is observable—"rejects an
+   expired token with a 401", not "good auth". Uncheckable is a wish.
+4. **Carry every applicable goal/scope guardrail and obligation.** Trace trust/
+   data, security, accessibility, compatibility, operational/recovery,
+   performance/resource, and supported platform/mode requirements. Add no
+   unbounded generic NFR list.
+5. **Give each requirement the cheapest honest acceptance form.** Read
+   [reference-forms.md](references/reference-forms.md). Use an executable gate
+   only when the observable contract is settled **and** project mutation is
+   authorized; use a disposable mockup for spatial/state requirements, a
+   source-fact + preserved-invariant + intentional-delta contract for existing
+   behavior, or a rubric for judgment. Prose is correct when richer form would
+   choose design or cost more ambiguity than it removes.
+6. **Do not promise an artifact that does not exist.** If authorized to create a
+   runnable criterion now, put it in the project's real gate and run it: new
+   behavior fails for the missing behavior; preserved behavior starts green and
+   later must be deliberately falsified by TDD. If interface or mutation
+   authority is open, specify the observable, intended gate, owner, and handoff
+   instead—never invent an interface or silently edit the project.
 7. **List the edge cases and scenarios** that break a naive build — empty input, concurrency, the unhappy paths.
-8. **Record the assumptions and dependencies** — what you're taking as true, and what external systems, data, or people this relies on. An unstated assumption is a hidden risk.
+8. **Contract assumptions and dependencies.** Give each stable ID, evidence/
+   state, validation action, owner, freshness/expiry, and failure response.
+   Unresolved material state stays an open decision, never a hidden premise.
 9. **Surface the open questions and risks** — the unresolved ambiguities and requirement-level challenges that could derail the build. Naming them now is the cheapest they'll ever be.
 10. **State what is out of scope** — the requirements you are deliberately *not* covering this round.
-11. **Write the spec** to `.augments/specs/{{YYYY-MM-DD}}-{{topic}}.md` (the standard specs location; another path only if the user has set one). The file is the map: every requirement names its form and the path to its artifact, so a reader gets from requirement to check in one hop. Artifacts themselves live where they are useful — tests in the test tree, not parked beside the spec.
+11. **Write an immutable proposed spec** to the project/user path. Record its
+    normative identity, predecessor, external decision-ledger location, and every
+    requirement's real present artifact or future gate/owner. Name one accountable
+    decision owner or the required approvers, conflict resolver, and decision rule.
+12. **Obtain the exact decision on the complete spec.** Record pending/changes-
+    requested/approved/rejected/cancelled/superseded-by-approved identity
+    externally; only approved hands off. Once identity is issued, never mutate
+    it: every normative change creates a proposed successor with a per-ID
+    `added / changed / removed / preserved` delta; a removed requirement needs
+    its owning approval. An approved successor records the downstream artifact
+    inventory bound to its predecessor, invalidates stale bindings externally,
+    and blocks their use until owners revalidate or reconcile them.
 
 ## Common mistakes
 
 - Requirements with no criterion — "fast", "secure", "intuitive" prove nothing.
-- **Promising verification you never wrote** — "all criteria are automated tests under `test/`" above thirty requirements and zero test files. Write them, or say plainly they're deferred.
+- **Promising verification you never wrote** — name the real artifact, or state
+  the future gate and owner plainly.
 - Prose by reflex — restating a behaviour in a sentence when a failing test would have pinned it exactly.
-- Smuggling design in — file names, schemas, and code belong in the plan, not the spec. A *failing test* asserting observable behaviour is a requirement; one asserting an internal call you haven't designed is not. The guard is against asserting **internals**, not against picking an observable surface — don't stretch it into "the contract is open, so no test is possible."
+- Smuggling design or mutation in — a guessed endpoint, schema, internal call, or
+  project edit is not made safe by calling it an acceptance criterion.
 - A thin happy-path spec with no edge cases, assumptions, or risks — that's exactly where builds break.
 
-For a high-stakes spec, optionally dispatch `references/spec-review.md` (a fresh subagent that checks the requirements before anything is built against them).
+For a high-stakes spec, the independent review in
+`references/spec-review.md` is mandatory before approval. The reviewer must not
+be the spec's sole author.
 
-Next: for a non-trivial system the requirements flow into design (`system-architecture`, `data-model`, `ui-ux-design`); otherwise straight to `writing-plans`.
+After approval, re-route from the current phase and next missing precondition.
+Use design only for unresolved non-trivial shape and `writing-plans` only when
+an executable task contract is still missing.

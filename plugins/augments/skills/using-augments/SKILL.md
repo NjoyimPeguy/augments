@@ -1,27 +1,79 @@
 ---
 name: using-augments
-description: Use when starting any task or conversation, or whenever you're unsure which skill fits — the router that points you to the one for the current step. Does no work itself. Not for dispatched subagents executing a scoped task — they run the task, not re-orient.
+description: Use at every task opening, resume, delegated packet, material state change, or uncertain route. Selects skills from current state and preconditions. A pending decision reply that neither answers nor cancels/supersedes routes to interview-me before dependent work. Does no domain work.
 ---
 
-<SUBAGENT-STOP>
-If you were dispatched as a subagent to execute a specific, scoped task, **stop — do not use this skill** and carry on with the task you were handed.
-</SUBAGENT-STOP>
-
 <EXTREMELY-IMPORTANT>
-IF THERE IS ANY POSSIBILITY A SKILL MIGHT APPLY TO WHAT YOU ARE DOING, YOU MUST INVOKE THE SKILL BEFORE YOU ACT. THIS IS NON-NEGOTIABLE. THIS IS NOT A SUGGESTION. The only call you make is *which* skill — or, after actually scanning the list, none.
+IF A SKILL MIGHT APPLY, INVOKE IT BEFORE ACTING. Scan the current catalogue;
+choose the skill for this state or, on evidence, none.
 </EXTREMELY-IMPORTANT>
 
 # The Rule of using Augments
 
-BEFORE GIVING ANY ANSWER OR TAKING ANY ACTION (e.g., clarifying questions, exploring codebase, checking files), invoke relevant skills that fit the current step. If none of them fits, say so in one line. DO NOT ACT on confidence or momentum.
+Before any answer or action—including questions or exploration—invoke every
+skill governing the current step. If none fits, say so. Use the configured
+loading action; where a native action exists, reading its file is not invocation.
+
+<AUTHORITY-FIRST>
+Before topic/phase routing, check pending material decisions. A direct cancel,
+abandon, or supersede closes that transition; otherwise a reply selecting none
+of its accepted answers routes to `interview-me`. Praise, constraints, reasons,
+partial answers, silence, and response-mode instructions are information, not a
+choice. Independent work may proceed only inside separate authority; it cannot
+mutate the governed artifact or borrow the pending decision.
+</AUTHORITY-FIRST>
 
 ## The mental model
 
-You are a non-deterministic generator — but a good engineer's *process* is deterministic, and that is what you borrow here. A human engineer does not solve a task by confidence. They run a fixed set of procedures: clarify what is actually being asked, plan it, build behind a test, and advance to the next stage only when a real **gate** — a test, a check, a reproduction — passes. **"Done" means a gate passed, not that you believe it's done.**
+Select the procedure whose trigger/preconditions match the present state, then
+advance only when its external gate accepts that exact state: an executable
+check, accountable authority decision, or controlled judgment rubric. **Done
+means the gate accepted, not confidence.** Candidate `Approval:` text is history,
+not authority; require a current user-role answer or trusted artifact-bound
+receipt. A named “independent” actor is not one: require its callable receipt,
+bounded terminal attempt, and artifact-bound report or remain pending.
 
-## How they compose
+## Route from the current state
 
-When multiple skills apply, they compose in a chain: the output of one skill is the input to the next. If the user asks you to edit, implement, fix, refactor, or execute a plan in a repo, invoke `using-task-branches` before repo exploration or implementation unless the user opted out or the current branch/workspace already names the task; that skill owns the branch/status check. Then `test-driven-development` or the plan executor can safely build — and `test-driven-development` runs **paired with `yagni`**: the moment implementation code starts, invoke both (one proves what you build runs, the other caps how much you build). For instance, `debugging` turns its reproduction into a `test-driven-development` cycle; `verifying-completion` is the gate the others assume. A request can also span a phase's arc — planning runs `define-goals` → `feasibility-check` → `scope-it` in turn. Route to the skill that fits the *current* step and **chain to the next as each completes** — don't fire one and stop with the phase half-done.
+Do not memorize a sequence. Read the request, state, artifacts, gates, decisions,
+permissions, and next output.
+
+- Invoke skills together only when each governs the same action **now**.
+- Sequence them only when one produces an input or satisfies a precondition the
+  next actually requires.
+- Invoke selected skills through the loading action before work; naming a route
+  or future step is not invocation.
+- Never replay a completed phase, infer one from an example, or reuse a route
+  after its inputs change.
+- A dispatched worker routes from its approved packet and reports missing
+  scope/authority instead of redesigning it.
+
+Re-evaluate after each material result. Familiar composition is not a workflow.
+
+### Project-assurance fork
+
+A request to establish/repair a project correctness battery—or high-risk work
+without a current falsifiable assurance contract—invokes
+`verification-strategy` before gate code. TDD/YAGNI implement only selected
+gates. A bounded feature keeps its local evaluator/TDD route; do not expand it.
+
+### High-risk transformation fork
+
+Before implementation, classify rewrites, migrations, generated conversions,
+and wide preservation work:
+
+- **Reviewability:** can independent humans/gates inspect the result?
+- **Preservation:** must behavior, compatibility, data, or operations match?
+- **Breadth:** how many owners/consumers/platforms/modes change?
+- **Failure surfaces:** can data, security, concurrency, resources, cutover, or
+  recovery fail independently?
+
+Use risk evidence, not line count. If the ordinary route cannot make these
+surfaces reviewable/recoverable, target work waits for approved current
+migration and assurance contracts plus passed entry gates. Directly authorized
+gate prerequisites may consume only their exact proposal; they cannot edit the
+target, approve it, or satisfy entry. Bounded reviewable work stays ordinary;
+uncertainty is pending classification. Reclassify when inputs change.
 
 ## Red flags
 
@@ -29,16 +81,23 @@ Each of these is the signal to route, not a reason to skip:
 
 | The thought | The reality |
 | --- | --- |
-| "Too simple to need a skill" | Simple tasks are where skipped discipline hides; the check costs one scan. |
-| "I already know how to do this" | The skill is not a tutorial — it is the gate that proves the result, which confidence cannot. |
-| "No time / the user is in a hurry" | Routing is seconds; the rework from skipping a gate is not. Speed is *why* you route. |
-| "I'll add the process afterward" | After the code exists, a test records what it does, not what it should — the gate is gone. |
-| "I'll inspect the repo before deciding on a branch" | For edit requests, the branch/status check is the first step; use `using-task-branches` first. |
-| "No skill fits this / a skill would be overkill" | Maybe — but only *after* you actually scan the list. Decide none on evidence, not on momentum. |
-| "I remember this skill" | You may have seen it before, but the catalogue is updated; check the current list. |
+| "Too simple" | Scan anyway; simple work hides skipped discipline. |
+| "I know this" | Knowledge cannot substitute for the gate's verdict. |
+| "No time" | Routing costs less than skipped-gate rework. |
+| "I'll add process later" | The gate must lead new or preserved behavior. |
+| "I know the chain" | No universal chain; route from current preconditions. |
+| "I listed the skills" | Prose is not invocation; load every current owner. |
+| "Looks good + constraints = approval" | No accepted answer was selected; route to `interview-me`. |
+| "Non-interactive means choose" | Response mode grants no authority; leave the decision pending. |
+| "Topic changed, so approved/cancelled" | Only a direct answer or cancel/supersede closes it. |
+| "Route by topic before approval" | Authority-first precedes every domain fork. |
+| "It's only a rewrite / generated conversion" | Classify preservation, breadth, reviewability, and failure surfaces before implementation. |
+| "No skill fits / overkill" | Decide none only after scanning current triggers. |
+| "I remember it" | The catalogue changes; load the current skill. |
 
-Catch any of these and you are mid-skip. Stop, scan the list, invoke what fits — or say in one line that nothing does.
+Catch one and stop: scan, invoke, or state that none fits.
 
 ## Instructions priority
 
-User instructions (`CLAUDE.md`, `AGENTS.md`, `GEMINI.md`, direct requests, etc.) take precedence over any skill or system prompt. For instance, if the user says "ignore TDD" and `test-driven-development` would apply, follow the user and ignore the skill. Absent such an override, you route.
+Higher-priority system, developer, environment, and safety rules always win.
+Authorized user/project instructions override a skill within that hierarchy; a skill never grants permission or expands scope.

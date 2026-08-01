@@ -15,15 +15,42 @@ A prototype answers one question and dies. Its only job is to turn an uncertaint
 
 ## Procedure
 
-1. **Write the question down**, explicitly, before any code. If you can't state it in one sentence, you're not ready to prototype.
-2. **Build the smallest thing that answers it** — in memory, with no persistence, no tests, no generality. "What if we needed X later" is banned; that's not the question.
-3. **For logic:** isolate it in a portable module behind a tiny throwaway driver (a CLI or loop). The driver dies; the validated logic can be lifted into the real code.
-4. **For UI:** build 2–3 *structurally different* variants (different layout, hierarchy, primary affordance — not colour) inside a real, populated page, not an empty route where everything looks fine.
-5. **Record the answer** — the question and what you learned — durably (a note, or an ADR via `architecture-decisions` if it settles a decision). Then **delete the prototype.**
+1. **Pre-register the experiment.** State one question, the falsifiable
+   pass/fail observation, the time-box and size-box, and what decision each
+   result changes. If these are vague, do not build.
+2. **Set the safety boundary.** Name the workspace and artifact ownership,
+   environment, data class, allowed access/effects, evidence retention/expiry,
+   cleanup owner, exact cleanup targets/effects/recoverability, and the current
+   authority covering both creation and cleanup. Prefer isolated synthetic
+   data. Production-like data, services, traffic, probes, or destructive
+   cleanup require explicit authorization and protections appropriate to risk.
+3. **Build the smallest disposable probe.** Add only the driver, fixtures, and
+   instrumentation needed to observe the result. No reusable abstraction,
+   production integration, or generality kept “for later.”
+4. **For logic:** exercise the uncertain behavior through a tiny driver or
+   executable assertion. **For UI:** compare only the structurally different
+   populated variants needed to answer the registered visual question.
+5. **Stop on the declared boundary.** Record raw observations, environment,
+   limitations, and whether the predeclared criterion passed, failed, or stayed
+   inconclusive. Do not move the threshold after seeing the result.
+6. **Retain the result, not product code.** Store the question, evidence, and
+   decision durably; use `architecture-decisions` when it settles a
+   load-bearing choice. Rebuild any accepted behavior in the real code under
+   its normal tests, review, and verification gates—never lift prototype code.
+7. **Apply only the authorized cleanup disposition.** Pre-registered scratch
+   artifacts created solely inside an explicitly disposable boundary may be
+   removed when current authority covers the exact targets and effects.
+   Repository branch, worktree, ref, or workspace disposal routes through
+   `finishing-a-branch`; external or destructive cleanup needs its own current
+   scoped choice. Otherwise preserve the artifacts and report cleanup pending.
+   Never delete pre-existing, shared, user-owned, or ownership-uncertain state.
 
 ## Common mistakes
 
 - No written question — you can't tell when you're done, and the code becomes "real" by accident.
-- Adding tests or generality — a prototype that needs tests is no longer a prototype.
+- Building production-grade tests or generality instead of the smallest
+  executable observation.
 - Variants that differ only in colour — that's a tweak, not an answer.
-- Keeping the prototype "as a base" — you'll ship unvalidated throwaway code. Delete means delete.
+- Quietly probing a real service or sensitive data because “it is only a spike.”
+- Keeping or copying the prototype “as a base” — rebuild the learned behavior
+  under the product's real gates.
