@@ -88,8 +88,8 @@ Measured on this repo:
 
 | Kind | Runs | Per run | Full sweep |
 | --- | --- | --- | --- |
-| Activation, one harness | 33 scenarios | ~1–2 min | ~35–70 min |
-| Activation, all three | 99 | ~1–2 min | **2–4 h** |
+| Activation, one harness | 35 scenarios | ~1–2 min | ~35–70 min |
+| Activation, all three | 105 | ~1–2 min | **2–4 h** |
 | Behavioural, one scenario, one harness, one arm | 1 | ~5–40 min | — |
 | Behavioural, all scenarios × 3 harnesses × 2 arms | 6 × 3 × 2 | ~5–40 min | **3–24 h** |
 
