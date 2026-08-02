@@ -69,6 +69,7 @@ A skill is invoked as `augments:<name>` regardless of which phase folder holds i
 | testing | `receiving-code-review` | Inventory and verify every revision-bound finding, resolve conflicts by evidence, and re-review any changed candidate |
 | testing | `security-audits` | Audit the changed attack surface and trust boundaries with threat-specific gates; a separate fixer cannot self-approve the security verdict |
 | testing | `verification-strategy` | Design a project- or initiative-wide risk-to-gate matrix: thresholds, environments, cadence, evidence, ownership, promotion wiring, and failure response |
+| testing | `visual-ui-verification` | Drive an integrated GUI or TUI across accepted visual conditions, inspect candidate-bound frames, and return a calibrated evidence-backed verdict |
 | deployment | `finishing-a-branch` | Classify the real checkout, finalize only with authorized history changes, verify the integrated result, and make explicit integration and owned-cleanup decisions |
 | deployment | `release-readiness` | Judge an immutable artifact set for one named promotion; later stages consume observed canary/soak evidence rather than borrowing readiness from an earlier verdict |
 | maintenance | `debugging` | Establish causal root cause through deterministic or quantified probabilistic evidence before changing behavior |
