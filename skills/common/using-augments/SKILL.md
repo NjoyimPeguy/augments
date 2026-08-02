@@ -100,4 +100,8 @@ Catch one and stop: scan, invoke, or state that none fits.
 ## Instructions priority
 
 Higher-priority system, developer, environment, and safety rules always win.
-Authorized user/project instructions override a skill within that hierarchy; a skill never grants permission or expands scope.
+Authorized user/project instructions override a skill within that hierarchy; a
+skill never grants permission or expands scope. Authority for repository edits
+includes ordinary local task-branch checkpoints unless that policy withholds
+them or requires approval not yet given. Push, publication, and integration
+remain separate authority.
