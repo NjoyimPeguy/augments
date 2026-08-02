@@ -2,6 +2,16 @@
 
 Notable changes to augments, newest first. Versions follow semantic versioning; the narrative for each release lives on its release page — this file is the terse, cumulative record.
 
+## [5.1.0] — 2026-08-03
+
+### Added
+
+- **`visual-ui-verification` skill (testing)** — drives an integrated GUI or TUI across accepted states and conditions, retains candidate-bound raw and rendered frames, calibrates inspection with a known-bad frame, and returns defects and an evidence-backed verdict for verification and release gates.
+
+### Changed
+
+- **Local checkpoint authority is explicit.** Authorized repository edits include gated local task-branch commits unless higher-priority policy withholds them; checkpoints remain distinct from completion, review, push, publication, integration, discard, and cleanup.
+
 ## [5.0.0] — 2026-08-01
 
 ### Added

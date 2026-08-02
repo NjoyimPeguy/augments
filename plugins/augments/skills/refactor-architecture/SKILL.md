@@ -48,8 +48,9 @@ Improve the structure of code that already exists. The goal is **deep modules** 
    invoke `test-driven-development` paired with `yagni`; multi-step slices use
    `writing-plans`/`executing-plans`. Each stable slice migrates its callers,
    runs the bound and project gates, compares accepted floors, and retains the
-   known-green state. Commit checkpoints need separate authority. A behavior
-   delta stops and returns to its requirement/new-behavior cycle.
+   known-green state. Checkpoint each coherent slice under
+   `using-task-branches`. A behavior delta stops and returns to its
+   requirement/new-behavior cycle.
 8. **Retire only proven redundancy.** Inventory static calls, dynamic
    registration, reflection, configuration, generated inputs, tests, and
    external consumers; unknowns preserve the surface or require completed

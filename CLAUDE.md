@@ -19,6 +19,15 @@ Before you open a PR here, you MUST:
 
 If any check fails, do not open the PR. Explain why it would be rejected and what would have to change first.
 
+### Local checkpoint commits
+
+Authorized repository edits include local commits on the task branch unless a
+higher-priority user/project instruction withholds that authority or requires
+approval not yet given. After each independently testable change that could be
+accepted or rejected separately, run its smallest applicable gate and commit it
+locally. Do not wait for the final candidate or ask again for each checkpoint.
+A checkpoint is not completion, review, push, publication, or integration.
+
 ## Authoring rules (non-negotiable)
 
 Files under `skills/` and `docs/` ship to users. They must be self-contained, portable engineering guidance.

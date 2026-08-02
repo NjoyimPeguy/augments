@@ -1,6 +1,6 @@
 ---
 name: finishing-a-branch
-description: "Use whenever a user explicitly chooses to keep a branch/workspace (including mid-development), discard one, or close/reopen a PR; these paths bind exact state and authority without implying readiness. For commit, push, integration, or PR publication, use only after requesting-code-review records a revision-bound verdict for the verified exact candidate."
+description: "Use whenever a user explicitly chooses to keep a branch/workspace (including mid-development), discard one, or close/reopen a PR; these paths bind exact state and authority without implying readiness. Final candidate materialization, push, integration, or PR publication follows requesting-code-review; ordinary development checkpoints stay with using-task-branches."
 ---
 
 # Finishing a Branch
@@ -14,6 +14,9 @@ or cleanup mutation.
 - Source materialization, publication, or integration requires current evidence
   and a revision/digest-bound `requesting-code-review` verdict: shallow
   `self-reviewed: ready`, or the required independent review with no blocker.
+- Ordinary development checkpoints are owned by `using-task-branches`; they do
+  not enter this skill until an explicit keep, discard, publication, or
+  integration transition.
 - PR-only close/reopen binds current PR state and a scoped choice, not code-readiness evidence.
 - Mid-development stays outside unless explicitly keeping, discarding, or acting on a PR. Readiness blocks integration; identity/ownership blocks discard.
 
