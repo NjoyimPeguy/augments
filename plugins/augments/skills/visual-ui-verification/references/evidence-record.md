@@ -49,4 +49,6 @@ per required observation; use stable `{{double-curly}}` values.
 - **Human-owned receipts:** `{{trusted user-origin receipts, or not applicable;
   each binds candidate, environment, row, observation, and time}}`
 - **Verdict:** `{{pass / fail / pending}}`
+- **Release handoff:** `{{source/working-tree acceptance evidence only, or exact
+  immutable release artifact/set identity and fresh visual verdict}}`
 - **Gate wiring:** `{{verification matrix row, cadence, protected promotion}}`

@@ -60,8 +60,10 @@ candidate-bound evidence; snapshots and “looks good” do not establish it.
    Otherwise return fail or pending. When establishing the project battery,
    make this a `verification-strategy` row with cells, action, evidence, owner,
    cadence, promotion, and failure response. A project may label it `VQA`.
-   `release-readiness` consumes a fresh verdict for the same candidate identity;
-   this skill does not authorize promotion.
+   Source or working-tree verdicts are acceptance evidence only.
+   `release-readiness` consumes only a fresh verdict bound to the exact immutable
+   release artifact or artifact set being promoted; this skill does not
+   authorize promotion.
 
 ## Common mistakes
 
