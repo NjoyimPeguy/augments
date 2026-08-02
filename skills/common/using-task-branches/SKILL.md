@@ -68,9 +68,14 @@ description: Use before starting repo edits or implementation, or when work need
 
 ## Checkpoint while you work
 
-A branch or worktree isolates uncommitted work; durable checkpointing is a
-separate decision. Create a checkpoint commit only when user/project policy
-permits it and `verifying-completion` has run the checkpoint's real gate. A
-checkpoint is neither reviewed nor done. `finishing-a-branch` may rewrite its
-history only with authority established there. Hand recorded workspace/base/
-ownership to that skill; do not integrate, discard, delete, or clean here.
+Authorized repository edits include local task-branch commits unless
+higher-priority user/project policy withholds them or requires approval not yet
+given. After each coherent important piece—an independently testable change a
+reviewer could accept or reject separately—invoke `verifying-completion`, run
+its smallest real gate, and commit it locally. Do not wait for the final
+candidate or ask again for each checkpoint.
+
+A checkpoint is neither reviewed nor done and grants no push, publication, or
+integration authority. `finishing-a-branch` may rewrite its history only with
+authority established there. Hand recorded workspace/base/ownership to that
+skill; do not integrate, discard, delete, or clean here.
