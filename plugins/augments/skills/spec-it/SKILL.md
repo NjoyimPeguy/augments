@@ -45,7 +45,8 @@ Turn an intent into a requirements spec (SRS): gather and analyze what the softw
    Unresolved material state stays an open decision, never a hidden premise.
 9. **Surface the open questions and risks** — the unresolved ambiguities and requirement-level challenges that could derail the build. Naming them now is the cheapest they'll ever be.
 10. **State what is out of scope** — the requirements you are deliberately *not* covering this round.
-11. **Write an immutable proposed spec** to the project/user path. Record its
+11. **Write an immutable proposed spec** to
+    `.augments/specs/{{YYYY-MM-DD}}-{{topic}}.md` (or the user-set path). Record its
     normative identity, predecessor, external decision-ledger location, and every
     requirement's real present artifact or future gate/owner. Name one accountable
     decision owner or the required approvers, conflict resolver, and decision rule.

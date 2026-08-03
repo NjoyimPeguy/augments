@@ -1,6 +1,6 @@
 ---
 name: yagni
-description: "Use when behavior-affecting implementation—including configuration—is being written; scope drifts toward speculative or incomplete delivery; or a proposal needs strict pre-edit challenge. Needed includes accepted behavior, project craft, and inherited preservation, compatibility, safety, operations, rollback, and assurance. A green convention-breaking diff is unfinished. Skip throwaway spikes and nonbehavioral content/configuration."
+description: "Use when behavior-affecting implementation—including configuration—is being written; code is being deleted as unused; scope drifts toward speculative or incomplete delivery; or a proposal needs strict pre-edit challenge. Needed includes accepted behavior, project craft, and inherited preservation, compatibility, safety, operations, rollback, and assurance. A green convention-breaking diff is unfinished. Skip throwaway spikes and nonbehavioral content/configuration."
 ---
 
 # YAGNI — build only what's needed, and make it work
@@ -29,8 +29,9 @@ Before the first edit, derive a checklist from accepted contracts and the
 current `coding-standards` exemplar—or nearest analogue. Before ready,
 audit changed lines for its names, structure, idioms, and why-comments. Green
 cannot waive observed convention. Apply standards only in scope; report
-neighboring drift rather than silently migrating it. The full craft checklist
-is in `references/yagni-in-depth.md`.
+neighboring drift rather than silently migrating it. The full craft checklist,
+the ladder in depth, examples, and carve-outs are in
+`references/yagni-in-depth.md`.
 
 Before choosing a material enduring surface—a dependency, service/process,
 generalized abstraction, public extension/configuration, or verification
@@ -115,5 +116,3 @@ the first list.
 A throwaway spike answering a single question, or non-behavioral config/content,
 has no task behavior to scope; minimise freely. Everything that affects behavior
 gets the full discipline.
-
-For the ladder in depth, examples, and carve-outs, see `references/yagni-in-depth.md`.

@@ -2,6 +2,16 @@
 
 Notable changes to augments, newest first. Versions follow semantic versioning; the narrative for each release lives on its release page — this file is the terse, cumulative record.
 
+## [5.1.1] — 2026-08-03
+
+### Fixed
+
+- **`yagni` now fires when code is about to be deleted as unused.** Its body already carried the guard — never delete by confidence, prove absence across static, runtime, reflection, configuration, generated, and external-consumer paths — but the trigger named only implementation being written, so the discipline was unreachable at the moment it was needed. Observed: RED 1, GREEN 2.
+- **`visual-ui-verification` now fires at an ordinary UI done-claim.** The trigger did not match everyday interface vocabulary, so a finished page presented as ready to ship reached completion checking and stopped there. It now names page, screen, and view, the done and ready-to-ship boundary, and the local-impression anti-pattern. Observed: RED 1, GREEN 2.
+- **`spec-it` and `interview-me` name where their artifacts go.** Both produced a normative artifact while leaving its location to per-run inference, unlike every other artifact-producing skill; the spec location was already asserted by the behavioural scenario but never stated by the skill. The alignment brief also preserves other approved sections so it cannot overwrite an approved goal, scope, or feasibility section.
+- **`finishing-a-branch` no longer contradicts its own trigger.** Its precondition demanded a readiness verdict for any source materialization, which swept in the commit-and-keep option on the explicit mid-development keep path the trigger exempts from readiness. Now scoped to final candidate materialization.
+- **The assurance catalogue has a visual and interface correctness category.** `visual-ui-verification` directs an agent to become a `verification-strategy` matrix row, but the catalogue it selects from offered no such category.
+
 ## [5.1.0] — 2026-08-03
 
 ### Added

@@ -64,8 +64,9 @@ material decision has a direct answer. Do not turn a general “go” into answe
 
 **5. Write an immutable proposed alignment brief** (not a spec): goal, decisions
 + rationale, non-goals, open risks, normative identity, predecessor, and external
-decision-ledger location. Use `references/brief-template.md` at the project/user
-path; tiny briefs and their bound decision record may stay inline.
+decision-ledger location. Use `references/brief-template.md` at
+`.augments/briefs/{{YYYY-MM-DD}}-{{topic}}.md` (or the user-set path), preserving
+other approved sections; a tiny brief may stay inline with its decision record.
 
 **6. Present it for direct decision.** Record pending/changes-requested/approved/
 rejected/cancelled/superseded-by-approved identity externally; never mutate the
