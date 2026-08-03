@@ -78,6 +78,18 @@ mode, packaging form, and compatibility direction. Define which gates run on
 each cell and what evidence permits an explicitly unsupported cell. A single
 developer build cannot stand in for the release artifact.
 
+## Visual and interface correctness
+
+When the accepted contract includes how an integrated GUI or TUI looks or
+responds, unit and snapshot gates cannot decide it: they assert a serialized
+fragment, not the rendered result. Define the deciding matrix of journeys,
+states, viewports, themes, input methods, and content pressure; the observer and
+rubric; and where raw frames are retained. Calibrate the inspection with a
+deliberately broken frame it must mark red. `visual-ui-verification` owns the run
+and returns the verdict; a project may label the row `VQA`. Bind each verdict to
+the exact candidate or release artifact — a source-tree pass is acceptance
+evidence, never release evidence.
+
 ## Production-like and operational gates
 
 Use representative data, topology, fault injection, QA procedures, canary, soak,

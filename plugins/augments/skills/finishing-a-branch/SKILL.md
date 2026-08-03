@@ -11,9 +11,9 @@ or cleanup mutation.
 
 ## Preconditions
 
-- Source materialization, publication, or integration requires current evidence
-  and a revision/digest-bound `requesting-code-review` verdict: shallow
-  `self-reviewed: ready`, or the required independent review with no blocker.
+- Final candidate source materialization, publication, or integration requires
+  current evidence and a revision/digest-bound `requesting-code-review` verdict:
+  shallow `self-reviewed: ready`, or the required independent review with no blocker.
 - Ordinary development checkpoints are owned by `using-task-branches`; they do
   not enter this skill until an explicit keep, discard, publication, or
   integration transition.
