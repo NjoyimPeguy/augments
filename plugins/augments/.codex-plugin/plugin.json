@@ -7,8 +7,8 @@
     "email": "pnjoyim@gmail.com",
     "url": "https://github.com/NjoyimPeguy"
   },
-  "homepage": "https://github.com/NjoyimPeguy/augments",
-  "repository": "https://github.com/NjoyimPeguy/augments",
+  "homepage": "https://github.com/augments-labs/sdlc-skills",
+  "repository": "https://github.com/augments-labs/sdlc-skills",
   "license": "MIT",
   "keywords": [
     "skills",
@@ -31,7 +31,7 @@
       "Read",
       "Write"
     ],
-    "websiteURL": "https://github.com/NjoyimPeguy/augments",
+    "websiteURL": "https://github.com/augments-labs/sdlc-skills",
     "privacyPolicyURL": "https://docs.github.com/en/site-policy/privacy-policies/github-general-privacy-statement",
     "termsOfServiceURL": "https://docs.github.com/en/site-policy/github-terms/github-terms-of-service",
     "defaultPrompt": [

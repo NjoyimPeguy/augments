@@ -6,7 +6,7 @@
     "name": "Njoyim Peguy",
     "email": "pnjoyim@gmail.com"
   },
-  "homepage": "https://github.com/NjoyimPeguy/augments",
+  "homepage": "https://github.com/augments-labs/sdlc-skills",
   "license": "MIT",
   "keywords": [
     "skills",
@@ -53,6 +53,6 @@
     "shortDescription": "Opt-in SDLC skills: planning, design, TDD, debugging, review, and delivery workflows",
     "longDescription": "Augments routes executable correctness claims through tests, checks, and reproductions, and binds judgment or authority to explicit decision gates, so agent confidence is never the verdict. Skills cover goal definition, scoping, specs, architecture, plans, TDD, debugging, code review, security audits, and release readiness.",
     "developerName": "Njoyim Peguy",
-    "websiteURL": "https://github.com/NjoyimPeguy/augments"
+    "websiteURL": "https://github.com/augments-labs/sdlc-skills"
   }
 }
