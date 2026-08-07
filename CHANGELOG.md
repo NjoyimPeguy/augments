@@ -1,12 +1,12 @@
 # Changelog
 
-Notable changes to SDLC Skills, newest first. Versions follow semantic versioning; the narrative for each release lives on its release page — this file is the terse, cumulative record.
+Notable changes to sdlc skills, newest first. Versions follow semantic versioning; the narrative for each release lives on its release page — this file is the terse, cumulative record.
 
 ## [6.0.0] — 2026-08-07
 
 ### Changed
 
-- **The library is now SDLC Skills, and the repository lives at `augments-labs/sdlc-skills`.** Breaking for everyone who installs or invokes it: the plugin is `sdlc-skills`, the Claude marketplace key is `augments-labs` (`/plugin install sdlc-skills@augments-labs`), and every skill is addressed as `sdlc-skills:<name>`. The name lived in three places at once — org, repository, plugin — and only one of them said what the library is.
+- **The library is now sdlc skills, and the repository lives at `augments-labs/sdlc-skills`.** Breaking for everyone who installs or invokes it: the plugin is `sdlc-skills`, the Claude marketplace key is `augments-labs` (`/plugin install sdlc-skills@augments-labs`), and every skill is addressed as `sdlc-skills:<name>`. The name lived in three places at once — org, repository, plugin — and only one of them said what the library is.
 - **The router skill is `using-sdlc-skills`** (was `using-augments`). Its trigger, body, and routing behaviour are unchanged; only the address moved. No skill `description` contains the old name, so no trigger changed.
 - **Artifacts are written to `.sdlc-skills/`** (was `.augments/`), and receipt tokens carry the `SDLC_SKILLS_` prefix. A project with existing artifacts keeps them where they are; the directory is not migrated for you.
 - **Documentation and mirror paths moved** — `docs/sdlc-skills/`, `plugins/sdlc-skills/`. Direct links to files under the old paths, including the images, no longer resolve.
@@ -178,13 +178,13 @@ Notable changes to SDLC Skills, newest first. Versions follow semantic versionin
 ### Changed
 
 - **Hooks are shared at the root `hooks/` layer.** The Claude Code hook manifest now points to `hooks/hooks.json`, while Codex project-hook config mirrors `hooks/hooks-codex.json`; both use the shared `hooks/context.md` and `hooks/stop-nudge.sh` where their event models allow it.
-- **Docs no longer frame SDLC Skills as Claude-only.** Harness-support docs, README status, and activation notes now describe Claude Code and Codex as exercised adapters, with Codex hook limitations stated explicitly.
+- **Docs no longer frame sdlc skills as Claude-only.** Harness-support docs, README status, and activation notes now describe Claude Code and Codex as exercised adapters, with Codex hook limitations stated explicitly.
 
 ## [2.2.0] — 2026-07-01
 
 ### Added
 
-- **Done-boundary `Stop` re-nudge.** New `hooks/claude-code/stop-nudge.sh`, wired as a `Stop` hook, closes the long-standing "the verify/review skills don't fire after a long task" gap: SDLC Skills routes once at SessionStart, but the done boundary arrives at turn-end with nothing to re-route. When a turn wraps up claiming the work is done, the hook re-routes **once** to `using-sdlc-skills` → `verifying-completion` (and, at a feature boundary, `requesting-code-review` / `finishing-a-branch`). It is a *routing* re-nudge, not a gate: it blocks no action, certifies no verdict, fires at most once (`stop_hook_active` guard), reads only the Stop payload, and fails open. Disable by removing the `Stop` entry from `hooks/claude-code/hooks.json`. Proof: offline `tests/harness/claude-code/test-stop-nudge.sh` + `2026-07-01-stop-nudge-done-boundary.md`.
+- **Done-boundary `Stop` re-nudge.** New `hooks/claude-code/stop-nudge.sh`, wired as a `Stop` hook, closes the long-standing "the verify/review skills don't fire after a long task" gap: sdlc skills routes once at SessionStart, but the done boundary arrives at turn-end with nothing to re-route. When a turn wraps up claiming the work is done, the hook re-routes **once** to `using-sdlc-skills` → `verifying-completion` (and, at a feature boundary, `requesting-code-review` / `finishing-a-branch`). It is a *routing* re-nudge, not a gate: it blocks no action, certifies no verdict, fires at most once (`stop_hook_active` guard), reads only the Stop payload, and fails open. Disable by removing the `Stop` entry from `hooks/claude-code/hooks.json`. Proof: offline `tests/harness/claude-code/test-stop-nudge.sh` + `2026-07-01-stop-nudge-done-boundary.md`.
 - **Review-depth ladder in `requesting-code-review`.** Shallow / Standard / Deep tiers keyed to a change's risk and blast radius (not wall-clock), with an adversarial refute-pass at the Deep tier.
 - **Plan-as-contract in `writing-plans`.** Per-task Consumes/Produces interface blocks, an index-level Constraints block, reviewer-gate task sizing, and an Execution Handoff (inline vs subagent-driven) at the present-and-pause.
 
@@ -206,13 +206,13 @@ Notable changes to SDLC Skills, newest first. Versions follow semantic versionin
 
 ### Removed
 
-- **The Codex adapter.** `.codex-plugin/` and the Codex references in the docs are removed — SDLC Skills is Claude-Code-only for now; a real Codex harness returns when it is exercised and proven. (Past release history in this file is unchanged.)
+- **The Codex adapter.** `.codex-plugin/` and the Codex references in the docs are removed — sdlc skills is Claude-Code-only for now; a real Codex harness returns when it is exercised and proven. (Past release history in this file is unchanged.)
 
 ## [2.1.0] — 2026-06-24
 
 ### Added
 
-- **`governance/` — deterministic gate templates.** Adoptable CI / branch-protection / pre-commit templates that make the production-critical skills non-skippable at the commit/PR/CI boundary, where persuasion can't — branch-protection (CI-green + review + conversation-resolution, bulletproof), `tests-accompany-code`, `release-readiness`, `trust-boundary-flag` (heuristics, honestly labelled). Each maps to the skill it enforces; dogfooded on SDLC Skills itself.
+- **`governance/` — deterministic gate templates.** Adoptable CI / branch-protection / pre-commit templates that make the production-critical skills non-skippable at the commit/PR/CI boundary, where persuasion can't — branch-protection (CI-green + review + conversation-resolution, bulletproof), `tests-accompany-code`, `release-readiness`, `trust-boundary-flag` (heuristics, honestly labelled). Each maps to the skill it enforces; dogfooded on sdlc skills itself.
 
 ### Changed
 
@@ -289,7 +289,7 @@ Notable changes to SDLC Skills, newest first. Versions follow semantic versionin
 ### Fixed
 
 - **Code review now reaches the "done" boundary.** A field failure showed work being reported complete with every gate green but the diff unreviewed. `requesting-code-review`'s trigger is now event-conditioned (fires at the done boundary — complete/commit/merge/PR — not only when you already want fresh eyes), and `verifying-completion` hands off to independent review once its gate passes instead of ending the chain at "verified". Proven old-vs-new in `tests/triggering/requesting-code-review.md` (the skill's first activation record) and `tests/behavioral/verifying-completion.md` (0/2 → 3/3 on the handoff; flaky-green hard-stop unregressed).
-- **Docs: deterministic boundary interrupts stay project-local.** New `harness-support.md` section on why blocking commit/merge hooks belong in your own project config, not in SDLC Skills core.
+- **Docs: deterministic boundary interrupts stay project-local.** New `harness-support.md` section on why blocking commit/merge hooks belong in your own project config, not in sdlc skills core.
 
 ## [1.0.1] — 2026-06-10
 
