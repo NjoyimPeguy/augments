@@ -1,14 +1,14 @@
 {
-  "name": "augments-dev",
+  "name": "augments-labs-dev",
   "interface": {
-    "displayName": "Augments Dev"
+    "displayName": "SDLC Skills Dev"
   },
   "plugins": [
     {
-      "name": "augments",
+      "name": "sdlc-skills",
       "source": {
         "source": "local",
-        "path": "./plugins/augments"
+        "path": "./plugins/sdlc-skills"
       },
       "policy": {
         "installation": "AVAILABLE",

@@ -18,7 +18,7 @@ check_ref() {
   local src="$1" line="$2" ref="$3" target
   ref="${ref%%#*}"
   case "$ref" in
-    ""|\#*|/*|*://*|mailto:*|.augments/*|*\{\{*) return ;;
+    ""|\#*|/*|*://*|mailto:*|.sdlc-skills/*|*\{\{*) return ;;
   esac
   target="$(dirname "$src")/$ref"
   [ -e "$target" ] ||
@@ -42,7 +42,7 @@ done < <(
 # Install adapters are allowed to package only a skill directory/tree. A
 # shipped skill cannot depend on repository-only rationale under docs/.
 while IFS=: read -r src line _; do
-  err "$src:$line: repository-only docs/augments path is not install-portable"
-done < <(grep -rnE 'docs/augments/[A-Za-z0-9._/-]+\.md' "$tree" || true)
+  err "$src:$line: repository-only docs/sdlc-skills path is not install-portable"
+done < <(grep -rnE 'docs/sdlc-skills/[A-Za-z0-9._/-]+\.md' "$tree" || true)
 
 exit "$fail"

@@ -1,5 +1,5 @@
 {
-  "name": "augments",
+  "name": "augments-labs",
   "description": "Marketplace for skills library",
   "owner": {
     "name": "Njoyim Peguy",
@@ -7,9 +7,9 @@
   },
   "plugins": [
     {
-      "name": "augments",
+      "name": "sdlc-skills",
       "description": "Cross-platform SDLC skills library for coding agents: planning, TDD, debugging, review, and delivery workflows.",
-      "version": "5.1.1",
+      "version": "6.0.0",
       "source": "./",
       "author": {
         "name": "Njoyim Peguy",
@@ -17,5 +17,5 @@
       }
     }
   ],
-  "version": "5.1.1"
+  "version": "6.0.0"
 }

@@ -16,7 +16,7 @@ else
   command -v jq >/dev/null || { echo "  FAIL: jq is required to validate $manifest"; exit 1; }
   jq -e . "$manifest" >/dev/null 2>&1 || err "$manifest does not parse as JSON"
 
-  [ "$(jq -r '.name // ""' "$manifest")" = "augments" ] || err "plugin name is not augments"
+  [ "$(jq -r '.name // ""' "$manifest")" = "sdlc-skills" ] || err "plugin name is not sdlc-skills"
   [ -n "$(jq -r '.version // ""' "$manifest")" ] || err "Kimi manifest has no version"
   while IFS= read -r field; do
     err "unsupported Kimi manifest field present: $field"

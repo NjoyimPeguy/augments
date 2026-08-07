@@ -2,7 +2,7 @@
 # Install smoke test — ONE runner for every harness. NO model call.
 #
 # Answers the question that comes before every other test: if a user installs
-# augments the way this harness installs plugins, do the skills actually land
+# SDLC Skills the way this harness installs plugins, do the skills actually land
 # where the CLI will look for them? A harness can pass every activation scenario
 # against a working tree and still be broken for a real user whose install path
 # differs — files present but never discovered is not a working integration.

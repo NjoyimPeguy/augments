@@ -2,7 +2,7 @@
 
 Guidance for anyone — human or agent — working in this repository.
 
-`augments` is a cross-platform library of opt-in SDLC skills for coding agents. Read `README.md` for the philosophy, and `skills/common/writing-skills/SKILL.md` before authoring or editing any skill. The one idea behind every skill: you are a non-deterministic generator, so claims leave the generator through an external **gate**, never through confidence. Executable correctness claims require executable gates (a test, check, or reproduction); judgment and authority boundaries require an explicit revision-bound decision or controlled rubric and must not masquerade as mechanical proof. The library's reliability lives in these gates, not in coercive instructions; keep that distinction when you edit it.
+`sdlc-skills` is a cross-platform library of opt-in SDLC skills for coding agents. Read `README.md` for the philosophy, and `skills/common/writing-skills/SKILL.md` before authoring or editing any skill. The one idea behind every skill: you are a non-deterministic generator, so claims leave the generator through an external **gate**, never through confidence. Executable correctness claims require executable gates (a test, check, or reproduction); judgment and authority boundaries require an explicit revision-bound decision or controlled rubric and must not masquerade as mechanical proof. The library's reliability lives in these gates, not in coercive instructions; keep that distinction when you edit it.
 
 ## If you are an AI agent
 
@@ -47,7 +47,7 @@ bash scripts/sh/validate-skills.sh
 
 Rule 4 (behavior) has no deterministic gate — that is the honest limit. Prove it by **re-running the tests and reading what they return**:
 
-- **Activation** — does the right skill fire? `tests/run-activation.sh --harness {{name}} --scenario-file {{phase}}/{{skill}}` for one scenario, `tests/run-all-activation.sh --harness {{name}}` for the whole set. The exit code is the verdict.
+- **Activation** — does the right skill fire? Default to the one scenario for the skill you touched: `tests/run-activation.sh --harness {{name}} --scenario-file {{phase}}/{{skill}}`. The whole-set sweep, `tests/run-all-activation.sh --harness {{name}}`, is minutes of live CLI calls — a release-boundary run to catch regressions, not one to repeat after each edit. The exit code is the verdict.
 - **Behaviour** — does the skill change what actually gets *built*? `tests/run-behavioral.sh --harness {{name}} --scenario {{name}} --arm red|green`. The scenario's own `scenario_assert` returns the verdict as an exit code. A scenario is one file: `tests/scenarios/behavioral/{{name}}.sh`.
 
 Report the real numbers in the PR, including an inconclusive or failing result — these tests are live and non-deterministic, so a single green run is weak evidence. Say how many runs you did. Never green-wash.
@@ -91,7 +91,7 @@ Changing a skill is changing behaviour, so match the proof to the change:
 
 ## What belongs here
 
-Core augments skills are **general-purpose SDLC guidance** — useful across projects, languages, and domains. A skill that only helps one domain, tool, team, or workflow does not belong in core; keep it in your own skill library. The test: would this help someone on a completely different kind of project? If not, it ships elsewhere. When a phase's activities are separable vs. one interleaved pass, see `docs/augments/skill-granularity.md`.
+Core skills are **general-purpose SDLC guidance** — useful across projects, languages, and domains. A skill that only helps one domain, tool, team, or workflow does not belong in core; keep it in your own skill library. The test: would this help someone on a completely different kind of project? If not, it ships elsewhere. When a phase's activities are separable vs. one interleaved pass, see `docs/sdlc-skills/skill-granularity.md`.
 
 ## Contributing
 
@@ -111,12 +111,12 @@ Closed without extended review — most are the inverse of a rule above:
 - **Domain-, tool-, or workflow-specific skills** — *What belongs here*; publish them as your own library.
 - **Speculative or fabricated content** — a problem no one actually hit, or invented test results. An inconclusive result is a valid finding; a fabricated one is not.
 - **"Compliance" reformatting of tuned skills** — restructuring or rewording a discipline's red-flag lists, rationalization tables, or hard-stops without a re-proven pressure test (*Editing a skill*).
-- **Third-party dependencies** — augments is zero-dependency by design. If a change needs an external tool or service, it belongs in a separate plugin. Adding a new harness is the exception.
+- **Third-party dependencies** — SDLC Skills is zero-dependency by design. If a change needs an external tool or service, it belongs in a separate plugin. Adding a new harness is the exception.
 - **Bundled or batch PRs** — one change per PR.
 
 ## New harness support
 
-Adding a harness (an IDE, CLI, or agent runner) means more than dropping skill files where the tool can see them — they must actually *load and activate*. Augments' skills are inert unless the harness both discovers them and is nudged to reach for one at the right moment (on Claude Code, the `hooks/` SessionStart nudge; elsewhere, an equivalent). See `docs/augments/harness-support.md`.
+Adding a harness (an IDE, CLI, or agent runner) means more than dropping skill files where the tool can see them — they must actually *load and activate*. SDLC Skills' skills are inert unless the harness both discovers them and is nudged to reach for one at the right moment (on Claude Code, the `hooks/` SessionStart nudge; elsewhere, an equivalent). See `docs/sdlc-skills/harness-support.md`.
 
 A PR adding a harness MUST add `tests/harnesses/{{name}}.sh` bindings for the
 shared runners and show a skill *actually activating* through that harness's
@@ -126,7 +126,7 @@ but never invoked are not a working integration.
 ## Layout
 
 - `skills/<phase>/<name>/` — the skills, by SDLC phase (canonical order is in `README.md`; folders are unnumbered).
-- `.claude-plugin/` — the install manifest; its skills array must list every skill on disk (the gate checks it). `.kimi-plugin/` — the Kimi Code manifest; its skills paths must resolve to the same canonical set. Adding a harness: `docs/augments/harness-support.md`.
+- `.claude-plugin/` — the install manifest; its skills array must list every skill on disk (the gate checks it). `.kimi-plugin/` — the Kimi Code manifest; its skills paths must resolve to the same canonical set. Adding a harness: `docs/sdlc-skills/harness-support.md`.
 - `AGENTS.md`, `GEMINI.md` — symlinks to this file, so a harness that reads its own instructions file gets the same guidance from one source.
 - `.github/` — CI (`workflows/validate.yml`) and the PR template (`PULL_REQUEST_TEMPLATE.md`).
 - `scripts/sh/` — portable validators, token budget, adapter checks, and hook scripts; CI runs `validate-skills.sh` and `token-budget.sh`.

@@ -7,7 +7,7 @@
             "type": "command",
             "command": "bash \"$(git rev-parse --show-toplevel)/scripts/sh/stop-nudge.sh\"",
             "timeout": 15,
-            "statusMessage": "Checking Augments done boundary"
+            "statusMessage": "Checking SDLC Skills done boundary"
           }
         ]
       }

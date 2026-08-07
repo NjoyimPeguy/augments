@@ -16,14 +16,14 @@ adapter_install() { # $1 plugin source
   for f in auth.json config.toml models_cache.json; do
     [ -f "$source_codex_home/$f" ] && cp "$source_codex_home/$f" "$harness_home/$f"
   done
-  # A copied config.toml can already register `augments-dev` against the real
+  # A copied config.toml can already register `augments-labs-dev` against the real
   # repo, which collides when this arm's source differs. Removed in the ISOLATED
   # home only — the user's own CODEX_HOME is never touched.
-  env CODEX_HOME="$harness_home" codex plugin remove augments >/dev/null 2>&1
-  env CODEX_HOME="$harness_home" codex plugin marketplace remove augments-dev >/dev/null 2>&1
+  env CODEX_HOME="$harness_home" codex plugin remove sdlc-skills >/dev/null 2>&1
+  env CODEX_HOME="$harness_home" codex plugin marketplace remove augments-labs-dev >/dev/null 2>&1
   env CODEX_HOME="$harness_home" codex plugin marketplace add "$1" --json >/dev/null 2>>"$errlog" || {
     echo "marketplace add failed (see $errlog)" >&2; return 3; }
-  env CODEX_HOME="$harness_home" codex plugin add augments@augments-dev --json >/dev/null 2>>"$errlog" || {
+  env CODEX_HOME="$harness_home" codex plugin add sdlc-skills@augments-labs-dev --json >/dev/null 2>>"$errlog" || {
     echo "plugin add failed (see $errlog)" >&2; return 3; }
 }
 
@@ -34,13 +34,13 @@ adapter_chain() {
              and .item.type == "command_execution" then
             (.item.command // "") as $cmd
             | ($cmd | scan("/skills/(?<skill>[A-Za-z0-9_-]+)/SKILL[.]md")? | .[0])
-            | if . == "" then empty else "augments:" + . end
+            | if . == "" then empty else "sdlc-skills:" + . end
           else empty end' "$1" 2>/dev/null
 }
 
 # This harness needs the skill-instructions suffix to reach for a skill at all.
 adapter_prompt_suffix() {
-  printf '\n\nUse the relevant Augments skill according to the skill instructions: read its SKILL.md completely before answering.'
+  printf '\n\nUse the relevant skill according to the skill instructions: read its SKILL.md completely before answering.'
 }
 
 adapter_run_activation() { # $1 workdir  $2 prompt  $3 stream
