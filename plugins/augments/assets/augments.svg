@@ -1,5 +1,0 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="Augments">
-  <rect width="64" height="64" rx="14" fill="#0f766e"/>
-  <path d="M18 45 32 13l14 32h-8l-2.6-6.4H28.6L26 45h-8Zm13.2-13h9.6L36 20.4 31.2 32Z" fill="#fff"/>
-  <path d="M18 51h28" stroke="#99f6e4" stroke-width="5" stroke-linecap="round"/>
-</svg>

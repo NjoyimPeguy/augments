@@ -9,7 +9,7 @@ adapter_check() {
 }
 
 # Isolated home with this checkout as a managed plugin — the layout
-# `kimi /plugins install` produces (plugins/managed/augments + installed.json).
+# `kimi /plugins install` produces (plugins/managed/sdlc-skills + installed.json).
 adapter_install() { # $1 plugin source
   harness_home="$(mktemp -d)"
   local f d
@@ -19,9 +19,9 @@ adapter_install() { # $1 plugin source
   for d in credentials oauth; do
     [ -d "$source_kimi_home/$d" ] && cp -r "$source_kimi_home/$d" "$harness_home/$d"
   done
-  local managed="$harness_home/plugins/managed/augments"
+  local managed="$harness_home/plugins/managed/sdlc-skills"
   mkdir -p "$managed"
-  ( cd "$1" && tar --exclude=.git --exclude=.augments -cf - . ) | tar -xf - -C "$managed"
+  ( cd "$1" && tar --exclude=.git --exclude=.sdlc-skills -cf - . ) | tar -xf - -C "$managed"
   [ -f "$managed/.kimi-plugin/plugin.json" ] || {
     echo "no .kimi-plugin/plugin.json in $1 — does that ref carry the Kimi adapter?" >&2
     return 2; }
@@ -33,7 +33,7 @@ adapter_install() { # $1 plugin source
         --argjson skills "$skills" \
         --slurpfile manifest "$managed/.kimi-plugin/plugin.json" \
     '{version: 1, plugins: [{
-       id: "augments", root: $root, source: "local-path", enabled: true,
+       id: "sdlc-skills", root: $root, source: "local-path", enabled: true,
        state: "ok", installedAt: $now, updatedAt: $now, originalSource: $original,
        skillCount: $skills, manifest: $manifest[0],
        manifestKind: "kimi-plugin-dir", manifestPath: $manifest_path,
@@ -46,7 +46,7 @@ adapter_chain() {
           | .tool_calls[]?
           | select(.function.name == "Skill")
           | (.function.arguments | try fromjson catch {} | .skill // empty)
-          | "augments:" + .' "$1" 2>/dev/null
+          | "sdlc-skills:" + .' "$1" 2>/dev/null
 }
 
 # No prompt suffix: the sessionStart nudge is part of what this exercises, so the

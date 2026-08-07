@@ -4,12 +4,12 @@
 # Observes whether a skill ACTUALLY activates, from a structured tool call in the
 # harness's own stream — never a prose grep and never a self-report. A raw grep
 # reports phantom activations: the SessionStart nudge and the init manifest both
-# contain `augments:` tokens that are not actions. The first version of this
+# contain `sdlc-skills:` tokens that are not actions. The first version of this
 # harness fell for exactly that.
 #
 # THE FILENAME IS THE CONTRACT. A scenario named after a real skill expects that
 # skill anywhere in the routing chain (under routing-first the first call is
-# `using-augments`, the router — judge the whole chain, not the first call). Any
+# `using-sdlc-skills`, the router — judge the whole chain, not the first call). Any
 # other name expects NOTHING to fire; something firing there is a failure.
 #
 # Exit code is the verdict, so this is scriptable. An exploratory
@@ -40,8 +40,8 @@ if [ "${1:-}" = "selftest" ]; then
   . "$scriptdir/harnesses/claude-code.sh"
   cat > "$fx/fired.jsonl" <<'FX'
 {"type":"system","subtype":"init","tools":["Skill"]}
-{"type":"assistant","message":{"content":[{"type":"text","text":"routing first"},{"type":"tool_use","name":"Skill","input":{"skill":"augments:using-augments"}}]}}
-{"type":"assistant","message":{"content":[{"type":"tool_use","name":"Skill","input":{"skill":"augments:debugging"}}]}}
+{"type":"assistant","message":{"content":[{"type":"text","text":"routing first"},{"type":"tool_use","name":"Skill","input":{"skill":"sdlc-skills:using-sdlc-skills"}}]}}
+{"type":"assistant","message":{"content":[{"type":"tool_use","name":"Skill","input":{"skill":"sdlc-skills:debugging"}}]}}
 FX
   cat > "$fx/none.jsonl" <<'FX'
 {"type":"system","subtype":"init","tools":["Skill"]}
@@ -54,7 +54,7 @@ FX
   chk() { local got; got="$(adapter_chain "$fx/$1" | paste -sd' ' -)"
           [ "$got" = "$2" ] && printf 'ok    %-14s -> %s\n' "$1" "${got:-<none>}" \
                             || { printf 'FAIL  %-14s -> got "%s" want "%s"\n' "$1" "$got" "$2"; f=1; }; }
-  chk fired.jsonl "augments:using-augments augments:debugging"
+  chk fired.jsonl "sdlc-skills:using-sdlc-skills sdlc-skills:debugging"
   chk none.jsonl  ""
   chk acted.jsonl ""
   [ "$f" -eq 0 ] && echo "detection self-test: PASS" || echo "detection self-test: FAIL"
@@ -113,7 +113,7 @@ if [ -n "$fixture_git" ]; then
   ( cd "$workdir" && git init -q -b main 2>/dev/null || { git init -q && git checkout -qb main; }
     printf '# Fixture\n\nA disposable repository for skill-routing probes.\n' > README.md
     git add README.md
-    git -c user.name='Augments Harness' -c user.email='harness@example.invalid' \
+    git -c user.name='SDLC Skills Harness' -c user.email='harness@example.invalid' \
         commit -q -m 'fixture baseline' ) || { echo "fixture repo failed" >&2; exit 2; }
 fi
 
@@ -125,14 +125,14 @@ mapfile -t xflags < <(adapter_activation_flags 2>/dev/null || true)
 # skill fires. A run that only ever fires the router is bounded by --max-turns.
 ( adapter_run_activation "$workdir" "$prompt" "$stream" ${xflags[@]+"${xflags[@]}"} ) &
 cpid=$!
-# Skills CHAIN: using-augments routes, then task-branches, then TDD, then yagni.
+# Skills CHAIN: using-sdlc-skills routes, then task-branches, then TDD, then yagni.
 # So stopping at the first non-router skill truncates a correct chain and scores
 # it as a miss — that is exactly what happened to test-driven-development
 # (killed at using-task-branches, which the router correctly sends you to first)
 # and to finishing-a-branch (killed at verifying-completion). When a specific
 # skill is expected, wait for THAT skill; --max-turns bounds a run that never
 # reaches it. Only an exploratory run stops at the first non-router call.
-router="augments:using-augments"; want=""; [ -n "$expect" ] && want="augments:${expect}"
+router="sdlc-skills:using-sdlc-skills"; want=""; [ -n "$expect" ] && want="sdlc-skills:${expect}"
 while kill -0 "$cpid" 2>/dev/null; do
   chain="$(adapter_chain "$stream")"
   if [ -n "$want" ]; then
@@ -165,7 +165,7 @@ fi
 
 echo "harness  : $harness"
 echo "scenario : ${scenario}"
-[ -n "$expect" ] && echo "expected : augments:${expect}"
+[ -n "$expect" ] && echo "expected : sdlc-skills:${expect}"
 echo "verdict  : ${verdict}"
 # This guard only catches the HARD refusal. An expiring session can degrade
 # routing quality for several runs BEFORE it refuses outright — measured on

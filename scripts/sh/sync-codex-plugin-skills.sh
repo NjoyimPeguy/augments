@@ -4,7 +4,7 @@
 set -euo pipefail
 cd "$(dirname "$0")/../.." || exit 2
 
-out="plugins/augments/skills"
+out="plugins/sdlc-skills/skills"
 mkdir -p "$out"
 
 find "$out" -mindepth 1 -maxdepth 1 -type d -exec rm -rf {} +

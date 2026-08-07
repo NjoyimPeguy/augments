@@ -45,11 +45,11 @@ A per-adapter `scenario_setup_<harness>()` override works the same way for fixtu
 
 **Activation** — the verdict comes only from a structured tool call in the
 harness's own stream. A raw grep reports phantom activations: the SessionStart
-nudge and the init manifest both contain `augments:` tokens that are not
+nudge and the init manifest both contain `sdlc-skills:` tokens that are not
 actions, and the first version of this harness fell for exactly that. The
 **filename is the contract**: a scenario named after a real skill expects that
 skill anywhere in the routing chain (under routing-first the first call is
-`using-augments`, the router — judge the whole chain); any other name expects
+`using-sdlc-skills`, the router — judge the whole chain); any other name expects
 nothing to fire. Exit code is the verdict, so it is scriptable.
 
 **Behavioural** — runs the skill for real and reads the artifact it produced.
