@@ -2,6 +2,16 @@
 
 Notable changes to SDLC Skills, newest first. Versions follow semantic versioning; the narrative for each release lives on its release page — this file is the terse, cumulative record.
 
+## [6.0.0] — 2026-08-07
+
+### Changed
+
+- **The library is now SDLC Skills, and the repository lives at `augments-labs/sdlc-skills`.** Breaking for everyone who installs or invokes it: the plugin is `sdlc-skills`, the Claude marketplace key is `augments-labs` (`/plugin install sdlc-skills@augments-labs`), and every skill is addressed as `sdlc-skills:<name>`. The name lived in three places at once — org, repository, plugin — and only one of them said what the library is.
+- **The router skill is `using-sdlc-skills`** (was `using-augments`). Its trigger, body, and routing behaviour are unchanged; only the address moved. No skill `description` contains the old name, so no trigger changed.
+- **Artifacts are written to `.sdlc-skills/`** (was `.augments/`), and receipt tokens carry the `SDLC_SKILLS_` prefix. A project with existing artifacts keeps them where they are; the directory is not migrated for you.
+- **Documentation and mirror paths moved** — `docs/sdlc-skills/`, `plugins/sdlc-skills/`. Direct links to files under the old paths, including the images, no longer resolve.
+- **The brand marks are a lifecycle ring**, replacing the letter-A monogram in both the plugin icon and `docs/images/`.
+
 ## [5.1.1] — 2026-08-03
 
 ### Fixed
