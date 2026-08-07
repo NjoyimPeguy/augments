@@ -15,7 +15,7 @@ adapter_check() {
 adapter_install() { plugin_dir="$1"; }
 
 # DETECTION: only a structured `Skill` tool_use in an ASSISTANT event counts.
-# The SessionStart nudge text and the init manifest both contain `augments:`
+# The SessionStart nudge text and the init manifest both contain `sdlc-skills:`
 # tokens; a raw grep matches those and reports a phantom activation. The first
 # cut of this harness did exactly that.
 adapter_chain() {

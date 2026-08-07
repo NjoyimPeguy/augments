@@ -58,7 +58,7 @@ scenario_assert() {
   cd "$d" || return 2
   added="$(added_since_baseline "$d")"
 
-  assert_file '.augments/specs/*.md' 'wrote a spec'
+  assert_file '.sdlc-skills/specs/*.md' 'wrote a spec'
   local spec="$ASSERT_MATCH"
 
   new_tests="$(printf '%s\n' "$added" \

@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 480" width="480" height="480" role="img" aria-label="SDLC Skills">
+  <circle cx="240" cy="240" r="130" fill="none" stroke="#1f6feb" stroke-width="14" />
+
+  <circle cx="240" cy="110" r="22" fill="#a5d6ff" />
+  <circle cx="240" cy="110" r="10" fill="#0d1117" />
+
+  <circle cx="352.6" cy="175" r="22" fill="#79c0ff" />
+  <circle cx="352.6" cy="175" r="10" fill="#0d1117" />
+
+  <circle cx="352.6" cy="305" r="22" fill="#d2a8ff" />
+  <circle cx="352.6" cy="305" r="10" fill="#0d1117" />
+
+  <circle cx="240" cy="370" r="22" fill="#3fb950" />
+  <circle cx="240" cy="370" r="10" fill="#0d1117" />
+
+  <circle cx="127.4" cy="305" r="22" fill="#ffa657" />
+  <circle cx="127.4" cy="305" r="10" fill="#0d1117" />
+
+  <circle cx="127.4" cy="175" r="22" fill="#ff7b72" />
+  <circle cx="127.4" cy="175" r="10" fill="#0d1117" />
+</svg>

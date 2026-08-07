@@ -1,6 +1,6 @@
 # Changelog
 
-Notable changes to augments, newest first. Versions follow semantic versioning; the narrative for each release lives on its release page — this file is the terse, cumulative record.
+Notable changes to SDLC Skills, newest first. Versions follow semantic versioning; the narrative for each release lives on its release page — this file is the terse, cumulative record.
 
 ## [5.1.1] — 2026-08-03
 
@@ -93,7 +93,7 @@ Notable changes to augments, newest first. Versions follow semantic versioning; 
 - **`test-driven-development`:** RED must run through the project's *own* command, and a broken project command must be fixed or named — a test the project's gate cannot execute is not a gate.
 - **`spec-it`:** three step-6 loopholes closed, each found by running it — an open contract is not an exemption; a criterion that cannot go red is not a criterion; confirm it runs through the project's own command.
 - **`tests/` rebuilt around one runner per test kind.** Scenarios were byte-identical across three harness copies (93 files → 44) and `run-behavioral.sh` was ~60% duplicated in each. Now one dispatcher per kind taking `--harness`, with `tests/harnesses/<name>.sh` holding only what differs per CLI. The deterministic gate moved to `scripts/sh/`.
-- **Activation runner no longer truncates skill chains.** It killed the run at the first non-router skill, so a correct chain (`using-augments → using-task-branches → test-driven-development → yagni`) was cut short and scored as a miss.
+- **Activation runner no longer truncates skill chains.** It killed the run at the first non-router skill, so a correct chain (`using-sdlc-skills → using-task-branches → test-driven-development → yagni`) was cut short and scored as a miss.
 
 ### Removed
 
@@ -115,7 +115,7 @@ Notable changes to augments, newest first. Versions follow semantic versioning; 
 
 ### Changed
 
-- **`yagni` now chains from `test-driven-development` at the implementation moment.** TDD's GREEN step invokes it, and `using-augments` names the pair — the router line is the load-bearing anchor (live A/B on both harnesses; the body sentence alone did not fire). `yagni`'s trigger rewritten: build MORE than asked vs deliver LESS than asked, no more, no less.
+- **`yagni` now chains from `test-driven-development` at the implementation moment.** TDD's GREEN step invokes it, and `using-sdlc-skills` names the pair — the router line is the load-bearing anchor (live A/B on both harnesses; the body sentence alone did not fire). `yagni`'s trigger rewritten: build MORE than asked vs deliver LESS than asked, no more, no less.
 - **Five triggers de-vagued**, rewritten from their own bodies' vocabulary: `release-readiness` (names its real gate signals), `writing-plans` ("alignment brief" → a brief from `interview-me`/`spec-it`), `refactor-architecture` (concrete friction symptoms), `spec-it` and `feasibility-check` (Skip clauses added). Re-measured 10/10 on both harnesses.
 - **Checkpoint commits.** `using-task-branches` and `verifying-completion` now tell an agent to bank verified work on the task branch as it goes — uncommitted work is one power cut from gone.
 
@@ -128,7 +128,7 @@ Notable changes to augments, newest first. Versions follow semantic versioning; 
 
 ### Added
 
-- **Kimi Code CLI adapter.** `.kimi-plugin/plugin.json` exposes the canonical skills directly (no mirror), loads `using-augments` at session start, binds skill language to the harness's real tools, and re-nudges at the done boundary via a manifest-declared Stop hook. Live activation and Stop-hook proofs recorded under `tests/harness/kimi-code/`; the session-start nudge does not survive mid-session compaction (recorded gap).
+- **Kimi Code CLI adapter.** `.kimi-plugin/plugin.json` exposes the canonical skills directly (no mirror), loads `using-sdlc-skills` at session start, binds skill language to the harness's real tools, and re-nudges at the done boundary via a manifest-declared Stop hook. Live activation and Stop-hook proofs recorded under `tests/harness/kimi-code/`; the session-start nudge does not survive mid-session compaction (recorded gap).
 - **Stop-nudge policy shared across harnesses.** `hooks/stop-nudge-detect.sh` holds the single done-boundary detector; Claude/Codex and Kimi wrappers only adapt payload and block format.
 - **Token budget enforced in CI.** `token-budget.sh --max 1600` gates the always-loaded surface.
 
@@ -140,7 +140,7 @@ Notable changes to augments, newest first. Versions follow semantic versioning; 
 
 ### Changed
 
-- **`ui-ux` is now `ui-ux-design`.** The renamed invocation address reflects a broader interface-design workflow and is a breaking surface change for callers of `augments:ui-ux`.
+- **`ui-ux` is now `ui-ux-design`.** The renamed invocation address reflects a broader interface-design workflow and is a breaking surface change for callers of `sdlc-skills:ui-ux`.
 - **UI/UX design starts from project evidence.** Existing routes, components, tokens, content, previews, responsive conventions, accessibility rules, and tests constrain flows and directions before any new setup is proposed.
 
 ### Added
@@ -151,8 +151,8 @@ Notable changes to augments, newest first. Versions follow semantic versioning; 
 
 ### Changed
 
-- **`using-git-worktrees` is now `using-task-branches`.** The skill surface now reflects the actual workflow: start repo edits on a meaningful task branch or harness workspace, and use a worktree only when user/project preference or runtime isolation calls for one. This is a breaking invocation-address change for callers of `augments:using-git-worktrees`.
-- **Repo-edit routing starts with branch/status discipline.** `using-augments` now routes edit, fix, refactor, and plan-execution requests through `using-task-branches` before repo exploration or implementation, with activation evidence recorded for Claude Code and Codex.
+- **`using-git-worktrees` is now `using-task-branches`.** The skill surface now reflects the actual workflow: start repo edits on a meaningful task branch or harness workspace, and use a worktree only when user/project preference or runtime isolation calls for one. This is a breaking invocation-address change for callers of `sdlc-skills:using-git-worktrees`.
+- **Repo-edit routing starts with branch/status discipline.** `using-sdlc-skills` now routes edit, fix, refactor, and plan-execution requests through `using-task-branches` before repo exploration or implementation, with activation evidence recorded for Claude Code and Codex.
 
 ### Added
 
@@ -162,19 +162,19 @@ Notable changes to augments, newest first. Versions follow semantic versioning; 
 
 ### Added
 
-- **Codex plugin adapter.** New `plugins/augments/.codex-plugin/` manifest, local `.agents/plugins/marketplace.json`, generated flat skill mirror, and `scripts/sync-codex-plugin-skills.sh` make the same 30 canonical skills installable in Codex without forking skill content. The structural gate now validates the Codex mirror and manifest versions.
+- **Codex plugin adapter.** New `plugins/sdlc-skills/.codex-plugin/` manifest, local `.agents/plugins/marketplace.json`, generated flat skill mirror, and `scripts/sync-codex-plugin-skills.sh` make the same 30 canonical skills installable in Codex without forking skill content. The structural gate now validates the Codex mirror and manifest versions.
 - **Codex CLI harness evidence.** New `tests/harness/codex-cli/` covers install smoke, activation fixture selftests, 30 real activation scenarios, Stop-hook wrapper tests, and Codex-specific behavioral records for the discipline skills.
 
 ### Changed
 
 - **Hooks are shared at the root `hooks/` layer.** The Claude Code hook manifest now points to `hooks/hooks.json`, while Codex project-hook config mirrors `hooks/hooks-codex.json`; both use the shared `hooks/context.md` and `hooks/stop-nudge.sh` where their event models allow it.
-- **Docs no longer frame augments as Claude-only.** Harness-support docs, README status, and activation notes now describe Claude Code and Codex as exercised adapters, with Codex hook limitations stated explicitly.
+- **Docs no longer frame SDLC Skills as Claude-only.** Harness-support docs, README status, and activation notes now describe Claude Code and Codex as exercised adapters, with Codex hook limitations stated explicitly.
 
 ## [2.2.0] — 2026-07-01
 
 ### Added
 
-- **Done-boundary `Stop` re-nudge.** New `hooks/claude-code/stop-nudge.sh`, wired as a `Stop` hook, closes the long-standing "the verify/review skills don't fire after a long task" gap: augments routes once at SessionStart, but the done boundary arrives at turn-end with nothing to re-route. When a turn wraps up claiming the work is done, the hook re-routes **once** to `using-augments` → `verifying-completion` (and, at a feature boundary, `requesting-code-review` / `finishing-a-branch`). It is a *routing* re-nudge, not a gate: it blocks no action, certifies no verdict, fires at most once (`stop_hook_active` guard), reads only the Stop payload, and fails open. Disable by removing the `Stop` entry from `hooks/claude-code/hooks.json`. Proof: offline `tests/harness/claude-code/test-stop-nudge.sh` + `2026-07-01-stop-nudge-done-boundary.md`.
+- **Done-boundary `Stop` re-nudge.** New `hooks/claude-code/stop-nudge.sh`, wired as a `Stop` hook, closes the long-standing "the verify/review skills don't fire after a long task" gap: SDLC Skills routes once at SessionStart, but the done boundary arrives at turn-end with nothing to re-route. When a turn wraps up claiming the work is done, the hook re-routes **once** to `using-sdlc-skills` → `verifying-completion` (and, at a feature boundary, `requesting-code-review` / `finishing-a-branch`). It is a *routing* re-nudge, not a gate: it blocks no action, certifies no verdict, fires at most once (`stop_hook_active` guard), reads only the Stop payload, and fails open. Disable by removing the `Stop` entry from `hooks/claude-code/hooks.json`. Proof: offline `tests/harness/claude-code/test-stop-nudge.sh` + `2026-07-01-stop-nudge-done-boundary.md`.
 - **Review-depth ladder in `requesting-code-review`.** Shallow / Standard / Deep tiers keyed to a change's risk and blast radius (not wall-clock), with an adversarial refute-pass at the Deep tier.
 - **Plan-as-contract in `writing-plans`.** Per-task Consumes/Produces interface blocks, an index-level Constraints block, reviewer-gate task sizing, and an Execution Handoff (inline vs subagent-driven) at the present-and-pause.
 
@@ -183,26 +183,26 @@ Notable changes to augments, newest first. Versions follow semantic versioning; 
 - **Leaner skill triggers (~620 always-loaded tokens).** 26 skill `description`s drop the embedded what-it-does summary that buried the trigger — which, per `writing-skills` doctrine, made the model follow the summary and skip the body; the `Use when…` trigger, the `Skip…` clause, and genuine this-vs-that disambiguation stay. Re-measured on the harness; the four ALWAYS discipline triggers were left untouched (trimming `yagni` measurably dropped its activation, so it was reverted). Record: `2026-07-01-description-token-efficiency.md`.
 - **Explicit gap handoffs between adjacent skills** — `verifying-completion` → `requesting-code-review`, `spec-it` → design, `finishing-a-branch` → `release-readiness`, and others — so a chain does not stall half-done.
 - **`executing-plans` de-serialized.** Three execution modes (inline / sequential offload / parallel fan-out), user-posture honoring, and per-task gate cadence clarified (sequential default; independent tasks fan out).
-- **`yagni` relocated** `skills/implementation/` → `skills/common/` as a cross-cutting discipline — the invocation address `augments:yagni` is unchanged — plus a consent-based never-work-on-`main` guard in `using-git-worktrees`, and a slimmer `using-augments` router.
+- **`yagni` relocated** `skills/implementation/` → `skills/common/` as a cross-cutting discipline — the invocation address `sdlc-skills:yagni` is unchanged — plus a consent-based never-work-on-`main` guard in `using-git-worktrees`, and a slimmer `using-sdlc-skills` router.
 
 ## [2.1.1] — 2026-06-26
 
 ### Changed
 
-- **Routing-first delivery: a thin pointer to the `using-augments` router.** The SessionStart bootstrap (`hooks/claude-code/context.md`) slims to a one-line pointer that re-fires on compaction; the routing discipline it used to carry — red-flags, the rationalization table, a deterministic-engineer mental-model graph — moves into the `using-augments` body, removing the duplication between them. The philosophy is reconciled, not softened: a firm floor where there is only process, a deterministic gate where there is proof, never one dressed as the other (`docs/augments/philosophy.md`).
+- **Routing-first delivery: a thin pointer to the `using-sdlc-skills` router.** The SessionStart bootstrap (`hooks/claude-code/context.md`) slims to a one-line pointer that re-fires on compaction; the routing discipline it used to carry — red-flags, the rationalization table, a deterministic-engineer mental-model graph — moves into the `using-sdlc-skills` body, removing the duplication between them. The philosophy is reconciled, not softened: a firm floor where there is only process, a deterministic gate where there is proof, never one dressed as the other (`docs/sdlc-skills/philosophy.md`).
 - **The dispatch skills activate at the right moment.** `dispatching-parallel-agents`' trigger moves from a burden-of-proof description ("provably independent… quick enough inline") to a positive, observable one; the independence check stays in the body. `subagent-dispatch.md` drops the "optional" framing, points to the shared dispatch packet instead of duplicating it, and resolves a paste-vs-path contradiction.
-- **The `.augments/` output location is mandatory.** Across the nine writing skills the artifact path stops being an optional "default" and becomes the standard location, overridable only by the user, with one canonical phrasing; the five design skills write sections of one shared dated design doc. A validator assertion keeps it from drifting back.
-- **The activation runners are routing-first aware.** Both harness runners judge the whole `using-augments → X` chain (route-then-fire) instead of the first Skill call, with an offline fixture + selftest for the chain.
+- **The `.sdlc-skills/` output location is mandatory.** Across the nine writing skills the artifact path stops being an optional "default" and becomes the standard location, overridable only by the user, with one canonical phrasing; the five design skills write sections of one shared dated design doc. A validator assertion keeps it from drifting back.
+- **The activation runners are routing-first aware.** Both harness runners judge the whole `using-sdlc-skills → X` chain (route-then-fire) instead of the first Skill call, with an offline fixture + selftest for the chain.
 
 ### Removed
 
-- **The Codex adapter.** `.codex-plugin/` and the Codex references in the docs are removed — augments is Claude-Code-only for now; a real Codex harness returns when it is exercised and proven. (Past release history in this file is unchanged.)
+- **The Codex adapter.** `.codex-plugin/` and the Codex references in the docs are removed — SDLC Skills is Claude-Code-only for now; a real Codex harness returns when it is exercised and proven. (Past release history in this file is unchanged.)
 
 ## [2.1.0] — 2026-06-24
 
 ### Added
 
-- **`governance/` — deterministic gate templates.** Adoptable CI / branch-protection / pre-commit templates that make the production-critical skills non-skippable at the commit/PR/CI boundary, where persuasion can't — branch-protection (CI-green + review + conversation-resolution, bulletproof), `tests-accompany-code`, `release-readiness`, `trust-boundary-flag` (heuristics, honestly labelled). Each maps to the skill it enforces; dogfooded on augments itself.
+- **`governance/` — deterministic gate templates.** Adoptable CI / branch-protection / pre-commit templates that make the production-critical skills non-skippable at the commit/PR/CI boundary, where persuasion can't — branch-protection (CI-green + review + conversation-resolution, bulletproof), `tests-accompany-code`, `release-readiness`, `trust-boundary-flag` (heuristics, honestly labelled). Each maps to the skill it enforces; dogfooded on SDLC Skills itself.
 
 ### Changed
 
@@ -212,12 +212,12 @@ Notable changes to augments, newest first. Versions follow semantic versioning; 
 
 ### Changed
 
-- **Activation moves from coercion to structure; Claude-Code-first.** The firing pressure v1.0.7 put in descriptions (`ALWAYS invoke…`) was a workaround for a SessionStart nudge that decays over a long session. v2.0 carries it structurally: a slim procedural SessionStart bootstrap **plus a per-turn `UserPromptSubmit` floor** so the routing check can't decay mid-session (`docs/augments/activation.md`). The four discipline descriptions drop `ALWAYS` → plain "Use when…"; re-measured on a real `claude -p` sweep of all 30 skills (28/30 fired first try, effectively 30/30 on fair scenarios), activation holds without the coercion.
+- **Activation moves from coercion to structure; Claude-Code-first.** The firing pressure v1.0.7 put in descriptions (`ALWAYS invoke…`) was a workaround for a SessionStart nudge that decays over a long session. v2.0 carries it structurally: a slim procedural SessionStart bootstrap **plus a per-turn `UserPromptSubmit` floor** so the routing check can't decay mid-session (`docs/sdlc-skills/activation.md`). The four discipline descriptions drop `ALWAYS` → plain "Use when…"; re-measured on a real `claude -p` sweep of all 30 skills (28/30 fired first try, effectively 30/30 on fair scenarios), activation holds without the coercion.
 - **Tests flip from harness-agnostic proxies to real per-harness runs.** The proxies measured a ceiling, not the floor, so an ignored skill shipped green. The real `claude -p` harness (`tests/harness/claude-code/`; `--working-tree`, an offline `selftest`, `--verbose`, `--max-turns`) is now the activation layer; `behavioral/` discipline-pressure tests move under it. Identity rewritten to **portable skills + per-harness real tests** (Codex frozen; its manifest-sync relaxed to a note while `.claude-plugin` stays strict).
 
 ### Added
 
-- **`yagni`** — build only what's needed and make it work, guarding both over-engineering and its opposite, laziness dressed as simplicity (stubs, TODOs, the smallest diff in the wrong place). Ships with a `references/` folder; `using-augments` gains a phase-chaining cue.
+- **`yagni`** — build only what's needed and make it work, guarding both over-engineering and its opposite, laziness dressed as simplicity (stubs, TODOs, the smallest diff in the wrong place). Ships with a `references/` folder; `using-sdlc-skills` gains a phase-chaining cue.
 
 ### Removed
 
@@ -238,7 +238,7 @@ Notable changes to augments, newest first. Versions follow semantic versioning; 
 
 ### Changed
 
-- **The proactive-use nudge states one action: invoke.** The Claude Code SessionStart nudge (`hooks/claude-code/context.md`) drops the v1.0.5 "say which … `Using augments:<name>`" announcement — it conflated *invoke* with *announce*, and only the announcement was fakeable (a field session named a skill, served the request another way, and never called `Skill`). The single action is now the invocation itself, whose tool call is the unfakeable trace. Also reworded "before you touch the code" → "before you start", which presupposed a pre-implementation phase and mis-framed maintenance work. Re-tested old-vs-new by transcript grep for a real `Skill` call: no activation regression, feature→`spec-it` 3/3 and maintenance→`debugging` 3/3 under the new wording, and 3/3 `debugging` against the real 172k-LoC `mobile-client`; the native-SessionStart confirmation is recorded as owed post-install. `tests/triggering/session-nudge.md`.
+- **The proactive-use nudge states one action: invoke.** The Claude Code SessionStart nudge (`hooks/claude-code/context.md`) drops the v1.0.5 "say which … `Using sdlc-skills:<name>`" announcement — it conflated *invoke* with *announce*, and only the announcement was fakeable (a field session named a skill, served the request another way, and never called `Skill`). The single action is now the invocation itself, whose tool call is the unfakeable trace. Also reworded "before you touch the code" → "before you start", which presupposed a pre-implementation phase and mis-framed maintenance work. Re-tested old-vs-new by transcript grep for a real `Skill` call: no activation regression, feature→`spec-it` 3/3 and maintenance→`debugging` 3/3 under the new wording, and 3/3 `debugging` against the real 172k-LoC `mobile-client`; the native-SessionStart confirmation is recorded as owed post-install. `tests/triggering/session-nudge.md`.
 
 ### Added
 
@@ -252,7 +252,7 @@ Notable changes to augments, newest first. Versions follow semantic versioning; 
 
 ### Changed
 
-- **The proactive-use nudge makes invoking a skill the visible first act.** The Claude Code SessionStart nudge (`hooks/claude-code/context.md`) was reworded from a passive "check whether a skill fits … and invoke it" — which an agent can satisfy silently and skip — to "before you touch the code, invoke the skill that fits, and say which as you do it (`Using augments:<name> to <purpose>`)", with the no-skill escape now *spoken* rather than silent. The collaboration stance is unchanged: no coercion ("must / no choice"), no whole-skill injection, still ~800 tokens. Driven by a field session where the nudge reached context yet no skill was invoked; old-vs-new measured in `tests/triggering/session-nudge.md` — the announcement is adopted reliably (7/7, including 3/3 under the verbatim competing output-style injections that drowned the nudge in the field), with no activation regression and a live re-test recorded as owed.
+- **The proactive-use nudge makes invoking a skill the visible first act.** The Claude Code SessionStart nudge (`hooks/claude-code/context.md`) was reworded from a passive "check whether a skill fits … and invoke it" — which an agent can satisfy silently and skip — to "before you touch the code, invoke the skill that fits, and say which as you do it (`Using sdlc-skills:<name> to <purpose>`)", with the no-skill escape now *spoken* rather than silent. The collaboration stance is unchanged: no coercion ("must / no choice"), no whole-skill injection, still ~800 tokens. Driven by a field session where the nudge reached context yet no skill was invoked; old-vs-new measured in `tests/triggering/session-nudge.md` — the announcement is adopted reliably (7/7, including 3/3 under the verbatim competing output-style injections that drowned the nudge in the field), with no activation regression and a live re-test recorded as owed.
 
 ## [1.0.4] — 2026-06-14
 
@@ -267,7 +267,7 @@ Notable changes to augments, newest first. Versions follow semantic versioning; 
 - **Versioning policy** (`RELEASING.md`): semver mapped to the skill surface, who bumps and when, and the release checklist; the gate now fails a half-done version bump across the three manifests.
 - **ADRs carry a status lifecycle.** `architecture-decisions` marks each record proposed / in force / superseded, so a later session can't read an unbuilt plan as the current architecture.
 - **Harness-collision checks in the gate**: shipped text is linted for harness scanner trigger-words, and a skill name that shadows a common built-in slash command is rejected.
-- **Compaction-survival requirement for adapters** (`docs/augments/harness-support.md`): the proactive-use nudge must outlive context compaction; mechanisms ranked, session-start-only declared a gap.
+- **Compaction-survival requirement for adapters** (`docs/sdlc-skills/harness-support.md`): the proactive-use nudge must outlive context compaction; mechanisms ranked, session-start-only declared a gap.
 - **Record-staleness rule** (`tests/README.md`): a model-generation change makes existing verdicts the previous generation's data; every dated entry names the harness and tier it was measured from.
 
 ### Fixed
@@ -279,7 +279,7 @@ Notable changes to augments, newest first. Versions follow semantic versioning; 
 ### Fixed
 
 - **Code review now reaches the "done" boundary.** A field failure showed work being reported complete with every gate green but the diff unreviewed. `requesting-code-review`'s trigger is now event-conditioned (fires at the done boundary — complete/commit/merge/PR — not only when you already want fresh eyes), and `verifying-completion` hands off to independent review once its gate passes instead of ending the chain at "verified". Proven old-vs-new in `tests/triggering/requesting-code-review.md` (the skill's first activation record) and `tests/behavioral/verifying-completion.md` (0/2 → 3/3 on the handoff; flaky-green hard-stop unregressed).
-- **Docs: deterministic boundary interrupts stay project-local.** New `harness-support.md` section on why blocking commit/merge hooks belong in your own project config, not in augments core.
+- **Docs: deterministic boundary interrupts stay project-local.** New `harness-support.md` section on why blocking commit/merge hooks belong in your own project config, not in SDLC Skills core.
 
 ## [1.0.1] — 2026-06-10
 
@@ -297,5 +297,5 @@ First public release.
 - **The deterministic gate** (`tests/validate-skills.sh`): frontmatter shape, line budgets, no external references or vendor model names, skills-array sync across every harness manifest, and internal doc paths resolve — enforced by CI on every push and PR.
 - **Dated evidence records** under `tests/`: `triggering/` (does a description route the right opening), `behavioral/` (does a discipline hold under pressure), `harness/` (does an adapter actually load and activate) — each entry stating the environment it was measured from, including honest nulls and stated gaps.
 - **Harness adapters**: a Claude Code plugin with a session-start nudge (firm, not coercive), and a Codex manifest (provisional — not yet exercised in a live session).
-- **The philosophy** (`docs/augments/philosophy.md`): every skill is a non-deterministic generator wrapped in a deterministic gate — truth comes from the gate, never from confidence — and skills work alongside model intelligence, never impeding it.
+- **The philosophy** (`docs/sdlc-skills/philosophy.md`): every skill is a non-deterministic generator wrapped in a deterministic gate — truth comes from the gate, never from confidence — and skills work alongside model intelligence, never impeding it.
 - **Contributor surface**: `CLAUDE.md` (shared via `AGENTS.md` and `GEMINI.md` symlinks), `CONTRIBUTING.md`, a PR template with authoring-environment disclosure, and a Code of Conduct.

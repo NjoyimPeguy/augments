@@ -2,7 +2,7 @@
 .claude/
 # local working artifacts — specs (spec-it) and plans (writing-plans); decisions
 # also live in durable memory, so ignoring these loses no record
-.augments/
+.sdlc-skills/
 .DS_Store
 node_modules/
 .serena/

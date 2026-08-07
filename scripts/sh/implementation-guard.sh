@@ -90,7 +90,7 @@ event="$(get '.hook_event_name')"
 # empty id fails open rather than sharing a cross-session "unknown" ledger.
 session="$(get '.session_id' | tr -cd 'A-Za-z0-9._-')"
 [ -n "$session" ] || exit 0
-ledger="${TMPDIR:-/tmp}/augments-skill-ledger-$session"
+ledger="${TMPDIR:-/tmp}/sdlc-skills-ledger-$session"
 case "$event" in
   PostToolUse)
     [ "$(get '.tool_name')" = "Skill" ] || exit 0

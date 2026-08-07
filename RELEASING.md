@@ -1,10 +1,10 @@
 # Releasing
 
-How augments is versioned and how a release is cut. This is maintainer guidance, written for humans and AI agents alike — for contributing a change, see [`CONTRIBUTING.md`](CONTRIBUTING.md). Contributors never touch versions.
+How SDLC Skills is versioned and how a release is cut. This is maintainer guidance, written for humans and AI agents alike — for contributing a change, see [`CONTRIBUTING.md`](CONTRIBUTING.md). Contributors never touch versions.
 
 ## Choosing the version
 
-Versions follow [Semantic Versioning](https://semver.org/spec/v2.0.0.html). For a skills library, the "public API" is the **skill surface**: which skills exist, their names (the invocation address — `augments:<name>`), and how they install (the manifests).
+Versions follow [Semantic Versioning](https://semver.org/spec/v2.0.0.html). For a skills library, the "public API" is the **skill surface**: which skills exist, their names (the invocation address — `sdlc-skills:<name>`), and how they install (the manifests).
 
 - **Major** — the surface breaks: a skill is renamed or removed, or the invocation/manifest structure changes. Anything that invokes or installs the library must adapt.
 - **Minor** — the surface grows, backwards-compatibly: a new skill, a new harness adapter.
@@ -21,11 +21,11 @@ Nobody bumps in a contribution PR. Versioning is decided once per release, by th
 ## Cutting a release
 
 1. Decide the tier (above) for everything on `dev` since the last tag.
-2. Bump the version in all four manifests: `.claude-plugin/plugin.json`, `.claude-plugin/marketplace.json`, `.kimi-plugin/plugin.json`, and `plugins/augments/.codex-plugin/plugin.json`. The gate fails if they disagree, so a half-done bump cannot ship.
+2. Bump the version in all four manifests: `.claude-plugin/plugin.json`, `.claude-plugin/marketplace.json`, `.kimi-plugin/plugin.json`, and `plugins/sdlc-skills/.codex-plugin/plugin.json`. The gate fails if they disagree, so a half-done bump cannot ship.
 3. Add the `CHANGELOG.md` entry — terse, newest-first; the narrative belongs on the release page.
 4. Run the gate: `bash scripts/sh/validate-skills.sh`.
 5. Commit on `dev` as `chore(release): vX.Y.Z — <one-line theme>`.
 6. Open the `dev` → `main` PR and merge it as a merge commit, so the individual fixes stay in history.
-7. Tag `vX.Y.Z` on `main` and create the release: title `augments vX.Y.Z`, notes carrying the narrative — the field report that drove the change, what changed, and the proof records under `tests/`.
+7. Tag `vX.Y.Z` on `main` and create the release: title `SDLC Skills vX.Y.Z`, notes carrying the narrative — the field report that drove the change, what changed, and the proof records under `tests/`.
 
 If you are an AI agent asked to release: follow this file exactly, and if the tier is genuinely ambiguous, ask the maintainer rather than inventing a number.

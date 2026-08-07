@@ -12,15 +12,15 @@ check() { # $1 desc  $2 expected(allow|deny)  $3 actual-output
 
 # transcript with both skills fired
 cat > "$T" <<'EOF'
-{"type":"assistant","message":{"content":[{"type":"tool_use","name":"Skill","input":{"skill":"augments:test-driven-development"}}]}}
-{"type":"assistant","message":{"content":[{"type":"tool_use","name":"Skill","input":{"skill":"augments:yagni"}}]}}
+{"type":"assistant","message":{"content":[{"type":"tool_use","name":"Skill","input":{"skill":"sdlc-skills:test-driven-development"}}]}}
+{"type":"assistant","message":{"content":[{"type":"tool_use","name":"Skill","input":{"skill":"sdlc-skills:yagni"}}]}}
 EOF
 out=$(printf '{"tool_name":"Write","tool_input":{"file_path":"/w/src/a.js"},"transcript_path":"%s"}' "$T" | bash $G)
 check "code file, both skills fired -> allow" allow "$out"
 
 # transcript with only TDD
 cat > "$T" <<'EOF'
-{"type":"assistant","message":{"content":[{"type":"tool_use","name":"Skill","input":{"skill":"augments:test-driven-development"}}]}}
+{"type":"assistant","message":{"content":[{"type":"tool_use","name":"Skill","input":{"skill":"sdlc-skills:test-driven-development"}}]}}
 EOF
 out=$(printf '{"tool_name":"Edit","tool_input":{"file_path":"/w/src/a.py"},"transcript_path":"%s"}' "$T" | bash $G)
 check "code file, yagni missing -> deny" deny "$out"
@@ -45,7 +45,7 @@ check "AGENTS.md instruction file -> allow" allow "$out"
 
 echo "--- kimi variant (ledger-based)"
 GK=scripts/sh/implementation-guard.sh
-L="${TMPDIR:-/tmp}/augments-skill-ledger-test-guard"; rm -f "$L"
+L="${TMPDIR:-/tmp}/sdlc-skills-ledger-test-guard"; rm -f "$L"
 kcheck() { # $1 desc  $2 expected(allow|deny)  $3 payload
   local out rc kind=allow
   out=$(printf '%s' "$3" | bash $GK 2>/dev/null); rc=$?
@@ -55,9 +55,9 @@ kcheck() { # $1 desc  $2 expected(allow|deny)  $3 payload
 kpay() { printf '{"hook_event_name":"%s","session_id":"test-guard","cwd":"/w",%s}' "$1" "$2"; }
 
 kcheck "kimi: code edit, no ledger -> deny" deny "$(kpay PreToolUse '"tool_name":"Write","tool_input":{"file_path":"/w/src/a.js"}')"
-printf '%s' "$(kpay PostToolUse '"tool_name":"Skill","tool_input":{"skill":"augments:test-driven-development"}')" | bash $GK >/dev/null 2>&1
+printf '%s' "$(kpay PostToolUse '"tool_name":"Skill","tool_input":{"skill":"sdlc-skills:test-driven-development"}')" | bash $GK >/dev/null 2>&1
 kcheck "kimi: code edit, only TDD recorded -> deny" deny "$(kpay PreToolUse '"tool_name":"Write","tool_input":{"file_path":"/w/src/a.js"}')"
-printf '%s' "$(kpay PostToolUse '"tool_name":"Skill","tool_input":{"skill":"augments:yagni"}')" | bash $GK >/dev/null 2>&1
+printf '%s' "$(kpay PostToolUse '"tool_name":"Skill","tool_input":{"skill":"sdlc-skills:yagni"}')" | bash $GK >/dev/null 2>&1
 kcheck "kimi: code edit, pair recorded -> allow" allow "$(kpay PreToolUse '"tool_name":"Write","tool_input":{"file_path":"/w/src/a.js"}')"
 kcheck "kimi: docs edit, no ledger needed -> allow" allow "$(kpay PreToolUse '"tool_name":"Edit","tool_input":{"file_path":"/w/README.md"}')"
 kcheck "kimi: non-edit tool -> allow" allow "$(kpay PreToolUse '"tool_name":"Bash","tool_input":{"command":"ls"}')"
@@ -73,12 +73,12 @@ check "case-insensitive extension (.PY) -> deny" deny "$(printf '{"tool_name":"W
 check "NotebookEdit no longer guarded -> allow" allow "$(printf '{"tool_name":"NotebookEdit","tool_input":{"notebook_path":"/w/n.ipynb"},"transcript_path":"%s"}' "$T" | bash $G)"
 check "new extension (.ps1) -> deny" deny "$(printf '{"tool_name":"Write","tool_input":{"file_path":"/w/deploy.ps1"},"transcript_path":"%s"}' "$T" | bash $G)"
 kcheck "kimi: missing session_id -> allow (no shared bucket)" allow "$(printf '{"hook_event_name":"PreToolUse","cwd":"/w","tool_name":"Write","tool_input":{"file_path":"/w/src/a.js"}}')"
-rm -f "${TMPDIR:-/tmp}/augments-skill-ledger-test-guard"
+rm -f "${TMPDIR:-/tmp}/sdlc-skills-ledger-test-guard"
 kcheck "kimi: missing ledger (fresh session) -> deny" deny "$(kpay PreToolUse '"tool_name":"Write","tool_input":{"file_path":"/w/src/a.js"}')"
-printf '%s' "$(kpay PostToolUse '"tool_name":"Skill","tool_input":{"skill":"augments:yagni"}')" | bash $GK >/dev/null 2>&1
-[ -f "${TMPDIR:-/tmp}/augments-skill-ledger-test-guard" ] && perms=$(stat -c '%a' "${TMPDIR:-/tmp}/augments-skill-ledger-test-guard") || perms=missing
+printf '%s' "$(kpay PostToolUse '"tool_name":"Skill","tool_input":{"skill":"sdlc-skills:yagni"}')" | bash $GK >/dev/null 2>&1
+[ -f "${TMPDIR:-/tmp}/sdlc-skills-ledger-test-guard" ] && perms=$(stat -c '%a' "${TMPDIR:-/tmp}/sdlc-skills-ledger-test-guard") || perms=missing
 [ "$perms" = "600" ] && echo "  ok    kimi: ledger created owner-only (600)" || { echo "  FAIL  kimi: ledger perms $perms (expected 600)"; fails=1; }
-rm -f "${TMPDIR:-/tmp}/augments-skill-ledger-test-guard"
+rm -f "${TMPDIR:-/tmp}/sdlc-skills-ledger-test-guard"
 
 
 echo "--- realistic claude payloads (hook_event_name AND transcript_path present)"
@@ -88,8 +88,8 @@ echo "--- realistic claude payloads (hook_event_name AND transcript_path present
 check "claude-style with hook_event_name, pair missing -> deny (transcript branch)" deny \
   "$(printf '{"hook_event_name":"PreToolUse","session_id":"s1","tool_name":"Write","tool_input":{"file_path":"/w/src/a.js"},"transcript_path":"%s"}' "$T" | bash $G)"
 cat > "$T" <<'EOF'
-{"type":"assistant","message":{"content":[{"type":"tool_use","name":"Skill","input":{"skill":"augments:test-driven-development"}}]}}
-{"type":"assistant","message":{"content":[{"type":"tool_use","name":"Skill","input":{"skill":"augments:yagni"}}]}}
+{"type":"assistant","message":{"content":[{"type":"tool_use","name":"Skill","input":{"skill":"sdlc-skills:test-driven-development"}}]}}
+{"type":"assistant","message":{"content":[{"type":"tool_use","name":"Skill","input":{"skill":"sdlc-skills:yagni"}}]}}
 EOF
 check "claude-style with hook_event_name, pair fired -> allow" allow \
   "$(printf '{"hook_event_name":"PreToolUse","session_id":"s1","tool_name":"Write","tool_input":{"file_path":"/w/src/a.js"},"transcript_path":"%s"}' "$T" | bash $G)"

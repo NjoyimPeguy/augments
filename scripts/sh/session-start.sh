@@ -1,14 +1,14 @@
 #!/usr/bin/env bash
-# Emit the augments routing bootstrap as a SessionStart context injection.
-# The nudge text lives inline below (between the AUGMENTS_NUDGE markers) so the
+# Emit the SDLC Skills routing bootstrap as a SessionStart context injection.
+# The nudge text lives inline below (between the SDLC_SKILLS_NUDGE markers) so the
 # hook is self-contained; token-budget.sh measures it from the same markers.
 set -euo pipefail
 
-context="$(cat <<'AUGMENTS_NUDGE'
-# Augments skills
+context="$(cat <<'SDLC_SKILLS_NUDGE'
+# SDLC Skills
 
-Augments installs engineering skills for the whole SDLC, listed with their triggers in your Skill tool. For every request, `using-augments` must be the first skill you invoke, before another skill or any tool that begins the work. It routes from the current state and preconditions; then invoke only the skills whose triggers hold.
-AUGMENTS_NUDGE
+SDLC Skills installs engineering skills for the whole lifecycle, listed with their triggers in your Skill tool. For every request, `using-sdlc-skills` must be the first skill you invoke, before another skill or any tool that begins the work. It routes from the current state and preconditions; then invoke only the skills whose triggers hold.
+SDLC_SKILLS_NUDGE
 )"
 
 # JSON-escape, in order: backslash, double-quote, then the control characters.

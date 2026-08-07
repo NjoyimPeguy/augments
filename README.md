@@ -1,9 +1,9 @@
-# Augments
+# SDLC Skills
 
 A collection of rigorous, phase-organized and context-routed SDLC skills that
 tether autonomous agents to real engineering gates.
 
-Augments is a cross-platform library of **opt-in engineering skills** for coding agents, organized by the phases of the software development life cycle. It gives agents real engineering discipline while staying lean and leaving *you* in control of the process.
+SDLC Skills is a cross-platform library of **opt-in engineering skills** for coding agents, organized by the phases of the software development life cycle. It gives agents real engineering discipline while staying lean and leaving *you* in control of the process.
 
 ## Philosophy
 
@@ -18,9 +18,9 @@ Augments is a cross-platform library of **opt-in engineering skills** for coding
 
 The deeper rationale—why claims leave a non-deterministic generator through
 external evidence or decision gates—is in
-[`docs/augments/philosophy.md`](docs/augments/philosophy.md); when a phase is one
+[`docs/sdlc-skills/philosophy.md`](docs/sdlc-skills/philosophy.md); when a phase is one
 skill versus several is in
-[`docs/augments/skill-granularity.md`](docs/augments/skill-granularity.md).
+[`docs/sdlc-skills/skill-granularity.md`](docs/sdlc-skills/skill-granularity.md).
 
 ## The SDLC phases
 
@@ -36,13 +36,13 @@ Skills live under `skills/<phase>/<name>/`. The folders are unnumbered (they sor
 
 Plus **common** — phase-agnostic and meta skills (authoring skills, communication, handoff).
 
-A skill is invoked as `augments:<name>` regardless of which phase folder holds it — the phase is organization for humans, not part of the address.
+A skill is invoked as `sdlc-skills:<name>` regardless of which phase folder holds it — the phase is organization for humans, not part of the address.
 
 ## Available skills
 
 | Phase | Skill | What it does |
 | ----- | ----- | ------------ |
-| common | `using-augments` | Route from the current task state and real preconditions; high-risk transformations cannot bypass their migration and assurance entry gates |
+| common | `using-sdlc-skills` | Route from the current task state and real preconditions; high-risk transformations cannot bypass their migration and assurance entry gates |
 | common | `writing-skills` | The lean format every skill follows, and how to prove a skill actually works |
 | planning | `define-goals` | At project kickoff — pin the objective and measurable success criteria into the project brief |
 | planning | `scope-it` | Draw the boundary — what's in, what's explicitly out, the MVP cut |
@@ -81,21 +81,21 @@ Every SDLC phase ships at least one skill, alongside the cross-cutting `common/`
 
 ## Status
 
-Early and growing. All seven SDLC phases — planning, analysis, design, implementation, testing, deployment, and maintenance — now ship at least one working skill, alongside the nine `common` skills (orientation, skill-authoring, scope discipline, and the cross-cutting tools: interviewing, prototyping, zoom-out, handoff, task branches, and parallel dispatch). The repo ships a Claude Code plugin (`.claude-plugin/`, with SessionStart and Stop nudges), a Codex plugin adapter (`plugins/augments/.codex-plugin/`, exposed through `.agents/plugins/marketplace.json`) with Codex project-hook files for the Stop nudge, and a Kimi Code plugin (`.kimi-plugin/`, with a session-start router and tool-binding instructions). `AGENTS.md` and `GEMINI.md` symlink to `CLAUDE.md` so a harness that reads its own instructions file gets the same guidance. Because the skills are portable Markdown invoked by name, other harnesses can adopt them — each proven by its own tests when added; see [`docs/augments/harness-support.md`](docs/augments/harness-support.md).
+Early and growing. All seven SDLC phases — planning, analysis, design, implementation, testing, deployment, and maintenance — now ship at least one working skill, alongside the nine `common` skills (orientation, skill-authoring, scope discipline, and the cross-cutting tools: interviewing, prototyping, zoom-out, handoff, task branches, and parallel dispatch). The repo ships a Claude Code plugin (`.claude-plugin/`, with SessionStart and Stop nudges), a Codex plugin adapter (`plugins/sdlc-skills/.codex-plugin/`, exposed through `.agents/plugins/marketplace.json`) with Codex project-hook files for the Stop nudge, and a Kimi Code plugin (`.kimi-plugin/`, with a session-start router and tool-binding instructions). `AGENTS.md` and `GEMINI.md` symlink to `CLAUDE.md` so a harness that reads its own instructions file gets the same guidance. Because the skills are portable Markdown invoked by name, other harnesses can adopt them — each proven by its own tests when added; see [`docs/sdlc-skills/harness-support.md`](docs/sdlc-skills/harness-support.md).
 
-Install in Claude Code with `/plugin marketplace add augments-labs/sdlc-skills` then `/plugin install augments@augments`. For local Codex development, register this checkout as a marketplace with `codex plugin marketplace add /path/to/sdlc-skills`, then install `augments@augments-dev`. Install in Kimi Code with `/plugins install https://github.com/augments-labs/sdlc-skills` (or the `/plugins` manager, Custom tab), then `/reload`.
+Install in Claude Code with `/plugin marketplace add augments-labs/sdlc-skills` then `/plugin install sdlc-skills@augments-labs`. For local Codex development, register this checkout as a marketplace with `codex plugin marketplace add /path/to/sdlc-skills`, then install `sdlc-skills@augments-labs-dev`. Install in Kimi Code with `/plugins install https://github.com/augments-labs/sdlc-skills` (or the `/plugins` manager, Custom tab), then `/reload`.
 
 ## Proactive Skill Use
 
-A coding agent treats an installed skill library as available-but-optional and walks past it unless you name a skill. So augments pairs each adapter with the strongest honest routing support that harness can prove.
+A coding agent treats an installed skill library as available-but-optional and walks past it unless you name a skill. So SDLC Skills pairs each adapter with the strongest honest routing support that harness can prove.
 
-On Claude Code, augments ships a **SessionStart bootstrap** (`hooks/`) that injects a short pointer each session (re-applied on resume and after compaction): before every request, invoke the `using-augments` skill to route to the one that fits. It also ships a Stop re-nudge at the done boundary. Skipping a skill that applies is treated as the mistake, not a shortcut.
+On Claude Code, SDLC Skills ships a **SessionStart bootstrap** (`hooks/`) that injects a short pointer each session (re-applied on resume and after compaction): before every request, invoke the `using-sdlc-skills` skill to route to the one that fits. It also ships a Stop re-nudge at the done boundary. Skipping a skill that applies is treated as the mistake, not a shortcut.
 
-On Codex, augments ships a plugin adapter, local marketplace metadata, and project-level Stop hook config (`.codex/hooks.json`, backed by `hooks/hooks-codex.json`). The skills install through Codex, durable repo guidance still comes through `AGENTS.md`, and the Codex harness test observes activation by watching the agent read the installed `SKILL.md` file from the plugin cache. Current Codex builds do not auto-install plugin hooks from the plugin manifest, so the Codex hook is project-level rather than plugin-level.
+On Codex, SDLC Skills ships a plugin adapter, local marketplace metadata, and project-level Stop hook config (`.codex/hooks.json`, backed by `hooks/hooks-codex.json`). The skills install through Codex, durable repo guidance still comes through `AGENTS.md`, and the Codex harness test observes activation by watching the agent read the installed `SKILL.md` file from the plugin cache. Current Codex builds do not auto-install plugin hooks from the plugin manifest, so the Codex hook is project-level rather than plugin-level.
 
-On Kimi Code, augments ships a plugin manifest (`.kimi-plugin/plugin.json`) whose `sessionStart.skill` loads the `using-augments` router into every new and resumed session, whose `skillInstructions` bind the skills' tool language to Kimi's real tools whenever a plugin skill loads, and whose declared Stop hook re-nudges at the done boundary (`scripts/sh/stop-nudge-kimi.sh`, sharing its detection policy with the other harnesses). The manifest points at the canonical phase directories directly — no mirror. One upstream capability gap remains explicit: Kimi's post-compaction callback is observation-only, so a plugin cannot re-inject the router after mid-session compaction. The edit guard and Stop nudge still cover implementation and done boundaries, but a read-only post-compaction turn can miss routing. Re-test this boundary when the harness gains a context-affecting compaction mechanism; see `tests/README.md`.
+On Kimi Code, SDLC Skills ships a plugin manifest (`.kimi-plugin/plugin.json`) whose `sessionStart.skill` loads the `using-sdlc-skills` router into every new and resumed session, whose `skillInstructions` bind the skills' tool language to Kimi's real tools whenever a plugin skill loads, and whose declared Stop hook re-nudges at the done boundary (`scripts/sh/stop-nudge-kimi.sh`, sharing its detection policy with the other harnesses). The manifest points at the canonical phase directories directly — no mirror. One upstream capability gap remains explicit: Kimi's post-compaction callback is observation-only, so a plugin cannot re-inject the router after mid-session compaction. The edit guard and Stop nudge still cover implementation and done boundaries, but a read-only post-compaction turn can miss routing. Re-test this boundary when the harness gains a context-affecting compaction mechanism; see `tests/README.md`.
 
-The routing is **non-negotiable by default, not a gentle suggestion** where a harness supports it. The discipline behind it — the rationalizations named as signals to check rather than skip, the red-flags, the procedure — lives in the `using-augments` skill; the shared bootstrap text is only a pointer to that router (inline in `scripts/sh/session-start.sh`). Changing the pointer or its activation policy is behavior-shaping work and must be re-proved. See [`docs/augments/activation.md`](docs/augments/activation.md) for how routing (firm persuasion) and enforcement (deterministic gates) fit together. Harness hooks are adapter-specific; the skills themselves stay portable Markdown.
+The routing is **non-negotiable by default, not a gentle suggestion** where a harness supports it. The discipline behind it — the rationalizations named as signals to check rather than skip, the red-flags, the procedure — lives in the `using-sdlc-skills` skill; the shared bootstrap text is only a pointer to that router (inline in `scripts/sh/session-start.sh`). Changing the pointer or its activation policy is behavior-shaping work and must be re-proved. See [`docs/sdlc-skills/activation.md`](docs/sdlc-skills/activation.md) for how routing (firm persuasion) and enforcement (deterministic gates) fit together. Harness hooks are adapter-specific; the skills themselves stay portable Markdown.
 
 ## Acknowledgements
 

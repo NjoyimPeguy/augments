@@ -54,7 +54,7 @@ scenario_assert() {
 
   # The skill's own deliverable: the shared design document, not an inline
   # answer that scrolls away.
-  assert_file '.augments/designs/*.md' 'wrote the shared design document'
+  assert_file '.sdlc-skills/designs/*.md' 'wrote the shared design document'
   doc="$ASSERT_MATCH"
   [ -n "$doc" ] || { assert_result; return; }
   body="$(cat "$doc")"

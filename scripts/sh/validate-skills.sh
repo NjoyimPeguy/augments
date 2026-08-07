@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Structural validator for augments skills.
+# Structural validator for SDLC Skills.
 # Enforces the authoring rules in CLAUDE.md across every skill in skills/.
 # Usage: bash scripts/sh/validate-skills.sh   (exit 0 = all pass, 1 = violations)
 
@@ -61,9 +61,9 @@ for skill in "${skills[@]}"; do
     echo "$body" | grep -qiE "$VENDORS"         && err "$(basename "$f"): vendor model name — use a capability tier (small|medium|large)"
     echo "$body" | grep -qiE "$SCANNER_TRIGGERS" && err "$(basename "$f"): harness scanner trigger-word — rephrase so a keyword scan can't hijack the session"
     echo "$body" | grep -qE  '<[a-z][a-z0-9 -]*>' && err "$(basename "$f"): bare <angle> placeholder — use {{double-curly}}"
-    # The .augments/ output location is mandatory (overridable only by the user),
+    # The .sdlc-skills/ output location is mandatory (overridable only by the user),
     # never an optional "default" — keep the convention from drifting back.
-    grep -nE '\.augments/' "$f" | grep -qi 'default' && err "$(basename "$f"): frames an .augments/ path as a 'default' — that location is mandatory (overridable only by the user), not a default"
+    grep -nE '\.sdlc-skills/' "$f" | grep -qi 'default' && err "$(basename "$f"): frames an .sdlc-skills/ path as a 'default' — that location is mandatory (overridable only by the user), not a default"
   done < <(find "$dir" -name '*.md')
 done
 

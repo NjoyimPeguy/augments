@@ -7,7 +7,7 @@ cd "$(dirname "$0")/../.." || exit 2
 fail=0
 err() { printf '  FAIL: %s\n' "$1"; fail=1; }
 
-plugin_root="plugins/augments"
+plugin_root="plugins/sdlc-skills"
 manifest="$plugin_root/.codex-plugin/plugin.json"
 marketplace=".agents/plugins/marketplace.json"
 codex_hook=".codex/hooks.json"
@@ -18,7 +18,7 @@ echo "• $manifest"
 [ -f "$marketplace" ] || err "missing Codex marketplace"
 
 if [ -f "$manifest" ]; then
-  grep -q '"name"[[:space:]]*:[[:space:]]*"augments"' "$manifest" || err "plugin name is not augments"
+  grep -q '"name"[[:space:]]*:[[:space:]]*"sdlc-skills"' "$manifest" || err "plugin name is not sdlc-skills"
   grep -q '"skills"[[:space:]]*:[[:space:]]*"\./skills/"' "$manifest" || err "plugin skills path must be ./skills/"
   for field in displayName shortDescription longDescription developerName category defaultPrompt; do
     grep -q "\"$field\"" "$manifest" || err "missing interface.$field"
@@ -26,8 +26,8 @@ if [ -f "$manifest" ]; then
 fi
 
 if [ -f "$marketplace" ]; then
-  grep -q '"name"[[:space:]]*:[[:space:]]*"augments-dev"' "$marketplace" || err "marketplace name is not augments-dev"
-  grep -q '"path"[[:space:]]*:[[:space:]]*"\./plugins/augments"' "$marketplace" || err "marketplace source path must be ./plugins/augments"
+  grep -q '"name"[[:space:]]*:[[:space:]]*"augments-labs-dev"' "$marketplace" || err "marketplace name is not augments-labs-dev"
+  grep -q '"path"[[:space:]]*:[[:space:]]*"\./plugins/sdlc-skills"' "$marketplace" || err "marketplace source path must be ./plugins/sdlc-skills"
   grep -q '"installation"[[:space:]]*:[[:space:]]*"AVAILABLE"' "$marketplace" || err "marketplace policy.installation missing"
   grep -q '"authentication"[[:space:]]*:[[:space:]]*"ON_INSTALL"' "$marketplace" || err "marketplace policy.authentication missing"
   grep -q '"category"[[:space:]]*:[[:space:]]*"Developer Tools"' "$marketplace" || err "marketplace category missing"
