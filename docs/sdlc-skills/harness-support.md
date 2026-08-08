@@ -9,20 +9,81 @@ There is one canonical tree under `skills/`. Skills use capability tiers and
 portable actions; each harness adapter binds those concepts to its own manifest,
 tools, and lifecycle events.
 
-| Harness | Adapter | Routing support |
-| --- | --- | --- |
-| Claude Code | `.claude-plugin/` and `hooks/hooks.json` | Session-start router, done-boundary Stop nudge, and a best-effort pre-edit TDD/YAGNI guard |
-| Codex | `plugins/sdlc-skills/.codex-plugin/`, `.agents/plugins/marketplace.json`, and project-local `.codex/hooks.json` | Installed skill catalogue plus a project-local Stop nudge; durable repository guidance comes from `AGENTS.md`; no per-prompt reminder is shipped |
-| Kimi Code | `.kimi-plugin/plugin.json` | Canonical skill paths, session-start router, tool bindings, Stop nudge, and a best-effort pre-edit TDD/YAGNI guard |
+| Harness | Adapter | Router injection | Re-applied after compaction |
+| --- | --- | --- | --- |
+| Claude Code | `.claude-plugin/` and `hooks/hooks.json` | `SessionStart` hook | Yes — `compact` is in the matcher |
+| Codex | `plugins/sdlc-skills/` (manifest, `hooks/hooks.json`, mirrored injector) and `.agents/plugins/marketplace.json` | `SessionStart` hook | Yes — separate `PostCompact` event |
+| Kimi Code | `.kimi-plugin/plugin.json` | `sessionStart.skill` | Declared via `PostCompact` (see below) |
+
+The Codex plugin manifest carries the skill catalogue but has no session-start
+field, so the router arrives through hooks the plugin itself bundles
+(`"hooks": "./hooks/hooks.json"`). Bundling matters: the plugin is installed
+standalone, so a hooks file at the repository root is outside the plugin root and
+Codex never loads it — a repo-local config wires contributors and ships nothing.
+Everything the hook touches therefore lives inside the plugin, and
+`scripts/sh/sync-codex-plugin-skills.sh` mirrors it in.
+
+Two consequences worth knowing before editing either side. The command resolves
+the injector through `$PLUGIN_ROOT`, because hooks run with the *session* working
+directory, not the plugin's. And the mirror is flat (`skills/<name>/`) where the
+canonical tree is by phase (`skills/<phase>/<name>/`), so the injector resolves
+the router from both layouts; hard-coding one path ships something that works in
+this repository and nowhere anyone installs.
+
+Every adapter injects the **full `using-sdlc-skills` body**, not a pointer to it.
+A pointer costs ~90 tokens and buys a request that the agent spend a discretionary
+tool call loading the router; that call is skippable and does get skipped. The
+body costs ~1,500 approx tokens per context epoch and leaves nothing to skip.
+`scripts/sh/token-budget.sh` reports the real figure by running the injector.
+
+The text is **read from the canonical skill at runtime**, never copied into an
+adapter, so editing the skill cannot silently stop shipping.
+`tests/run-session-start.sh` asserts the injected context contains the canonical
+body verbatim, in each harness's envelope.
+
+No adapter ships a turn-end or per-prompt reminder. Routing that has to survive a
+long session belongs in the resident surface, re-applied only where the harness
+reports that context was actually lost.
 
 The Claude manifest, Codex mirror, and Kimi skill paths must expose the same
 canonical skill set. `scripts/sh/validate-skills.sh` checks that deterministic
 packaging contract.
 
-Kimi's available post-compaction callback is observation-only. The plugin cannot
-re-inject routing into a read-only turn after compaction. Its pre-edit and Stop
-hooks still run, but they cannot reconstruct the missing router context. This is
-a harness capability limit, not something a larger test harness can remove.
+An earlier revision of this document recorded Kimi's post-compaction callback as
+observation-only, and therefore recorded compaction survival as an unfixable
+capability gap. That is no longer accurate: the harness documents `PreCompact`
+and `PostCompact` among its hook events, both able to return context through the
+same `hookSpecificOutput` envelope the other adapters use. The manifest now
+declares a `PostCompact` re-injection on that basis. It is **documentation-based
+and not verified live in this repository** — there is no Kimi CLI in the
+environment that produced it. Treat the row above as a declaration to confirm,
+not as measured support, and re-test it when a CLI is available.
+
+## Dispatch capability
+
+`dispatching-parallel-agents` and `executing-plans` hand work to a cold agent
+through "the real callable action". The skills stay portable by never naming it;
+each adapter binds it, and each harness decides whether it exists at all.
+
+| Harness | Dispatch action | Notes |
+| --- | --- | --- |
+| Claude Code | `Agent` tool | Native; no configuration needed |
+| Codex | `spawn_agent` / `wait_agent` / `list_agents` / `send_message` / `followup_task` / `interrupt_agent` | Present with no extra configuration on the build tested below |
+| Kimi Code | `Agent` tool | Bound in `.kimi-plugin/plugin.json` `skillInstructions`, including `subagent_type` and the tier-in-prompt rule |
+
+Availability is a property of the installed build and its configuration, not of
+this library, and it changes between versions — some builds gate multi-agent
+tools behind a config entry that is off by default. So the skill does not
+hardcode a remedy. It requires the agent to treat an uncallable action as **not
+dispatched**, and to name both the action it attempted and what this environment
+would need to make it callable, rather than stopping mysteriously, narrating a
+fan-out it holds no receipts for, or silently collapsing it to sequential work.
+
+Check the harness's own configuration reference for the current form, and verify
+by asking the installed CLI what tools it exposes rather than trusting a
+second-hand snippet. Evidence for the row above: on `codex-cli 0.147.0`, a
+read-only `codex exec` reported the six multi-agent tools both with and without
+`multi_agent.enabled=true`, so no flag was required on that build.
 
 ## Repository instruction files
 
@@ -30,14 +91,16 @@ a harness capability limit, not something a larger test harness can remove.
 its conventional repository instructions therefore receives the same contributor
 rules from one source.
 
-## Using SDLC Skills elsewhere
+## Using SDLC skills elsewhere
 
 The skills are Markdown invoked by name. On another harness:
 
 1. Expose the canonical skill directories through the harness's normal skill
    mechanism.
-2. Put the pointer from `scripts/sh/session-start.sh` in a durable instruction
-   surface so the agent reaches for `using-sdlc-skills`.
+2. Run `scripts/sh/session-start.sh` from the harness's session-start event and
+   feed its `additionalContext` into the session, so the router arrives as
+   resident context rather than as an errand the agent can skip. Re-run it on
+   whatever event the harness fires when context is lost.
 3. Bind skill actions to the harness's real tools.
 4. Exercise one representative activation through the real installed adapter
    before claiming support.
@@ -70,12 +133,18 @@ toward the evaluator instead of the skills.
 The shared runners and scenarios are documented in
 [`tests/README.md`](../../tests/README.md).
 
-## Implementation guard
+## No implementation guard
 
-Where the harness exposes a blockable edit event, SDLC Skills keeps a small guard
-that requires `test-driven-development` and `yagni` before code edits. It is a
-best-effort process backstop, not a security boundary: shell writes and
-unsupported tools can bypass it.
+No adapter ships a hook that blocks edits. One did — a pre-edit guard requiring
+`test-driven-development` and `yagni` before code edits — and it is retired.
+
+It was built when the session-start injection was a skippable pointer, and it
+was the only thing catching the skip. With the router's body resident, the pair
+led the first code edit unaided in 2 of 3 measured runs of
+`tests/scenarios/behavioral/implementation-entry-routing.sh`. A guard that
+denies edits is too blunt to keep for the remaining margin, and it was never a
+real boundary: a shell heredoc writes code without touching a Write/Edit tool.
+A partial gate that reads as a total one is worse than a stated limit.
 
 Wide migrations are routed by `using-sdlc-skills` to `migration-strategy` and
 `verification-strategy`. Their durable enforcement belongs in the adopting

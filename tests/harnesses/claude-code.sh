@@ -48,10 +48,3 @@ adapter_run_behavioral() { # $1 workdir  $2 opening file  $3 stream
       --allowedTools Skill Read Glob Grep Write Edit Bash TodoWrite \
       --permission-mode acceptEdits ) < /dev/null > "$3" 2>>"$errlog"
 }
-
-adapter_stop_hook() { printf '%s\n' "$repo/scripts/sh/stop-nudge.sh"; }
-
-# The Stop payload this harness delivers: stop_hook_active + the last message.
-adapter_stop_payload() { # $1 stop_hook_active  $2 last message
-  jq -cn --argjson a "$1" --arg m "$2" '{stop_hook_active:$a, last_assistant_message:$m}'
-}

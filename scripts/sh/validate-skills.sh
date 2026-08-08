@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Structural validator for SDLC Skills.
+# Structural validator for SDLC skills.
 # Enforces the authoring rules in CLAUDE.md across every skill in skills/.
 # Usage: bash scripts/sh/validate-skills.sh   (exit 0 = all pass, 1 = violations)
 
@@ -89,21 +89,42 @@ while IFS= read -r f; do
   sed 's/`[^`]*`//g' "$f" | grep -qiE "$SCANNER_TRIGGERS" && err "$f: harness scanner trigger-word"
 done < <(find hooks -name '*.md' 2>/dev/null)
 
-# The retired per-prompt reminder must stay retired in every supported adapter,
-# not only Codex. A new command can otherwise reuse UserPromptSubmit and restore
-# the same token-heavy advisory path under another script name.
-echo "• no per-prompt implementation reminder"
+# Retired cadence reminders must stay retired in every supported adapter, not
+# only Codex. Both fired on a fixed cadence rather than at a real boundary —
+# UserPromptSubmit on every prompt, Stop on every turn whose wording read as a
+# completion claim — so each re-spent the same advisory tokens turn after turn,
+# and Stop additionally forced an extra model turn by blocking. The routing they
+# carried is already resident: the session-start injection carries the router's
+# whole body (re-applied after compaction), and the skill descriptions are always
+# loaded. A new entry can otherwise restore either path under another script name.
+echo "• no cadence reminder hooks (UserPromptSubmit, Stop)"
 for hook_config in \
   hooks/hooks.json \
-  hooks/hooks-codex.json \
-  .codex/hooks.json \
+  plugins/sdlc-skills/hooks/hooks.json \
   .kimi-plugin/plugin.json; do
   [ -f "$hook_config" ] || continue
-  grep -q '"UserPromptSubmit"' "$hook_config" \
-    && err "$hook_config: UserPromptSubmit is retired across supported adapters"
+  for retired_event in UserPromptSubmit Stop; do
+    grep -q "\"$retired_event\"" "$hook_config" \
+      && err "$hook_config: $retired_event is retired across supported adapters"
+  done
 done
-[ ! -e scripts/sh/implementation-remind.sh ] \
-  || err "obsolete scripts/sh/implementation-remind.sh still exists"
+# The pre-edit implementation guard is retired for a different reason than the
+# cadence hooks: it fired on a real boundary, but it existed to compensate for a
+# skippable session-start POINTER. With the router's body resident, the pair led
+# implementation on its own in 2 of 3 measured runs — so the guard is no longer
+# the thing holding that boundary, and a hook that denies edits is too blunt to
+# keep for the remaining margin. Routing is persuasion; the artifact-level gates
+# are what decide. Do not restore it under another name without new evidence.
+for retired_script in \
+  scripts/sh/implementation-remind.sh \
+  scripts/sh/implementation-guard.sh \
+  scripts/sh/stop-nudge.sh \
+  scripts/sh/stop-nudge-detect.sh \
+  scripts/sh/stop-nudge-kimi.sh \
+  tests/run-implementation-guard.sh \
+  tests/run-stop-nudge.sh; do
+  [ ! -e "$retired_script" ] || err "obsolete $retired_script still exists"
+done
 
 # Manifest sync: a harness discovers skills only through its manifest, so every
 # leaf skill dir must be listed explicitly in the plugin's "skills" array — a

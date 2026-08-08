@@ -111,12 +111,12 @@ Closed without extended review — most are the inverse of a rule above:
 - **Domain-, tool-, or workflow-specific skills** — *What belongs here*; publish them as your own library.
 - **Speculative or fabricated content** — a problem no one actually hit, or invented test results. An inconclusive result is a valid finding; a fabricated one is not.
 - **"Compliance" reformatting of tuned skills** — restructuring or rewording a discipline's red-flag lists, rationalization tables, or hard-stops without a re-proven pressure test (*Editing a skill*).
-- **Third-party dependencies** — SDLC Skills is zero-dependency by design. If a change needs an external tool or service, it belongs in a separate plugin. Adding a new harness is the exception.
+- **Third-party dependencies** — SDLC skills is zero-dependency by design. If a change needs an external tool or service, it belongs in a separate plugin. Adding a new harness is the exception.
 - **Bundled or batch PRs** — one change per PR.
 
 ## New harness support
 
-Adding a harness (an IDE, CLI, or agent runner) means more than dropping skill files where the tool can see them — they must actually *load and activate*. SDLC Skills' skills are inert unless the harness both discovers them and is nudged to reach for one at the right moment (on Claude Code, the `hooks/` SessionStart nudge; elsewhere, an equivalent). See `docs/sdlc-skills/harness-support.md`.
+Adding a harness (an IDE, CLI, or agent runner) means more than dropping skill files where the tool can see them — they must actually *load and activate*. SDLC skills' skills are inert unless the harness both discovers them and is nudged to reach for one at the right moment (on Claude Code, the `hooks/` SessionStart nudge; elsewhere, an equivalent). See `docs/sdlc-skills/harness-support.md`.
 
 A PR adding a harness MUST add `tests/harnesses/{{name}}.sh` bindings for the
 shared runners and show a skill *actually activating* through that harness's

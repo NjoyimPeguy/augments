@@ -20,5 +20,7 @@ jobs:
       - uses: actions/checkout@v4
       - name: Structural validation (skills + adapter sync)
         run: bash scripts/sh/validate-skills.sh
+      - name: Session-start router injection
+        run: bash tests/run-session-start.sh
       - name: Token budget (always-loaded surface)
         run: bash scripts/sh/token-budget.sh --max 1600

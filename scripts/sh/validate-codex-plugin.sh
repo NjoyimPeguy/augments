@@ -10,8 +10,6 @@ err() { printf '  FAIL: %s\n' "$1"; fail=1; }
 plugin_root="plugins/sdlc-skills"
 manifest="$plugin_root/.codex-plugin/plugin.json"
 marketplace=".agents/plugins/marketplace.json"
-codex_hook=".codex/hooks.json"
-codex_hook_template="hooks/hooks-codex.json"
 
 echo "• $manifest"
 [ -f "$manifest" ] || err "missing Codex plugin manifest"
@@ -32,15 +30,6 @@ if [ -f "$marketplace" ]; then
   grep -q '"authentication"[[:space:]]*:[[:space:]]*"ON_INSTALL"' "$marketplace" || err "marketplace policy.authentication missing"
   grep -q '"category"[[:space:]]*:[[:space:]]*"Developer Tools"' "$marketplace" || err "marketplace category missing"
 fi
-
-echo "• Codex hook config"
-[ -f "$codex_hook" ] || err "missing repo Codex hook config"
-[ -f "$codex_hook_template" ] || err "missing reusable Codex hook config"
-if [ -f "$codex_hook" ] && [ -f "$codex_hook_template" ]; then
-  diff -q "$codex_hook_template" "$codex_hook" >/dev/null || err "repo Codex hook config differs from hooks/hooks-codex.json"
-  grep -q 'scripts/sh/stop-nudge.sh' "$codex_hook" || err "Codex hook config does not invoke scripts/sh/stop-nudge.sh"
-fi
-[ -x scripts/sh/stop-nudge.sh ] || err "scripts/sh/stop-nudge.sh is not executable"
 
 echo "• Codex skill mirror"
 canonical_names="$(find skills -mindepth 3 -maxdepth 3 -name SKILL.md \
@@ -68,6 +57,48 @@ echo "• Codex mirrored reference paths"
 if ! bash scripts/sh/validate-skill-reference-paths.sh "$plugin_root/skills"; then
   fail=1
 fi
+
+# The plugin manifest ships the skill CATALOGUE; it has no session-start field,
+# so on Codex the router arrives through a hook instead. Verified live on
+# codex-cli 0.147.0: a SessionStart hook runs and its `additionalContext` reaches
+# the model. PostCompact re-applies it after compaction — the event Codex fires
+# when context was actually lost.
+#
+# The hooks ship INSIDE the plugin, because the plugin is installed standalone:
+# a hooks file at the repository root is outside the plugin root and Codex never
+# loads it. Manifest hook paths resolve relative to the plugin root and must stay
+# inside it, so everything the hook touches is mirrored in by
+# scripts/sh/sync-codex-plugin-skills.sh.
+echo "• Codex hook config (session-start router)"
+codex_hook="$plugin_root/hooks/hooks.json"
+if [ ! -f "$codex_hook" ]; then
+  err "missing $codex_hook (an installed plugin would inject no router)"
+else
+  for ev in SessionStart PostCompact; do
+    grep -q "\"$ev\"" "$codex_hook" || err "$codex_hook: no $ev hook (router would not load)"
+  done
+  grep -q 'session-start\.sh' "$codex_hook" || err "$codex_hook: does not invoke session-start.sh"
+  grep -q 'PLUGIN_ROOT' "$codex_hook" \
+    || err "$codex_hook: resolves no plugin root — the command must not depend on the session cwd"
+fi
+if [ -f "$manifest" ]; then
+  hooks_field="$(jq -r '.hooks // empty' "$manifest" 2>/dev/null)"
+  [ -n "$hooks_field" ] || err "$manifest declares no hooks entry (bundled hooks would not be loaded)"
+fi
+
+# A hook is inert unless the injector it runs is inside the package, and the
+# mirror is generated — so a stale copy is the realistic failure, not a divergent
+# hand edit.
+echo "• Codex plugin ships its injector"
+[ -x scripts/sh/session-start.sh ] || err "scripts/sh/session-start.sh is not executable"
+mirrored="$plugin_root/scripts/sh/session-start.sh"
+if [ ! -x "$mirrored" ]; then
+  err "missing executable $mirrored (run scripts/sh/sync-codex-plugin-skills.sh)"
+elif ! diff -q scripts/sh/session-start.sh "$mirrored" >/dev/null; then
+  err "$mirrored is stale — re-run scripts/sh/sync-codex-plugin-skills.sh"
+fi
+[ -f "$plugin_root/skills/using-sdlc-skills/SKILL.md" ] \
+  || err "$plugin_root/skills/using-sdlc-skills/SKILL.md missing — the injector would find no router"
 
 echo "• manifest versions agree"
 codex_v=""

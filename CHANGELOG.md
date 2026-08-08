@@ -1,12 +1,31 @@
 # Changelog
 
-Notable changes to SDLC Skills, newest first. Versions follow semantic versioning; the narrative for each release lives on its release page — this file is the terse, cumulative record.
+Notable changes to SDLC skills, newest first. Versions follow semantic versioning; the narrative for each release lives on its release page — this file is the terse, cumulative record.
+
+## [6.0.1] — 2026-08-09
+
+### Changed
+
+- **Every adapter injects the full `using-sdlc-skills` body at session start, not a pointer to it.** A pointer costs ~90 tokens but buys only a *request* that the agent spend a discretionary tool call loading the router — and a discretionary call gets skipped, observed on exactly the task the router governs. The body costs ~1,500 approx tokens per context epoch and leaves nothing to skip. The text is read from `skills/common/using-sdlc-skills/SKILL.md` at runtime, never copied into an adapter, so editing the skill cannot silently stop shipping it.
+- **Codex hooks ship inside the plugin** (`plugins/sdlc-skills/hooks/hooks.json`, declared as `"hooks": "./hooks/hooks.json"`) and resolve the injector through `$PLUGIN_ROOT`, because hooks run with the *session* working directory. A hooks file at the repository root is outside the plugin root, so an install would never load it. Two defects surfaced by executing the adapters rather than reading them: Codex was being sent the top-level `additionalContext` envelope instead of the nested `hookSpecificOutput` one it requires, and the injector hard-coded the phase-nested skill path, which resolved in this repository and nowhere anyone installs — it now handles the flat mirror layout too.
+- **Kimi declares `PostCompact` re-injection.** Documentation-based, not verified live — there is no Kimi CLI in the environment that produced it, and `docs/sdlc-skills/harness-support.md` says so.
+- **`dispatching-parallel-agents` names the uncallable-dispatch failure.** The receipt gate now requires an unavailable dispatch action to be reported as NOT dispatched, naming the action attempted and what the environment needs to make it callable, so the blocker is fixable rather than mysterious. `harness-support.md` binds the action per adapter and states that availability is a property of the installed build.
+- **The product is written "SDLC skills" throughout** — the acronym keeps its capitals, "skills" is an ordinary word. The repository had been carrying three spellings at once.
+
+### Added
+
+- **`tests/run-session-start.sh`** — an offline CI gate on what every adapter actually injects: valid JSON in each harness's envelope, the canonical router body present verbatim with frontmatter stripped, escaping that survives the quotes and tables inside it, the echoed event name, and both skill-tree layouts. It executes the Codex plugin's own hook command from an unrelated working directory rather than grepping for it.
+
+### Removed
+
+- **The turn-end Stop nudge, on every adapter.** It re-routed whenever a turn's wording matched a completion word — a cadence, not a boundary — re-spending its full text in a long session, and buying each repetition with an extra model turn because it blocked turn-end. Routing that has to survive a long session belongs in the resident surface, re-applied only where the harness reports context was actually lost.
+- **The pre-edit implementation guard.** It denied a session's first `Write`/`Edit` until `test-driven-development` and `yagni` had fired, and existed to catch the skipped pointer above. With the router resident, the pair led the first code edit unaided in **2 of 3** measured runs of the new `tests/scenarios/behavioral/implementation-entry-routing.sh`. That margin does not buy a hook that denies edits — and it was never the boundary it read as, since a shell heredoc writes code without passing through any Write/Edit tool. A partial gate that reads as a total one is worse than a stated limit.
 
 ## [6.0.0] — 2026-08-07
 
 ### Changed
 
-- **The library is now SDLC Skills, and the repository lives at `augments-labs/sdlc-skills`.** Breaking for everyone who installs or invokes it: the plugin is `sdlc-skills`, the Claude marketplace key is `augments-labs` (`/plugin install sdlc-skills@augments-labs`), and every skill is addressed as `sdlc-skills:<name>`. The name lived in three places at once — org, repository, plugin — and only one of them said what the library is.
+- **The library is now SDLC skills, and the repository lives at `augments-labs/sdlc-skills`.** Breaking for everyone who installs or invokes it: the plugin is `sdlc-skills`, the Claude marketplace key is `augments-labs` (`/plugin install sdlc-skills@augments-labs`), and every skill is addressed as `sdlc-skills:<name>`. The name lived in three places at once — org, repository, plugin — and only one of them said what the library is.
 - **The router skill is `using-sdlc-skills`** (was `using-augments`). Its trigger, body, and routing behaviour are unchanged; only the address moved. No skill `description` contains the old name, so no trigger changed.
 - **Artifacts are written to `.sdlc-skills/`** (was `.augments/`), and receipt tokens carry the `SDLC_SKILLS_` prefix. A project with existing artifacts keeps them where they are; the directory is not migrated for you.
 - **Documentation and mirror paths moved** — `docs/sdlc-skills/`, `plugins/sdlc-skills/`. Direct links to files under the old paths, including the images, no longer resolve.
@@ -178,13 +197,13 @@ Notable changes to SDLC Skills, newest first. Versions follow semantic versionin
 ### Changed
 
 - **Hooks are shared at the root `hooks/` layer.** The Claude Code hook manifest now points to `hooks/hooks.json`, while Codex project-hook config mirrors `hooks/hooks-codex.json`; both use the shared `hooks/context.md` and `hooks/stop-nudge.sh` where their event models allow it.
-- **Docs no longer frame SDLC Skills as Claude-only.** Harness-support docs, README status, and activation notes now describe Claude Code and Codex as exercised adapters, with Codex hook limitations stated explicitly.
+- **Docs no longer frame SDLC skills as Claude-only.** Harness-support docs, README status, and activation notes now describe Claude Code and Codex as exercised adapters, with Codex hook limitations stated explicitly.
 
 ## [2.2.0] — 2026-07-01
 
 ### Added
 
-- **Done-boundary `Stop` re-nudge.** New `hooks/claude-code/stop-nudge.sh`, wired as a `Stop` hook, closes the long-standing "the verify/review skills don't fire after a long task" gap: SDLC Skills routes once at SessionStart, but the done boundary arrives at turn-end with nothing to re-route. When a turn wraps up claiming the work is done, the hook re-routes **once** to `using-sdlc-skills` → `verifying-completion` (and, at a feature boundary, `requesting-code-review` / `finishing-a-branch`). It is a *routing* re-nudge, not a gate: it blocks no action, certifies no verdict, fires at most once (`stop_hook_active` guard), reads only the Stop payload, and fails open. Disable by removing the `Stop` entry from `hooks/claude-code/hooks.json`. Proof: offline `tests/harness/claude-code/test-stop-nudge.sh` + `2026-07-01-stop-nudge-done-boundary.md`.
+- **Done-boundary `Stop` re-nudge.** New `hooks/claude-code/stop-nudge.sh`, wired as a `Stop` hook, closes the long-standing "the verify/review skills don't fire after a long task" gap: SDLC skills routes once at SessionStart, but the done boundary arrives at turn-end with nothing to re-route. When a turn wraps up claiming the work is done, the hook re-routes **once** to `using-sdlc-skills` → `verifying-completion` (and, at a feature boundary, `requesting-code-review` / `finishing-a-branch`). It is a *routing* re-nudge, not a gate: it blocks no action, certifies no verdict, fires at most once (`stop_hook_active` guard), reads only the Stop payload, and fails open. Disable by removing the `Stop` entry from `hooks/claude-code/hooks.json`. Proof: offline `tests/harness/claude-code/test-stop-nudge.sh` + `2026-07-01-stop-nudge-done-boundary.md`.
 - **Review-depth ladder in `requesting-code-review`.** Shallow / Standard / Deep tiers keyed to a change's risk and blast radius (not wall-clock), with an adversarial refute-pass at the Deep tier.
 - **Plan-as-contract in `writing-plans`.** Per-task Consumes/Produces interface blocks, an index-level Constraints block, reviewer-gate task sizing, and an Execution Handoff (inline vs subagent-driven) at the present-and-pause.
 
@@ -206,13 +225,13 @@ Notable changes to SDLC Skills, newest first. Versions follow semantic versionin
 
 ### Removed
 
-- **The Codex adapter.** `.codex-plugin/` and the Codex references in the docs are removed — SDLC Skills is Claude-Code-only for now; a real Codex harness returns when it is exercised and proven. (Past release history in this file is unchanged.)
+- **The Codex adapter.** `.codex-plugin/` and the Codex references in the docs are removed — SDLC skills is Claude-Code-only for now; a real Codex harness returns when it is exercised and proven. (Past release history in this file is unchanged.)
 
 ## [2.1.0] — 2026-06-24
 
 ### Added
 
-- **`governance/` — deterministic gate templates.** Adoptable CI / branch-protection / pre-commit templates that make the production-critical skills non-skippable at the commit/PR/CI boundary, where persuasion can't — branch-protection (CI-green + review + conversation-resolution, bulletproof), `tests-accompany-code`, `release-readiness`, `trust-boundary-flag` (heuristics, honestly labelled). Each maps to the skill it enforces; dogfooded on SDLC Skills itself.
+- **`governance/` — deterministic gate templates.** Adoptable CI / branch-protection / pre-commit templates that make the production-critical skills non-skippable at the commit/PR/CI boundary, where persuasion can't — branch-protection (CI-green + review + conversation-resolution, bulletproof), `tests-accompany-code`, `release-readiness`, `trust-boundary-flag` (heuristics, honestly labelled). Each maps to the skill it enforces; dogfooded on SDLC skills itself.
 
 ### Changed
 
@@ -289,7 +308,7 @@ Notable changes to SDLC Skills, newest first. Versions follow semantic versionin
 ### Fixed
 
 - **Code review now reaches the "done" boundary.** A field failure showed work being reported complete with every gate green but the diff unreviewed. `requesting-code-review`'s trigger is now event-conditioned (fires at the done boundary — complete/commit/merge/PR — not only when you already want fresh eyes), and `verifying-completion` hands off to independent review once its gate passes instead of ending the chain at "verified". Proven old-vs-new in `tests/triggering/requesting-code-review.md` (the skill's first activation record) and `tests/behavioral/verifying-completion.md` (0/2 → 3/3 on the handoff; flaky-green hard-stop unregressed).
-- **Docs: deterministic boundary interrupts stay project-local.** New `harness-support.md` section on why blocking commit/merge hooks belong in your own project config, not in SDLC Skills core.
+- **Docs: deterministic boundary interrupts stay project-local.** New `harness-support.md` section on why blocking commit/merge hooks belong in your own project config, not in SDLC skills core.
 
 ## [1.0.1] — 2026-06-10
 

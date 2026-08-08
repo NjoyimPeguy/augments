@@ -14,9 +14,8 @@ tests/
   run-all-activation.sh   the whole activation set for a harness
   run-flow.sh             multi-turn sequences, one resumed conversation
   run-behavioral.sh       does the skill change what gets BUILT? (two arms)
-  run-implementation-guard.sh  pre-edit hook policy             (offline)
-  run-stop-nudge.sh       done-boundary hook policy              (offline)
-  run-plugin-smoke.sh     install / marketplace mechanics        (offline)
+  run-session-start.sh    the injected router, per envelope       (offline)
+  run-plugin-smoke.sh     install / marketplace mechanics         (offline)
   harnesses/<name>.sh     ONLY what differs per CLI: install, invoke, detect
   assert.sh               assertion helpers every scenario uses
   scenarios/
@@ -31,7 +30,6 @@ The harness-backed runners take `--harness claude-code|codex|kimi-code`:
 tests/run-activation.sh     --harness claude-code --scenario-file common/yagni
 tests/run-all-activation.sh --harness codex
 tests/run-behavioral.sh     --harness kimi-code --scenario spec-it --arm green
-tests/run-stop-nudge.sh     --harness codex
 tests/run-activation.sh     selftest        # offline detector check, no API
 ```
 
@@ -45,8 +43,8 @@ A per-adapter `scenario_setup_<harness>()` override works the same way for fixtu
 
 **Activation** — the verdict comes only from a structured tool call in the
 harness's own stream. A raw grep reports phantom activations: the SessionStart
-nudge and the init manifest both contain `sdlc-skills:` tokens that are not
-actions, and the first version of this harness fell for exactly that. The
+router injection and the init manifest both contain `sdlc-skills:` tokens that
+are not actions, and the first version of this harness fell for exactly that. The
 **filename is the contract**: a scenario named after a real skill expects that
 skill anywhere in the routing chain (under routing-first the first call is
 `using-sdlc-skills`, the router — judge the whole chain); any other name expects
@@ -61,9 +59,12 @@ behavioural claim is a comparison — RED loads the skills from a `git worktree`
 at `--base`, GREEN from the working tree, so the before-arm stays reproducible
 after the change is committed.
 
-**Offline** — `run-activation.sh selftest`, `run-implementation-guard.sh`,
-`run-stop-nudge.sh`, and `run-plugin-smoke.sh` need no model. Prefer them: they
-are deterministic and free.
+**Offline** — `run-activation.sh selftest`, `run-session-start.sh`, and
+`run-plugin-smoke.sh` need no model. Prefer them: they are deterministic and
+free. `run-session-start.sh` is the gate on what every adapter injects at session
+start: valid JSON in each harness's envelope, the canonical router body present
+*verbatim* with its frontmatter stripped, escaping that survives the quotes and
+tables inside it, and the event name echoed back. It runs in CI.
 
 ## Adding things
 
@@ -76,10 +77,10 @@ are deterministic and free.
   hard to see in a transcript: that an artifact exists, that it *loads*, and that
   it can actually fail.
 - **A harness:** add `harnesses/<name>.sh` implementing `adapter_check`,
-  `adapter_install`, `adapter_chain`, `adapter_run_activation`,
-  `adapter_run_behavioral`, `adapter_stop_hook`, `adapter_stop_payload`. Nothing
-  else should need to change. A harness stays **unproven** until its tests pass on
-  it — files present but never invoked is not a working integration.
+  `adapter_install`, `adapter_chain`, `adapter_run_activation`, and
+  `adapter_run_behavioral`. Nothing else should need to change. A harness stays
+  **unproven** until its tests pass on it — files present but never invoked is
+  not a working integration.
 
 ## What this costs, before you run it
 

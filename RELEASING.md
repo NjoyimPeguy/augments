@@ -1,6 +1,6 @@
 # Releasing
 
-How SDLC Skills is versioned and how a release is cut. This is maintainer guidance, written for humans and AI agents alike — for contributing a change, see [`CONTRIBUTING.md`](CONTRIBUTING.md). Contributors never touch versions.
+How SDLC skills is versioned and how a release is cut. This is maintainer guidance, written for humans and AI agents alike — for contributing a change, see [`CONTRIBUTING.md`](CONTRIBUTING.md). Contributors never touch versions.
 
 ## Choosing the version
 
@@ -26,6 +26,6 @@ Nobody bumps in a contribution PR. Versioning is decided once per release, by th
 4. Run the gate: `bash scripts/sh/validate-skills.sh`.
 5. Commit on `dev` as `chore(release): vX.Y.Z — <one-line theme>`.
 6. Open the `dev` → `main` PR and merge it as a merge commit, so the individual fixes stay in history.
-7. Tag `vX.Y.Z` on `main` and create the release: title `SDLC Skills vX.Y.Z`, notes carrying the narrative — the field report that drove the change, what changed, and the proof records under `tests/`.
+7. Tag `vX.Y.Z` on `main` and create the release: title `SDLC skills vX.Y.Z`, notes carrying the narrative — the field report that drove the change, what changed, and the proof records under `tests/`.
 
 If you are an AI agent asked to release: follow this file exactly, and if the tier is genuinely ambiguous, ask the maintainer rather than inventing a number.

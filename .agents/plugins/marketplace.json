@@ -1,7 +1,7 @@
 {
   "name": "augments-labs-dev",
   "interface": {
-    "displayName": "SDLC Skills Dev"
+    "displayName": "SDLC skills Dev"
   },
   "plugins": [
     {
