@@ -107,12 +107,18 @@ toward the evaluator instead of the skills.
 The shared runners and scenarios are documented in
 [`tests/README.md`](../../tests/README.md).
 
-## Implementation guard
+## No implementation guard
 
-Where the harness exposes a blockable edit event, SDLC Skills keeps a small guard
-that requires `test-driven-development` and `yagni` before code edits. It is a
-best-effort process backstop, not a security boundary: shell writes and
-unsupported tools can bypass it.
+No adapter ships a hook that blocks edits. One did — a pre-edit guard requiring
+`test-driven-development` and `yagni` before code edits — and it is retired.
+
+It was built when the session-start injection was a skippable pointer, and it
+was the only thing catching the skip. With the router's body resident, the pair
+led the first code edit unaided in 2 of 3 measured runs of
+`tests/scenarios/behavioral/implementation-entry-routing.sh`. A guard that
+denies edits is too blunt to keep for the remaining margin, and it was never a
+real boundary: a shell heredoc writes code without touching a Write/Edit tool.
+A partial gate that reads as a total one is worse than a stated limit.
 
 Wide migrations are routed by `using-sdlc-skills` to `migration-strategy` and
 `verification-strategy`. Their durable enforcement belongs in the adopting

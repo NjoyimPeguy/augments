@@ -108,11 +108,20 @@ for hook_config in \
       && err "$hook_config: $retired_event is retired across supported adapters"
   done
 done
+# The pre-edit implementation guard is retired for a different reason than the
+# cadence hooks: it fired on a real boundary, but it existed to compensate for a
+# skippable session-start POINTER. With the router's body resident, the pair led
+# implementation on its own in 2 of 3 measured runs — so the guard is no longer
+# the thing holding that boundary, and a hook that denies edits is too blunt to
+# keep for the remaining margin. Routing is persuasion; the artifact-level gates
+# are what decide. Do not restore it under another name without new evidence.
 for retired_script in \
   scripts/sh/implementation-remind.sh \
+  scripts/sh/implementation-guard.sh \
   scripts/sh/stop-nudge.sh \
   scripts/sh/stop-nudge-detect.sh \
   scripts/sh/stop-nudge-kimi.sh \
+  tests/run-implementation-guard.sh \
   tests/run-stop-nudge.sh; do
   [ ! -e "$retired_script" ] || err "obsolete $retired_script still exists"
 done

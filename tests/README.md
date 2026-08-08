@@ -15,7 +15,6 @@ tests/
   run-flow.sh             multi-turn sequences, one resumed conversation
   run-behavioral.sh       does the skill change what gets BUILT? (two arms)
   run-session-start.sh    the injected router, per envelope       (offline)
-  run-implementation-guard.sh  pre-edit hook policy              (offline)
   run-plugin-smoke.sh     install / marketplace mechanics         (offline)
   harnesses/<name>.sh     ONLY what differs per CLI: install, invoke, detect
   assert.sh               assertion helpers every scenario uses
@@ -60,9 +59,8 @@ behavioural claim is a comparison — RED loads the skills from a `git worktree`
 at `--base`, GREEN from the working tree, so the before-arm stays reproducible
 after the change is committed.
 
-**Offline** — `run-activation.sh selftest`, `run-session-start.sh`,
-`run-implementation-guard.sh`, and `run-plugin-smoke.sh` need no model. Prefer
-them: they are deterministic and
+**Offline** — `run-activation.sh selftest`, `run-session-start.sh`, and
+`run-plugin-smoke.sh` need no model. Prefer them: they are deterministic and
 free. `run-session-start.sh` is the gate on what every adapter injects at session
 start: valid JSON in each harness's envelope, the canonical router body present
 *verbatim* with its frontmatter stripped, escaping that survives the quotes and
