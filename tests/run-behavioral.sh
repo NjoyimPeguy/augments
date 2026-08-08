@@ -104,7 +104,7 @@ bh_seed_fixture() {
     cd "$workdir" || exit 2
     git init -q . 2>/dev/null || exit 2
     git add -A
-    git -c user.name='SDLC Skills Harness' -c user.email='harness@example.invalid' \
+    git -c user.name='SDLC skills Harness' -c user.email='harness@example.invalid' \
         commit -q -m 'scenario baseline'
     git switch -qc task/behavioral-probe
   ) || { echo "failed to seed fixture repo" >&2; return 2; }

@@ -1,6 +1,6 @@
 # Activation: routing and enforcement
 
-SDLC Skills is useful only when the agent reaches the applicable skill and the
+SDLC skills is useful only when the agent reaches the applicable skill and the
 result then passes a real project gate. Those are different problems.
 
 ## Routing is probabilistic
@@ -33,7 +33,7 @@ differential checks, release checks, and rollback criteria operate on artifacts
 or promotion state. Projects wire the applicable gates into CI, protected
 integration paths, and release controls.
 
-SDLC Skills does not ship a universal project CI template. The commands, platforms,
+SDLC skills does not ship a universal project CI template. The commands, platforms,
 thresholds, and failure responses are properties of the adopting project.
 
 ## No in-session backstops

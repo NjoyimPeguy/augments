@@ -2,7 +2,7 @@
 
 *The design philosophy behind sdlc-skills: how to do real engineering on a non-deterministic substrate.*
 
-Every skill in this library is shaped by one problem: a language model is a powerful generator, but it is not a reliable engineer — and software engineering does not tolerate unverified correctness. This document explains how SDLC Skills resolves that, and why the skills look the way they do.
+Every skill in this library is shaped by one problem: a language model is a powerful generator, but it is not a reliable engineer — and software engineering does not tolerate unverified correctness. This document explains how SDLC skills resolves that, and why the skills look the way they do.
 
 ## What real engineering guarantees
 
@@ -68,7 +68,7 @@ does not vanish for another worker, and is portable because it lives in the
 project rather than one tool's session. Prefer a gate on the output over an
 instruction about the verdict.
 
-This does not make instruction worthless — it makes it the *wrong tool for the verdict* and the *right tool for routing*. Whether the model reaches for the applicable skill at the right moment has no deterministic check behind it (see the next section), so there a firm instruction is the strongest lever there is — and SDLC Skills uses one deliberately: the routing stance is non-negotiable by default, because a soft, optional nudge is walked past. The discipline is to keep the two honest and separate — **a firm floor where you have only process; a deterministic gate where you have proof; and never the language of one dressed on the other.**
+This does not make instruction worthless — it makes it the *wrong tool for the verdict* and the *right tool for routing*. Whether the model reaches for the applicable skill at the right moment has no deterministic check behind it (see the next section), so there a firm instruction is the strongest lever there is — and SDLC skills uses one deliberately: the routing stance is non-negotiable by default, because a soft, optional nudge is walked past. The discipline is to keep the two honest and separate — **a firm floor where you have only process; a deterministic gate where you have proof; and never the language of one dressed on the other.**
 
 ## Where there is proof, and where there is only process
 
@@ -107,4 +107,4 @@ This is why `using-sdlc-skills` carries a firm routing stance *and* refuses to o
 > evidence, never from your confidence. “Done” means the required gate accepted
 > the exact state, not that you believe it is done.
 
-Its second job is to route — firmly, because a skipped skill is the failure the library exists to prevent, and a gentle suggestion is skipped. But routing is process, not proof: it carries no deterministic verdict, so its firmness is persuasion, honestly labeled, never a claim to be a gate. The reliability of SDLC Skills does not live in that firmness. It lives in the gates the skills define — and, where you want enforcement, in deterministic checks wired into git and CI, where enforcement is real and portable.
+Its second job is to route — firmly, because a skipped skill is the failure the library exists to prevent, and a gentle suggestion is skipped. But routing is process, not proof: it carries no deterministic verdict, so its firmness is persuasion, honestly labeled, never a claim to be a gate. The reliability of SDLC skills does not live in that firmness. It lives in the gates the skills define — and, where you want enforcement, in deterministic checks wired into git and CI, where enforcement is real and portable.

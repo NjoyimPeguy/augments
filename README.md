@@ -1,9 +1,9 @@
-# SDLC Skills
+# SDLC skills
 
 A collection of rigorous, phase-organized and context-routed SDLC skills that
 tether autonomous agents to real engineering gates.
 
-SDLC Skills is a cross-platform library of **opt-in engineering skills** for coding agents, organized by the phases of the software development life cycle. It gives agents real engineering discipline while staying lean and leaving *you* in control of the process.
+SDLC skills is a cross-platform library of **opt-in engineering skills** for coding agents, organized by the phases of the software development life cycle. It gives agents real engineering discipline while staying lean and leaving *you* in control of the process.
 
 ## Philosophy
 
@@ -87,7 +87,7 @@ Install in Claude Code with `/plugin marketplace add augments-labs/sdlc-skills` 
 
 ## Proactive Skill Use
 
-A coding agent treats an installed skill library as available-but-optional and walks past it unless you name a skill. So SDLC Skills pairs each adapter with the strongest honest routing support that harness can prove.
+A coding agent treats an installed skill library as available-but-optional and walks past it unless you name a skill. So SDLC skills pairs each adapter with the strongest honest routing support that harness can prove.
 
 Every adapter injects the **full `using-sdlc-skills` router body** as session context — Claude Code and Codex through a `SessionStart` hook, Kimi Code through `sessionStart.skill` — and re-applies it wherever the harness reports context was lost (Claude's `compact` matcher, Codex's `PostCompact` event).
 
@@ -95,9 +95,9 @@ It used to inject a ~90-token *pointer* asking the agent to invoke the router be
 
 No adapter ships a turn-end reminder. One did — a Stop hook that re-routed whenever a turn's wording read as a completion claim — and it is retired: it fired on a cadence rather than a boundary, so in a long session it re-spent its full text over and over and bought each repetition with an extra model turn, for routing the resident skill descriptions and the session-start injection already carry. That injection is re-applied where the harness reports that context was actually lost; that is where a reminder earns its tokens. `scripts/sh/validate-skills.sh` keeps the retired events retired across every adapter.
 
-On Codex, SDLC Skills ships a plugin adapter and local marketplace metadata, and the plugin bundles its own hooks (`plugins/sdlc-skills/hooks/hooks.json`) that run the same injector on `SessionStart` and again on `PostCompact`. The skills install through Codex, durable repo guidance still comes through `AGENTS.md`, and the Codex harness test observes activation by watching the agent read the installed `SKILL.md` file from the plugin cache.
+On Codex, SDLC skills ships a plugin adapter and local marketplace metadata, and the plugin bundles its own hooks (`plugins/sdlc-skills/hooks/hooks.json`) that run the same injector on `SessionStart` and again on `PostCompact`. The skills install through Codex, durable repo guidance still comes through `AGENTS.md`, and the Codex harness test observes activation by watching the agent read the installed `SKILL.md` file from the plugin cache.
 
-On Kimi Code, SDLC Skills ships a plugin manifest (`.kimi-plugin/plugin.json`) whose `sessionStart.skill` loads the `using-sdlc-skills` router into every new and resumed session, and whose `skillInstructions` bind the skills' tool language to Kimi's real tools — including the dispatch action — whenever a plugin skill loads. The manifest points at the canonical phase directories directly — no mirror. It also declares a `PostCompact` hook so the router is re-applied after mid-session compaction; that declaration follows the harness's documented hook events and has not been verified live in this repository — see [`docs/sdlc-skills/harness-support.md`](docs/sdlc-skills/harness-support.md).
+On Kimi Code, SDLC skills ships a plugin manifest (`.kimi-plugin/plugin.json`) whose `sessionStart.skill` loads the `using-sdlc-skills` router into every new and resumed session, and whose `skillInstructions` bind the skills' tool language to Kimi's real tools — including the dispatch action — whenever a plugin skill loads. The manifest points at the canonical phase directories directly — no mirror. It also declares a `PostCompact` hook so the router is re-applied after mid-session compaction; that declaration follows the harness's documented hook events and has not been verified live in this repository — see [`docs/sdlc-skills/harness-support.md`](docs/sdlc-skills/harness-support.md).
 
 The routing is **non-negotiable by default, not a gentle suggestion** where a harness supports it. The discipline behind it — the rationalizations named as signals to check rather than skip, the red-flags, the procedure — lives in the `using-sdlc-skills` skill, and that is exactly the text the adapters inject; `scripts/sh/session-start.sh` reads it from the skill rather than restating it. Changing that injector or its activation policy is behavior-shaping work and must be re-proved. See [`docs/sdlc-skills/activation.md`](docs/sdlc-skills/activation.md) for how routing (firm persuasion) and enforcement (deterministic gates) fit together. Harness hooks are adapter-specific; the skills themselves stay portable Markdown.
 

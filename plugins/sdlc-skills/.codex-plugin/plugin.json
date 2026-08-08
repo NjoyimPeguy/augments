@@ -22,9 +22,9 @@
   "skills": "./skills/",
   "hooks": "./hooks/hooks.json",
   "interface": {
-    "displayName": "SDLC Skills",
+    "displayName": "SDLC skills",
     "shortDescription": "SDLC skills for disciplined coding-agent workflows",
-    "longDescription": "SDLC Skills guides coding agents through reusable software-development skills for planning, requirements, architecture, implementation, test-driven development, verification, code review, release readiness, debugging, and maintenance.",
+    "longDescription": "SDLC skills guides coding agents through reusable software-development skills for planning, requirements, architecture, implementation, test-driven development, verification, code review, release readiness, debugging, and maintenance.",
     "developerName": "Njoyim Peguy",
     "category": "Developer Tools",
     "capabilities": [
@@ -36,7 +36,7 @@
     "privacyPolicyURL": "https://docs.github.com/en/site-policy/privacy-policies/github-general-privacy-statement",
     "termsOfServiceURL": "https://docs.github.com/en/site-policy/github-terms/github-terms-of-service",
     "defaultPrompt": [
-      "Plan and implement this feature with SDLC Skills.",
+      "Plan and implement this feature with SDLC skills.",
       "Debug this issue systematically.",
       "Review this change before I merge it."
     ],

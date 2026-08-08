@@ -65,7 +65,7 @@ not as measured support, and re-test it when a CLI is available.
 its conventional repository instructions therefore receives the same contributor
 rules from one source.
 
-## Using SDLC Skills elsewhere
+## Using SDLC skills elsewhere
 
 The skills are Markdown invoked by name. On another harness:
 
