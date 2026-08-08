@@ -10,8 +10,6 @@ err() { printf '  FAIL: %s\n' "$1"; fail=1; }
 plugin_root="plugins/sdlc-skills"
 manifest="$plugin_root/.codex-plugin/plugin.json"
 marketplace=".agents/plugins/marketplace.json"
-codex_hook=".codex/hooks.json"
-codex_hook_template="hooks/hooks-codex.json"
 
 echo "• $manifest"
 [ -f "$manifest" ] || err "missing Codex plugin manifest"
@@ -32,15 +30,6 @@ if [ -f "$marketplace" ]; then
   grep -q '"authentication"[[:space:]]*:[[:space:]]*"ON_INSTALL"' "$marketplace" || err "marketplace policy.authentication missing"
   grep -q '"category"[[:space:]]*:[[:space:]]*"Developer Tools"' "$marketplace" || err "marketplace category missing"
 fi
-
-echo "• Codex hook config"
-[ -f "$codex_hook" ] || err "missing repo Codex hook config"
-[ -f "$codex_hook_template" ] || err "missing reusable Codex hook config"
-if [ -f "$codex_hook" ] && [ -f "$codex_hook_template" ]; then
-  diff -q "$codex_hook_template" "$codex_hook" >/dev/null || err "repo Codex hook config differs from hooks/hooks-codex.json"
-  grep -q 'scripts/sh/stop-nudge.sh' "$codex_hook" || err "Codex hook config does not invoke scripts/sh/stop-nudge.sh"
-fi
-[ -x scripts/sh/stop-nudge.sh ] || err "scripts/sh/stop-nudge.sh is not executable"
 
 echo "• Codex skill mirror"
 canonical_names="$(find skills -mindepth 3 -maxdepth 3 -name SKILL.md \

@@ -15,7 +15,6 @@ tests/
   run-flow.sh             multi-turn sequences, one resumed conversation
   run-behavioral.sh       does the skill change what gets BUILT? (two arms)
   run-implementation-guard.sh  pre-edit hook policy             (offline)
-  run-stop-nudge.sh       done-boundary hook policy              (offline)
   run-plugin-smoke.sh     install / marketplace mechanics        (offline)
   harnesses/<name>.sh     ONLY what differs per CLI: install, invoke, detect
   assert.sh               assertion helpers every scenario uses
@@ -31,7 +30,6 @@ The harness-backed runners take `--harness claude-code|codex|kimi-code`:
 tests/run-activation.sh     --harness claude-code --scenario-file common/yagni
 tests/run-all-activation.sh --harness codex
 tests/run-behavioral.sh     --harness kimi-code --scenario spec-it --arm green
-tests/run-stop-nudge.sh     --harness codex
 tests/run-activation.sh     selftest        # offline detector check, no API
 ```
 
@@ -61,9 +59,9 @@ behavioural claim is a comparison — RED loads the skills from a `git worktree`
 at `--base`, GREEN from the working tree, so the before-arm stays reproducible
 after the change is committed.
 
-**Offline** — `run-activation.sh selftest`, `run-implementation-guard.sh`,
-`run-stop-nudge.sh`, and `run-plugin-smoke.sh` need no model. Prefer them: they
-are deterministic and free.
+**Offline** — `run-activation.sh selftest`, `run-implementation-guard.sh`, and
+`run-plugin-smoke.sh` need no model. Prefer them: they are deterministic and
+free.
 
 ## Adding things
 
@@ -76,10 +74,10 @@ are deterministic and free.
   hard to see in a transcript: that an artifact exists, that it *loads*, and that
   it can actually fail.
 - **A harness:** add `harnesses/<name>.sh` implementing `adapter_check`,
-  `adapter_install`, `adapter_chain`, `adapter_run_activation`,
-  `adapter_run_behavioral`, `adapter_stop_hook`, `adapter_stop_payload`. Nothing
-  else should need to change. A harness stays **unproven** until its tests pass on
-  it — files present but never invoked is not a working integration.
+  `adapter_install`, `adapter_chain`, `adapter_run_activation`, and
+  `adapter_run_behavioral`. Nothing else should need to change. A harness stays
+  **unproven** until its tests pass on it — files present but never invoked is
+  not a working integration.
 
 ## What this costs, before you run it
 

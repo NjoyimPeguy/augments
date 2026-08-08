@@ -89,21 +89,34 @@ while IFS= read -r f; do
   sed 's/`[^`]*`//g' "$f" | grep -qiE "$SCANNER_TRIGGERS" && err "$f: harness scanner trigger-word"
 done < <(find hooks -name '*.md' 2>/dev/null)
 
-# The retired per-prompt reminder must stay retired in every supported adapter,
-# not only Codex. A new command can otherwise reuse UserPromptSubmit and restore
-# the same token-heavy advisory path under another script name.
-echo "• no per-prompt implementation reminder"
+# Retired cadence reminders must stay retired in every supported adapter, not
+# only Codex. Both fired on a fixed cadence rather than at a real boundary —
+# UserPromptSubmit on every prompt, Stop on every turn whose wording read as a
+# completion claim — so each re-spent the same advisory tokens turn after turn,
+# and Stop additionally forced an extra model turn by blocking. The routing they
+# carried is already in the session-start pointer (re-applied after compaction)
+# and in the always-loaded skill descriptions. A new entry can otherwise restore
+# either path under another script name.
+echo "• no cadence reminder hooks (UserPromptSubmit, Stop)"
 for hook_config in \
   hooks/hooks.json \
   hooks/hooks-codex.json \
   .codex/hooks.json \
   .kimi-plugin/plugin.json; do
   [ -f "$hook_config" ] || continue
-  grep -q '"UserPromptSubmit"' "$hook_config" \
-    && err "$hook_config: UserPromptSubmit is retired across supported adapters"
+  for retired_event in UserPromptSubmit Stop; do
+    grep -q "\"$retired_event\"" "$hook_config" \
+      && err "$hook_config: $retired_event is retired across supported adapters"
+  done
 done
-[ ! -e scripts/sh/implementation-remind.sh ] \
-  || err "obsolete scripts/sh/implementation-remind.sh still exists"
+for retired_script in \
+  scripts/sh/implementation-remind.sh \
+  scripts/sh/stop-nudge.sh \
+  scripts/sh/stop-nudge-detect.sh \
+  scripts/sh/stop-nudge-kimi.sh \
+  tests/run-stop-nudge.sh; do
+  [ ! -e "$retired_script" ] || err "obsolete $retired_script still exists"
+done
 
 # Manifest sync: a harness discovers skills only through its manifest, so every
 # leaf skill dir must be listed explicitly in the plugin's "skills" array — a

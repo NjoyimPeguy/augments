@@ -30,14 +30,20 @@ thresholds, and failure responses are properties of the adopting project.
 
 ## Small in-session backstops
 
-Supported adapters may provide two narrow reminders:
+Supported adapters may provide one narrow reminder: a pre-edit guard requiring
+the TDD/YAGNI pair for recognized code edits. It fires on a real boundary — an
+edit is about to happen — and stays silent otherwise.
 
-- a pre-edit guard requiring the TDD/YAGNI pair for recognized code edits; and
-- a Stop nudge when the assistant explicitly claims completion.
-
-These catch accidental skips on observable tool paths. They are not security
-boundaries, cannot cover shell writes or every harness, and do not replace the
+It catches accidental skips on an observable tool path. It is not a security
+boundary, cannot cover shell writes or every harness, and does not replace the
 artifact-level gate.
+
+A reminder that fires on a *cadence* rather than a boundary does not belong
+here. A turn-end reminder keyed on completion wording re-spends its full text
+every time the wording matches, in a session where the pointer and the skill
+descriptions are already resident — and where it blocks turn-end, it buys that
+repetition with an extra model turn. Carry the routing in the always-loaded
+surface instead, and re-apply it where context is actually lost.
 
 ## The honest line
 

@@ -11,18 +11,23 @@ tools, and lifecycle events.
 
 | Harness | Adapter | Routing support |
 | --- | --- | --- |
-| Claude Code | `.claude-plugin/` and `hooks/hooks.json` | Session-start router, done-boundary Stop nudge, and a best-effort pre-edit TDD/YAGNI guard |
-| Codex | `plugins/sdlc-skills/.codex-plugin/`, `.agents/plugins/marketplace.json`, and project-local `.codex/hooks.json` | Installed skill catalogue plus a project-local Stop nudge; durable repository guidance comes from `AGENTS.md`; no per-prompt reminder is shipped |
-| Kimi Code | `.kimi-plugin/plugin.json` | Canonical skill paths, session-start router, tool bindings, Stop nudge, and a best-effort pre-edit TDD/YAGNI guard |
+| Claude Code | `.claude-plugin/` and `hooks/hooks.json` | Session-start router — re-applied on startup, resume, clear, and after compaction — and a best-effort pre-edit TDD/YAGNI guard |
+| Codex | `plugins/sdlc-skills/.codex-plugin/` and `.agents/plugins/marketplace.json` | Installed skill catalogue; durable repository guidance comes from `AGENTS.md`; no in-session reminder is shipped |
+| Kimi Code | `.kimi-plugin/plugin.json` | Canonical skill paths, session-start router, tool bindings, and a best-effort pre-edit TDD/YAGNI guard |
+
+No adapter ships a turn-end reminder. Routing that has to survive a long session
+belongs in the surface that is already resident — the skill descriptions and the
+session-start pointer — and is re-applied where the harness reports that context
+was actually lost, not on every turn that reads like a completion claim.
 
 The Claude manifest, Codex mirror, and Kimi skill paths must expose the same
 canonical skill set. `scripts/sh/validate-skills.sh` checks that deterministic
 packaging contract.
 
 Kimi's available post-compaction callback is observation-only. The plugin cannot
-re-inject routing into a read-only turn after compaction. Its pre-edit and Stop
-hooks still run, but they cannot reconstruct the missing router context. This is
-a harness capability limit, not something a larger test harness can remove.
+re-inject routing into a read-only turn after compaction. Its pre-edit guard
+still runs, but it cannot reconstruct the missing router context. This is a
+harness capability limit, not something a larger test harness can remove.
 
 ## Repository instruction files
 

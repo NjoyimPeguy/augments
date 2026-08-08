@@ -32,11 +32,6 @@
   },
   "hooks": [
     {
-      "event": "Stop",
-      "command": "bash ./scripts/sh/stop-nudge-kimi.sh",
-      "timeout": 15
-    },
-    {
       "event": "PreToolUse",
       "command": "bash ./scripts/sh/implementation-guard.sh",
       "timeout": 15
