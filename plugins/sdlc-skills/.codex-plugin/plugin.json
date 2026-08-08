@@ -20,6 +20,7 @@
     "workflow"
   ],
   "skills": "./skills/",
+  "hooks": "./hooks/hooks.json",
   "interface": {
     "displayName": "SDLC Skills",
     "shortDescription": "SDLC skills for disciplined coding-agent workflows",

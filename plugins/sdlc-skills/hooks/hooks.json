@@ -1,0 +1,28 @@
+{
+  "hooks": {
+    "SessionStart": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash \"$PLUGIN_ROOT/scripts/sh/session-start.sh\" SessionStart",
+            "timeout": 15,
+            "statusMessage": "Loading the SDLC skills router"
+          }
+        ]
+      }
+    ],
+    "PostCompact": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash \"$PLUGIN_ROOT/scripts/sh/session-start.sh\" PostCompact",
+            "timeout": 15,
+            "statusMessage": "Re-applying the SDLC skills router"
+          }
+        ]
+      }
+    ]
+  }
+}

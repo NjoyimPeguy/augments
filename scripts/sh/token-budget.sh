@@ -3,8 +3,9 @@
 #
 # "Earn every line" is enforced as a LINE budget by validate-skills.sh. This is
 # its companion: it reports the actual CONTEXT COST of the always-loaded
-# surface — every SKILL.md body, plus the SessionStart nudge that loads on every
-# session. It turns "lean" from a line-count proxy into a number you can watch.
+# surface — every SKILL.md body, plus the SessionStart router injection that
+# loads once per context epoch. It turns "lean" from a line-count proxy into a
+# number you can watch.
 #
 # No model is called (the library is harness- and model-agnostic), so tokens are
 # APPROXIMATED as chars/4 — a portable rough proxy, not an exact count. Use it
@@ -28,18 +29,25 @@ max=0
 
 approx() { local c; c=$(wc -m <"$1"); echo $(((c + 3) / 4)); }
 
-# The nudge text lives inline in session-start.sh between the SDLC_SKILLS_NUDGE
-# markers; extract it so its cost is measured like any other file.
+# Measure what actually ships: run the injector and take the context it emits,
+# rather than a copy that can drift from it. The injected text is the whole
+# `using-sdlc-skills` body, so this number is the real per-session floor.
 nudge_src="scripts/sh/session-start.sh"
 nudge="$(mktemp)"; trap 'rm -f "$nudge"' EXIT
-sed -n "/<<'SDLC_SKILLS_NUDGE'/,/^SDLC_SKILLS_NUDGE$/p" "$nudge_src" | sed '1d;$d' > "$nudge"
+if command -v jq >/dev/null 2>&1; then
+  bash "$nudge_src" 2>/dev/null \
+    | jq -r '.hookSpecificOutput.additionalContext // empty' > "$nudge" 2>/dev/null
+fi
+# jq-free fallback: the injected context is the router body plus a short preamble.
+[ -s "$nudge" ] || awk 'NR==1 && $0=="---" {fm=1; next} fm && $0=="---" {fm=0; next} !fm' \
+  skills/common/using-sdlc-skills/SKILL.md > "$nudge"
 
 echo "token-budget: always-loaded context  (approx tokens ≈ chars/4, not exact)"
 echo
 
 nudge_t=0
 [ -f "$nudge" ] && nudge_t=$(approx "$nudge")
-printf 'SessionStart nudge (loaded EVERY session): %d approx tokens  [%s, inline]\n\n' "$nudge_t" "$nudge_src"
+printf 'SessionStart router injection (loaded EVERY session/epoch): %d approx tokens  [%s]\n\n' "$nudge_t" "$nudge_src"
 
 # Collect per-skill costs.
 names=()
@@ -73,9 +81,9 @@ paste <(printf '%s\n' "${toks[@]}") <(printf '%s\n' "${names[@]}") |
 
 echo
 echo "Totals (approx tokens):"
-printf '  nudge, every session ............. %d\n' "$nudge_t"
+printf '  router injection, every session . %d\n' "$nudge_t"
 printf '  per-skill body ................... min %d · mean %d · max %d\n' "$mn" "$mean" "$mx"
-printf '  typical session (nudge + 1 body) . %d–%d\n' "$((nudge_t + mn))" "$((nudge_t + mx))"
+printf '  typical session (router + 1 body) %d–%d\n' "$((nudge_t + mn))" "$((nudge_t + mx))"
 printf '  whole catalogue (%d bodies) ...... %d  (only if every skill fired)\n' "$n" "$total"
 
 # --max enforcement in a non-piped loop so the exit code is reliable.

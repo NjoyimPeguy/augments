@@ -32,6 +32,11 @@
   },
   "hooks": [
     {
+      "event": "PostCompact",
+      "command": "bash ./scripts/sh/session-start.sh PostCompact",
+      "timeout": 15
+    },
+    {
       "event": "PreToolUse",
       "command": "bash ./scripts/sh/implementation-guard.sh",
       "timeout": 15

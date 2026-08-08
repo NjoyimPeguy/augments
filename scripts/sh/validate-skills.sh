@@ -94,14 +94,13 @@ done < <(find hooks -name '*.md' 2>/dev/null)
 # UserPromptSubmit on every prompt, Stop on every turn whose wording read as a
 # completion claim — so each re-spent the same advisory tokens turn after turn,
 # and Stop additionally forced an extra model turn by blocking. The routing they
-# carried is already in the session-start pointer (re-applied after compaction)
-# and in the always-loaded skill descriptions. A new entry can otherwise restore
-# either path under another script name.
+# carried is already resident: the session-start injection carries the router's
+# whole body (re-applied after compaction), and the skill descriptions are always
+# loaded. A new entry can otherwise restore either path under another script name.
 echo "• no cadence reminder hooks (UserPromptSubmit, Stop)"
 for hook_config in \
   hooks/hooks.json \
-  hooks/hooks-codex.json \
-  .codex/hooks.json \
+  plugins/sdlc-skills/hooks/hooks.json \
   .kimi-plugin/plugin.json; do
   [ -f "$hook_config" ] || continue
   for retired_event in UserPromptSubmit Stop; do
