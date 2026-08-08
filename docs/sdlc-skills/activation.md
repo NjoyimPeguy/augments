@@ -5,13 +5,21 @@ result then passes a real project gate. Those are different problems.
 
 ## Routing is probabilistic
 
-A session-start pointer sends the agent to `using-sdlc-skills`, whose descriptions
-and procedure route from the current request and project state. The pointer is
-re-applied on lifecycle events where a harness supports that behavior.
+The `using-sdlc-skills` router is injected at session start as **resident
+context**, not as a pointer to it, and re-applied on the lifecycle events where a
+harness reports that context was lost — start, resume, clear, compaction.
 
-This is persuasion applied to a nondeterministic generator. Strong wording can
-improve activation; it cannot prove that a skill fired or that its output is
-correct. A thin live harness smoke measures activation for a particular run.
+The distinction is the whole design. A pointer is cheap (~90 tokens) but it buys
+only a *request*: that the agent spend a discretionary tool call loading the
+router before working. That call is skippable, and it does get skipped — measured
+on this repository, on exactly the task the router governs. Injecting the body
+costs more per context epoch and removes the step that can be skipped: the
+routing rules are simply present, so there is nothing left to forget.
+
+This is still persuasion applied to a nondeterministic generator. Resident text
+raises the odds that the right skill fires; it cannot prove one fired or that its
+output is correct. A thin live harness smoke measures activation for a particular
+run — nothing more.
 
 For a wide or preservation-sensitive transformation, the router sends the work
 through `migration-strategy` and `verification-strategy` before ordinary
@@ -40,7 +48,7 @@ artifact-level gate.
 
 A reminder that fires on a *cadence* rather than a boundary does not belong
 here. A turn-end reminder keyed on completion wording re-spends its full text
-every time the wording matches, in a session where the pointer and the skill
+every time the wording matches, in a session where the router body and the skill
 descriptions are already resident — and where it blocks turn-end, it buys that
 repetition with an extra model turn. Carry the routing in the always-loaded
 surface instead, and re-apply it where context is actually lost.

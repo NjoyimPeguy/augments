@@ -9,25 +9,55 @@ There is one canonical tree under `skills/`. Skills use capability tiers and
 portable actions; each harness adapter binds those concepts to its own manifest,
 tools, and lifecycle events.
 
-| Harness | Adapter | Routing support |
-| --- | --- | --- |
-| Claude Code | `.claude-plugin/` and `hooks/hooks.json` | Session-start router — re-applied on startup, resume, clear, and after compaction — and a best-effort pre-edit TDD/YAGNI guard |
-| Codex | `plugins/sdlc-skills/.codex-plugin/` and `.agents/plugins/marketplace.json` | Installed skill catalogue; durable repository guidance comes from `AGENTS.md`; no in-session reminder is shipped |
-| Kimi Code | `.kimi-plugin/plugin.json` | Canonical skill paths, session-start router, tool bindings, and a best-effort pre-edit TDD/YAGNI guard |
+| Harness | Adapter | Router injection | Re-applied after compaction |
+| --- | --- | --- | --- |
+| Claude Code | `.claude-plugin/` and `hooks/hooks.json` | `SessionStart` hook | Yes — `compact` is in the matcher |
+| Codex | `plugins/sdlc-skills/` (manifest, `hooks/hooks.json`, mirrored injector) and `.agents/plugins/marketplace.json` | `SessionStart` hook | Yes — separate `PostCompact` event |
+| Kimi Code | `.kimi-plugin/plugin.json` | `sessionStart.skill` | Declared via `PostCompact` (see below) |
 
-No adapter ships a turn-end reminder. Routing that has to survive a long session
-belongs in the surface that is already resident — the skill descriptions and the
-session-start pointer — and is re-applied where the harness reports that context
-was actually lost, not on every turn that reads like a completion claim.
+The Codex plugin manifest carries the skill catalogue but has no session-start
+field, so the router arrives through hooks the plugin itself bundles
+(`"hooks": "./hooks/hooks.json"`). Bundling matters: the plugin is installed
+standalone, so a hooks file at the repository root is outside the plugin root and
+Codex never loads it — a repo-local config wires contributors and ships nothing.
+Everything the hook touches therefore lives inside the plugin, and
+`scripts/sh/sync-codex-plugin-skills.sh` mirrors it in.
+
+Two consequences worth knowing before editing either side. The command resolves
+the injector through `$PLUGIN_ROOT`, because hooks run with the *session* working
+directory, not the plugin's. And the mirror is flat (`skills/<name>/`) where the
+canonical tree is by phase (`skills/<phase>/<name>/`), so the injector resolves
+the router from both layouts; hard-coding one path ships something that works in
+this repository and nowhere anyone installs.
+
+Every adapter injects the **full `using-sdlc-skills` body**, not a pointer to it.
+A pointer costs ~90 tokens and buys a request that the agent spend a discretionary
+tool call loading the router; that call is skippable and does get skipped. The
+body costs ~1,500 approx tokens per context epoch and leaves nothing to skip.
+`scripts/sh/token-budget.sh` reports the real figure by running the injector.
+
+The text is **read from the canonical skill at runtime**, never copied into an
+adapter, so editing the skill cannot silently stop shipping.
+`tests/run-session-start.sh` asserts the injected context contains the canonical
+body verbatim, in each harness's envelope.
+
+No adapter ships a turn-end or per-prompt reminder. Routing that has to survive a
+long session belongs in the resident surface, re-applied only where the harness
+reports that context was actually lost.
 
 The Claude manifest, Codex mirror, and Kimi skill paths must expose the same
 canonical skill set. `scripts/sh/validate-skills.sh` checks that deterministic
 packaging contract.
 
-Kimi's available post-compaction callback is observation-only. The plugin cannot
-re-inject routing into a read-only turn after compaction. Its pre-edit guard
-still runs, but it cannot reconstruct the missing router context. This is a
-harness capability limit, not something a larger test harness can remove.
+An earlier revision of this document recorded Kimi's post-compaction callback as
+observation-only, and therefore recorded compaction survival as an unfixable
+capability gap. That is no longer accurate: the harness documents `PreCompact`
+and `PostCompact` among its hook events, both able to return context through the
+same `hookSpecificOutput` envelope the other adapters use. The manifest now
+declares a `PostCompact` re-injection on that basis. It is **documentation-based
+and not verified live in this repository** — there is no Kimi CLI in the
+environment that produced it. Treat the row above as a declaration to confirm,
+not as measured support, and re-test it when a CLI is available.
 
 ## Repository instruction files
 
@@ -41,8 +71,10 @@ The skills are Markdown invoked by name. On another harness:
 
 1. Expose the canonical skill directories through the harness's normal skill
    mechanism.
-2. Put the pointer from `scripts/sh/session-start.sh` in a durable instruction
-   surface so the agent reaches for `using-sdlc-skills`.
+2. Run `scripts/sh/session-start.sh` from the harness's session-start event and
+   feed its `additionalContext` into the session, so the router arrives as
+   resident context rather than as an errand the agent can skip. Re-run it on
+   whatever event the harness fires when context is lost.
 3. Bind skill actions to the harness's real tools.
 4. Exercise one representative activation through the real installed adapter
    before claiming support.

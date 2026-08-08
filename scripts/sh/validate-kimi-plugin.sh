@@ -59,7 +59,7 @@ else
   [ -n "$missing" ] && while IFS= read -r m; do err "skill not exposed by the Kimi manifest: $m"; done <<< "$missing"
   [ -n "$extra" ]   && while IFS= read -r e; do err "Kimi manifest exposes a non-canonical skill: $e"; done <<< "$extra"
 
-  echo "• Kimi session-start nudge"
+  echo "• Kimi session-start router"
   router="$(jq -r '.sessionStart.skill // ""' "$manifest")"
   [ -n "$router" ] || err "missing sessionStart.skill"
   [ -n "$router" ] && printf '%s\n' "$exposed" | grep -qx "common/$router" || err "sessionStart.skill '$router' is not an exposed skill"
