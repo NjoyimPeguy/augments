@@ -36,18 +36,23 @@ integration paths, and release controls.
 SDLC Skills does not ship a universal project CI template. The commands, platforms,
 thresholds, and failure responses are properties of the adopting project.
 
-## Small in-session backstops
+## No in-session backstops
 
-Supported adapters may provide one narrow reminder: a pre-edit guard requiring
-the TDD/YAGNI pair for recognized code edits. It fires on a real boundary — an
-edit is about to happen — and stays silent otherwise.
+An adapter once shipped a pre-edit guard that denied a session's first code edit
+until the TDD/YAGNI pair had fired. It is retired. It fired on a real boundary,
+which is the right shape, but it existed to compensate for a session-start
+*pointer* the agent could skip. With the router resident instead, the pair led
+the first code edit on its own in 2 of 3 measured runs on the same fixture.
 
-It catches accidental skips on an observable tool path. It is not a security
-boundary, cannot cover shell writes or every harness, and does not replace the
-artifact-level gate.
+That margin does not justify a hook that denies edits. It could never be a
+boundary anyway — a shell heredoc writes code without passing through any
+Write/Edit tool — so it caught accidental skips on one observable path while
+reading, to anyone downstream, like enforcement. Routing is persuasion; the
+artifact-level gates are what decide. Keeping a partial gate that looks total is
+worse than stating the limit.
 
-A reminder that fires on a *cadence* rather than a boundary does not belong
-here. A turn-end reminder keyed on completion wording re-spends its full text
+A reminder that fires on a *cadence* rather than a boundary is further still
+from belonging here. A turn-end reminder keyed on completion wording re-spends its full text
 every time the wording matches, in a session where the router body and the skill
 descriptions are already resident — and where it blocks turn-end, it buys that
 repetition with an extra model turn. Carry the routing in the always-loaded
