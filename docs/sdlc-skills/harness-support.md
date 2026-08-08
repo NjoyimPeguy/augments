@@ -29,6 +29,32 @@ re-inject routing into a read-only turn after compaction. Its pre-edit guard
 still runs, but it cannot reconstruct the missing router context. This is a
 harness capability limit, not something a larger test harness can remove.
 
+## Dispatch capability
+
+`dispatching-parallel-agents` and `executing-plans` hand work to a cold agent
+through "the real callable action". The skills stay portable by never naming it;
+each adapter binds it, and each harness decides whether it exists at all.
+
+| Harness | Dispatch action | Notes |
+| --- | --- | --- |
+| Claude Code | `Agent` tool | Native; no configuration needed |
+| Codex | `spawn_agent` / `wait_agent` / `list_agents` / `send_message` / `followup_task` / `interrupt_agent` | Present with no extra configuration on the build tested below |
+| Kimi Code | `Agent` tool | Bound in `.kimi-plugin/plugin.json` `skillInstructions`, including `subagent_type` and the tier-in-prompt rule |
+
+Availability is a property of the installed build and its configuration, not of
+this library, and it changes between versions — some builds gate multi-agent
+tools behind a config entry that is off by default. So the skill does not
+hardcode a remedy. It requires the agent to treat an uncallable action as **not
+dispatched**, and to name both the action it attempted and what this environment
+would need to make it callable, rather than stopping mysteriously, narrating a
+fan-out it holds no receipts for, or silently collapsing it to sequential work.
+
+Check the harness's own configuration reference for the current form, and verify
+by asking the installed CLI what tools it exposes rather than trusting a
+second-hand snippet. Evidence for the row above: on `codex-cli 0.147.0`, a
+read-only `codex exec` reported the six multi-agent tools both with and without
+`multi_agent.enabled=true`, so no flag was required on that build.
+
 ## Repository instruction files
 
 `AGENTS.md` and `GEMINI.md` are symlinks to `CLAUDE.md`. A harness that reads

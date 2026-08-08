@@ -50,7 +50,11 @@ Freeze the exact expected packet IDs/count, terminal deadline, and timeout/
 cancel action and owner before fan-out. Invoke the real callable action and join
 each returned nonempty agent/job ID as an attempt identity under one packet.
 Names or “running” prose are not receipts. Unavailable/refused/empty means **not
-dispatched**: retain the packet pending and stop. At failure/deadline, record
+dispatched**: retain the packet pending and stop, naming the action attempted
+and what this environment needs to make it callable — an enabled capability,
+granted permission, or configured runner — so the blocker is fixable rather than
+mysterious. Never narrate a fan-out you hold no receipts for, nor silently
+substitute sequential work for one. At failure/deadline, record
 `cancellation requested` until worker, descendants, and effects are confirmed
 quiescent; quarantine partial outputs. Only then record failed/timed out/
 cancelled. Reassignment creates a linked successor attempt; reject every late
