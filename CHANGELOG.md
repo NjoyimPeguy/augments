@@ -2,6 +2,25 @@
 
 Notable changes to SDLC skills, newest first. Versions follow semantic versioning; the narrative for each release lives on its release page — this file is the terse, cumulative record.
 
+## [6.0.1] — 2026-08-09
+
+### Changed
+
+- **Every adapter injects the full `using-sdlc-skills` body at session start, not a pointer to it.** A pointer costs ~90 tokens but buys only a *request* that the agent spend a discretionary tool call loading the router — and a discretionary call gets skipped, observed on exactly the task the router governs. The body costs ~1,500 approx tokens per context epoch and leaves nothing to skip. The text is read from `skills/common/using-sdlc-skills/SKILL.md` at runtime, never copied into an adapter, so editing the skill cannot silently stop shipping it.
+- **Codex hooks ship inside the plugin** (`plugins/sdlc-skills/hooks/hooks.json`, declared as `"hooks": "./hooks/hooks.json"`) and resolve the injector through `$PLUGIN_ROOT`, because hooks run with the *session* working directory. A hooks file at the repository root is outside the plugin root, so an install would never load it. Two defects surfaced by executing the adapters rather than reading them: Codex was being sent the top-level `additionalContext` envelope instead of the nested `hookSpecificOutput` one it requires, and the injector hard-coded the phase-nested skill path, which resolved in this repository and nowhere anyone installs — it now handles the flat mirror layout too.
+- **Kimi declares `PostCompact` re-injection.** Documentation-based, not verified live — there is no Kimi CLI in the environment that produced it, and `docs/sdlc-skills/harness-support.md` says so.
+- **`dispatching-parallel-agents` names the uncallable-dispatch failure.** The receipt gate now requires an unavailable dispatch action to be reported as NOT dispatched, naming the action attempted and what the environment needs to make it callable, so the blocker is fixable rather than mysterious. `harness-support.md` binds the action per adapter and states that availability is a property of the installed build.
+- **The product is written "SDLC skills" throughout** — the acronym keeps its capitals, "skills" is an ordinary word. The repository had been carrying three spellings at once.
+
+### Added
+
+- **`tests/run-session-start.sh`** — an offline CI gate on what every adapter actually injects: valid JSON in each harness's envelope, the canonical router body present verbatim with frontmatter stripped, escaping that survives the quotes and tables inside it, the echoed event name, and both skill-tree layouts. It executes the Codex plugin's own hook command from an unrelated working directory rather than grepping for it.
+
+### Removed
+
+- **The turn-end Stop nudge, on every adapter.** It re-routed whenever a turn's wording matched a completion word — a cadence, not a boundary — re-spending its full text in a long session, and buying each repetition with an extra model turn because it blocked turn-end. Routing that has to survive a long session belongs in the resident surface, re-applied only where the harness reports context was actually lost.
+- **The pre-edit implementation guard.** It denied a session's first `Write`/`Edit` until `test-driven-development` and `yagni` had fired, and existed to catch the skipped pointer above. With the router resident, the pair led the first code edit unaided in **2 of 3** measured runs of the new `tests/scenarios/behavioral/implementation-entry-routing.sh`. That margin does not buy a hook that denies edits — and it was never the boundary it read as, since a shell heredoc writes code without passing through any Write/Edit tool. A partial gate that reads as a total one is worse than a stated limit.
+
 ## [6.0.0] — 2026-08-07
 
 ### Changed
