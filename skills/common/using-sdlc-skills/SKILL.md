@@ -8,7 +8,7 @@ IF A SKILL MIGHT APPLY, INVOKE IT BEFORE ACTING. Scan the current catalogue;
 choose the skill for this state or, on evidence, none.
 </EXTREMELY-IMPORTANT>
 
-# The Rule of using SDLC Skills
+# The Rule of using SDLC skills
 
 Before any answer or action—including questions or exploration—invoke every
 skill governing the current step. If none fits, say so. Use the configured

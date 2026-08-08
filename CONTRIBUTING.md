@@ -1,4 +1,4 @@
-# Contributing to SDLC Skills
+# Contributing to SDLC skills
 
 The full contributor guide lives in [`CLAUDE.md`](CLAUDE.md) — it is written for humans and agents alike (`AGENTS.md` and `GEMINI.md` symlink to it, so every harness reads the same rules). This file exists so GitHub surfaces the guide where contributors look for it.
 

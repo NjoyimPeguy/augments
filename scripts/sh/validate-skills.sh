@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Structural validator for SDLC Skills.
+# Structural validator for SDLC skills.
 # Enforces the authoring rules in CLAUDE.md across every skill in skills/.
 # Usage: bash scripts/sh/validate-skills.sh   (exit 0 = all pass, 1 = violations)
 

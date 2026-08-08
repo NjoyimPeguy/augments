@@ -91,7 +91,7 @@ read-only `codex exec` reported the six multi-agent tools both with and without
 its conventional repository instructions therefore receives the same contributor
 rules from one source.
 
-## Using SDLC Skills elsewhere
+## Using SDLC skills elsewhere
 
 The skills are Markdown invoked by name. On another harness:
 

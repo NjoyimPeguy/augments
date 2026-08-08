@@ -113,7 +113,7 @@ if [ -n "$fixture_git" ]; then
   ( cd "$workdir" && git init -q -b main 2>/dev/null || { git init -q && git checkout -qb main; }
     printf '# Fixture\n\nA disposable repository for skill-routing probes.\n' > README.md
     git add README.md
-    git -c user.name='SDLC Skills Harness' -c user.email='harness@example.invalid' \
+    git -c user.name='SDLC skills Harness' -c user.email='harness@example.invalid' \
         commit -q -m 'fixture baseline' ) || { echo "fixture repo failed" >&2; exit 2; }
 fi
 
