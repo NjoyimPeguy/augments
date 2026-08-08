@@ -68,24 +68,3 @@ adapter_run_behavioral() { # $1 workdir  $2 opening file  $3 stream
   ( cd "$1" && exec timeout "$timeout_s" env KIMI_CODE_HOME="$harness_home" \
       kimi -p "$(cat "$2")" --output-format stream-json ) < /dev/null > "$3" 2>>"$errlog"
 }
-
-adapter_stop_hook() { printf '%s\n' "$repo/scripts/sh/stop-nudge-kimi.sh"; }
-
-# Kimi's Stop payload carries NO last_assistant_message — only a session_id. The
-# hook recovers the final assistant text from that session's wire log, so a
-# faithful offline test must lay one down and point KIMI_CODE_HOME at it.
-# Must run in the PARENT shell: the export has to reach the hook process, and a
-# pipeline puts each side in its own subshell.
-adapter_stop_setup() {
-  _kimi_stop_home="$(mktemp -d)"
-  export KIMI_CODE_HOME="$_kimi_stop_home"
-  _kimi_wire="$_kimi_stop_home/sessions/wd_fixture/sess_fixture/agents/main"
-  mkdir -p "$_kimi_wire"
-}
-
-adapter_stop_payload() { # $1 stop_hook_active  $2 last assistant message
-  jq -cn --arg m "$2" '{type:"context.append_loop_event",
-                        event:{type:"content.part", part:{type:"text", text:$m}}}' \
-    > "$_kimi_wire/wire.jsonl"
-  jq -cn --argjson a "$1" --arg s 'sess_fixture' '{stop_hook_active:$a, session_id:$s}'
-}

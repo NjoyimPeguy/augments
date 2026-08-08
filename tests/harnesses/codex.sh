@@ -58,6 +58,3 @@ adapter_run_behavioral() { # $1 workdir  $2 opening file  $3 stream
       codex exec --json --skip-git-repo-check -s workspace-write -C "$1" "$prompt" ) \
       < /dev/null > "$3" 2>>"$errlog"
 }
-
-adapter_stop_hook() { printf '%s\n' "$repo/scripts/sh/stop-nudge.sh"; }
-adapter_stop_payload() { jq -cn --argjson a "$1" --arg m "$2" '{stop_hook_active:$a, last_assistant_message:$m}'; }
