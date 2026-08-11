@@ -1,1 +1,0 @@
-Okay, switching gears to something concrete: the checkout integration test fails intermittently, about 1 run in 5, with a timeout. Sort it out.

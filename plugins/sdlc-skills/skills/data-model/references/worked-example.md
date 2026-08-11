@@ -124,29 +124,7 @@ validated.
 - **Editing history** (updating a loan on renewal) → the audit trail silently disappears.
 - **A policy ("five loans") frozen into the schema** → a rule change becomes a migration instead of a config edit.
 
-## Fill-in skeleton for your own model
+## Writing your own model
 
-Actual model records assign stable IDs to every concept, relationship,
-transition, invariant, and mapping; a successor never recycles them.
-
-```text
-Domain: {{one-paragraph description of what is stored and why}}
-
-Entity {{stable-id}} / {{entity-name}} — {{what one row represents, in the domain's language}}
-  - {{attribute}}: {{type}}, {{required|optional}}. {{what null means, if optional}}
-  - {{attribute}}: enum {{allowed-values}}
-
-Relationships
-  - {{entity-a}} {{cardinality}} {{entity-b}}. Owner: {{who controls whose lifecycle}}.
-    On delete: {{cascade | restrict | anonymize}}.
-
-Invariants
-  - {{stable-id}}: {{rule that must always hold}} → enforced by {{constraint | transaction | test | reconciliation}}; owner: {{owner}}
-
-Denormalized / cached
-  - {{copied value}} — source of truth: {{where}}; updated: {{when/where}}; drift caught by: {{check}}
-
-Operational lenses
-  - {{identity | tenancy | ordering | concurrency | retry | retention | compatibility}}:
-    {{risk or explicit reason skipped}}; evaluator: {{command/query/test or future owner}}
-```
+This example shows the rigor, not the format. The section you actually fill in
+and emit is `../assets/data-model-section.md`.

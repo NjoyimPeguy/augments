@@ -1,6 +1,6 @@
 ---
 name: architecture-decisions
-description: Use when making a significant, hard-to-reverse technical decision — a datastore, sync vs async, a framework, a public contract, a security model — to record it as an ADR before building on it. Skip for easily-reversible choices.
+description: "Use when a significant, hard-to-reverse technical choice is being weighed or has just been settled — a datastore, sync vs async, a framework, a public contract, an auth or security model — so it is recorded with its alternatives and consequences before anything is built on it. Fires on should we use X or Y, on a choice made in passing during discussion, and on a request to revisit an old one, even if nobody says ADR or decision record. Skip easily-reversible choices."
 ---
 
 # Architecture Decisions
@@ -14,36 +14,72 @@ Record the decisions you'd regret not being able to explain in six months. An AD
 
 ## Procedure
 
-1. **Name the decision and authority.** State the question, artifact/system
-   scope, forces, and either one accountable decision owner or required
-   approvers plus conflict resolver/decision rule.
-2. **Weigh real options** — at least two — on assumptions, failure limits,
-   disqualifiers, reversal cost, and evidence. Evaluate status quo/defer when
-   viable or record why it is not. Give every assumption stable identity,
-   evidence/state, validation action, owner, expiry/reopen, and failure response.
-3. **Record the proposed choice and rejected alternatives.** The rejection is
-   load-bearing; preserve it rather than silently editing history.
-4. **Record consequences and reversal.** What this commits you to, migration or
-   data consequences, how it could be reversed, and what it closes off.
+`assets/adr-template.md` owns the fields and what each one must contain. Read it
+while drafting; the steps below are the judgements it cannot make for you.
+
+1. **Name the decision and its authority.** State the question, the artifact or
+   system scope, the forces bearing on it, and either one accountable decision
+   owner or the required approvers with a conflict rule.
+
+2. **Weigh at least two real options** on their assumptions, failure limits,
+   disqualifiers, reversal cost, and evidence. Evaluate the status quo, or
+   deferring, wherever that is viable — and record the evidence when it is not.
+
+   Every assumption gets a stable identity and a stated way to be proved wrong;
+   the template's assumptions field names the rest of what it carries.
+
+3. **Record the proposed choice and the rejected alternatives.** The rejection is
+   the load-bearing part — it is what stops a later reader reopening a settled
+   question. Preserve it rather than silently editing history.
+
+4. **Record consequences and reversal:** what this commits you to, its data and
+   migration consequences, how it could be undone, and what it closes off. A
+   decision with only upsides was not examined.
+
 5. **Challenge independently.** A reviewer other than the sole author challenges
-   options, assumptions, consequences, and reversal unless a current independent
-   design review explicitly covers this exact ADR identity. Bind access,
-   artifact controls, attempt/deadline, quiescence, report, and finding
-   disposition as defined in `references/adr-template.md`.
-6. **Persist and present the complete proposal.** Append the immutable
-   `proposed` ADR to `.sdlc-skills/designs/{{YYYY-MM-DD}}-{{topic}}.md` (or the
-   project decision log), preserving other sections.
-7. **Obtain the direct decision.** `proposed` means drafted and unapproved;
-   record accepted/rejected/cancelled externally with trusted exact-version
-   evidence. Praise or momentum does not accept it. Once issued, every normative
-   change creates a proposed successor with an exact delta; the old identity
-   never mutates. An accepted successor inventories and invalidates
-   predecessor-bound consumers until their owners reconcile.
-8. **Track decision and conformance separately.** Acceptance may supersede the
-   prior normative decision; it neither makes the successor `in force` nor
-   proves the old implementation absent. Transition work owns mixed state.
-   Conformance gates `in force`; retirement needs owner action and governed-
-   surface absence. A contradiction reopens every affected artifact owner.
+   the options, assumptions, consequences, and reversal — unless a current
+   independent design review already covers this exact ADR identity. The
+   template's challenge contract binds the access, deadline, quiescence, and
+   finding disposition.
+
+6. **Persist the complete proposal.** Append the immutable `proposed` ADR to
+   `.sdlc-skills/designs/{{YYYY-MM-DD}}-{{topic}}.md`, or the project's decision
+   log, preserving the sections already there.
+
+7. **Present the ADR for decision.** `proposed` means drafted and unapproved.
+   Print exactly this, then stop:
+
+   ```text
+   ADR ready for your decision — {{adr-id}}: {{title}}
+
+   Decision:     {{chosen-option}}
+   Because:      {{rationale}}
+   Rejected:     {{alternatives}}
+   Consequences: {{consequences-and-reversal-cost}}
+
+   1. Accept — this decision stands
+   2. Reject — choose a different option
+   3. Request changes — revise the ADR
+   4. Cancel — stop this work
+
+   Which?
+   ```
+
+   Praise and momentum accept nothing. Record accepted, rejected, or cancelled
+   externally, with trusted exact-version evidence.
+
+   Once issued, the old identity never mutates. A normative change creates a
+   proposed successor with an exact delta, and an accepted successor inventories
+   and invalidates predecessor-bound consumers until their owners reconcile.
+
+8. **Track the decision and its conformance separately.** Acceptance may
+   supersede the prior normative decision, but it neither puts the successor
+   `in force` nor proves the old implementation is gone — the transition work
+   owns that mixed state.
+
+   Conformance is what gates `in force`; retirement needs owner action and the
+   absence of the governed surface. A contradiction between the two reopens
+   every affected artifact owner.
 
 ## Common mistakes
 
@@ -54,4 +90,4 @@ Record the decisions you'd regret not being able to explain in six months. An AD
   in-force ADR was never linked as superseded or retired.
 - Treating “the code now does this” as owner approval or conformance proof.
 
-For a copyable ADR template, a filled example, and common failure patterns, see `references/adr-template.md`.
+For a copyable ADR template, a filled example, and common failure patterns, see `assets/adr-template.md`.

@@ -1,8 +1,25 @@
 #!/usr/bin/env bash
 # Structural validator for the repo-local Kimi Code plugin adapter.
+# Flags and exit codes: --help.
 
 set -uo pipefail
 cd "$(dirname "$0")/../.." || exit 2
+
+case "${1-}" in
+  -h|--help)
+    cat <<'EOF'
+scripts/sh/validate-kimi-plugin.sh — structural gate for the Kimi Code adapter.
+
+Takes no arguments. Checks the Kimi manifest parses, carries only supported
+fields, and that its skill paths resolve to the canonical set.
+
+  --help    this text
+
+Exit codes: 0 the adapter is consistent · 1 violations printed above
+            2 not run from the repo · requires `jq`
+EOF
+    exit 0;;
+esac
 
 fail=0
 err() { printf '  FAIL: %s\n' "$1"; fail=1; }

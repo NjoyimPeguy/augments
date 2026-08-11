@@ -1,6 +1,6 @@
 ---
 name: spec-it
-description: Use when settled intent for a goal or feature needs detailed requirements before design—what it must do, how each is verified, and its assumptions and risks. Captures the WHAT, not the HOW. Skip when requirements already exist or a material decision/approval reply remains pending; interview-me owns that boundary.
+description: "Use when settled intent for a goal or feature needs detailed requirements before design — what it must do, how each requirement is verified, and the assumptions and risks behind it. Fires on write up what this needs to do and what are the acceptance criteria, even if nobody says spec or requirements. Covers what the system must do, not how it is built. Skip when requirements already exist, and skip while a material decision or approval reply is pending."
 ---
 
 # Spec It
@@ -45,19 +45,32 @@ Turn an intent into a requirements spec (SRS): gather and analyze what the softw
    Unresolved material state stays an open decision, never a hidden premise.
 9. **Surface the open questions and risks** — the unresolved ambiguities and requirement-level challenges that could derail the build. Naming them now is the cheapest they'll ever be.
 10. **State what is out of scope** — the requirements you are deliberately *not* covering this round.
-11. **Write an immutable proposed spec** to
-    `.sdlc-skills/specs/{{YYYY-MM-DD}}-{{topic}}.md` (or the user-set path). Record its
-    normative identity, predecessor, external decision-ledger location, and every
-    requirement's real present artifact or future gate/owner. Name one accountable
-    decision owner or the required approvers, conflict resolver, and decision rule.
-12. **Obtain the exact decision on the complete spec.** Record pending/changes-
-    requested/approved/rejected/cancelled/superseded-by-approved identity
-    externally; only approved hands off. Once identity is issued, never mutate
-    it: every normative change creates a proposed successor with a per-ID
-    `added / changed / removed / preserved` delta; a removed requirement needs
-    its owning approval. An approved successor records the downstream artifact
-    inventory bound to its predecessor, invalidates stale bindings externally,
-    and blocks their use until owners revalidate or reconcile them.
+11. **Write the proposed spec** to
+    `.sdlc-skills/specs/{{YYYY-MM-DD}}-{{topic}}.md` (or the user-set path). Open
+    `assets/spec-template.md` and fill it — it carries the identity fields, the
+    requirement table with each requirement's real artifact or future gate and
+    owner, and the decision-owner block. The spec is immutable once its identity
+    is issued.
+12. **Present the spec for decision.** Print exactly this, then stop:
+
+    ```text
+    Spec ready for your decision — {{spec-path}}
+    {{n}} requirements · {{m}} open questions · out of scope: {{excluded}}
+
+    1. Approve — hand off to design
+    2. Request changes — tell me what to revise
+    3. Reject — wrong requirements
+    4. Cancel — stop this work
+
+    Which?
+    ```
+
+    Only one of the four hands off; praise, silence, and a partial reply leave
+    it pending. Record the outcome externally. An issued identity never mutates:
+    a normative change creates a proposed successor carrying a per-ID
+    `added / changed / removed / preserved` delta — removal needs its owning
+    approval — which invalidates stale downstream bindings until owners
+    revalidate or reconcile them.
 
 ## Common mistakes
 

@@ -14,6 +14,21 @@
 set -uo pipefail
 cd "$(dirname "$0")/.." || exit 2
 
+case "${1-}" in
+  -h|--help)
+    cat <<'EOF'
+tests/run-session-start.sh — offline unit check for the session-start injection.
+
+Takes no arguments; runs scripts/sh/session-start.sh under each harness
+envelope and checks the router body arrives as content.
+
+  --help    this text
+
+Exit codes: 0 every check passed · 1 at least one failed · 2 not run from the repo
+EOF
+    exit 0;;
+esac
+
 S=scripts/sh/session-start.sh
 ROUTER=skills/common/using-sdlc-skills/SKILL.md
 fails=0

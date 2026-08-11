@@ -1,4 +1,0 @@
-Audit this existing repository for over-engineering. Identify unnecessary
-abstractions, wrappers, dependencies, and configuration, but do not modify any
-files. Separate justified complexity and uncertain usage from safe
-simplification candidates.

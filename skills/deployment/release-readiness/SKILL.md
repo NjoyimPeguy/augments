@@ -1,14 +1,14 @@
 ---
 name: release-readiness
-description: "Use after integration and before each release promotion verdict—initial canary/stage, expansion, full deployment, publication, or distribution—for services, applications, libraries, packages, CLIs, and artifacts. Skip only work with no releasable or running artifact."
+description: "Use after integration and before each release promotion verdict — initial canary or stage, expansion, full deployment, publication, or distribution — for services, applications, libraries, packages, CLIs, and artifacts. Fires on is this safe to ship, are we ready to release, and can we deploy this, even if nobody says readiness. Skip only work with no releasable or running artifact."
 ---
 
 # Release Readiness
 
 Merged is not releasable. Judge the exact artifact or artifact set that will be
 deployed or distributed, under the release gates and recovery conditions that
-protect its real consumers. This skill decides readiness; it does not perform
-deployment or publication.
+protect its real consumers. This skill decides readiness and puts the promotion
+decision to the user; it does not perform the deployment or publication itself.
 
 ## When to use
 
@@ -18,48 +18,89 @@ deployment or publication.
 
 ## The readiness gate
 
-Use `references/release-candidate.md` and `references/gate-details.md`. Every
-required row is evidenced, not-applicable with rationale, or blocking.
+Work the rows in `assets/release-candidate.md`. Each ends as **evidenced**,
+**not applicable with a rationale**, or **blocking**. When a row needs more than
+a yes, `references/gate-details.md` gives its concrete check and the way it
+silently fails; the row numbers below point into it.
 
-1. **Issue one immutable release-input descriptor.** Bind the exact promotion,
-   source/contracts, expected artifacts and gate cells, review/security inputs,
-   source/live queues, deviations/prior-stage inputs, target/consumer state,
-   effect contracts, and approver rule. Keep later attempts and evidence outside
-   it; never expose secret values.
-2. **Freeze the artifact set.** Through controlled attempts, accept one terminal
-   successful build per required platform/package member from the recorded
-   source; preserve every identity/digest, contents, dependencies, build inputs,
-   provenance, and storage location. Test/promote that set—not a later rebuild.
-3. **Verify the artifacts themselves.** Install/start/load each required member
-   through representative consumer paths and inspect packaging, configuration,
-   migrations, and generated content. Source-tree green cannot substitute for
-   artifact green.
-4. **Run every gate protecting this promotion.** Execute its stable expected
-   inventory through `verifying-completion`; require current differential/
-   acceptance, static/dynamic safety, security, performance/resource,
-   test-inventory, and platform/build-mode evidence. Reconcile migration shards,
-   source/live changes, and every approved omission within the matrix's lag bound.
-5. **Exercise cutover and recovery.** Prove snapshot/high-water catch-up,
-   ordering/idempotency, reconciliation/lag, mixed-version data integrity,
-   retained artifacts, rollback/restoration, and RPO/RTO by observed evidence.
-6. **Prove target readiness.** Verify configuration and secret presence/shape,
-   permissions, capacity, dependency availability, observability, and deploy or
-   publication ordering without exposing secret values.
-7. **Bind rollout control.** Require telemetry, cohorts, thresholds, soak,
-   abort, rollback, and in-flight behavior from the owning assurance,
-   migration, or release policy. Missing policy blocks; readiness does not
-   invent or lower it. Expansion/full release requires observed prior-stage
-   evidence.
-8. **Account for consumers.** Verify compatibility and required communication,
-   release/operator notes, and downstream certification. For libraries/packages,
-   install the packed artifact in a clean representative consumer and verify
-   public API/ABI/schema/runtime/metadata obligations.
-9. **Disposition every deviation.** Record impact, owner, compensating gate,
-   expiry, rollback trigger, and exact approval receipts. Lowering a gate to make
-   the candidate pass creates a new assurance decision; it is not a release fix.
-10. **Issue a promotion-bound verdict.** Bind status to release-input,
-    artifact-set, terminal-evidence, approval, and freshness identities. Recompute
-    every bound input before a decision/action; any drift invalidates both.
+### Fix what is being released
+
+1. **Issue one immutable release-input descriptor.** Name the exact promotion,
+   the source and contracts it comes from, the artifacts and gate cells you
+   expect, and who may approve.
+
+   Attempts and their evidence stay *outside* the descriptor. That is what keeps
+   it a fixed target rather than a record that drifts toward whatever the results
+   turned out to be. Never put secret values in it.
+
+2. **Freeze the artifact set.** Accept one terminal successful build per required
+   platform or package member, from the recorded source, and preserve its
+   identity (gate row 10).
+
+   Everything downstream tests and promotes *that* set — never a later rebuild,
+   however equivalent it looks.
+
+### Judge it
+
+3. **Verify the artifacts themselves.** Install, start, or load each required
+   member through the paths a real consumer uses. A green source tree is not
+   artifact evidence.
+
+4. **Run every gate protecting this promotion** through `verifying-completion`,
+   over its stable expected inventory, and reconcile that inventory against what
+   actually ran (row 11).
+
+5. **Exercise cutover and recovery** by observation rather than design intent —
+   including the RPO/RTO you claim (rows 3 and 13).
+
+6. **Prove the target is ready:** configuration, secrets, capacity,
+   dependencies, and step ordering (row 6). Verify shape and presence without
+   printing values.
+
+7. **Bind rollout control** to the owning assurance, migration, or release
+   policy (rows 5 and 12).
+
+   A missing policy blocks. Readiness does not invent one and does not lower
+   one. Expansion and full release additionally require observed evidence from
+   the prior stage.
+
+8. **Account for consumers** (rows 7, 8, 15). For a library or package, install
+   the packed artifact into a clean representative consumer — publishing is the
+   first place an unusable package becomes visible, and by then it is public.
+
+### Decide
+
+9. **Disposition every deviation** (row 14). Lowering a gate so the candidate
+   passes is a new assurance decision, not a release fix.
+
+10. **Issue a promotion-bound verdict.** Bind it to the release-input,
+    artifact-set, terminal-evidence, approval, and freshness identities, and
+    recompute every one immediately before any decision or action — drift
+    invalidates the verdict and reopens the decision.
+
+11. **Present the release decision.** Readiness is evidence; shipping is the
+    user's call. Print exactly this, then stop:
+
+    ```text
+    Release readiness — {{artifact-set}} → {{target}}
+    Verdict: {{ready | not-ready}}
+
+    Gates:      {{passed}}/{{required}} passing
+    Deviations: {{open-deviations-with-owners}}
+    Rollback:   {{restorable-artifact-and-data-state}}
+
+    1. Promote — you authorize deploying/publishing this exact artifact set
+    2. Hold — do not promote yet
+    3. Cancel — stop this release
+
+    Which?
+    ```
+
+    Nothing is promoted until the user names one. A `ready` verdict, a green
+    board, and an accepted deviation are all *inputs* to that choice, never the
+    choice itself. This skill records the decision; the promotion then runs
+    under its own authorized action contract, never on the strength of a
+    verdict.
 
 ## Hard stops
 

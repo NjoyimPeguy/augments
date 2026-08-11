@@ -1,6 +1,6 @@
 ---
 name: feasibility-check
-description: Use before an accountable owner commits to a project or initiative when achievability under real technical, delivery, operational, security, data, or dependency constraints is uncertain. Produces an evidence-based recommendation, not an autonomous commitment decision. Skip proven or trivially reversible approaches.
+description: "Use before an accountable owner commits to a project or initiative, when whether it can actually be done under real technical, delivery, operational, security, data, or dependency constraints is still uncertain. Fires on can we actually build this, is this realistic by the deadline, and what would it take, even if nobody says feasibility. The commitment itself stays the owner's. Skip proven or trivially reversible approaches."
 ---
 
 # Feasibility Check
@@ -31,22 +31,37 @@ put an evidence-bound recommendation to the accountable owner.
    every go-if condition a stable ID, evaluator/evidence, owner, freshness/expiry,
    state (`pending / satisfied / failed`), and failure/abort response. This is
    advice to the accountable decision maker, not authority to commit the project.
-6. **Write an immutable proposed `## Feasibility` section**, preserving other
-   approved sections, at
-   `.sdlc-skills/briefs/{{YYYY-MM-DD}}-{{topic}}.md` (or the user-set path):
-   dimensions, constraints, risks/evidence/confidence, recommendation, condition
-   contracts, expiry, aborts, owner, normative identity, predecessor, and external
-   condition/decision-ledger location.
-7. **Obtain the direct decision.** Record the exact outcome and scope. A go-if
-   decision does not satisfy conditions: only named evidence/owner moves their
-   external `pending / satisfied / failed` state. Expiry or any bound input,
-   evaluator, evidence, owner, or freshness change invalidates affected condition
-   evidence and reopens the decision. Only current decided-go or decided-go-if
-   with every condition satisfied hands off.
-   Once normative identity is issued, never mutate it: every normative change
-   creates a proposed successor. An approved successor records the downstream
-   artifact inventory bound to its predecessor, invalidates stale bindings
-   externally, and blocks use until owners revalidate or reconcile them.
+6. **Write the proposed `## Feasibility` section** into
+   `.sdlc-skills/briefs/{{YYYY-MM-DD}}-{{topic}}.md` (or the user-set path). Open
+   `assets/feasibility-section.md` and fill it — it carries the dimension rows,
+   the risk and condition contracts, and the identity fields. Preserve the other
+   approved sections; the section is immutable once its identity is issued.
+7. **Present the recommendation for decision.** This is advice; the commitment
+   is the user's. Print exactly this, then stop:
+
+   ```text
+   Feasibility assessed — {{brief-path}}
+   Recommendation: {{go | no-go | go-if}}
+
+   Biggest risks: {{risks-with-confidence}}
+   Conditions:    {{go-if-conditions-with-owners}}
+
+   1. Go — commit to building this
+   2. Go-if — commit once every listed condition is met
+   3. No-go — do not build this
+   4. Cancel — stop this work
+
+   Which?
+   ```
+
+   Nothing hands off until one of the four arrives. A go-if decision does not
+   satisfy its conditions: only the named evidence and owner move their external
+   `pending / satisfied / failed` state, and only a current decided-go, or a
+   decided-go-if with every condition satisfied, hands off. Expiry or any change
+   to a bound input, evaluator, evidence, owner, or freshness invalidates the
+   affected condition evidence and reopens the decision. An issued identity never
+   mutates: a normative change creates a proposed successor that invalidates
+   stale downstream bindings until owners revalidate or reconcile them.
 
 After a direct go/go-if whose conditions are met, route to the actual next need;
 use `scope-it` when the project boundary remains to be drawn.

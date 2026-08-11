@@ -1,6 +1,6 @@
 ---
 name: ui-ux-design
-description: Use when a new or revised user interface still has open flow, state, hierarchy, responsive, accessibility, content, or visual-direction decisions before implementation. Skip backend-only work and exact cosmetic edits whose direction is already decided.
+description: "Use when a new or revised user interface still has open decisions about flow, state, hierarchy, responsive behaviour, accessibility, content, or visual direction, before it is implemented. Fires on design this screen, what should this look like, and how does the user get through this, even if nobody says UX or design. Skip backend-only work, and skip exact cosmetic edits whose direction is already decided."
 ---
 
 # UI/UX Design
@@ -16,35 +16,87 @@ Design the experience and decide its direction before implementation. In an exis
 
 ## Procedure
 
-1. **Read the real context.** Establish the requirements and audience. In an existing project, locate its routes, screens, components, tokens, type, content patterns, preview tooling, responsive and accessibility conventions, and relevant tests. Separate deliberate constraints from inconsistencies the work may address. If the task depends on an existing product but that evidence is unavailable, stop before proposing directions and ask for the repository, preview, screenshots, or system documentation; do not substitute a generic system.
-2. **Frame the experience.** Name the user's situation, the interface's single primary job, the primary affordance, and what success and failure mean.
-3. **Map flows and states.** Write key journeys as *given / when / then* scenarios with entry, completion, escape, and recovery. Cover empty, loading, partial, validation, error, offline, and no-permission states where applicable.
-4. **Set hierarchy and content.** Decide what is primary, secondary, contextual, and deferred on each screen. Use realistic content and the user's vocabulary; keep action names consistent through controls, confirmation, and errors.
-5. **Choose an intentional direction.** For any open visual direction, read [design-quality.md](references/design-quality.md). Define layout, type, color, spacing, shape, imagery, and motion as one product-specific system; do not decorate around an unresolved hierarchy.
-6. **Show alternatives only when seeing helps.** For a spatial, visual, or motion decision, read [visual-decisions.md](references/visual-decisions.md) and compare 2–4 controlled, meaningfully different variants. Keep conceptual requirements and trade-offs in conversation. If feasibility, not preference, is uncertain, invoke `prototyping`.
-7. **Design across conditions.** Specify responsive changes, input methods, keyboard and focus behavior, semantic structure, contrast, reduced motion, content extremes, and localization pressure relevant to the interface.
-   Record every omitted condition family with skip ID, rationale/evidence,
-   owner, expiry/revisit, compensating evaluator, and approval.
-8. **Classify the evidence.** Distinguish observed project fact, user research,
-   usability observation, accessibility or policy constraint, stakeholder
-   preference, and inference. A preference can select a direction; it cannot
-   masquerade as proof that users can complete the flow. Record unresolved
-   usability risks with a future evaluator and owner.
-9. **Compile one immutable proposed whole UI/UX section.** Put context, flows, state matrix,
-   hierarchy, direction, responsive/accessibility behavior, decisions,
-   deviations, and acceptance checks in
-   `.sdlc-skills/designs/{{YYYY-MM-DD}}-{{topic}}.md` (or the user-set location).
-   Preserve approved sections. Record normative identity, predecessor, external
-   decision-ledger location, open risks, stable IDs for flows/states/decisions/
-   checks, per-ID delta, and one accountable decision owner or required
-   approvers, conflict resolver, and decision rule. Piecemeal selections are inputs.
-10. **Obtain the exact decision.** Record lifecycle externally; only approved
-    hands off. Preference, praise, or silence does not authorize planning.
-    Once identity is issued, never mutate it: every normative change creates a
-    successor with `added / changed / removed / preserved` IDs; removal needs
-    owning approval. An approved successor records the downstream artifact
-    inventory bound to its predecessor, invalidates stale bindings externally,
-    and blocks use until owners revalidate or reconcile.
+Each step fills the matching section of `assets/ui-ux-section.md`. Open it now
+and work in it; the steps below are the judgements the template cannot make for
+you.
+
+1. **Read the real context.** Establish the requirements and audience, then, in an
+   existing project, go and find the system that is already there — its routes and
+   screens, its components and tokens, its type and content patterns, its preview
+   tooling, its responsive and accessibility conventions, and its tests.
+
+   Sort what you find into two piles: deliberate constraints you are bound by, and
+   inconsistencies this work may correct. If the task depends on an existing
+   product and that evidence is simply unavailable, stop before proposing any
+   direction and ask for the repository, a preview, screenshots, or the system
+   documentation. Do not substitute a generic system for the one you could not read.
+2. **Frame the experience.** Name the user's situation, the interface's single
+   primary job, the primary affordance that does that job, and what success and
+   failure each look like.
+3. **Map flows and states.** Write the key journeys as *given / when / then*
+   scenarios, each with an entry, a completion, an escape, and a recovery.
+
+   Then cover the states a happy path hides: empty, loading, partial, validation,
+   error, offline, and no-permission, wherever they can occur.
+4. **Set hierarchy and content.** Decide what is primary, secondary, contextual,
+   and deferred on each screen.
+
+   Use realistic content and the user's own vocabulary, and keep an action's name
+   identical through its control, its confirmation, and its errors.
+5. **Choose an intentional direction.** For any open visual direction, read
+   [design-quality.md](references/design-quality.md). Define layout, type, color,
+   spacing, shape, imagery, and motion as one product-specific system — and do not
+   decorate around a hierarchy that is still unresolved.
+6. **Show alternatives only when seeing helps.** For a spatial, visual, or motion
+   decision, read [visual-decisions.md](references/visual-decisions.md) and compare
+   2–4 controlled, meaningfully different variants.
+
+   Conceptual requirements and trade-offs stay in conversation — they are not
+   easier to see. And if what is uncertain is feasibility rather than preference,
+   invoke `prototyping` instead.
+7. **Design across conditions.** The template's *Conditions* table lists the eight
+   families this owes and the fields a skip record carries.
+
+   An interface does not have to answer all eight. It does have to say which ones
+   it is not answering, and leave someone accountable for each — a family dropped
+   without a skip record is one nobody will notice is missing.
+8. **Classify the evidence.** Tag every claim with where it came from, using the
+   template's *Evidence* kinds.
+
+   The tag that carries the weight is stakeholder preference. A preference can
+   select a direction; it cannot masquerade as proof that users can complete the
+   flow. Where a usability risk stays open, record it as open, with a named future
+   evaluator and an owner.
+9. **Compile one immutable proposed whole UI/UX section.** Write the filled
+   template to `.sdlc-skills/designs/{{YYYY-MM-DD}}-{{topic}}.md`, or the
+   user-set location, preserving the sections already approved around it.
+
+   The word doing the work is *whole*. Individually selected screens, a chosen
+   variant, an agreed flow — those are inputs to the section, not the section,
+   and none of them is what gets presented for decision.
+10. **Present the design for decision.** Print exactly this, then stop:
+
+    ```text
+    UI/UX design ready for your decision — {{design-path}}
+
+    Flows: {{flows}} · Direction: {{visual-direction}}
+    Open risks: {{risks}}
+
+    1. Approve — hand off to planning
+    2. Request changes — tell me what to revise
+    3. Reject — wrong direction
+    4. Cancel — stop this work
+
+    Which?
+    ```
+
+    Only one of the four authorizes planning. A preference selects a direction
+    but does not approve the design; praise and silence decide nothing. Record
+    lifecycle externally.
+
+    An issued identity never mutates: a normative change creates a successor with
+    `added / changed / removed / preserved` IDs (removal needs owning approval)
+    that invalidates stale downstream bindings until owners revalidate.
 
 ## Common mistakes
 

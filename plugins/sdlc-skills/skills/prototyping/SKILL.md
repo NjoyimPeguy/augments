@@ -1,6 +1,6 @@
 ---
 name: prototyping
-description: Use when a design or feasibility question is genuinely uncertain and cheaper to answer by building a throwaway than by arguing — a tricky bit of logic, a layout choice, a library's real behaviour. Skip when you already know the answer.
+description: "Use when a design or feasibility question is genuinely uncertain and cheaper to answer by building a throwaway than by arguing about it — a tricky bit of logic, a layout choice, a library's real behaviour. Fires on let's just try it and see, spike this, and quick and dirty, I'll throw it away, even if nobody says prototype. Skip when you already know the answer."
 ---
 
 # Prototyping
@@ -18,12 +18,18 @@ A prototype answers one question and dies. Its only job is to turn an uncertaint
 1. **Pre-register the experiment.** State one question, the falsifiable
    pass/fail observation, the time-box and size-box, and what decision each
    result changes. If these are vague, do not build.
-2. **Set the safety boundary.** Name the workspace and artifact ownership,
-   environment, data class, allowed access/effects, evidence retention/expiry,
-   cleanup owner, exact cleanup targets/effects/recoverability, and the current
-   authority covering both creation and cleanup. Prefer isolated synthetic
-   data. Production-like data, services, traffic, probes, or destructive
-   cleanup require explicit authorization and protections appropriate to risk.
+2. **Set the safety boundary.** Name the workspace and artifacts this probe owns,
+   the environment it runs in, and the class of data it touches. Prefer isolated
+   synthetic data.
+
+   Bind the disposal side before you build anything: what access and effects are
+   allowed, how long the evidence is kept, the exact cleanup targets and how
+   recoverable they are, who owns that cleanup, and the current authority covering
+   both creating this and removing it.
+
+   Production-like data, real services, live traffic, probes against running
+   systems, and destructive cleanup each need explicit authorization and
+   protections proportional to the risk.
 3. **Build the smallest disposable probe.** Add only the driver, fixtures, and
    instrumentation needed to observe the result. No reusable abstraction,
    production integration, or generality kept “for later.”

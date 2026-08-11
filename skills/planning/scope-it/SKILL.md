@@ -1,6 +1,6 @@
 ---
 name: scope-it
-description: "Use after the goals are set and before design — to draw a project's boundary: what's in, what's explicitly out, and the smallest cut that still meets the goal. Skip a single feature: interview-me resolves genuine ambiguity, while spec-it owns detailed feature requirements."
+description: "Use after the goals are set and before design, to draw a project's boundary: what is in, what is explicitly out, and the smallest cut that still meets the goal. Fires on what goes in v1, what should we cut, and this is getting too big, even if nobody says scope. Skip a single feature, unresolved ambiguity about intent, and detailed feature requirements."
 ---
 
 # Scope It
@@ -32,16 +32,35 @@ Scope is decided by what you say no to. An unbounded project never ships — nam
    and expiry/decision point. A hidden project inside “assumes X” is scope.
 6. **Set change rules:** observations that abort this cut, changes material enough
    to reopen approval, and who decides them.
-7. **Write and present an immutable proposed `## Scope` section** without replacing
-   other approved sections at
-   `.sdlc-skills/briefs/{{YYYY-MM-DD}}-{{topic}}.md` (or the user-set path):
-   constraints, preserved invariants, in/out, MVP, assumptions, dependencies,
-   change rules, normative identity, predecessor, and external decision-ledger
-   location. Record every lifecycle outcome externally; only approved hands off.
-   Once identity is issued, never mutate it: every normative change creates a
-   replacement and contradiction reopens owners. An approved successor records
-   the downstream artifact inventory bound to its predecessor, invalidates stale
-   bindings externally, and blocks use until owners revalidate or reconcile them.
+7. **Write the proposed `## Scope` section** into
+   `.sdlc-skills/briefs/{{YYYY-MM-DD}}-{{topic}}.md` (or the user-set path). Open
+   `assets/scope-section.md` and fill it — it carries the constraint, exclusion,
+   assumption, and change-rule tables along with the identity fields. Do not
+   replace the other approved sections; the section is immutable once its
+   identity is issued.
+8. **Present the cut for decision.** Print exactly this, then stop:
+
+   ```text
+   Scope ready for your decision — {{brief-path}}
+
+   In:      {{in-scope}}
+   Out:     {{explicitly-out}}
+   MVP cut: {{thinnest-version}}
+   Assumes: {{assumptions-with-owners}}
+
+   1. Approve — this is the boundary
+   2. Request changes — move something in or out
+   3. Reject — wrong cut
+   4. Cancel — stop this work
+
+   Which?
+   ```
+
+   Only one of the four hands off; praise, constraints, silence, and a partial
+   reply leave it pending. Record every lifecycle outcome externally. Once
+   identity is issued, never mutate it: a normative change creates a replacement,
+   contradiction reopens owners, and an approved successor invalidates stale
+   downstream bindings until owners revalidate or reconcile them.
 
 After approval, route to `spec-it` only when detailed requirements are the next
 missing input; do not impose a phase that is already complete.
