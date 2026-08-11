@@ -11,18 +11,40 @@
 # APPROXIMATED as chars/4 — a portable rough proxy, not an exact count. Use it
 # for relative comparison and drift, not as a billing figure.
 #
-# Usage:
-#   bash scripts/sh/token-budget.sh             # report only, exit 0
-#   bash scripts/sh/token-budget.sh --max 700   # also flag any body over 700 approx-tokens; exit 1 if exceeded
-#                                           # (discipline skills legitimately run large — see writing-skills)
+# Flags and exit codes: --help.
 #
-# CI runs this with --max 1600 (see .github/workflows/validate.yml): the largest
-# body today is ~1550, so the gate catches bloat while leaving discipline skills
-# their headroom. Exceeding it means tighten the skill — or raise the budget in
-# the workflow deliberately, in the same diff, where a reviewer can see it.
+# CI runs this with --max 2000 (see .github/workflows/validate.yml) — the house
+# body target, so the gate flags drift rather than tracking whatever the largest
+# body happens to measure. It sat at 1600 while bodies were written in a
+# telegraphic register; a body that spells its rules out in sentences costs more
+# tokens for the same rules, and a ceiling fitted to the compressed prose would
+# have forbidden decompressing them. Exceeding 2000 means tighten the skill — or
+# raise the budget deliberately, in the same diff, where a reviewer can see it.
+#
+# This is the chars/4 estimator. check-skill.sh scores bodies against the
+# standard's own 5000-token ceiling using words x 1.3; the two numbers are in
+# different units and are not comparable.
 
 set -uo pipefail
 cd "$(dirname "$0")/../.." || exit 2
+
+case "${1-}" in
+  -h|--help)
+    cat <<'EOF'
+scripts/sh/token-budget.sh — approximate context cost of the always-loaded surface.
+
+  --max N   flag any SKILL.md body over N approx-tokens (default: report only)
+  --help    this text
+
+Tokens are approximated as characters/4 — a portable proxy for drift and
+comparison, not a billing figure. Discipline skills legitimately run large; see
+writing-skills before tightening one.
+
+Exit codes: 0 report printed, nothing over --max
+            1 at least one body exceeded --max · 2 not run from the repo
+EOF
+    exit 0;;
+esac
 
 max=0
 [ "${1:-}" = "--max" ] && max="${2:-0}"

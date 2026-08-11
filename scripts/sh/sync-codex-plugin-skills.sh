@@ -9,6 +9,26 @@
 set -euo pipefail
 cd "$(dirname "$0")/../.." || exit 2
 
+case "${1-}" in
+  -h|--help)
+    cat <<'EOF'
+scripts/sh/sync-codex-plugin-skills.sh — rebuild the Codex plugin from canonical sources.
+
+Takes no arguments. Flattens skills/<phase>/<name>/ into the plugin root the
+Codex manifest points at, and copies the session-start injector its hooks run.
+Re-run it after ANY edit under skills/, including scripts/ and assets/ — the
+mirror is a copy, not a link, and a stale one ships silently.
+
+  --help    this text
+
+Destructive by design: it removes the mirrored skill directories before
+rebuilding them. Never hand-edit the mirror.
+
+Exit codes: 0 mirror rebuilt · non-zero a copy step failed
+EOF
+    exit 0;;
+esac
+
 root="plugins/sdlc-skills"
 out="$root/skills"
 mkdir -p "$out"

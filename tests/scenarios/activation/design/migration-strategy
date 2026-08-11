@@ -1,5 +1,0 @@
-We are replacing a large production subsystem while preserving its public
-behavior and stored data. The generated change will span many owners and is too
-large for line-by-line review. Before implementation, define the source facts,
-preserved invariants, translation and partition rules, trial slice, convergence,
-cutover, abort, and rollback contract.

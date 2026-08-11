@@ -1,1 +1,0 @@
-We are starting on the approval workflow engine. Requests move between states based on role-based rules, escalation timers, and delegation. Nothing persists — callers hold the state; we just decide transitions. Before we write any code I want us to get the domain right first.

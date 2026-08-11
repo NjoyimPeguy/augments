@@ -10,24 +10,42 @@
 # It drives `adapter_install`, the same function the live runners use, so it
 # smokes the real path rather than a description of it.
 #
-# Usage: tests/run-plugin-smoke.sh --harness claude-code|codex|kimi-code
+# Flags and exit codes: --help.
 
 set -uo pipefail
 scriptdir="$(cd "$(dirname "$0")" && pwd)"
+harnessdir="$(cd "$(dirname "$0")/harnesses" && pwd)"
 cd "$scriptdir/.." || exit 2
 repo="$PWD"
+
+usage() {
+  cat <<'EOF'
+tests/run-plugin-smoke.sh — do the skills land where this harness looks? No model call.
+
+  --harness NAME    claude-code | codex | kimi-code   (required)
+  --help            this text
+
+Exit codes: 0 every skill on disk was discovered after install
+            1 install succeeded but skills are missing or misplaced
+            2 bad or missing arguments · 3 harness adapter or tooling unavailable
+
+Example:
+  tests/run-plugin-smoke.sh --harness claude-code
+EOF
+}
 
 harness=""
 while [ "$#" -gt 0 ]; do
   case "$1" in
+    -h|--help) usage; exit 0;;
     --harness) harness="$2"; shift 2;;
     *) echo "unknown argument: $1" >&2; exit 2;;
   esac
 done
 [ -n "$harness" ] || { echo "needs --harness claude-code|codex|kimi-code" >&2; exit 2; }
-[ -f "$scriptdir/harnesses/$harness.sh" ] || { echo "no harness adapter: $harness" >&2; exit 2; }
+[ -f "$harnessdir/$harness.sh" ] || { echo "no harness adapter: $harness" >&2; exit 2; }
 command -v jq >/dev/null 2>&1 || { echo "needs \`jq\`" >&2; exit 3; }
-. "$scriptdir/harnesses/$harness.sh"
+. "$harnessdir/$harness.sh"
 adapter_check || exit 3
 
 errlog="$(mktemp)"; harness_home=""; plugin_dir=""
@@ -49,19 +67,33 @@ echo "  ok    install completed"
 root="${harness_home:-$plugin_dir}"
 [ -n "$root" ] || { echo "  FAIL  adapter_install set neither harness_home nor plugin_dir"; exit 1; }
 
-found="$(find "$root" -name SKILL.md 2>/dev/null | wc -l | tr -d ' ')"
+# What this harness reads after an install: the SKILL.md layout it loads, and the
+# manifest that points at it. Both are harness-specific, so they are decided in
+# one place rather than two.
+#
+# `layout` matters more than it looks. A bare `-name SKILL.md` count is not an
+# assertion here: the repo carries the same 34 skills TWICE — phase-nested under
+# `skills/<phase>/<name>/` for Claude Code and Kimi, and flat under
+# `plugins/sdlc-skills/skills/<name>/` for Codex, whose plugin format has no
+# phase level. Counting both reaches 68, which clears a threshold of 34 on the
+# WRONG tree alone, so the check would pass with the tree the harness actually
+# loads entirely missing. That is the one failure it exists to catch. The depth
+# of the glob is what separates them.
+case "$harness" in
+  claude-code) layout='*/skills/*/*/SKILL.md'; manifest='.claude-plugin/plugin.json';;
+  kimi-code)   layout='*/skills/*/*/SKILL.md'; manifest='.kimi-plugin/plugin.json';;
+  # Codex installs only the flat plugin dir, and registers via the marketplace
+  # rather than copying a manifest file we could look for.
+  codex)       layout='*/skills/*/SKILL.md';   manifest='';;
+esac
+
+found="$(find "$root" -path "$layout" 2>/dev/null | wc -l | tr -d ' ')"
 if [ "$found" -ge "$canonical" ]; then
-  echo "  ok    $found SKILL.md discoverable after install"
+  echo "  ok    $found SKILL.md discoverable after install ($layout)"
 else
-  echo "  FAIL  only $found of $canonical skills discoverable under $root"; fails=1
+  echo "  FAIL  only $found of $canonical skills at $layout under $root"; fails=1
 fi
 
-# The manifest this harness reads must exist wherever the install put it.
-case "$harness" in
-  claude-code) manifest='.claude-plugin/plugin.json';;
-  kimi-code)   manifest='.kimi-plugin/plugin.json';;
-  codex)       manifest='';;   # registered via the marketplace, not a copied file
-esac
 if [ -n "$manifest" ]; then
   if find "$root" -path "*/$manifest" 2>/dev/null | grep -q .; then
     echo "  ok    $manifest present after install"

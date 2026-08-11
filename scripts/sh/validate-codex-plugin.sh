@@ -1,8 +1,25 @@
 #!/usr/bin/env bash
 # Structural validator for the repo-local Codex plugin adapter.
+# Flags and exit codes: --help.
 
 set -uo pipefail
 cd "$(dirname "$0")/../.." || exit 2
+
+case "${1-}" in
+  -h|--help)
+    cat <<'EOF'
+scripts/sh/validate-codex-plugin.sh — structural gate for the Codex adapter.
+
+Takes no arguments. Checks the Codex plugin manifest, its marketplace entry,
+and that the flattened skill mirror matches the canonical tree.
+
+  --help    this text
+
+Exit codes: 0 the adapter is consistent · 1 violations printed above
+            2 not run from the repo
+EOF
+    exit 0;;
+esac
 
 fail=0
 err() { printf '  FAIL: %s\n' "$1"; fail=1; }
