@@ -11,7 +11,8 @@ an explicit dependency and one transition owner}}
 **Suggested tier:** {{small | medium | large}} — {{mechanical | logic | design}}
 
 {{For a high-risk transformation, also fill the shard/phase fields from
-`scalable-transformation.md`; do not clone one task file per homogeneous item.}}
+`../references/scalable-transformation.md`; do not clone one task file per
+homogeneous item.}}
 
 ## Change
 

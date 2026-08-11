@@ -4,18 +4,15 @@ A fresh-context reviewer catches assumptions anchored into the author's plan.
 This is mandatory before executing a high-risk transformation plan and optional
 for bounded plans. The reviewer must not be the plan's sole author.
 
-Before review, bind the exact plan version, reviewer identity, allowed artifact
-access, current authority for its worker/provider/storage/egress, and report
-location/lifecycle, including data class, retention/expiry, exact cleanup
-targets/effects/recoverability, cleanup authority, and disposition. A dispatch exists only after
-the callable action returns a nonempty reviewer/job identity; unavailable,
-refused, or empty dispatch leaves review pending and cannot be replaced by
-self-review. Declare a terminal deadline and timeout/cancel owner/action; poll
-only the exact attempt identity. Failure/deadline enters cancellation-requested
-until worker, descendants, and effects are quiescent; quarantine partial output.
-Reassignment creates a linked successor and rejects predecessor late results or
-mutations. The required role completes only with a current successful
-version-bound report whose findings are dispositioned; retain every outcome.
+Before review, bind the exact plan version, the reviewer role ID, allowed
+artifact access, current authority for its worker/provider/storage/egress, and
+the report location. No receipt, no reviewer: an unavailable, refused, or empty
+dispatch leaves the review pending, and self-review cannot stand in for it. Set
+a terminal deadline and a timeout/cancel owner before dispatching, then poll only
+that attempt ID. Quarantine output from any run that did not reach quiescence,
+and reject a late result from a reassigned predecessor. Completion is one
+nonempty report bound to that plan version with every finding dispositioned;
+failed, timed out, and cancelled all stay pending.
 
 Review the **plan**, approved requirements/design, current codebase, and—where
 applicable—the exact migration contract and assurance matrix:
