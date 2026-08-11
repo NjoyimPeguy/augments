@@ -1,6 +1,6 @@
 ---
 name: interview-me
-description: Use when material intent has multiple plausible readings that no owning phase skill can safely elicit, or when a pending material decision received neither an explicit answer nor an explicit cancellation/supersession—praise, constraints, silence, or a partial reply. Answer from the codebase first. Do not displace a skill merely because inputs that its procedure owns are still open.
+description: "Use when material intent has several plausible readings that no owning phase skill can safely settle, or when a pending material decision got neither an explicit answer nor an explicit cancellation — praise, constraints, silence, or a partial reply instead. Fires on a reply that approves of the work without choosing among the options put to the user, even if nobody asks for questions or clarification. Do not displace a skill merely because inputs its own procedure elicits are still open."
 ---
 
 # Interview Me
@@ -37,41 +37,64 @@ skill that owns eliciting the still-open inputs.
 - recommend a default with one line of reasoning.
 
 Prefer yes/no or a small multiple choice and name the accepted answers. Wait for
-a direct answer before the next material decision.
+a direct answer — see *What closes a decision* — before the next material one.
+One question looks like this:
 
-**Information is not authorization.** Praise, agreement with the reasoning, new
-constraints, a partial answer, silence, or discussion of a neighboring choice
-updates the context but leaves the question open. Incorporate it, say the
-decision is still pending, and re-ask. Only an explicit answer, named option, or
-standing default the user granted for this decision class closes it. Approval
-covers only the visible version and named next step; a material revision reopens
-it. Changes requested, rejection, cancellation, or abandonment closes that exact
-decision without approval. Supersession requires an approved replacement.
+```text
+You already use {{library}} for {{concern}} in {{file}}.
 
-When an existing artifact carries the pending decision, write supplied facts or constraints only when current mutation authority covers it.
-Before identity is issued, update the draft; once issued, never mutate it—every normative change creates a new proposed successor naming its predecessor.
-Without mutation authority, present the proposed update and keep the artifact and decision pending.
+For {{decision}}, I'd default to {{recommendation}} — {{one-line reason}}.
 
-The current user-role answer supplies authority for the current transition.
-A persisted `Approval:` field is only a process record: in a fresh context it
-cannot authenticate itself. Require the live answer or a project/harness receipt
-that binds user origin to the exact version; otherwise refresh the decision.
+1. {{option A}}
+2. {{option B}}
+3. Something else — tell me what
+
+Which?
+```
 
 **3. Use each answer to prune.** An answer often settles later questions — drop them. Aim for ~3–6 questions total. If you need more, say why first.
 
 **4. Stop when another question would not change the outcome** and every still-live
 material decision has a direct answer. Do not turn a general “go” into answers to unnamed choices.
 
-**5. Write an immutable proposed alignment brief** (not a spec): goal, decisions
-+ rationale, non-goals, open risks, normative identity, predecessor, and external
-decision-ledger location. Use `references/brief-template.md` at
-`.sdlc-skills/briefs/{{YYYY-MM-DD}}-{{topic}}.md` (or the user-set path), preserving
-other approved sections; a tiny brief may stay inline with its decision record.
+**5. Write an immutable proposed alignment brief** — a brief, not a spec. Fill
+`assets/brief-template.md`; it carries the goal, the decisions and their
+rationale, the non-goals, the open risks, and the identity and ledger fields.
+
+Write it to `.sdlc-skills/briefs/{{YYYY-MM-DD}}-{{topic}}.md`, or the path the
+user set, preserving the sections already approved around it. A tiny brief may
+stay inline alongside its decision record instead.
 
 **6. Present it for direct decision.** Record pending/changes-requested/approved/
 rejected/cancelled/superseded-by-approved identity externally; never mutate the
 proposed brief to mirror state. Only approval re-routes from the precondition this
 brief satisfied—draft authority is not approval and planning is not assumed.
+
+## What closes a decision
+
+**Information is not authorization.** Praise, agreement with the reasoning, new
+constraints, a partial answer, silence, or discussion of a neighboring choice
+updates the context but leaves the question open. Incorporate it, say the
+decision is still pending, and re-ask.
+
+Only an explicit answer, named option, or standing default the user granted for
+this decision class closes it. Approval covers only the visible version and named
+next step; a material revision reopens it. Changes requested, rejection,
+cancellation, or abandonment closes that exact decision without approval.
+Supersession requires an approved replacement.
+
+## When an artifact carries the pending decision
+
+Write supplied facts or constraints into it only when current mutation authority
+covers it. Before identity is issued, update the draft; once issued, never mutate
+it — every normative change creates a new proposed successor naming its
+predecessor. Without mutation authority, present the proposed update and keep the
+artifact and decision pending.
+
+The current user-role answer supplies authority for the current transition. A
+persisted `Approval:` field is only a process record: in a fresh context it
+cannot authenticate itself. Require the live answer or a project/harness receipt
+that binds user origin to the exact version; otherwise refresh the decision.
 
 ## Common mistakes
 

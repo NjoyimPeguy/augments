@@ -1,6 +1,6 @@
 ---
 name: yagni
-description: "Use when behavior-affecting implementation—including configuration—is being written; code is being deleted as unused; scope drifts toward speculative or incomplete delivery; or a proposal needs strict pre-edit challenge. Needed includes accepted behavior, project craft, and inherited preservation, compatibility, safety, operations, rollback, and assurance. A green convention-breaking diff is unfinished. Skip throwaway spikes and nonbehavioral content/configuration."
+description: "Use when code, files, flags, or dependencies are being removed as unused, dead, or legacy; when behavior-affecting implementation, including configuration, is being written or proposed; when scope drifts toward speculative or incomplete delivery; or when a proposal needs a strict pre-edit challenge. Fires on we might need this later and let's make it configurable, even if nobody says scope or YAGNI. Skip throwaway spikes and nonbehavioral content or configuration."
 ---
 
 # YAGNI — build only what's needed, and make it work
@@ -25,20 +25,28 @@ equal guarantees and lifecycle risk.
 
 ## Completion gate
 
-Before the first edit, derive a checklist from accepted contracts and the
-current `coding-standards` exemplar—or nearest analogue. Before ready,
-audit changed lines for its names, structure, idioms, and why-comments. Green
-cannot waive observed convention. Apply standards only in scope; report
-neighboring drift rather than silently migrating it. The full craft checklist,
-the ladder in depth, examples, and carve-outs are in
-`references/yagni-in-depth.md`.
+Before the first edit, derive a checklist of what done will require — from the
+accepted contracts, and from the project's current `coding-standards` exemplar or,
+where there is none, the nearest analogue already in the codebase.
 
-Before choosing a material enduring surface—a dependency, service/process,
-generalized abstraction, public extension/configuration, or verification
-system—or on explicit strict challenge, dispatch
-`references/yagni-challenger.md` read-only. Local choices stay inline.
-`revise`/`decision` block the unchanged proposal; `inconclusive` is not clearance.
-No verdict narrows scope or grants authority.
+Before calling the work ready, read the lines you changed against that checklist:
+its names, its structure, its idioms, and where it explains a non-obvious why. A
+green test run does not waive a convention you can see in the file. Apply the
+standard only inside your own scope — where a neighbour has already drifted,
+report it rather than silently migrating it. `references/yagni-in-depth.md` holds
+the full craft checklist, the ladder worked through in depth, examples, and the
+carve-outs.
+
+Some choices are too enduring to make alone. Before committing to a material
+lasting surface — a new dependency, a service or process, a generalized
+abstraction, a public extension point or configuration knob, a verification
+system — or whenever a strict challenge is explicitly requested, dispatch
+`references/yagni-challenger.md` read-only. Local, easily reversed choices stay
+inline.
+
+A `revise` or `decision` verdict blocks the proposal as it stands, and
+`inconclusive` is not clearance. No verdict it returns narrows the accepted scope
+or grants authority you did not already have.
 
 ## Make the correct path the lazy path
 

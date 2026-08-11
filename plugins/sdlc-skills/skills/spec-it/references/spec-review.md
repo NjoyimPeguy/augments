@@ -5,18 +5,15 @@ one many tasks will depend on. The reviewer must not be the spec's sole author.
 The review is independent of authorship; it does not require a particular
 harness, agent topology, or tool.
 
-Before review, bind the exact spec version, reviewer identity, allowed artifact
-access, current authority for its worker/provider/storage/egress, and report
-location/lifecycle. A dispatched reviewer exists only after
-the callable action returns a nonempty reviewer/job identity; unavailable,
-refused, or empty dispatch leaves review pending and cannot be replaced by
-self-review. Declare a terminal deadline and timeout/cancel owner/action; poll
-only the exact attempt identity until then. Failure/deadline enters
-`cancellation requested` until worker, descendants, and effects reach confirmed
-quiescence; quarantine partial output. Reassignment creates a linked successor
-attempt and every late result/mutation from its predecessor is rejected. Failed,
-timed-out, or cancelled stays pending. Completion requires one nonempty
-version-bound report; never wait indefinitely.
+Before review, bind the exact spec version, the reviewer role ID, allowed
+artifact access, current authority for its worker/provider/storage/egress, and
+the report location. No receipt, no reviewer: an unavailable, refused, or empty
+dispatch leaves the review pending, and self-review cannot stand in for it. Set
+a terminal deadline and a timeout/cancel owner before dispatching, then poll only
+that attempt ID. Quarantine output from any run that did not reach quiescence,
+and reject a late result from a reassigned predecessor. Completion is one
+nonempty report bound to that spec version; failed, timed out, and cancelled all
+stay pending.
 
 This reviews the **requirements** — before anyone designs or builds against them.
 

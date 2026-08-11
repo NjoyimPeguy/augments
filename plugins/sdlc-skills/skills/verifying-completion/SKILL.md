@@ -1,6 +1,6 @@
 ---
 name: verifying-completion
-description: "ALWAYS use before any claim that work is complete, fixed, passing, done, or satisfactory, and before any commit or PR. Also use when evidence may be stale, partial, or bound to another state. No exception; unavailable required gates make the claim pending."
+description: "Use before any claim that work is complete, fixed, passing, done, or satisfactory, and before any commit or PR. Fires on that should do it, it's working now, and all set, even when no formal claim is made. Also use when evidence may be stale, partial, or bound to another state, and when a gate the claim depends on is unavailable."
 ---
 
 # Verifying Completion
@@ -11,65 +11,96 @@ nearby run do not widen that evidence.
 
 ## When to use
 
-- Before any claim that work is complete, fixed, passing, done, merge-ready, or
-  otherwise satisfactory.
-- Before committing or opening a PR.
-- This discipline never scales down; only the required gate set does.
+Every completion claim, every commit, every PR. This discipline never scales
+down; only the required gate set does.
+
+## Available scripts
+
+- **`scripts/state-identity.sh`** — captures the source state a gate runs
+  against, and re-checks it afterwards. Read-only; `--help` documents the fields
+  and exit codes.
 
 ## The gate
 
-1. **Name the exact claim and transition.** Task green, integrated acceptance,
+1. **Reconcile the request inventory first.** List every item the request
+   asked for—the user's message, task contract, or dispatch packet, including
+   items added mid-conversation—and give each an explicit disposition:
+   delivered, pending, blocked, or declined with a reason. Four of five
+   delivered is not done.
+
+2. **Name the exact claim and transition.** Task green, integrated acceptance,
    reviewed candidate, and releasable artifact are different states.
-2. **Resolve the required gate set.** Use the task/plan Evaluators and applicable
-   assurance-matrix cadence. Missing, planned, blocked, or unjustifiably omitted
-   gates make the claim pending.
-3. **Capture state identity.** Record repository/workspace, base and HEAD, a
-   source/working-tree digest covering staged, unstaged, untracked, and relevant
-   ignored paths, plus generated/external gate-input identities, artifact digest,
-   cwd, configuration, environment, platform, build mode, gate version, and
-   controlled data/process/external-effect pre-state.
-4. **Contain and run each required action.** Bind attempt ID, exact environment/
-   data/effects, authority, resources, timeout/kill, cleanup/recovery, and
-   evaluator identity. Sequence overlapping gates; parallelize only disjoint
-   effect boundaries. Run fresh. Timeout/failure is cancellation-requested until
-   process/effect quiescence; quarantine partials. A rerun is a linked successor
-   attempt and rejects predecessor late output. Capture
-   post-state; any unintended mutation invalidates the evidence and must be
-   restored/re-run or surfaced pending. Cache counts only under its gate contract.
-5. **Read and protect raw output.** Record command/action, timestamp, exit
-   status, pass/fail counts, threshold comparison, output/artifact location, and
-   operator. Classify sensitivity and set access, integrity/digest,
-   retention/expiry, exact cleanup targets/effects/recoverability, cleanup
-   authority, and disposition; redact only the presented copy.
-6. **Audit execution completeness.** Reconcile required suites, shards,
-   attempt/lease histories, source-change and live-state queues, platform/build
-   cells, TDD RED/falsification/restoration and unchanged judge, plan
-   done-with-concerns/cancelled/superseded dispositions, and changed/skipped/
-   quarantined/deleted tests/corpora. Aggregate green is red when required work
-   did not run or reconcile.
-7. **Return evidence without changing the candidate.** Use
-   `references/evidence-ledger.md`, but never copy it into a frozen candidate or
-   review workspace. Store it outside that identity or return it directly; keep
-   failures and inconclusive results rather than green-washing them.
-8. **Make only the supported claim.** State what passed, on which identity, and
+
+3. **Resolve the required gate set** from the task/plan Evaluators and the
+   applicable assurance-matrix cadence. Missing, planned, blocked, or
+   unjustifiably omitted gates make the claim pending.
+
+4. **Capture state identity, before the gate runs.**
+
+   ```bash
+   before=$(bash scripts/state-identity.sh --quiet)
+   ```
+
+   That digest is the source the gate is about to read, and `--help` details
+   what it covers. The script sees the source and nothing else. Whatever else *this* gate depends
+   on — generated and external inputs, artifacts, configuration, build mode, gate
+   version, the pre-state of any controlled data, process, or effect — you record
+   yourself, under `State` in `assets/evidence-ledger.md`.
+
+5. **Contain and run each required action.** Bind the attempt to its identity,
+   authority, and effect boundary before it starts, and run fresh; the ledger's
+   `Results` and `Controlled pre/post state` fields name what to bind.
+
+   Sequence overlapping gates, and parallelize only disjoint effect boundaries. A
+   timeout or failure is *cancellation-requested*, not a result, until processes
+   and effects quiesce — quarantine whatever partials it left behind. A rerun is
+   a linked successor attempt and rejects its predecessor's late output. Any
+   unintended mutation invalidates the evidence: restore and re-run, or surface
+   it pending. A cache counts only under its own gate contract.
+
+6. **Read and protect the raw output.** Record the run in the ledger's `Results`
+   row and its handling under `Evidence controls`. Redact only the copy you
+   present.
+
+7. **Audit execution completeness** against the ledger's `Inventory
+   reconciliation` section: what was required to run, against what observably
+   ran. Aggregate green is red when required work did not run or did not
+   reconcile.
+
+8. **Return evidence without changing the candidate** — the ledger's own opening
+   says where it may live. Keep failures and inconclusive results rather than
+   green-washing them.
+
+9. **Make only the supported claim.** State what passed, on which identity, and
    what remains pending. If any required row failed or did not run, do not say
    complete.
 
-Any relevant source, test, configuration, dependency, environment, generated
-artifact, integration, or threshold change invalidates affected evidence. A
-commit with the identical source tree may retain content-check evidence, but
-commit/CI/review gates still bind to their own revision. An authorized checkpoint
-banks work; it does not make it reviewed, merge-ready, or releasable.
+Any change to a gate's inputs invalidates the evidence it produced; the ledger's
+`Invalidation` section is where they are listed. For the source half, check
+rather than recall — immediately after the gate, before any claim:
+
+```bash
+bash scripts/state-identity.sh --compare "$before"
+```
+
+A non-zero exit means the source moved while the gate ran, so the result
+describes a state that no longer exists: rerun it. A zero exit proves only that
+the source held — the other inputs are still yours to reconcile.
+
+A commit with an identical source tree may retain content-check evidence, but
+commit, CI, and review gates bind to their own revision. An authorized
+checkpoint banks work; it does not make it reviewed, merge-ready, or
+releasable.
 
 ## Manual acceptance
 
 When a requirement genuinely needs human judgment, use
-`references/manual-acceptance.md`. Bind every observation to the same candidate
-and environment. An unrun row is pending; the agent cannot self-certify a
-human-owned judgment.
+`references/manual-acceptance.md`. An unrun row is pending, and the agent cannot
+self-certify a human-owned judgment.
 
 ## Hard stops
 
+- Never report done while any requested item lacks a disposition.
 - Never claim a test passes without seeing it pass for the recorded state.
 - Never claim a bug fixed without a reproduction that failed before and passes
   after, with exact restoration/control evidence.
@@ -93,9 +124,11 @@ human-owned judgment.
 | "The summary says all passed" | Reconcile skipped tests, shards, and matrix cells. |
 | "I committed it, so evidence is banked" | A checkpoint is neither review nor integration proof. |
 | "All checks are green, so done" | Green supports only the checks; independent review challenges completeness. |
+| "I did the main thing" | An unstarted item fails no gate; only the request inventory finds it. |
+| "The rest was minor or implied" | Scaling the request down is the requester's call, not yours. |
 
 ## Relationship to plans
 
-Evaluators and assurance matrices define what must run and which promotion each
-gate protects. This skill binds those runs to exact evidence; it does not design
-the battery, review the change, integrate the branch, or decide release.
+Evaluators and assurance matrices define what must run. This skill binds those
+runs to exact evidence; it does not design the battery, review the change,
+integrate the branch, or decide release.
