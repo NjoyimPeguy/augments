@@ -68,7 +68,30 @@ does not vanish for another worker, and is portable because it lives in the
 project rather than one tool's session. Prefer a gate on the output over an
 instruction about the verdict.
 
-This does not make instruction worthless — it makes it the *wrong tool for the verdict* and the *right tool for routing*. Whether the model reaches for the applicable skill at the right moment has no deterministic check behind it (see the next section), so there a firm instruction is the strongest lever there is — and SDLC skills uses one deliberately: the routing stance is non-negotiable by default, because a soft, optional nudge is walked past. The discipline is to keep the two honest and separate — **a firm floor where you have only process; a deterministic gate where you have proof; and never the language of one dressed on the other.**
+This does not make instruction worthless — it makes it the *wrong tool for the
+verdict* and the *right tool for getting the generator to the gate*.
+
+Nothing deterministic checks whether the model reaches for the applicable skill
+at the right moment, or runs the check it is tempted under pressure to skip (see
+the next section). There a firm instruction is the strongest lever available, and
+this library uses it in two places on purpose. The routing stance is
+non-negotiable by default, because a soft, optional nudge is walked past. And a
+discipline skill raises its voice — a hard stop, a red-flag list, a
+rationalization table naming the excuse and its rebuttal — where an agent would
+otherwise talk itself past its own gate. In a discipline skill that emphasis is
+the mechanism, not a lapse.
+
+What emphasis cannot do is settle anything. Nothing becomes true here by being
+said forcefully, so it belongs in bodies, where the temptation is, and stays out
+of descriptions. A description is a trigger: it fires on the plain vocabulary of
+the situation, and shouting at it neither makes a trigger match nor earns back
+the characters it spends. That is a measured result rather than an assumption —
+a full sweep with the imperatives taken back out of the descriptions found the
+skills still firing on their plain triggers.
+
+The discipline is to keep the two honest and separate — **a firm floor where you
+have only process; a deterministic gate where you have proof; and never the
+language of one dressed on the other.**
 
 ## Where there is proof, and where there is only process
 

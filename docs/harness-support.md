@@ -54,10 +54,13 @@ observation-only, and therefore recorded compaction survival as an unfixable
 capability gap. That is no longer accurate: the harness documents `PreCompact`
 and `PostCompact` among its hook events, both able to return context through the
 same `hookSpecificOutput` envelope the other adapters use. The manifest now
-declares a `PostCompact` re-injection on that basis. It is **documentation-based
-and not verified live in this repository** — there is no Kimi CLI in the
-environment that produced it. Treat the row above as a declaration to confirm,
-not as measured support, and re-test it when a CLI is available.
+declares a `PostCompact` re-injection on that basis.
+
+That declaration is **documentation-based and not verified live**. A Kimi CLI is
+now present in this environment and the activation adapter runs through it, so
+the claim is testable and simply untested: nothing here has yet driven a session
+past a real compaction and confirmed the router body came back. Treat the row
+above as a declaration to confirm, not as measured support.
 
 ## Dispatch capability
 
@@ -130,8 +133,11 @@ A full skill-by-harness behavioral matrix is neither deterministic nor a useful
 default. It consumes provider time, produces noisy results, and shifts maintenance
 toward the evaluator instead of the skills.
 
-The shared runners and scenarios are documented in
-[`tests/README.md`](../../tests/README.md).
+The adapter contract is documented in
+[`tests/harnesses/README.md`](../tests/harnesses/README.md). What consumes it
+splits by whether the correct answer is known in advance: gates in
+[`tests/README.md`](../tests/README.md), measurements in
+[`tests/optimizing/README.md`](../tests/optimizing/README.md).
 
 ## No implementation guard
 
@@ -141,7 +147,7 @@ No adapter ships a hook that blocks edits. One did — a pre-edit guard requirin
 It was built when the session-start injection was a skippable pointer, and it
 was the only thing catching the skip. With the router's body resident, the pair
 led the first code edit unaided in 2 of 3 measured runs of
-`tests/scenarios/behavioral/implementation-entry-routing.sh`. A guard that
+`tests/behavioral/implementation-entry-routing.sh`. A guard that
 denies edits is too blunt to keep for the remaining margin, and it was never a
 real boundary: a shell heredoc writes code without touching a Write/Edit tool.
 A partial gate that reads as a total one is worse than a stated limit.

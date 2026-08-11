@@ -16,6 +16,13 @@ on this repository, on exactly the task the router governs. Injecting the body
 costs more per context epoch and removes the step that can be skipped: the
 routing rules are simply present, so there is nothing left to forget.
 
+The router body is one of two resident surfaces, and they do different jobs. The
+other is the descriptions: whichever skill fires, fires because its description
+matched the opening, so a description carries the vocabulary of the situation and
+nothing else. Emphasis has no work to do there — it does not make a trigger match
+— and every character it spends is one not spent on a context that would. Firm
+language goes in the body, which is read only once the skill has been reached.
+
 This is still persuasion applied to a nondeterministic generator. Resident text
 raises the odds that the right skill fires; it cannot prove one fired or that its
 output is correct. A thin live harness smoke measures activation for a particular

@@ -16,11 +16,19 @@ SDLC skills is a cross-platform library of **opt-in engineering skills** for cod
   confidence into its own verdict. Otherwise it defers to contextual judgment,
   and every skill states when to *skip* it so ceremony scales down.
 
+Every skill here is a standard **Agent Skills** skill — a directory holding a
+`SKILL.md` with YAML frontmatter, loadable by any compliant agent, needing no
+bespoke loader or house file format. Where a house rule in this repository
+conflicts with the standard, the standard wins and the house rule is the bug.
+What the standard requires, where the gate enforces it, and where this library
+is deliberately stricter is recorded in
+[`docs/agent-skills-conformance.md`](docs/agent-skills-conformance.md).
+
 The deeper rationale—why claims leave a non-deterministic generator through
 external evidence or decision gates—is in
-[`docs/sdlc-skills/philosophy.md`](docs/sdlc-skills/philosophy.md); when a phase is one
+[`docs/philosophy.md`](docs/philosophy.md); when a phase is one
 skill versus several is in
-[`docs/sdlc-skills/skill-granularity.md`](docs/sdlc-skills/skill-granularity.md).
+[`docs/skill-granularity.md`](docs/skill-granularity.md).
 
 ## The SDLC phases
 
@@ -52,7 +60,7 @@ A skill is invoked as `sdlc-skills:<name>` regardless of which phase folder hold
 | common | `prototyping` | Answer one uncertain design or feasibility question with a throwaway spike, then delete it |
 | common | `zoom-out` | Before changing unfamiliar code, go up a layer and map the relevant modules and their callers in the project's own vocabulary |
 | common | `handoff` | Write a durable, resumable handoff when a session ends — goal, state, decisions, gotchas, and the one concrete next step |
-| common | `using-task-branches` | Establish an owned branch/workspace, proven base and baseline, and isolated runtime state before edits; checkpointing and cleanup remain separate decisions |
+| common | `using-task-branches` | Establish an owned branch/workspace, proven base and baseline, and isolated runtime state before edits, then checkpoint locally as the work goes; integration and cleanup remain separate decisions |
 | common | `dispatching-parallel-agents` | Fan out independent work only with exclusive ownership and isolated state, then inspect raw results and run a combined gate |
 | common | `yagni` | Build exactly the accepted scope—neither speculative additions nor incomplete delivery—and preserve inherited correctness, compatibility, recovery, and assurance commitments |
 | design | `system-architecture` | Design the target system—traceable components, trust/data paths, failure and recovery behavior, operational views, and justified seams |
@@ -81,7 +89,26 @@ Every SDLC phase ships at least one skill, alongside the cross-cutting `common/`
 
 ## Status
 
-Early and growing. All seven SDLC phases — planning, analysis, design, implementation, testing, deployment, and maintenance — now ship at least one working skill, alongside the nine `common` skills (orientation, skill-authoring, scope discipline, and the cross-cutting tools: interviewing, prototyping, zoom-out, handoff, task branches, and parallel dispatch). The repo ships a Claude Code plugin (`.claude-plugin/`, with a SessionStart router injection), a Codex plugin adapter (`plugins/sdlc-skills/`, exposed through `.agents/plugins/marketplace.json`, with bundled session-start hooks), and a Kimi Code plugin (`.kimi-plugin/`, with a session-start router and tool-binding instructions). `AGENTS.md` and `GEMINI.md` symlink to `CLAUDE.md` so a harness that reads its own instructions file gets the same guidance. Because the skills are portable Markdown invoked by name, other harnesses can adopt them — each proven by its own tests when added; see [`docs/sdlc-skills/harness-support.md`](docs/sdlc-skills/harness-support.md).
+Early and growing. All seven SDLC phases — planning, analysis, design,
+implementation, testing, deployment, and maintenance — now ship at least one
+working skill, alongside the nine `common` skills: orientation, skill-authoring,
+scope discipline, and the cross-cutting tools (interviewing, prototyping,
+zoom-out, handoff, task branches, and parallel dispatch).
+
+Three harnesses have adapters:
+
+| Harness | Adapter | Routing support |
+| --- | --- | --- |
+| Claude Code | `.claude-plugin/` | `SessionStart` router injection |
+| Codex CLI | `plugins/sdlc-skills/`, listed in `.agents/plugins/marketplace.json` | bundled session-start hooks |
+| Kimi Code | `.kimi-plugin/` | session-start router and tool-binding instructions |
+
+`AGENTS.md` and `GEMINI.md` symlink to `CLAUDE.md`, so a harness that reads its
+own instructions file gets the same guidance from one source.
+
+Because the skills are portable Markdown invoked by name, other harnesses can
+adopt them — each proven by its own tests when added; see
+[`docs/harness-support.md`](docs/harness-support.md).
 
 Install in Claude Code with `/plugin marketplace add augments-labs/sdlc-skills` then `/plugin install sdlc-skills@augments-labs`. For local Codex development, register this checkout as a marketplace with `codex plugin marketplace add /path/to/sdlc-skills`, then install `sdlc-skills@augments-labs-dev`. Install in Kimi Code with `/plugins install https://github.com/augments-labs/sdlc-skills` (or the `/plugins` manager, Custom tab), then `/reload`.
 
@@ -93,13 +120,42 @@ Every adapter injects the **full `using-sdlc-skills` router body** as session co
 
 It used to inject a ~90-token *pointer* asking the agent to invoke the router before working. That is one discretionary tool call, and a discretionary call can be skipped — it was skipped on this very repository, on exactly the kind of task the router governs. Injecting the body costs ~1,500 approx tokens per context epoch and removes the skippable step: the routing rules are simply resident. The text is read from the canonical skill at runtime, never copied, so editing the skill cannot silently stop shipping it.
 
-No adapter ships a turn-end reminder. One did — a Stop hook that re-routed whenever a turn's wording read as a completion claim — and it is retired: it fired on a cadence rather than a boundary, so in a long session it re-spent its full text over and over and bought each repetition with an extra model turn, for routing the resident skill descriptions and the session-start injection already carry. That injection is re-applied where the harness reports that context was actually lost; that is where a reminder earns its tokens. `scripts/sh/validate-skills.sh` keeps the retired events retired across every adapter.
+No adapter ships a turn-end reminder. One did — a Stop hook that re-routed
+whenever a turn's wording read as a completion claim — and it is retired.
+
+It fired on a cadence rather than a boundary, so in a long session it re-spent
+its full text over and over, and bought each repetition with an extra model
+turn, for routing the resident skill descriptions and the session-start
+injection already carry. The injection is re-applied where the harness reports
+that context was actually lost; that is where a reminder earns its tokens.
+`scripts/sh/validate-skills.sh` keeps the retired events retired across every
+adapter.
 
 On Codex, SDLC skills ships a plugin adapter and local marketplace metadata, and the plugin bundles its own hooks (`plugins/sdlc-skills/hooks/hooks.json`) that run the same injector on `SessionStart` and again on `PostCompact`. The skills install through Codex, durable repo guidance still comes through `AGENTS.md`, and the Codex harness test observes activation by watching the agent read the installed `SKILL.md` file from the plugin cache.
 
-On Kimi Code, SDLC skills ships a plugin manifest (`.kimi-plugin/plugin.json`) whose `sessionStart.skill` loads the `using-sdlc-skills` router into every new and resumed session, and whose `skillInstructions` bind the skills' tool language to Kimi's real tools — including the dispatch action — whenever a plugin skill loads. The manifest points at the canonical phase directories directly — no mirror. It also declares a `PostCompact` hook so the router is re-applied after mid-session compaction; that declaration follows the harness's documented hook events and has not been verified live in this repository — see [`docs/sdlc-skills/harness-support.md`](docs/sdlc-skills/harness-support.md).
+On Kimi Code, SDLC skills ships a plugin manifest (`.kimi-plugin/plugin.json`)
+whose `sessionStart.skill` loads the `using-sdlc-skills` router into every new
+and resumed session, and whose `skillInstructions` bind the skills' tool language
+to Kimi's real tools — including the dispatch action — whenever a plugin skill
+loads. The manifest points at the canonical phase directories directly, with no
+mirror.
 
-The routing is **non-negotiable by default, not a gentle suggestion** where a harness supports it. The discipline behind it — the rationalizations named as signals to check rather than skip, the red-flags, the procedure — lives in the `using-sdlc-skills` skill, and that is exactly the text the adapters inject; `scripts/sh/session-start.sh` reads it from the skill rather than restating it. Changing that injector or its activation policy is behavior-shaping work and must be re-proved. See [`docs/sdlc-skills/activation.md`](docs/sdlc-skills/activation.md) for how routing (firm persuasion) and enforcement (deterministic gates) fit together. Harness hooks are adapter-specific; the skills themselves stay portable Markdown.
+It also declares a `PostCompact` hook so the router is re-applied after
+mid-session compaction. That declaration follows the harness's documented hook
+events and **has not been verified live** in this repository — see
+[`docs/harness-support.md`](docs/harness-support.md).
+
+The routing is **non-negotiable by default, not a gentle suggestion** where a
+harness supports it. The discipline behind it — the rationalizations named as
+signals to check rather than skip, the red-flags, the procedure — lives in the
+`using-sdlc-skills` skill, and that is exactly the text the adapters inject;
+`scripts/sh/session-start.sh` reads it from the skill rather than restating it.
+
+Changing that injector or its activation policy is behavior-shaping work and must
+be re-proved. See [`docs/activation.md`](docs/activation.md)
+for how routing (firm persuasion) and enforcement (deterministic gates) fit
+together. Harness hooks are adapter-specific; the skills themselves stay portable
+Markdown.
 
 ## Acknowledgements
 
