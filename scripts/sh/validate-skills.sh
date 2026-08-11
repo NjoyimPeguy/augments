@@ -1,10 +1,28 @@
 #!/usr/bin/env bash
 # Structural validator for SDLC skills.
 # Enforces the authoring rules in CLAUDE.md across every skill in skills/.
-# Usage: bash scripts/sh/validate-skills.sh   (exit 0 = all pass, 1 = violations)
+# Flags and exit codes: --help.
 
 set -uo pipefail
 cd "$(dirname "$0")/../.." || exit 2
+
+case "${1-}" in
+  -h|--help)
+    cat <<'EOF'
+scripts/sh/validate-skills.sh — structural gate for every skill in skills/.
+
+Takes no arguments. Checks frontmatter shape, line and description budgets,
+directory layout, resolvable reference paths, absent external references and
+vendor model names, and that every skill is registered in each plugin manifest.
+CI runs this on every push and PR.
+
+  --help    this text
+
+Exit codes: 0 every skill passed · 1 violations printed above the summary
+            2 not run from the repo
+EOF
+    exit 0;;
+esac
 
 fail=0
 note() { printf '  %s\n' "$1"; }
@@ -24,31 +42,56 @@ SHADOWED_COMMANDS='^(review|init|compact|clear|help|config|status|commit|test|ru
 mapfile -t skills < <(find skills -name SKILL.md | sort)
 [ ${#skills[@]} -eq 0 ] && { echo "no skills found under skills/"; exit 2; }
 
+# The standard's checks are delegated to the conformance script this library
+# ships (see the per-skill loop). Delegation fails open — a moved or renamed
+# script would produce no findings and every skill would pass — so prove it is
+# there and runnable before trusting a silent result.
+CONFORMANCE=skills/common/writing-skills/scripts/check-skill.sh
+[ -f "$CONFORMANCE" ] || { echo "missing $CONFORMANCE — the standard's checks are delegated to it"; exit 2; }
+bash "$CONFORMANCE" --help >/dev/null 2>&1 || { echo "$CONFORMANCE does not run"; exit 2; }
+
 for skill in "${skills[@]}"; do
   dir=$(dirname "$skill")
   name_dir=$(basename "$dir")
   echo "• $skill"
 
-  # Frontmatter: name + description present.
-  fname=$(awk -F': ' '/^name:/{print $2; exit}' "$skill")
-  fdesc=$(awk '/^description:/{sub(/^description: /,""); print; exit}' "$skill")
-  [ -z "$fname" ] && err "missing frontmatter 'name'"
-  [ -z "$fdesc" ] && err "missing frontmatter 'description'"
+  # What the STANDARD requires — frontmatter shape, name/directory agreement,
+  # the 1024-character description limit, the 500-line and 5000-token body
+  # ceilings, resolvable links, and bundled scripts that answer `--help` — is
+  # checked by the skill-conformance script this library ships, not by a second
+  # copy of those rules here. One implementation means the two cannot disagree,
+  # and it puts the shipped script on the CI path instead of taking its
+  # correctness on trust. Everything below this call is a HOUSE rule the
+  # standard does not cover.
+  # Both severities are surfaced. Reading only `fail` would discard a whole
+  # class of findings — presentation, register, anything the script is confident
+  # enough to flag but not to block on — and discarding them silently is the
+  # same failure mode as delegating to a checker that is not there.
+  while IFS=$'\t' read -r level check detail; do
+    case "$level" in
+      fail) err  "$check: $detail" ;;
+      warn) note "warn: $check: $detail" ;;
+    esac
+  done < <(bash "$CONFORMANCE" "$dir" 2>/dev/null)
 
-  # name must match the directory name.
-  [ -n "$fname" ] && [ "$fname" != "$name_dir" ] && err "name '$fname' != directory '$name_dir'"
+  fname=$(awk -F': ' '/^name:/{print $2; exit}' "$skill")
 
   # name must not shadow a common harness slash command.
   [ -n "$fname" ] && echo "$fname" | grep -qiE "$SHADOWED_COMMANDS" && err "name '$fname' shadows a common harness command — rename to avoid mis-invocation"
 
-  # description length limit.
-  [ "${#fdesc}" -gt 1024 ] && err "description ${#fdesc} chars > 1024"
-
-  # Body length: warn over 80 (ok only for a discipline skill), fail over 120.
+  # House size targets, tighter than the standard's ceilings because many skills
+  # coexist in one session — and only ever warnings.
+  #
+  # The line target was once a hard failure at 120, and that was a mistake with a
+  # visible cost: authors bought line count by dropping articles and verbs until
+  # the prose read as a noun stack. Compression is not concision. A body that
+  # needs 140 clear lines should take them; see docs/agent-skills-conformance.md.
   lines=$(wc -l < "$skill")
-  if   [ "$lines" -gt 120 ]; then err "$lines lines > 120 (too long even for a discipline skill)"
-  elif [ "$lines" -gt 80 ];  then note "warn: $lines lines (>80; acceptable only if a discipline skill)"
-  fi
+  [ "$lines" -gt 200 ] && note "warn: $lines lines (>200; well over the house target — is every line earning its place?)"
+
+  words=$(wc -w < "$skill")
+  tokens=$(( words * 13 / 10 ))
+  [ "$tokens" -gt 2500 ] && note "warn: ~$tokens tokens (>2500; over the house target)"
 
   # (Per-skill triggering records retired — activation is proven by the shared
   # harness-backed runners under tests/, not a static record. See tests/README.md.)
@@ -73,13 +116,50 @@ done
 echo "• skill reference paths resolve"
 if ! bash scripts/sh/validate-skill-reference-paths.sh skills; then fail=1; fi
 
+# Progressive disclosure only works if SKILL.md names the file and says when to
+# open it. A support file nothing links to is dead weight the agent never finds.
+# Both standard support directories are checked: references/ (documentation read
+# on demand) and assets/ (templates the agent fills in).
 echo "• every sibling reference is directly disclosed"
 while IFS= read -r ref; do
   skill_dir="$(dirname "$(dirname "$ref")")"
   skill_file="$skill_dir/SKILL.md"
+  ref_dir="$(basename "$(dirname "$ref")")"
   ref_name="$(basename "$ref")"
-  grep -Fq "references/$ref_name" "$skill_file" ||
+  grep -Fq "$ref_dir/$ref_name" "$skill_file" ||
     err "$ref: not referenced directly from $skill_file"
+done < <(find skills \( -path '*/references/*.md' -o -path '*/assets/*.md' \) -type f | sort)
+
+# That a bundled script is executable and answers `--help` is the standard's
+# rule, already checked per skill above. These two are the house additions: an
+# agent that cannot find the script in SKILL.md never runs it, and a `--help`
+# that omits exit codes leaves the caller unable to branch on the result.
+echo "• every bundled script is disclosed and documents its exit codes"
+while IFS= read -r s; do
+  skill_file="$(dirname "$(dirname "$s")")/SKILL.md"
+  name="$(basename "$s")"
+
+  grep -Fq "scripts/$name" "$skill_file" ||
+    err "$s: not named in $skill_file — an agent cannot run what it never sees"
+  grep -q '^## Available scripts' "$skill_file" ||
+    err "$skill_file: bundles scripts but has no '## Available scripts' section"
+
+  timeout 20 bash "$s" --help 2>/dev/null | grep -qi 'exit code' ||
+    err "$s: --help does not document its exit codes"
+done < <(find skills -path '*/scripts/*' -type f | sort)
+
+# The standard splits support files by what the agent does with them. A template
+# it fills in and emits is a static resource; documentation it reads to decide is
+# not. Keep the two from drifting back together.
+echo "• templates live in assets/, not references/"
+while IFS= read -r ref; do
+  # The file's own opening sentence is the honest classifier: a template tells
+  # the agent to fill or copy it; documentation tells it what to know or check.
+  opening="$(grep -m1 -v '^#\|^$' "$ref")"
+  case "$opening" in
+    [Ff]ill*|[Cc]opy\ this*|[Uu]se\ this\ template*|[Ww]rite\ the\ completed*|[Cc]reate\ one\ row*)
+      err "$ref: opens as a fill-in template — the standard puts document templates in assets/";;
+  esac
 done < <(find skills -path '*/references/*.md' -type f | sort)
 
 # The nudge ships too — and is injected into every session, so a scanner
@@ -164,10 +244,74 @@ distinct=$(printf '%s' "$versions" | sort -u | grep -c .)
 
 # Internal references: any repo-root docs/ or tests/ markdown path named in a
 # shipped or meta file must exist — a broken link ships straight to users.
+#
+# Trigger-eval query sets are excluded, and must be. A query is written to sound
+# like a real request, which means naming real-looking files — "the spec is at
+# docs/invites.md, follow it". Those paths belong to the *hypothetical* project
+# in the query, not to this repository, so requiring them to resolve here would
+# force every query into vague phrasing and destroy the realism the queries exist
+# to provide. Nothing gates their shape; tests/optimizing/README.md says what a
+# set has to contain, and a reader checks it.
+#
+# The query sets fall out of this scan for free, being .json. fixtures.sh does
+# not, and needs naming: it is the file that BUILDS that hypothetical project, so
+# every path it writes is a path in the fixture tree by definition, not a link
+# into this repository.
 echo "• internal references (docs/ and tests/ paths resolve)"
 while IFS=: read -r src ref; do
   [ -f "$ref" ] || err "$src: internal reference '$ref' does not exist"
-done < <(grep -roE '(docs|tests)/[A-Za-z0-9._/-]+\.md' skills docs tests README.md CLAUDE.md | sort -u)
+done < <(grep -roE --include='*.md' --include='*.sh' --exclude='fixtures.sh' \
+           '(docs|tests)/[A-Za-z0-9._/-]+\.md' skills docs tests README.md CLAUDE.md | sort -u)
+
+# Conformance record freshness. docs/agent-skills-conformance.md
+# states how much headroom the library actually has against the standard's
+# ceilings, and how many skills use each directory kind. Those are measurements
+# of this tree, so they rot on any edit — and a conformance record with stale
+# numbers is worse than one with none, because it reads as checked.
+#
+# This compares measurements, not limits. The ceilings themselves (1024, 500,
+# 5000) live in check-skill.sh alone and are deliberately not restated here.
+echo "• conformance record matches the tree"
+CONF_DOC=docs/agent-skills-conformance.md
+if [ ! -f "$CONF_DOC" ]; then
+  err "$CONF_DOC is missing — the conformance record is part of the gate"
+else
+  max_desc=0; max_lines=0; max_tokens=0
+  for skill in skills/*/*/SKILL.md; do
+    fm_end=$(awk 'NR>1 && /^---[[:space:]]*$/{print NR; exit}' "$skill")
+    d=$(awk -v e="${fm_end:-0}" '
+             NR>=e{exit}
+             /^description:/{found=1; sub(/^description:[[:space:]]*/,""); printf "%s", $0; next}
+             found && /^[a-z_-]+:/{exit}
+             found{printf " %s", $0}' "$skill" | sed 's/^"//; s/"$//')
+    [ "${#d}" -gt "$max_desc" ] && max_desc=${#d}
+    l=$(awk -v e="${fm_end:-0}" 'NR>e' "$skill" | wc -l | tr -d ' ')
+    [ "$l" -gt "$max_lines" ] && max_lines=$l
+    w=$(awk -v e="${fm_end:-0}" 'NR>e' "$skill" | wc -w | tr -d ' ')
+    t=$(( w * 13 / 10 ))
+    [ "$t" -gt "$max_tokens" ] && max_tokens=$t
+  done
+  n_refs=$(ls -d skills/*/*/references 2>/dev/null | wc -l | tr -d ' ')
+  n_assets=$(ls -d skills/*/*/assets 2>/dev/null | wc -l | tr -d ' ')
+  n_scripts=$(ls -d skills/*/*/scripts 2>/dev/null | wc -l | tr -d ' ')
+
+  # Each claim is matched by a phrase unique to its row. A phrasing change that
+  # breaks the match fails loudly rather than passing an unchecked number.
+  conf_claim() {  # <label> <actual> <regex with one capture group>
+    got=$(grep -oE "$3" "$CONF_DOC" | head -1 | grep -oE '[0-9]+' | head -1)
+    if [ -z "$got" ]; then
+      err "$CONF_DOC: no '$1' claim found — the gate cannot check it (expected a row matching /$3/)"
+    elif [ "$got" != "$2" ]; then
+      err "$CONF_DOC: states $1 = $got, tree says $2 — update the conformance record"
+    fi
+  }
+  conf_claim "longest description"  "$max_desc"   'longest is [0-9]+ \|'
+  conf_claim "longest body"         "$max_lines"  'longest is [0-9]+ \([0-9]+% of ceiling\)'
+  conf_claim "largest body tokens"  "$max_tokens" 'largest is ~[0-9]+'
+  conf_claim "references/ count"    "$n_refs"     '\| [0-9]+ skills; rubrics'
+  conf_claim "assets/ count"        "$n_assets"   '\| [0-9]+ skills; every fill-in template'
+  conf_claim "scripts/ count"       "$n_scripts"  '\| [0-9]+ skills — see below'
+fi
 
 echo ""
 if [ "$fail" -eq 0 ]; then echo "✓ all skills pass structural validation"; else echo "✗ violations found"; fi

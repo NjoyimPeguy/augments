@@ -1,5 +1,0 @@
-The release candidate's snapshots pass, but before I say its interface looks
-and behaves right, drive the integrated running UI through its empty, loading,
-error, overflow, and no-permission states at the supported viewport sizes and
-themes. Capture inspectable frames, record any visual defects, and give me an
-evidence-backed verdict for this exact candidate.

@@ -1,6 +1,6 @@
 ---
 name: executing-plans
-description: "Use when asked to execute or resume a multi-task plan directory, including when its claimed approval, version, mode, or entry state must first be verified. High-risk target work remains blocked until approved current migration and assurance contracts plus passed entry gates exist; directly authorized gate-enabling tasks may consume their exact proposed gate contract but cannot edit target shards. Skip a single task."
+description: "Use when asked to execute, run, continue, or resume a multi-task plan directory, including when its claimed approval, version, mode, or entry state has to be verified first. Fires on pick up where we left off and work through the remaining tasks when a plan directory is what holds them, even if nobody says execute the plan. Skip a single task."
 ---
 
 # Executing Plans
@@ -9,72 +9,120 @@ Advance only through real state transitions; nothing is done until its evaluator
 
 ## Before you start
 
-1. **Verify authority and lineage.** Match exact plan/mode and complete approver
-   rule to a current user-role answer or scoped standing receipt. Confirm every
-   predecessor consumer is reconciled; the plan cannot authenticate itself.
-2. **Refresh the workspace.** Confirm branch/workspace ownership, HEAD, intended
-   base, status, baseline, and runtime identities through
-   `using-task-branches`. Never infer them from the plan.
-3. **Audit executability.** Check stable task IDs/delta, current bound inputs,
-   dependencies, Consumes/Produces, exclusive files/effects, evaluator identity/
-   edit authority and RED/falsification, trace, review, concerns rule, and
-   Acceptance. Stop on a contradiction before changing code.
-4. **Select the execution form.** Bounded tasks use the loop below. A plan with
-   phases or machine-derived shards also loads `references/phase-queues.md`;
-   never flatten a queue into copied tasks. Directly authorized gate prerequisites
-   may consume their exact proposal before phase entry but cannot modify target
-   shards, approve the contract, or satisfy target entry. Target tasks require
-   approved current migration and assurance contracts plus passed entry gates.
+1. **Verify authority and lineage.** Match the exact plan version, mode, and
+   complete approver rule to a current user-role answer or a scoped standing
+   receipt, and confirm every predecessor consumer is reconciled. A plan cannot
+   authenticate itself.
+
+   An approved plan carrying no bound mode is not a licence to pick one. Print
+   exactly this, then stop:
+
+   ```text
+   Plan approved but no execution mode is recorded — {{plan-path}}
+
+   1. Inline — I run every task in this session
+   2. Delegated — one fresh subagent per task, in sequence, each
+      starting cold from its own task contract
+
+   Which?
+   ```
+
+   Offer delegated only where the harness provides a subagent action; otherwise
+   say so and execute inline. Task independence is not a mode decision.
+
+2. **Refresh the workspace** through `using-task-branches`. Establish who owns
+   it, what HEAD and the intended base actually are, whether the tree is clean,
+   what the baseline gate returns, and which runtime identities are live. Read
+   all of that from the workspace itself; never infer it from what the plan says
+   should be true.
+
+3. **Audit executability before you change any code.** Read each task against the
+   contract fields the `writing-plans` task template defines — the stable IDs and
+   their successor delta, the inputs the task is currently bound to, its
+   dependencies, its interface, the files and effects it exclusively owns, the
+   evaluator's identity and whether this task may edit it, the trace, the review
+   it owes, the concerns rule, and plan Acceptance.
+
+   Any field that contradicts another stops execution here rather than halfway
+   through the loop: a **Consumes** with no matching **Produces**, a dependency on
+   a cancelled task, an evaluator the task is also asked to rewrite.
+
+4. **Select the execution form.** Bounded tasks use the loop below; a plan with
+   phases or machine-derived shards also loads `references/phase-queues.md`, and
+   a queue is never flattened into copied tasks.
+
+   High-risk target tasks stay blocked until approved current migration and
+   assurance contracts exist and their entry gates have passed. A directly
+   authorized gate prerequisite may consume its exact proposal before phase
+   entry, but it cannot modify target shards, approve the contract, or satisfy
+   entry on that contract's behalf.
 
 ## Bounded task loop
 
-Honor `Depends on` and the directly approved execution mode. Changing between
-inline and delegated execution requires a direct mode decision; independence
-alone does not override it.
+Honor `Depends on` and the directly approved execution mode. Switching between
+inline and delegated execution needs a direct mode decision; task independence
+alone does not override one.
 
-1. Load the task, exact referenced inputs/interfaces/evaluator, and relevant
-   identity-bound learnings from the external execution ledger.
-2. Record stable task/attempt ID, allowed prior state, exact pre-task revision/
-   effects, external task state, evaluator identity, and expected observable.
-3. Execute under every discipline that governs the action now. For delegated
-   work use `references/subagent-dispatch.md`; for approved parallel work,
-   `dispatching-parallel-agents` owns isolation and reconciliation.
-4. Inspect the result against the task's file/scope contract. For an offload,
-   inspect its raw diff, authorized checkpoints (or none), result revision, and
-   evaluator output rather than accepting a summary.
-5. Invoke `verifying-completion` to run the task Evaluator in the authoritative
-   workspace and bind its output to the exact state. That skill owns the
-   evidence ledger; this skill owns the task-state transition.
-6. Append `done` only after the evaluator passes on the accepted state. A concern
-   cannot count toward any gate until proved non-blocking or accepted under its
-   exact owning deviation/exclusion and compensating gate.
-7. Re-run a combined gate after integrating parallel results.
+1. **Load** the task, its exact referenced inputs, interfaces, and evaluator,
+   plus the identity-bound learnings already in the external execution ledger.
+
+2. **Record what this attempt is bound to** before touching anything: the stable
+   task and attempt ID, the prior state you were allowed to start from, the exact
+   pre-task revision and effects, the current external task state, the
+   evaluator's identity, and the observable you expect to change. An attempt with
+   no recorded starting point cannot be reconciled afterwards.
+
+3. **Execute under every discipline that governs the action now.** Delegated work
+   goes through `references/subagent-dispatch.md`; approved parallel work hands
+   isolation and reconciliation to `dispatching-parallel-agents`.
+
+4. **Inspect the result** against the task's file and scope contract. For an
+   offload that means its raw diff, its authorized checkpoints (or none), its
+   result revision, and its evaluator output — never its summary.
+
+5. **Invoke `verifying-completion`** to run the task Evaluator in the
+   authoritative workspace and bind the output to that exact state. That skill
+   owns the evidence ledger; this one owns the task-state transition.
+
+6. **Append `done` only after the evaluator passes on the accepted state.** A
+   concern counts toward no gate until it is proved non-blocking, or accepted
+   under its exact owning deviation or exclusion and a compensating gate.
+
+7. **Re-run a combined gate** after integrating parallel results.
 
 ## Outcomes and circuit breaker
 
-The append-only ledger uses **done**, **done with concerns**, **blocked**,
-**needs context**, **cancelled**, or **superseded**; cancellation/supersession
-needs its owning approved plan decision and never means done.
+The append-only ledger records **done**, **done with concerns**, **blocked**,
+**needs context**, **cancelled**, or **superseded**. Cancellation and
+supersession each need their owning approved plan decision, and neither means
+done.
 
-Every attempt has identity and terminal evidence. Failure/deadline enters
-**cancellation requested** until worker, descendants, and effects are quiescent;
-quarantine partials; linked retries reject late results/mutations. Classify
-repeated failures under a stable class ID and raw evidence.
+Task `done` means evaluator-accepted inside the plan — not integrated, not
+merge-ready. Required task review and final-candidate review remain separate
+gates.
 
-Task `done` means evaluator-accepted inside the plan, not integrated or merge-ready; required task review and final-candidate review remain separate gates.
+Every attempt carries an identity and terminal evidence. A failure or deadline
+enters **cancellation requested** and stays there until the worker, its
+descendants, and its effects are quiescent. Quarantine the partials, and let a
+linked retry reject any late result or mutation.
 
-Three non-converging terminal attempts in one stable class stop the task. High-
-risk contracts own thresholds/pause scope; never patch shard symptoms separately.
+Classify repeated failures under a stable class ID with raw evidence. Three
+non-converging terminal attempts in one class stop the task. High-risk contracts
+own their own thresholds and pause scope — never patch shard symptoms one at a
+time.
 
 ## Resume and plan changes
 
-On resume, refresh plan/decision state, workspace/base/HEAD/dirty state, ledgers/
-queues, contract versions, and evidence freshness; never infer progress by order.
+On resume, re-read the state rather than trusting it. Refresh the plan and its
+decision state, the workspace with its base, HEAD, and dirty state, the external
+ledgers and queues, the contract versions, and whether the evidence is still
+fresh. Never infer progress from task order — a later task file existing says
+nothing about an earlier task having passed.
 
-When reality differs, update its owner. Every normative scope, interface,
-evaluator, phase, ownership, cutover, rollback, decommission, or mode change
-requires a successor and direct reapproval.
+When reality differs from the plan, update the owner of what changed. Every
+normative change — scope, interface, evaluator, phase, ownership, cutover,
+rollback, decommission, or mode — requires a successor and direct reapproval.
 Runtime attempts, leases, and outcomes update only their external ledgers.
 
-Run plan Acceptance on the exact integrated revision, then re-route; review,
-branch integration, and release retain their own gates and decisions.
+Run plan Acceptance on the exact integrated revision, then re-route. Review,
+branch integration, and release each retain their own gates and decisions.

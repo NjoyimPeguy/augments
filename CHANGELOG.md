@@ -2,6 +2,23 @@
 
 Notable changes to SDLC skills, newest first. Versions follow semantic versioning; the narrative for each release lives on its release page — this file is the terse, cumulative record.
 
+## [6.0.2] — 2026-08-12
+
+### Changed
+
+- **Every skill description is a trigger, not a summary.** Each states the situation you are in rather than what the skill does inside, so a skill fires on the words you would actually use — and a matched description no longer invites an agent to follow the summary and skip the body.
+- **Fill-in templates moved from `references/` to `assets/`**, the split the Agent Skills standard defines. Skills are still invoked by name; only direct paths to those sibling files change.
+- **Skill bodies are written as sentences again.** Several had been compressed into noun stacks to fit a house line limit stricter than the standard's, which is now a target rather than a wall.
+
+### Added
+
+- **Three skills bundle a script** where every run had been re-deriving the same facts by hand: branch state in `finishing-a-branch`, source identity in `verifying-completion`, and conformance in `writing-skills` — whose `check-skill.sh` checks any standard skill directory, including one outside this repository.
+- **A conformance record** (`docs/agent-skills-conformance.md`) stating what the Agent Skills standard requires and where this library is deliberately stricter. The gate re-measures its numbers against the tree, so the record cannot drift into a claim that merely reads as checked.
+
+### Removed
+
+- **The activation gate and `validate-trigger-evals.sh`.** They failed a merge on a description's trigger rate, which is a tuning measurement rather than a pass mark. Those corpora now live under `tests/optimizing/` and stay out of CI.
+
 ## [6.0.1] — 2026-08-09
 
 ### Changed

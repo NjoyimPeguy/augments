@@ -22,10 +22,36 @@ Nobody bumps in a contribution PR. Versioning is decided once per release, by th
 
 1. Decide the tier (above) for everything on `dev` since the last tag.
 2. Bump the version in all four manifests: `.claude-plugin/plugin.json`, `.claude-plugin/marketplace.json`, `.kimi-plugin/plugin.json`, and `plugins/sdlc-skills/.codex-plugin/plugin.json`. The gate fails if they disagree, so a half-done bump cannot ship.
-3. Add the `CHANGELOG.md` entry — terse, newest-first; the narrative belongs on the release page.
+3. Add the `CHANGELOG.md` entry — terse, newest-first (*Writing the changelog*, below).
 4. Run the gate: `bash scripts/sh/validate-skills.sh`.
 5. Commit on `dev` as `chore(release): vX.Y.Z — <one-line theme>`.
 6. Open the `dev` → `main` PR and merge it as a merge commit, so the individual fixes stay in history.
 7. Tag `vX.Y.Z` on `main` and create the release: title `SDLC skills vX.Y.Z`, notes carrying the narrative — the field report that drove the change, what changed, and the proof records under `tests/`.
 
-If you are an AI agent asked to release: follow this file exactly, and if the tier is genuinely ambiguous, ask the maintainer rather than inventing a number.
+## Writing the changelog
+
+An entry answers two questions and stops: **what changed**, and **why someone
+using this library should care**. One or two sentences. A reader who wants the
+investigation behind it follows the release link, which is what that page is for.
+
+`CHANGELOG.md` has drifted from that before: across 110 entries the median is 273
+characters and the longest is 936 — most of a whole skill description spent on a
+single bullet. Cut these on sight:
+
+- **The diff, restated.** Listing the files, functions, and flags that moved
+  duplicates something git already stores exactly, and more precisely.
+- **The reasoning that produced the change** — what was tried, what was measured,
+  what was rejected, what the counterargument was. Release-page material, all of
+  it.
+- **The rebuttal to an objection no changelog reader is raising.**
+- **Context repeated per bullet.** Under one version heading, say it once.
+
+Get shorter by **cutting content, never by compressing prose** — the same rule
+that governs skill bodies, for the same reason, and it fails the same way when
+ignored.
+
+An entry that resists cutting to two sentences is usually two entries.
+
+## If you are an AI agent asked to release
+
+Follow this file exactly, and if the tier is genuinely ambiguous, ask the maintainer rather than inventing a number.

@@ -1,6 +1,6 @@
 ---
 name: define-goals
-description: Use at the start of a new project or initiative—before scoping or building—to elicit and pin down its objective, stakeholders, success measures, and guardrails. Those missing goal inputs are this skill's work, not a reason to interview first. Skip a single feature and a still-pending named decision or approval reply.
+description: "Use at the start of a new project or initiative, before scoping or building, to pin down what it is for: the objective, the stakeholders, how success is measured, and the guardrails. Fires on we want to build X with no stated objective, even if nobody says goals. A vague or missing objective is the reason to use this, not a reason to go elsewhere first. Skip a single feature, and skip while a named decision or approval reply is still pending."
 ---
 
 # Define Goals
@@ -31,20 +31,35 @@ A project without a clear goal ships features no one needed. Before scope or des
    safety, accessibility, cost, trust—and the observation that would mean the
    initiative failed even if its primary metric rose.
 5. **State the value in one sentence** — the elevator version.
-6. **Write an immutable proposed `## Goals` section**, preserving other approved
-   sections, at
+6. **Write the proposed `## Goals` section** into
    `.sdlc-skills/briefs/{{YYYY-MM-DD}}-{{topic}}.md` (another path only if the user
-   set one): objective, stakeholders, outcomes, baselines/targets/horizons,
-   sources/owners, guardrails, failure criteria, value, normative identity,
-   predecessor, and external decision-ledger location.
-7. **Present the complete goal set for direct decision.** Record the exact
-   pending/changes-requested/approved/rejected/cancelled/superseded-by-approved
-   state externally; only approved hands off. Never mutate the normative section
-   to mirror lifecycle. Once identity is issued, never mutate it: every normative
-   change creates a replacement and reopens the required owners. An approved
-   successor records the downstream artifact inventory bound to its predecessor,
-   invalidates stale bindings externally, and blocks their use until each owner
-   revalidates or reconciles it to the new identity.
+   set one). Open `assets/goals-section.md` and fill it — it carries every field
+   the section owes, including its normative identity and where the decision
+   ledger lives. Preserve the other approved sections, and treat the section as
+   immutable once its identity is issued.
+7. **Present the goal set for decision.** Print exactly this, then stop:
+
+   ```text
+   Goals ready for your decision — {{brief-path}}
+
+   Objective:  {{objective}}
+   Success:    {{metric}} {{baseline}} → {{target}} by {{horizon}}
+   Guardrails: {{must-not-degrade}}
+
+   1. Approve — these are the goals
+   2. Request changes — tell me what to revise
+   3. Reject — wrong objective
+   4. Cancel — stop this work
+
+   Which?
+   ```
+
+   Nothing hands off until one of the four arrives; praise, constraints,
+   silence, and a partial reply leave it pending. Record the outcome externally
+   and never mutate the normative section to mirror lifecycle. Once identity is
+   issued, never mutate it: a normative change creates a replacement that
+   reopens the required owners, and an approved successor invalidates stale
+   downstream bindings until each owner revalidates or reconciles them.
 
 After approval, route from the actual next uncertainty: use `feasibility-check`
 only if viability is unresolved; use `scope-it` when the boundary is next.

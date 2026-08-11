@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
-# Kimi Code CLI adapter. Sourced by the dispatchers in tests/; never executed.
+# Kimi Code CLI adapter. Sourced by the runners under tests/ — behavioural,
+# plugin-smoke, and trigger-eval — never executed directly.
 
 adapter_name='kimi-code'
 source_kimi_home="${KIMI_CODE_HOME:-${HOME:-}/.kimi-code}"
@@ -10,7 +11,7 @@ adapter_check() {
 
 # Isolated home with this checkout as a managed plugin — the layout
 # `kimi /plugins install` produces (plugins/managed/sdlc-skills + installed.json).
-adapter_install() { # $1 plugin source
+adapter_install() { # $1 plugin source ("" = NONE arm, install nothing)
   harness_home="$(mktemp -d)"
   local f d
   for f in config.toml device_id; do
@@ -19,6 +20,8 @@ adapter_install() { # $1 plugin source
   for d in credentials oauth; do
     [ -d "$source_kimi_home/$d" ] && cp -r "$source_kimi_home/$d" "$harness_home/$d"
   done
+  # NONE arm: an isolated home with credentials and no plugins/ tree at all.
+  [ -n "$1" ] || return 0
   local managed="$harness_home/plugins/managed/sdlc-skills"
   mkdir -p "$managed"
   ( cd "$1" && tar --exclude=.git --exclude=.sdlc-skills -cf - . ) | tar -xf - -C "$managed"
@@ -41,6 +44,17 @@ adapter_install() { # $1 plugin source
      }]}' > "$harness_home/plugins/installed.json" || return 2
 }
 
+# DID IT RUN? kimi emits no terminal record, so the signal is whether the model
+# spoke at all: a real run carries `assistant` records, and a run that died
+# before reaching the model carries only the opening `meta` line. Observed on
+# 0.34.0 — a full 20-query eval returned one line per call,
+# {"role":"meta","type":"system.version",...}, with stderr `failed to run
+# prompt: internal: The provided authorization grant is invalid`, and scored as
+# 20 clean misses because nothing here noticed the provider never answered.
+adapter_ran() {
+  jq -e -s 'any(.[]; .role == "assistant")' >/dev/null 2>&1 <"$1"
+}
+
 adapter_chain() {
   jq -rc 'select(.role == "assistant")
           | .tool_calls[]?
@@ -57,6 +71,16 @@ adapter_prompt_suffix() { :; }
 # both approval flags are REJECTED in prompt mode ("Cannot combine --prompt with
 # --auto" / "...--yolo"). Verified by having a throwaway `-p` run create a file
 # with no flags at all — do not add one back thinking it grants write access.
+#
+# The consequence, stated rather than left implicit: this is the one adapter
+# whose activation runs are NOT restricted to reading. The other two are —
+# claude-code pins the available tools, codex sandboxes with `-s read-only` —
+# and kimi publishes no flag that does either; every switch it offers grants
+# permission rather than withholding it. Containment is therefore positional
+# only: the caller runs each activation in a disposable `mktemp -d` and removes
+# it afterwards, so an ordinary relative write is thrown away, while a write to
+# an absolute path outside that directory is not prevented by anything here.
+# Do not point this adapter at a directory whose contents matter.
 adapter_run_activation() { # $1 workdir  $2 prompt  $3 stream
   ( cd "$1" && exec timeout "$timeout_s" env KIMI_CODE_HOME="$harness_home" \
       kimi -p "$2" --output-format stream-json ) < /dev/null > "$3" 2>>"$errlog"
@@ -68,3 +92,11 @@ adapter_run_behavioral() { # $1 workdir  $2 opening file  $3 stream
   ( cd "$1" && exec timeout "$timeout_s" env KIMI_CODE_HOME="$harness_home" \
       kimi -p "$(cat "$2")" --output-format stream-json ) < /dev/null > "$3" 2>>"$errlog"
 }
+
+# NO adapter_usage here, and that is a finding rather than an omission. On kimi
+# 0.34.0 the only prompt-mode formats are `text` and `stream-json`, and a real
+# stream-json run emits just `meta` (version, resume hint) and `assistant`
+# events — no usage object, no token counts, no cost, and no flag that adds
+# them. So run-behavioral.sh reports this harness's wall clock and states that
+# tokens are unreported, which is true, instead of inventing a number. Add the
+# function if a later version starts reporting one — read it off a real stream.

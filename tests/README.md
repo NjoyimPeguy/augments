@@ -1,122 +1,64 @@
 # tests/
 
-The skills are portable Markdown, but **whether one actually fires, and whether
-it changes what gets built, are facts about a specific harness**. Live runners
-therefore drive a real CLI. Small offline tests cover deterministic detector,
-hook, and install logic. The portable structural gate lives in `scripts/sh/`
-and runs in CI; live provider tests do not.
+Everything that observes the library actually running. Inside it, one question
+splits the work: **is the correct answer known before the run?**
+
+The runners at this level are **gates** — the answer is known, so red means
+something broke and somebody has to act. Nothing at this level is tuned,
+compared against a previous number, or judged. That is `optimizing/`, one
+directory down, and keeping the two apart is the point of the arrangement.
 
 ## Layout
 
 ```
 tests/
-  run-activation.sh       does the right skill fire?             (1 API call/scenario)
-  run-all-activation.sh   the whole activation set for a harness
-  run-flow.sh             multi-turn sequences, one resumed conversation
-  run-behavioral.sh       does the skill change what gets BUILT? (two arms)
-  run-session-start.sh    the injected router, per envelope       (offline)
-  run-plugin-smoke.sh     install / marketplace mechanics         (offline)
-  harnesses/<name>.sh     ONLY what differs per CLI: install, invoke, detect
+  run-behavioral.sh       does the skill still change what gets BUILT? (live)
+  run-session-start.sh    the injected router, per envelope      (offline)
+  run-plugin-smoke.sh     install / marketplace mechanics        (offline)
   assert.sh               assertion helpers every scenario uses
-  scenarios/
-    activation/<phase>/<skill>   one opening per skill
-    flows/<name>/                multi-turn reproductions (momentum, decay)
-    behavioral/<skill>.sh        fixture + opening + assertions, one file
+  fixtures.sh             the disposable project a live run is pointed at
+  behavioral/             the scenarios, and how to write one
+  harnesses/              ONLY what differs per CLI: install, invoke, detect, cost
+  optimizing/             MEASUREMENTS: a red sheet is not a regression
 ```
 
-The harness-backed runners take `--harness claude-code|codex|kimi-code`:
+Every runner answers `--help` with its own flags, defaults, and exit codes; this
+file covers only what the flags cannot say.
 
 ```bash
-tests/run-activation.sh     --harness claude-code --scenario-file common/yagni
-tests/run-all-activation.sh --harness codex
-tests/run-behavioral.sh     --harness kimi-code --scenario spec-it --arm green
-tests/run-activation.sh     selftest        # offline detector check, no API
+tests/run-session-start.sh                    # offline
+tests/run-plugin-smoke.sh --harness codex     # offline
+tests/run-behavioral.sh   --harness kimi-code --scenario spec-it --arm green
 ```
 
-**Scenarios are shared by every harness.** They were byte-identical across three
-copies before this; a per-harness override exists only for a real constraint —
-`codex exec` is single-turn, so a scenario that invites a clarifying question
-ends that run with no deliverable, and `scenario_opening_codex()` pre-empts it.
-A per-adapter `scenario_setup_<harness>()` override works the same way for fixtures. Never use an override to make an arm look better, and say so when you use one.
+## Prefer the offline tests
 
-## The three kinds, and what each can prove
+`run-session-start.sh` and `run-plugin-smoke.sh` need no model. They are free,
+deterministic, and they catch real defects — a hook that stopped firing, a
+manifest drift, skills landing where the harness never looks.
+`run-session-start.sh` gates what every adapter injects at session start: valid
+JSON in each harness's envelope, the canonical router body present *verbatim*
+with its frontmatter stripped, escaping that survives the quotes and tables
+inside it, and the event name echoed back. It runs in CI. The live runners never
+do.
 
-**Activation** — the verdict comes only from a structured tool call in the
-harness's own stream. A raw grep reports phantom activations: the SessionStart
-router injection and the init manifest both contain `sdlc-skills:` tokens that
-are not actions, and the first version of this harness fell for exactly that. The
-**filename is the contract**: a scenario named after a real skill expects that
-skill anywhere in the routing chain (under routing-first the first call is
-`using-sdlc-skills`, the router — judge the whole chain); any other name expects
-nothing to fire. Exit code is the verdict, so it is scriptable.
+## The live runners, and what each one is for
 
-**Behavioural** — runs the skill for real and reads the artifact it produced.
-This is the only kind that catches a skill described correctly and *applied*
-wrongly: a spec that promises "all criteria are automated tests" and ships none,
-or ships them marked `todo` so the suite can never go red. A test that asked the
-agent to *describe* the skill would pass all of those. Two arms, because a
-behavioural claim is a comparison — RED loads the skills from a `git worktree`
-at `--base`, GREEN from the working tree, so the before-arm stays reproducible
-after the change is committed.
+`run-behavioral.sh` runs a skill for real and reads the artifact it produced.
+Its RED/GREEN pair is the gate in this directory; its `--arm none` is the one
+measurement that shares a runner with a gate, because it asks whether a skill
+earns its context rather than whether anything broke. The arms, the cost model,
+and how to write a scenario are in `behavioral/README.md`.
 
-**Offline** — `run-activation.sh selftest`, `run-session-start.sh`, and
-`run-plugin-smoke.sh` need no model. Prefer them: they are deterministic and
-free. `run-session-start.sh` is the gate on what every adapter injects at session
-start: valid JSON in each harness's envelope, the canonical router body present
-*verbatim* with its frontmatter stripped, escaping that survives the quotes and
-tables inside it, and the event name echoed back. It runs in CI.
+`optimizing/descriptions/test-triggering-on-queries.sh` asks the separate
+question of whether a *description* fires, and has its own price tag —
+`optimizing/README.md`.
 
-## Adding things
-
-- **An activation scenario:** drop a file at `scenarios/activation/<phase>/<skill>`.
-  The filename is the contract; no registration, no code change.
-- **A behavioural scenario:** one file, `scenarios/behavioral/<skill>.sh`, defining
-  `scenario_opening`, `scenario_setup <dir>` and `scenario_assert <dir>`. Write the
-  assertions so the **exit code** is the verdict — a summary is written by the same
-  agent that wants it green; an exit code is not. Check what is easy to fake and
-  hard to see in a transcript: that an artifact exists, that it *loads*, and that
-  it can actually fail.
-- **A harness:** add `harnesses/<name>.sh` implementing `adapter_check`,
-  `adapter_install`, `adapter_chain`, `adapter_run_activation`, and
-  `adapter_run_behavioral`. Nothing else should need to change. A harness stays
-  **unproven** until its tests pass on it — files present but never invoked is
-  not a working integration.
-
-## What this costs, before you run it
-
-These are the only tests here that hit an API, and the matrix multiplies fast.
-Measured on this repo:
-
-| Kind | Runs | Per run | Full sweep |
-| --- | --- | --- | --- |
-| Activation, one harness | 35 scenarios | ~1–2 min | ~35–70 min |
-| Activation, all three | 105 | ~1–2 min | **2–4 h** |
-| Behavioural, one scenario, one harness, one arm | 1 | ~5–40 min | — |
-| Behavioural, all scenarios × 3 harnesses × 2 arms | 6 × 3 × 2 | ~5–40 min | **3–24 h** |
-
-So the behavioural matrix is **deliberately not filled**. Scenarios exist for the
-skills where the failure is both likely and mechanically checkable; the rest are
-covered by activation only, and that limit is stated rather than papered over.
-Retain a behavioural scenario only for an observed failure with a stable,
-mechanically checkable verdict. Running the full matrix is deliberately not the
-default.
-
-Practical guidance:
-
-- **Default to the offline tests.** They are free, deterministic, and catch real
-  defects — a broken detector, a hook that stopped firing, a manifest drift.
-- **Run one behavioural arm before a full sweep.** If GREEN fails on one harness,
-  the remaining matrix will not tell you anything new yet.
-- **Budget a sweep deliberately.** `run-all-activation.sh --harness X` is the
-  cheapest broad signal; reach for the behavioural matrix only when a skill's
-  *applied* behaviour is what changed.
-- **Report N.** A single green run is weak evidence on a non-deterministic test.
-  Say how many you did and what the spread was.
+Both bind to `harnesses/<name>.sh`, which holds only what differs per CLI. Adding
+a harness should touch nothing outside that directory; see `harnesses/README.md`.
 
 ## Honest limits
 
-Live runs cost tokens and are **not deterministic**: the same scenario passes and
-fails across runs, and coverage is selective by design. So these are manual tools,
-never CI, and no result is committed as a record — re-run for current truth and
-report the numbers you actually got, failures included. A single green run is weak
-evidence; say how many you did.
+The live runners cost tokens and are **not deterministic**. So they are manual
+tools, never CI, and no result is committed as a record — re-run for current
+truth and report the numbers you actually got, failures included.
