@@ -70,6 +70,8 @@ checks and rubric pass.
 | {{automatable rule}} | `{{command/check}}` | {{role}} | {{block/fix}} |
 | {{judgment rule}} | {{named rubric}} | {{review role}} | {{block/exception}} |
 
+**Strictness:** {{the level each automated check runs at, and its warning budget — zero unless an approved exception says otherwise}}
+
 **Precedence:** {{which project instruction wins on conflict}}
 
 **Exceptions:** {{approver, required reason/scope/expiry, compensating check}}

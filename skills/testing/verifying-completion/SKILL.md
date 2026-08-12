@@ -108,6 +108,9 @@ self-certify a human-owned judgment.
   and raw output.
 - Never mutate a candidate with the bookkeeping meant to prove that candidate.
 - A never-falsified gate is suspect—see `references/hollow-verification.md`.
+- A gate silenced is not a gate passed. Suppressing a finding, lowering a
+  strictness setting, or excluding a path changes what ran, not what is true —
+  and the claim that gate supported is now unproven.
 - A flaky green is unexplained nondeterminism; route it through `debugging`.
 - Verified is not reviewed. A non-trivial candidate at a completion or
   integration boundary requires `requesting-code-review`; task-local evaluator
@@ -122,6 +125,8 @@ self-certify a human-owned judgment.
 | "The types pass" | Types, build, behavior, requirements, and release are distinct claims. |
 | "The agent said green" | A report is a claim; inspect raw state and output. |
 | "The summary says all passed" | Reconcile skipped tests, shards, and matrix cells. |
+| "It's a false positive" | That judgement is itself unverified. Rewrite the code until the checker agrees, or record an accepted deviation. |
+| "That finding predates my change" | Silencing it now makes it yours. Leave it red and disposition it, or fix it. |
 | "I committed it, so evidence is banked" | A checkpoint is neither review nor integration proof. |
 | "All checks are green, so done" | Green supports only the checks; independent review challenges completeness. |
 | "I did the main thing" | An unstarted item fails no gate; only the request inventory finds it. |

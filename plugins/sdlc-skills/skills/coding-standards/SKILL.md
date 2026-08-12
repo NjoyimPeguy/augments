@@ -32,6 +32,11 @@ Set the conventions once so every contributor — human or agent — writes code
    vocabulary, architecture, or judgement gets a named review rubric and a named
    owner instead.
 
+   Set each automated check's strictness deliberately, and its warning budget to
+   zero. A tool left at its permissive default admits the very code the standard
+   means to reject, and every level costs more to raise the longer a codebase
+   grows underneath the looser one.
+
    The standard owns the rule and its conformance reference. An assurance matrix
    may consume that check, but it owns the wider risk threshold, the cadence, and
    the promotion wiring. Documentation on its own is not conformance.
