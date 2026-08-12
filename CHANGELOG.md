@@ -2,6 +2,13 @@
 
 Notable changes to SDLC skills, newest first. Versions follow semantic versioning; the narrative for each release lives on its release page — this file is the terse, cumulative record.
 
+## [6.0.3] — 2026-08-12
+
+### Added
+
+- **A silenced gate is not a passed gate.** `verifying-completion` now stops an agent reaching green by suppressing a finding, loosening a strictness setting, or excluding a path: that changes what ran, not what is true, and the claim the gate supported is unproven.
+- **Coding standards set each automated check's strictness and its warning budget.** A tool left at its permissive default admits the very code the standard means to reject, and every level costs more to raise the longer a codebase grows underneath the looser one.
+
 ## [6.0.2] — 2026-08-12
 
 ### Changed
