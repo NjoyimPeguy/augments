@@ -37,22 +37,11 @@ A project without a clear goal ships features no one needed. Before scope or des
    the section owes, including its normative identity and where the decision
    ledger lives. Preserve the other approved sections, and treat the section as
    immutable once its identity is issued.
-7. **Present the goal set for decision.** Print exactly this, then stop:
-
-   ```text
-   Goals ready for your decision — {{brief-path}}
-
-   Objective:  {{objective}}
-   Success:    {{metric}} {{baseline}} → {{target}} by {{horizon}}
-   Guardrails: {{must-not-degrade}}
-
-   1. Approve — these are the goals
-   2. Request changes — tell me what to revise
-   3. Reject — wrong objective
-   4. Cancel — stop this work
-
-   Which?
-   ```
+7. **Present the goal set for decision.** State the brief path, objective,
+   baseline-to-target measure and horizon, and guardrails. Ask one conversational
+   question with four accepted answers: approve the goals, request changes,
+   reject the objective, or cancel. Recommend the answer best supported by the
+   open assumptions, with one sentence of reasoning, then stop.
 
    Nothing hands off until one of the four arrives; praise, constraints,
    silence, and a partial reply leave it pending. Record the outcome externally

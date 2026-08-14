@@ -17,17 +17,10 @@ Write down what the next session needs to continue, so it doesn't reconstruct it
 A handoff moves state to a recipient, so writing one is a disclosure. Where an
 instruction or standing authority already names the destination, write it there
 and do not ask. Otherwise the destination is the user's choice and not a default
-to pick — print exactly this, then stop:
-
-```text
-Handoff ready — {{topic}}
-
-1. Durable handoff store — persists for whoever can read {{store}}
-2. A path you name — I write it there
-3. Here only — I return it in this reply and write nothing
-
-Which?
-```
+to pick. Ask one conversational question offering: the durable handoff store
+(naming who can read it), a path the user names, or this reply only with no
+write. Recommend the least-disclosing option that still reaches the intended
+recipient, with one sentence of reasoning, then stop.
 
 Nothing is written until one of the three arrives; "wherever is easiest",
 approval of the *content*, and silence are not a destination.

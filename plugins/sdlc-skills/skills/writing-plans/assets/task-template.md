@@ -9,6 +9,8 @@ external state, and evaluator artifacts this task may mutate; overlaps require
 an explicit dependency and one transition owner}}
 **Context:** {{key files or entrypoints to read first for this task — plus any spec artifact that defines it (a failing test, a mockup page, a reference implementation to port). Point at the path; do not paraphrase it back into prose. Or "none".}}
 **Suggested tier:** {{small | medium | large}} — {{mechanical | logic | design}}
+**Implementation disciplines:** {{`test-driven-development` + `yagni` for
+behavior-affecting work, or the exact carve-out that makes them inapplicable}}
 
 {{For a high-risk transformation, also fill the shard/phase fields from
 `../references/scalable-transformation.md`; do not clone one task file per

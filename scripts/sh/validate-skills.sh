@@ -169,14 +169,8 @@ while IFS= read -r f; do
   sed 's/`[^`]*`//g' "$f" | grep -qiE "$SCANNER_TRIGGERS" && err "$f: harness scanner trigger-word"
 done < <(find hooks -name '*.md' 2>/dev/null)
 
-# Retired cadence reminders must stay retired in every supported adapter, not
-# only Codex. Both fired on a fixed cadence rather than at a real boundary —
-# UserPromptSubmit on every prompt, Stop on every turn whose wording read as a
-# completion claim — so each re-spent the same advisory tokens turn after turn,
-# and Stop additionally forced an extra model turn by blocking. The routing they
-# carried is already resident: the session-start injection carries the router's
-# whole body (re-applied after compaction), and the skill descriptions are always
-# loaded. A new entry can otherwise restore either path under another script name.
+# Cadence reminders stay retired in every supported adapter. The implementation
+# guard below is different: it runs only at the covered code-edit boundary.
 echo "• no cadence reminder hooks (UserPromptSubmit, Stop)"
 for hook_config in \
   hooks/hooks.json \
@@ -188,22 +182,27 @@ for hook_config in \
       && err "$hook_config: $retired_event is retired across supported adapters"
   done
 done
-# The pre-edit implementation guard is retired for a different reason than the
-# cadence hooks: it fired on a real boundary, but it existed to compensate for a
-# skippable session-start POINTER. With the router's body resident, the pair led
-# implementation on its own in 2 of 3 measured runs — so the guard is no longer
-# the thing holding that boundary, and a hook that denies edits is too blunt to
-# keep for the remaining margin. Routing is persuasion; the artifact-level gates
-# are what decide. Do not restore it under another name without new evidence.
 for retired_script in \
   scripts/sh/implementation-remind.sh \
-  scripts/sh/implementation-guard.sh \
   scripts/sh/stop-nudge.sh \
   scripts/sh/stop-nudge-detect.sh \
   scripts/sh/stop-nudge-kimi.sh \
-  tests/run-implementation-guard.sh \
   tests/run-stop-nudge.sh; do
   [ ! -e "$retired_script" ] || err "obsolete $retired_script still exists"
+done
+
+# Mandatory implementation ordering has no pass-rate allowance. The scoped
+# guard must be installed in the harnesses whose Write/Edit-class lifecycle it
+# understands, and every deterministic contract test must pass.
+echo "• implementation-entry contracts"
+[ -x scripts/sh/implementation-guard.sh ] ||
+  err "scripts/sh/implementation-guard.sh is missing or not executable"
+for contract in \
+  tests/run-implementation-guard.sh \
+  tests/run-plan-execution-contract.sh; do
+  if ! bash "$contract" >/dev/null; then
+    err "$contract failed"
+  fi
 done
 
 # Manifest sync: a harness discovers skills only through its manifest, so every

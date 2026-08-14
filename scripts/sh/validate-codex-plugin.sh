@@ -86,7 +86,7 @@ fi
 # loads it. Manifest hook paths resolve relative to the plugin root and must stay
 # inside it, so everything the hook touches is mirrored in by
 # scripts/sh/sync-codex-plugin-skills.sh.
-echo "• Codex hook config (session-start router)"
+echo "• Codex hook config (router and structured edit guard)"
 codex_hook="$plugin_root/hooks/hooks.json"
 if [ ! -f "$codex_hook" ]; then
   err "missing $codex_hook (an installed plugin would inject no router)"
@@ -94,7 +94,11 @@ else
   for ev in SessionStart PostCompact; do
     grep -q "\"$ev\"" "$codex_hook" || err "$codex_hook: no $ev hook (router would not load)"
   done
+  for ev in PreToolUse PostToolUse; do
+    grep -q "\"$ev\"" "$codex_hook" || err "$codex_hook: no $ev hook (implementation guard would not run)"
+  done
   grep -q 'session-start\.sh' "$codex_hook" || err "$codex_hook: does not invoke session-start.sh"
+  grep -q 'implementation-guard\.sh' "$codex_hook" || err "$codex_hook: does not invoke implementation-guard.sh"
   grep -q 'PLUGIN_ROOT' "$codex_hook" \
     || err "$codex_hook: resolves no plugin root — the command must not depend on the session cwd"
 fi
@@ -106,13 +110,19 @@ fi
 # A hook is inert unless the injector it runs is inside the package, and the
 # mirror is generated — so a stale copy is the realistic failure, not a divergent
 # hand edit.
-echo "• Codex plugin ships its injector"
+echo "• Codex plugin ships its hook scripts"
 [ -x scripts/sh/session-start.sh ] || err "scripts/sh/session-start.sh is not executable"
 mirrored="$plugin_root/scripts/sh/session-start.sh"
 if [ ! -x "$mirrored" ]; then
   err "missing executable $mirrored (run scripts/sh/sync-codex-plugin-skills.sh)"
 elif ! diff -q scripts/sh/session-start.sh "$mirrored" >/dev/null; then
   err "$mirrored is stale — re-run scripts/sh/sync-codex-plugin-skills.sh"
+fi
+guard_mirror="$plugin_root/scripts/sh/implementation-guard.sh"
+if [ ! -x "$guard_mirror" ]; then
+  err "missing executable $guard_mirror (run scripts/sh/sync-codex-plugin-skills.sh)"
+elif ! diff -q scripts/sh/implementation-guard.sh "$guard_mirror" >/dev/null; then
+  err "$guard_mirror is stale — re-run scripts/sh/sync-codex-plugin-skills.sh"
 fi
 [ -f "$plugin_root/skills/using-sdlc-skills/SKILL.md" ] \
   || err "$plugin_root/skills/using-sdlc-skills/SKILL.md missing — the injector would find no router"

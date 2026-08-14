@@ -62,23 +62,11 @@ for you.
 
    For a high-risk design, the independent review in `references/design-review.md`
    is mandatory and blocking — run it before you present anything.
-9. **Present the reviewed version for decision.** Print exactly this, then stop:
-
-   ```text
-   Architecture ready for your decision — {{design-path}}
-
-   Components:    {{components}}
-   Trust bounds:  {{boundaries}}
-   Hard to undo:  {{load-bearing-decisions}}
-   Open risks:    {{risks}}
-
-   1. Approve — hand off to planning
-   2. Request changes — tell me what to revise
-   3. Reject — wrong design
-   4. Cancel — stop this work
-
-   Which?
-   ```
+9. **Present the reviewed version for decision.** State the path, components,
+   trust boundaries, hard-to-reverse choices, and open risks. Ask one
+   conversational question offering approve and hand off to planning, request
+   changes, reject the design, or cancel. Recommend the answer supported by the
+   review and open-risk state, with one sentence of reasoning, then stop.
 
    Only one of the four authorizes planning; praise, silence, and prior-version
    approval do not. Record lifecycle externally. An issued identity never

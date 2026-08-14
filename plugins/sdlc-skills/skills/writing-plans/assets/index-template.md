@@ -1,7 +1,9 @@
 # Plan: {{topic}}
 
 - **Status:** `draft | proposed` (decision and execution state stay external)
-- **Normative version:** {{immutable identity of index plus every task contract}}
+- **Normative version:** {{immutable identity of this index with every task
+  checkbox marker and status normalized to `[ ]` and `todo`, plus every task
+  contract}}
 - **Predecessor:** {{prior normative identity or none; a proposal only links it}}
 - **Approval rule:** {{one accountable decision owner, or required approvers plus
   conflict resolver and decision rule}}
@@ -18,11 +20,18 @@
   or returned directly; append-only task states/evidence bind this version}}
 - **Invalidation triggers:** {{any bound-input drift or normative scope/interface/
   evaluator/phase/ownership/cutover/rollback/decommission change}}
+- **Required executor:** `executing-plans` after this exact version has direct
+  approval and an explicit `inline | delegated` mode. A mode reply triggers that
+  skill; it never starts implementation by itself.
+- **Implementation entry:** every behavior-affecting task invokes
+  `test-driven-development` and `yagni` before its first project command or code
+  edit. Naming either skill here is routing evidence, not invocation evidence.
 
 Every normative change creates a proposed successor with an exact delta. An
 approved successor invalidates predecessor-bound consumers until each owner
-revalidates or reconciles. Never write
-approval, execution mode, task progress, or evidence into this normative index.
+revalidates or reconciles. Never write approval, execution mode, or evidence
+into normative fields. Task checkbox markers and adjacent status labels are the
+only mutable projection.
 
 **Goal:** {{1–2 sentences}}
 **Architecture:** {{2–3 sentences — the shape of the solution the tasks must stay coherent with}}
@@ -39,11 +48,22 @@ approval, execution mode, task progress, or evidence into this normative index.
 
 ## Tasks
 
-- `T-001` — {{task name}}   ·   `01-{{slug}}.md`
-- `T-002` — {{task name}}   ·   `02-{{slug}}.md`
-- `T-003` — {{task name}}   ·   `03-{{slug}}.md`
+- [ ] `T-001` — {{task name}}   ·   `01-{{slug}}.md`   ·   `todo`
+- [ ] `T-002` — {{task name}}   ·   `02-{{slug}}.md`   ·   `todo`
+- [ ] `T-003` — {{task name}}   ·   `03-{{slug}}.md`   ·   `todo`
 
 Task IDs are stable, never renumbered or recycled; filenames may stay ordered.
+Mirror the external ledger as a checkbox plus its exact state label:
+
+- `[x] done` counts toward completion.
+- `[x] done with concerns` counts only after every concern is classified as
+  non-blocking or accepted by its owning deviation/exclusion and compensating
+  gate; until then use `[ ] done with concerns`.
+- `[ ] todo`, `[ ] in progress`, `[ ] blocked`, `[ ] needs context`,
+  `[ ] cancelled`, and `[ ] superseded` do not count toward completion.
+
+This projection is navigation, not evidence. Normalize it to `[ ] todo` when
+computing the normative version. On mismatch, the external ledger wins.
 
 The external ledger is the single source of truth for progress. Each row binds
 plan version, task ID, attempt/result identity, evaluator evidence, owner/time,

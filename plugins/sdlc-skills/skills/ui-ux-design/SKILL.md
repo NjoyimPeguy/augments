@@ -74,21 +74,11 @@ you.
    The word doing the work is *whole*. Individually selected screens, a chosen
    variant, an agreed flow — those are inputs to the section, not the section,
    and none of them is what gets presented for decision.
-10. **Present the design for decision.** Print exactly this, then stop:
-
-    ```text
-    UI/UX design ready for your decision — {{design-path}}
-
-    Flows: {{flows}} · Direction: {{visual-direction}}
-    Open risks: {{risks}}
-
-    1. Approve — hand off to planning
-    2. Request changes — tell me what to revise
-    3. Reject — wrong direction
-    4. Cancel — stop this work
-
-    Which?
-    ```
+10. **Present the design for decision.** State the path, flows, visual direction,
+    and open risks. Ask one conversational question offering approve and hand
+    off to planning, request changes, reject the direction, or cancel. Recommend
+    the answer supported by the evidence and unresolved risks, with one sentence
+    of reasoning, then stop.
 
     Only one of the four authorizes planning. A preference selects a direction
     but does not approve the design; praise and silence decide nothing. Record

@@ -37,22 +37,10 @@ put an evidence-bound recommendation to the accountable owner.
    the risk and condition contracts, and the identity fields. Preserve the other
    approved sections; the section is immutable once its identity is issued.
 7. **Present the recommendation for decision.** This is advice; the commitment
-   is the user's. Print exactly this, then stop:
-
-   ```text
-   Feasibility assessed — {{brief-path}}
-   Recommendation: {{go | no-go | go-if}}
-
-   Biggest risks: {{risks-with-confidence}}
-   Conditions:    {{go-if-conditions-with-owners}}
-
-   1. Go — commit to building this
-   2. Go-if — commit once every listed condition is met
-   3. No-go — do not build this
-   4. Cancel — stop this work
-
-   Which?
-   ```
+   is the user's. State the brief path, recommendation, highest-confidence
+   risks, and owned conditions. Ask one conversational question offering go,
+   go-if every named condition is met, no-go, or cancel. Lead with your
+   recommendation and one sentence of evidence-based reasoning, then stop.
 
    Nothing hands off until one of the four arrives. A go-if decision does not
    satisfy its conditions: only the named evidence and owner move their external

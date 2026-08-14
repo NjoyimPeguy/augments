@@ -61,21 +61,11 @@ looks obvious — verify before agreeing, editing, replying, or resolving.
 
 7. **A finding that contradicts an approved artifact is the user's call.** When
    a valid finding collides with what an approved spec, plan, design, or ADR
-   requires, you cannot resolve it by preferring one — print exactly this, then
-   stop:
-
-   ```text
-   Review finding conflicts with an approved artifact.
-
-   Finding:  {{finding}}
-   Approved: {{artifact}} {{version}} requires {{quoted-text}}
-
-   1. The finding governs — I'll fix the code
-   2. The artifact governs — I'll record the finding as answered
-   3. Change the artifact — it needs a successor version
-
-   Which?
-   ```
+   requires, you cannot resolve it by preferring one. State the finding and the
+   exact approved requirement, then ask one conversational question offering:
+   the finding governs and the code changes, the artifact governs and answers
+   the finding, or the artifact needs a successor. Recommend the route supported
+   by the stronger evidence with one sentence of reasoning, then stop.
 
    Never dismiss the finding because the artifact mandates it, and never fix
    against the artifact without this answer.

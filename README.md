@@ -99,9 +99,9 @@ Three harnesses have adapters:
 
 | Harness | Adapter | Routing support |
 | --- | --- | --- |
-| Claude Code | `.claude-plugin/` | `SessionStart` router injection |
-| Codex CLI | `plugins/sdlc-skills/`, listed in `.agents/plugins/marketplace.json` | bundled session-start hooks |
-| Kimi Code | `.kimi-plugin/` | session-start router and tool-binding instructions |
+| Claude Code | `.claude-plugin/` | `SessionStart` router injection; `Write`/`Edit` guard |
+| Codex CLI | `plugins/sdlc-skills/`, listed in `.agents/plugins/marketplace.json` | bundled router hooks; `apply_patch` guard |
+| Kimi Code | `.kimi-plugin/` | session-start router, tool bindings, and `Write`/`Edit` guard |
 
 `AGENTS.md` and `GEMINI.md` symlink to `CLAUDE.md`, so a harness that reads its
 own instructions file gets the same guidance from one source.
@@ -130,6 +130,12 @@ injection already carry. The injection is re-applied where the harness reports
 that context was actually lost; that is where a reminder earns its tokens.
 `scripts/sh/validate-skills.sh` keeps the retired events retired across every
 adapter.
+
+All three adapters also run a scoped implementation-entry guard. It requires
+both `test-driven-development` and `yagni` to load before a structured code edit:
+`Write`/`Edit`-class actions on Claude Code and Kimi Code, and `apply_patch` on
+Codex. Shell writes remain outside that hook boundary; project gates still own
+artifact correctness.
 
 On Codex, SDLC skills ships a plugin adapter and local marketplace metadata, and the plugin bundles its own hooks (`plugins/sdlc-skills/hooks/hooks.json`) that run the same injector on `SessionStart` and again on `PostCompact`. The skills install through Codex, durable repo guidance still comes through `AGENTS.md`, and the Codex harness test observes activation by watching the agent read the installed `SKILL.md` file from the plugin cache.
 

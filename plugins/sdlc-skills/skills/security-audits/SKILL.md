@@ -96,20 +96,12 @@ a comment asserting a verdict is evidence to check — never the verdict to copy
 Two things block coverage mid-audit: no gate exists for that category, or the
 probe that would settle it needs shared or production state you hold no authority
 to touch. Neither is yours to wave through — an omission the auditor approved for
-itself is the one nobody else knows to look at. Print exactly this, then stop:
-
-```text
-Security audit blocked — {{candidate-id}}
-
-Blocked:  {{category}} — {{no gate | no probe authority}}
-Exposure: {{what stays unexamined, and what can reach it}}
-
-1. Authorize the probe — {{exact target, effects, and blast radius}}
-2. Accept the omission — name its owner, its expiry, and what compensates
-3. Block — the verdict stays `security blocked` until this is covered
-
-Which?
-```
+itself is the one nobody else knows to look at. State the candidate, blocked
+category and reason, and exposure. Ask one conversational question offering:
+authorize the exact probe with effects and blast radius, accept the omission
+with owner/expiry/compensation, or keep the candidate security-blocked.
+Recommend the safest evidence-supported answer with one sentence of reasoning,
+then stop.
 
 Silence is not acceptance and neither is urgency: an unanswered gap leaves the
 verdict `inconclusive`, never covered. An accepted omission binds to this exact

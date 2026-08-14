@@ -14,6 +14,13 @@ Before any answer or action—including questions or exploration—invoke every
 skill governing the current step. If none fits, say so. Use the configured
 loading action; where a native action exists, reading its file is not invocation.
 
+When a skill requires a direct answer, ask one question at a time. Present the
+accepted answers conversationally, recommend one with a short reason when the
+evidence supports it, and wait. Do not prescribe a fixed transcript or menu:
+the harness may render the question through its configured user-input action.
+Rendering or calling that action collects an answer; it does not infer one or
+grant authority beyond it.
+
 <AUTHORITY-FIRST>
 Before topic/phase routing, check pending material decisions. A direct cancel,
 abandon, or supersede closes that transition; otherwise a reply selecting none

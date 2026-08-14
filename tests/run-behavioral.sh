@@ -106,8 +106,9 @@ bh_parse_args() {
   case "$arm" in red|green|none) ;; *) echo "needs --arm red|green|none" >&2; return 2;; esac
 }
 
-# Sources the scenario (one file: fixture, opening, assertions) and picks the
-# opening and setup for this adapter. Fills: opening_file opening_kind setup_kind
+# Sources the scenario (one file: fixture, opening, optional follow-up turns,
+# assertions) and picks the opening and setup for this adapter. Fills:
+# opening_file opening_kind setup_kind followups
 bh_resolve_scenario() {
   local adapter="$1" f="$scriptdir/behavioral/$scenario.sh"
   [ -f "$f" ] || { echo "no scenario at $f" >&2; return 2; }
@@ -122,6 +123,10 @@ bh_resolve_scenario() {
   opening_file="$(mktemp)"; "$opening_kind" > "$opening_file"
   local setup_override="scenario_setup_${adapter//-/_}"
   if command -v "$setup_override" >/dev/null 2>&1; then setup_kind="$setup_override"; else setup_kind="scenario_setup"; fi
+  followups=()
+  if command -v scenario_followups >/dev/null 2>&1; then
+    scenario_followups
+  fi
 }
 
 # Fills: plugin_src redtree.  RED builds a throwaway worktree at $base so the
@@ -250,6 +255,19 @@ bh_seed_fixture || exit 2
 
 bh_started="$(date +%s)"
 adapter_run_behavioral "$workdir" "$opening_file" "$stream"; status=$?
+if [ "$status" -eq 0 ] && [ "${#followups[@]}" -gt 0 ]; then
+  if ! declare -F adapter_continue_behavioral >/dev/null 2>&1; then
+    echo "$harness adapter cannot continue a multi-turn behavioural session" >&2
+    exit 3
+  fi
+  for followup in "${followups[@]}"; do
+    turn_stream="$(mktemp)"
+    adapter_continue_behavioral "$workdir" "$followup" "$turn_stream" "$stream"; status=$?
+    cat "$turn_stream" >> "$stream"
+    rm -f "$turn_stream"
+    [ "$status" -eq 0 ] || break
+  done
+fi
 bh_elapsed_s="$(( $(date +%s) - bh_started ))"
 bh_chain() { adapter_chain "$1"; }
 bh_report "$harness" "$status"
