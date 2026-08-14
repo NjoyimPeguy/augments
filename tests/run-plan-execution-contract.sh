@@ -19,7 +19,7 @@ esac
 fails=0
 check() { # description file extended-regexp
   local description="$1" file="$2" expression="$3"
-  if rg -Uqi "(?s)$expression" "$file"; then
+  if tr '\n' ' ' < "$file" | grep -Eqi "$expression"; then
     echo "  ok    $description"
   else
     echo "  FAIL  $description ($file)"
