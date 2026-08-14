@@ -85,9 +85,7 @@ What emphasis cannot do is settle anything. Nothing becomes true here by being
 said forcefully, so it belongs in bodies, where the temptation is, and stays out
 of descriptions. A description is a trigger: it fires on the plain vocabulary of
 the situation, and shouting at it neither makes a trigger match nor earns back
-the characters it spends. That is a measured result rather than an assumption —
-a full sweep with the imperatives taken back out of the descriptions found the
-skills still firing on their plain triggers.
+the characters it spends.
 
 The discipline is to keep the two honest and separate — **a firm floor where you
 have only process; a deterministic gate where you have proof; and never the

@@ -35,8 +35,8 @@ push and pull request.
 | `name` no leading/trailing hyphen, no `--` | conforms | pattern check |
 | `name` matches parent directory | conforms | compared per skill |
 | `description` non-empty, ≤ 1024 chars | conforms | length check; longest is 567 |
-| Body ≤ 500 lines | conforms | line check; longest is 143 (29% of ceiling) |
-| Body < 5000 tokens recommended | conforms | token check; largest is ~1452 (29%) |
+| Body ≤ 500 lines | conforms | line check; longest is 135 (27% of ceiling) |
+| Body < 5000 tokens recommended | conforms | token check; largest is ~1457 (29%) |
 | File references relative to skill root | conforms | every path resolved in the install tree |
 | References one level deep, no nested chains | conforms | depth check |
 | `scripts/` / `references/` / `assets/` semantics | conforms | see *Directory conventions* |
@@ -62,12 +62,9 @@ scores a body against the standard's 5000 as words × 1.3, while
 second is the drift gate CI runs.
 
 A *target* prompts the question of whether a body earned its length. A *limit* is
-a wall authors write around. This library enforced ≈ 80 lines as a hard rule
-once, and paid for it: authors bought line count with telegraphic, noun-stacked
-prose — `Bind exact source/contracts/external inputs and a stable-ID
-surface/friction inventory` — instead of sentences. That reads as concision and
-is compression, and an agent that must decompress an instruction before acting on
-it is likelier to act on the wrong reading.
+a wall authors write around. Do not buy line count with telegraphic,
+noun-stacked prose: that reads as concision but makes the agent decompress the
+instruction before it can act.
 
 **Compression is not concision.** Cut a paragraph that does not change behaviour;
 do not cut the articles and verbs out of one that does.
@@ -211,12 +208,12 @@ rate, which is often not the last.
   Each run prints wall clock, plus tokens where the harness's own stream reports
   them; the difference between two arms' cost lines is the price of the skill.
 
-  Token counts come from a per-adapter primitive written against streams
-  actually observed from each CLI, never from assumed field names. A harness
-  that reports nothing says so rather than printing a zero — kimi is currently
-  that harness. We stop at the per-run cost line and do not build the guide's
-  aggregated benchmark workspace, because an evaluator larger than the thing
-  evaluated is the failure the proportionality rule exists to prevent.
+  Token counts come from a per-adapter primitive written against the CLI's
+  structured stream, never from assumed field names. A harness that reports
+  nothing says so rather than printing a zero. We stop at the per-run cost line
+  and do not build the guide's aggregated benchmark workspace, because an
+  evaluator larger than the thing evaluated is the failure the proportionality
+  rule exists to prevent.
 
 Layout difference: inputs live once and are split by what they decide rather
 than by the skill they belong to. Everything that observes the library running

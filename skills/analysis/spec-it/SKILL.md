@@ -51,19 +51,11 @@ Turn an intent into a requirements spec (SRS): gather and analyze what the softw
     requirement table with each requirement's real artifact or future gate and
     owner, and the decision-owner block. The spec is immutable once its identity
     is issued.
-12. **Present the spec for decision.** Print exactly this, then stop:
-
-    ```text
-    Spec ready for your decision — {{spec-path}}
-    {{n}} requirements · {{m}} open questions · out of scope: {{excluded}}
-
-    1. Approve — hand off to design
-    2. Request changes — tell me what to revise
-    3. Reject — wrong requirements
-    4. Cancel — stop this work
-
-    Which?
-    ```
+12. **Present the spec for decision.** State the path, requirement and open-
+    question counts, and excluded scope. Ask one conversational question with
+    four accepted answers: approve and hand off to design, request changes,
+    reject the requirements, or cancel. Recommend the answer best supported by
+    the unresolved-question state, with one sentence of reasoning, then stop.
 
     Only one of the four hands off; praise, silence, and a partial reply leave
     it pending. Record the outcome externally. An issued identity never mutates:

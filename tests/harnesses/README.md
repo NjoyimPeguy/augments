@@ -34,9 +34,11 @@ tests/harnesses/
 Required: `adapter_check`, `adapter_install`, `adapter_chain`,
 `adapter_run_activation`, `adapter_run_behavioral`.
 
-Optional: `adapter_ran` and `adapter_usage`. Both degrade to silence rather than
-to a confident wrong answer — a harness reporting no token count says so instead
-of printing a misleading `0`.
+Optional: `adapter_ran`, `adapter_usage`, `adapter_component_inventory`, and
+`adapter_continue_behavioral`. The last one is required only for a scenario that
+defines follow-up turns; it must resume from structured session evidence rather
+than simulate continuity with a new session. Detection and usage helpers degrade
+to silence rather than a confident wrong answer.
 
 The disposable project a run is pointed at is not per-harness, so it lives one
 level up in `tests/fixtures.sh`.

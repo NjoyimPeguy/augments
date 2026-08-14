@@ -36,21 +36,11 @@ skill that owns eliciting the still-open inputs.
 - name the exact artifact or operation the decision controls,
 - recommend a default with one line of reasoning.
 
-Prefer yes/no or a small multiple choice and name the accepted answers. Wait for
-a direct answer — see *What closes a decision* — before the next material one.
-One question looks like this:
-
-```text
-You already use {{library}} for {{concern}} in {{file}}.
-
-For {{decision}}, I'd default to {{recommendation}} — {{one-line reason}}.
-
-1. {{option A}}
-2. {{option B}}
-3. Something else — tell me what
-
-Which?
-```
+Prefer yes/no or a small multiple choice and name the accepted answers. Present
+them conversationally: state what you found, recommend a default with one line
+of reasoning, then offer two or three short answers including “something else”
+when free-form input is valid. Wait for a direct answer — see *What closes a
+decision* — before the next material one.
 
 **3. Use each answer to prune.** An answer often settles later questions — drop them. Aim for ~3–6 questions total. If you need more, say why first.
 

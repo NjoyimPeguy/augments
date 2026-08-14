@@ -47,23 +47,12 @@ Improve the structure of code that already exists. The goal is **deep modules** 
    covers the proposal only — decision outcome and slice progress are recorded
    outside it, so tracking progress never rewrites the proposal.
 
-   Never self-select a material structure. Print exactly this, then stop:
-
-   ```text
-   Structural change proposed — {{proposal-id}}
-
-   Now:        {{current-structure-and-measured-friction}}
-   Proposed:   {{target-structure}}
-   Instead of: {{alternatives-considered}}
-   Slices:     {{n}} · Rollback: {{recovery}}
-
-   1. Approve — transform under the preservation gate
-   2. Request changes — revise the proposal
-   3. Reject — leave the structure as it is
-   4. Cancel — stop this work
-
-   Which?
-   ```
+   Never self-select a material structure. State the proposal identity, current
+   measured friction, target, alternatives, slice count, and rollback. Ask one
+   conversational question offering approve under the preservation gate,
+   request changes, reject and retain the current structure, or cancel.
+   Recommend the answer supported by the friction and recovery evidence, with
+   one sentence of reasoning, then stop.
 
    Any input or normative drift requires an approved successor and invalidates
    affected slices. Hard-to-reverse choices use `architecture-decisions`.

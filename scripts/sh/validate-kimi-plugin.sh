@@ -89,6 +89,12 @@ else
       *) err "Kimi hook command must invoke a ./ script inside the plugin: $cmd" ;;
     esac
   done < <(jq -r '.hooks[]?.command // empty' "$manifest")
+  for event in PreToolUse PostToolUse; do
+    jq -e --arg event "$event" '
+      any(.hooks[]?; .event == $event and (.command | contains("implementation-guard.sh")))
+    ' "$manifest" >/dev/null ||
+      err "Kimi $event does not run the scoped implementation guard"
+  done
 
   echo "• Kimi skill instructions (tool binding)"
   instructions="$(jq -r '.skillInstructions // ""' "$manifest")"

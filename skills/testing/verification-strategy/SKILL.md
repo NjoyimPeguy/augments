@@ -92,23 +92,11 @@ coverage number, or from the builder's opinion.
 
 9. **Present the matrix for decision.** Authority to draft or implement gates is
    not authority to approve unseen risks, thresholds, omissions, or exceptions.
-   Print exactly this, then stop:
-
-   ```text
-   Assurance matrix ready for your decision — {{matrix-path}}
-
-   Gates:      {{executable}} executable · {{planned}} planned · {{absent}} absent
-   Thresholds: {{thresholds}}
-   Omitted:    {{omissions-with-rationale}}
-   Cadence:    {{what-blocks-what}}
-
-   1. Approve — this is the correctness battery
-   2. Request changes — tell me what to revise
-   3. Reject — wrong strategy
-   4. Cancel — stop this work
-
-   Which?
-   ```
+   State the path, executable/planned/absent counts, thresholds, omissions, and
+   blocking cadence. Ask one conversational question offering approve the
+   battery, request changes, reject the strategy, or cancel. Recommend the
+   answer supported by the uncovered-risk state, with one sentence of
+   reasoning, then stop.
 
    Only approved advances; keep lifecycle external and the normative file
    immutable `proposed`. A normative change creates an exact-delta successor,

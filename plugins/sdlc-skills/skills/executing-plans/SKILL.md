@@ -1,6 +1,6 @@
 ---
 name: executing-plans
-description: "Use when asked to execute, run, continue, or resume a multi-task plan directory, including when its claimed approval, version, mode, or entry state has to be verified first. Fires on pick up where we left off and work through the remaining tasks when a plan directory is what holds them, even if nobody says execute the plan. Skip a single task."
+description: "Use when asked to execute, run, continue, or resume a multi-task plan directory, and immediately after the user selects an execution mode for an approved plan—even through a terse reply such as inline, delegated, option 1, or option 2. Verify claimed approval, version, mode, and entry state first. Fires on pick up where we left off when a plan directory holds the work. Skip a single task."
 ---
 
 # Executing Plans
@@ -14,18 +14,11 @@ Advance only through real state transitions; nothing is done until its evaluator
    receipt, and confirm every predecessor consumer is reconciled. A plan cannot
    authenticate itself.
 
-   An approved plan carrying no bound mode is not a licence to pick one. Print
-   exactly this, then stop:
-
-   ```text
-   Plan approved but no execution mode is recorded — {{plan-path}}
-
-   1. Inline — I run every task in this session
-   2. Delegated — one fresh subagent per task, in sequence, each
-      starting cold from its own task contract
-
-   Which?
-   ```
+   An approved plan carrying no bound mode is not a licence to pick one. Ask one
+   conversational question offering inline execution in this session or
+   delegated execution by one fresh subagent per task in sequence. Explain the
+   context trade-off briefly, recommend the mode supported by the harness and
+   task boundaries, then stop.
 
    Offer delegated only where the harness provides a subagent action; otherwise
    say so and execute inline. Task independence is not a mode decision.
@@ -72,9 +65,16 @@ alone does not override one.
    evaluator's identity, and the observable you expect to change. An attempt with
    no recorded starting point cannot be reconciled afterwards.
 
-3. **Execute under every discipline that governs the action now.** Delegated work
-   goes through `references/subagent-dispatch.md`; approved parallel work hands
-   isolation and reconciliation to `dispatching-parallel-agents`.
+3. **Load the implementation disciplines before action.** For every
+   behavior-affecting task, invoke `test-driven-development` and `yagni` before
+   the first project command or code edit. Their loading actions must appear in
+   the current execution evidence; naming them in the plan is not invocation.
+   Apply their RED or preservation cycle and pre-edit scope challenge to the
+   task. Only their explicit carve-outs may skip the pair.
+
+   Delegated work carries the same requirement in its packet and goes through
+   `references/subagent-dispatch.md`; approved parallel work hands isolation and
+   reconciliation to `dispatching-parallel-agents`.
 
 4. **Inspect the result** against the task's file and scope contract. For an
    offload that means its raw diff, its authorized checkpoints (or none), its

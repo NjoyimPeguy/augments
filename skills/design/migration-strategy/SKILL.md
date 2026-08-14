@@ -106,24 +106,12 @@ while you work rather than rebuilding its fields from memory.
     `.sdlc-skills/designs/{{YYYY-MM-DD}}-{{topic}}-migration.md`, keeping the
     stable-ID delta, review, and execution state external to it.
 
-13. **Present the contract for decision.** Print exactly this, then stop:
-
-    ```text
-    Migration contract ready for your decision — {{contract-path}}
-
-    Strategy:  {{incremental | cutover | hybrid}}
-    Preserved: {{invariants}}
-    Trial:     {{representative-slice}}
-    Abort:     {{pause-abort-and-rollback}}
-    Retire:    {{decommission-plan}}
-
-    1. Approve — planning may consume this exact version
-    2. Request changes — tell me what to revise
-    3. Reject — wrong strategy
-    4. Cancel — stop this work
-
-    Which?
-    ```
+13. **Present the contract for decision.** State the path, strategy, preserved
+    invariants, representative trial, pause/abort/rollback rules, and retirement
+    plan. Ask one conversational question offering approve this exact version
+    for planning, request changes, reject the strategy, or cancel. Recommend the
+    answer supported by the preservation evidence and open unknowns, with one
+    sentence of reasoning, then stop.
 
     Only an approved exact version, with predecessor-bound consumers reconciled,
     lets planning proceed; praise and silence decide nothing. Every normative

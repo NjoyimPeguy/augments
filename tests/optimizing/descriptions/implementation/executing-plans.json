@@ -19,6 +19,12 @@
    "query": "The plan under .sdlc-skills/plans/reporting is approved. Work through it from the top."},
   {"split": "validation", "should_trigger": true,
    "query": "resume the migration plan — i think it got to task 6 but check the entry state before you carry on"},
+  {"split": "train", "should_trigger": true,
+   "query": "The exact plan version you presented is approved. You asked how to execute it. Inline."},
+  {"split": "validation", "should_trigger": true,
+   "query": "Option 1 — inline. The plan version you just presented is approved; start it now."},
+  {"split": "validation", "should_trigger": true,
+   "query": "Delegated. Use fresh workers to execute the approved plan we just reviewed."},
 
   {"split": "train", "should_trigger": false, "expect": "writing-plans",
    "query": "There's no plan yet. The requirements are approved and I want the work broken into tasks."},

@@ -35,13 +35,19 @@ currently kimi, whose `stream-json` carries no usage object at all.
 
 ## Writing one
 
-A scenario is one file, `<skill>.sh`, defining three functions:
+A scenario is one file, `<skill>.sh`, defining three required functions and one
+optional continuation function:
 
 ```bash
 scenario_opening          # the user's first message, verbatim
+scenario_followups        # optional: fills followups=(...) for one resumed session
 scenario_setup   <dir>    # seed the disposable project
 scenario_assert  <dir>    # read what was built; exit code IS the verdict
 ```
+
+A scenario with follow-up turns requires an adapter implementation of
+`adapter_continue_behavioral`. Continuation must use the harness's structured
+session identity; starting a fresh session and replaying prose is not equivalent.
 
 **Make the exit code carry the verdict.** A written summary is produced by the
 same agent that wants it green; an exit code is not. Assert what is easy to fake
@@ -81,3 +87,7 @@ rest of the matrix will not tell you anything new yet.
 
 Live runs are **not deterministic**. Report the runs you actually did, failures
 included, and never commit a result as a record.
+
+A mandatory ordering boundary has no majority threshold. If one valid run
+crosses the boundary in the wrong order, that run is a failure requiring action;
+two passing runs do not cancel it.

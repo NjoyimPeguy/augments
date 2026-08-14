@@ -47,23 +47,11 @@ while drafting; the steps below are the judgements it cannot make for you.
    log, preserving the sections already there.
 
 7. **Present the ADR for decision.** `proposed` means drafted and unapproved.
-   Print exactly this, then stop:
-
-   ```text
-   ADR ready for your decision — {{adr-id}}: {{title}}
-
-   Decision:     {{chosen-option}}
-   Because:      {{rationale}}
-   Rejected:     {{alternatives}}
-   Consequences: {{consequences-and-reversal-cost}}
-
-   1. Accept — this decision stands
-   2. Reject — choose a different option
-   3. Request changes — revise the ADR
-   4. Cancel — stop this work
-
-   Which?
-   ```
+   State its identity, proposed choice, rationale, rejected alternatives,
+   consequences, and reversal cost. Ask one conversational question offering
+   accept, reject in favor of another option, request changes, or cancel. Lead
+   with the option supported by the recorded trade-offs and one sentence of
+   reasoning, then stop.
 
    Praise and momentum accept nothing. Record accepted, rejected, or cancelled
    externally, with trusted exact-version evidence.

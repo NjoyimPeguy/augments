@@ -38,23 +38,11 @@ Scope is decided by what you say no to. An unbounded project never ships — nam
    assumption, and change-rule tables along with the identity fields. Do not
    replace the other approved sections; the section is immutable once its
    identity is issued.
-8. **Present the cut for decision.** Print exactly this, then stop:
-
-   ```text
-   Scope ready for your decision — {{brief-path}}
-
-   In:      {{in-scope}}
-   Out:     {{explicitly-out}}
-   MVP cut: {{thinnest-version}}
-   Assumes: {{assumptions-with-owners}}
-
-   1. Approve — this is the boundary
-   2. Request changes — move something in or out
-   3. Reject — wrong cut
-   4. Cancel — stop this work
-
-   Which?
-   ```
+8. **Present the cut for decision.** State the brief path, in-scope and excluded
+   work, thinnest version, and owned assumptions. Ask one conversational
+   question with four accepted answers: approve this boundary, request a scope
+   change, reject the cut, or cancel. Recommend the thinnest answer that still
+   reaches the approved goal, with one sentence of reasoning, then stop.
 
    Only one of the four hands off; praise, constraints, silence, and a partial
    reply leave it pending. Record every lifecycle outcome externally. Once

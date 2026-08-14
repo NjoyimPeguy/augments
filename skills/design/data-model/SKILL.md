@@ -52,22 +52,11 @@ for you.
    already approved around it. The template's header carries the identity,
    predecessor, approval rule, ledger location, and stable ID delta this section
    owes.
-10. **Present the model for decision.** Print exactly this, then stop:
-
-    ```text
-    Data model ready for your decision — {{design-path}}
-
-    Concepts:   {{entities}}
-    Invariants: {{rules-and-owners}}
-    Persisted:  {{storage-mapping}}
-
-    1. Approve — hand off to planning
-    2. Request changes — tell me what to revise
-    3. Reject — wrong model
-    4. Cancel — stop this work
-
-    Which?
-    ```
+10. **Present the model for decision.** State the path, concepts, owned
+    invariants, and persistence mapping. Ask one conversational question
+    offering approve and hand off to planning, request changes, reject the
+    model, or cancel. Recommend the answer supported by the unresolved
+    invariants and review, with one sentence of reasoning, then stop.
 
     Only one of the four hands off; praise, silence, and a partial reply leave
     it pending. Record lifecycle externally. An issued identity never mutates: a
