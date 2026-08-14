@@ -1,6 +1,5 @@
 #!/usr/bin/env bash
-# Behavioural scenario: does routing hold at the IMPLEMENTATION ENTRY boundary
-# without a pre-edit hook?
+# Behavioural scenario: does routing hold at the IMPLEMENTATION ENTRY boundary?
 #
 # Scope, so the name does not overclaim: this judges exactly one boundary — the
 # moment code is first written. It does not judge the done boundary or the
@@ -14,18 +13,13 @@
 # because the session-start injection was a ~90-token POINTER asking for a
 # discretionary tool call, and a discretionary call gets skipped.
 #
-# The change under test replaces that pointer with the router's full body as
-# resident context. If routing is resident rather than requested, the pair
-# should lead implementation with no hook holding the boundary.
-#
 # The verdict is ORDERING, read from the event stream, not from prose: both
 # `test-driven-development` and `yagni` must appear as Skill invocations BEFORE
 # the first Write/Edit on a code path. An agent that says it will use TDD and
 # then edits first fails here, which is the whole point.
 #
-# It is non-deterministic and known to be so: measured 2 PASS / 1 FAIL over
-# three consecutive green runs. Read a single run as one observation, never as
-# the property.
+# This is a mandatory ordering property. Every valid run must pass; repetition
+# supplies more observations, never a pass-rate allowance.
 
 scenario_opening() {
   cat <<'EOF'

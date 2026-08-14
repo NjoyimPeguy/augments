@@ -15,7 +15,7 @@ case "${1-}" in
 scripts/sh/sync-codex-plugin-skills.sh — rebuild the Codex plugin from canonical sources.
 
 Takes no arguments. Flattens skills/<phase>/<name>/ into the plugin root the
-Codex manifest points at, and copies the session-start injector its hooks run.
+Codex manifest points at, and copies the hook scripts its lifecycle events run.
 Re-run it after ANY edit under skills/, including scripts/ and assets/ — the
 mirror is a copy, not a link, and a stale one ships silently.
 
@@ -43,9 +43,10 @@ while IFS= read -r skill_md; do
   cp -a "$src/." "$dest/"
 done < <(find skills -mindepth 3 -maxdepth 3 -name SKILL.md | sort)
 
-# The hook is inert without the injector beside it. session-start.sh resolves the
-# router relative to its own location, and it knows the flat mirror layout, so
-# the copy needs no rewriting — only to be present and executable.
+# Hooks are inert without their scripts beside them. session-start.sh resolves
+# the router from the flat mirror; implementation-guard.sh owns the structured
+# edit boundary. Both copies need no rewriting.
 mkdir -p "$root/scripts/sh"
 cp -a scripts/sh/session-start.sh "$root/scripts/sh/session-start.sh"
-chmod +x "$root/scripts/sh/session-start.sh"
+cp -a scripts/sh/implementation-guard.sh "$root/scripts/sh/implementation-guard.sh"
+chmod +x "$root/scripts/sh/session-start.sh" "$root/scripts/sh/implementation-guard.sh"

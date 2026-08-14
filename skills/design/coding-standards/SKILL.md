@@ -56,24 +56,11 @@ Set the conventions once so every contributor — human or agent — writes code
    stable rule IDs, and the decision-owner rule, plus a worked example and the
    failure patterns. Preserve the other approved sections; the section is
    immutable once its identity is issued.
-9. **Present the standards for decision.** Print exactly this, then stop:
-
-   ```text
-   Coding standards ready for your decision — {{standards-path}}
-
-   Vocabulary: {{domain-terms}}
-   Patterns:   {{patterns-to-use}}
-   Nevers:     {{hard-nevers}}
-   Enforced:   {{automated}} automatically · {{by-review}} by review
-   Exemplar:   {{exemplar-path}} ({{gate-result}})
-
-   1. Approve — these are the conventions
-   2. Request changes — tell me what to revise
-   3. Reject — wrong conventions
-   4. Cancel — stop this work
-
-   Which?
-   ```
+9. **Present the standards for decision.** State the path, vocabulary, required
+   patterns, hard nevers, automated-versus-review enforcement, and exemplar gate
+   result. Ask one conversational question offering approve, request changes,
+   reject the conventions, or cancel. Recommend the answer supported by the
+   exemplar and enforcement gaps, with one sentence of reasoning, then stop.
 
    Only one of the four hands off. Record lifecycle externally. An issued
    identity never mutates: a normative change creates a successor with a per-ID

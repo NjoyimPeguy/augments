@@ -89,37 +89,23 @@ Turn an aligned intent into an executable plan: a small durable **map** plus thi
 Only the user can confirm the plan's *direction*, and this is the cheapest moment to redirect. A hard gate, not a formality:
 
 Show the complete index and exact plan version — goal, architecture,
-Constraints, Acceptance, trace, and task/phase list — then print exactly this
-to the accountable owner or complete approver set, and stop:
+Constraints, Acceptance, trace, and task/phase list. Send them to the accountable
+owner or complete approver set. Ask one conversational question offering
+approve and then choose an execution mode, request changes, reject the plan, or
+cancel. Recommend the answer supported by the plan review and unresolved risks,
+with one sentence of reasoning, then stop.
 
-```text
-Plan ready for your decision — {{plan-path}} ({{n}} tasks)
-
-1. Approve — then choose how to execute it
-2. Request changes — tell me what to revise
-3. Reject — wrong plan
-4. Cancel — stop this work
-
-Which?
-```
-
-Only on approval, and in a separate turn, ask for the mode:
-
-```text
-How should I execute it?
-
-1. Inline — I run every task in this session. Simplest; my context
-   fills as the plan progresses.
-2. Delegated — one fresh subagent per task, in sequence. Each starts
-   cold from its own task contract, keeping my context free for
-   coordination and review.
-
-Which?
-```
+Only on approval, and in a separate turn, ask one conversational mode question.
+Offer inline execution in this session or delegated execution by one fresh
+subagent per task in sequence. Explain the context trade-off briefly and
+recommend the mode supported by the harness capability and task boundaries.
 
 Offer delegated only where the harness actually provides a subagent action; if
 it does not, say so and execute inline. Independent tasks do not select the
 mode — the user does. Conflicts follow the plan's decision rule.
+- A direct mode answer completes the handoff. Immediately invoke
+  `executing-plans` against the approved plan version before any workspace or
+  implementation action; choosing a mode is not execution by itself.
 - **Presenting and executing are separate turns**; require the direct version-and-mode approval above between them. Do not invoke `executing-plans`, create a task branch/workspace, or write code in the presentation turn.
 - **Not a go:** prior approval, praise, comments, constraints, partial answers,
   silence, or a non-interactive session. Revise and re-ask.

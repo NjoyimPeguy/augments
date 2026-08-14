@@ -79,22 +79,11 @@ silently fails; the row numbers below point into it.
     invalidates the verdict and reopens the decision.
 
 11. **Present the release decision.** Readiness is evidence; shipping is the
-    user's call. Print exactly this, then stop:
-
-    ```text
-    Release readiness — {{artifact-set}} → {{target}}
-    Verdict: {{ready | not-ready}}
-
-    Gates:      {{passed}}/{{required}} passing
-    Deviations: {{open-deviations-with-owners}}
-    Rollback:   {{restorable-artifact-and-data-state}}
-
-    1. Promote — you authorize deploying/publishing this exact artifact set
-    2. Hold — do not promote yet
-    3. Cancel — stop this release
-
-    Which?
-    ```
+    user's call. State the exact artifact set and target, verdict, gate count,
+    owned deviations, and rollback state. Ask one conversational question
+    offering promote this exact set, hold, or cancel. Recommend promote only
+    when the verdict is `ready`; otherwise recommend hold, with one sentence of
+    reasoning, then stop.
 
     Nothing is promoted until the user names one. A `ready` verdict, a green
     board, and an accepted deviation are all *inputs* to that choice, never the

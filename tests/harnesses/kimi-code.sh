@@ -63,6 +63,17 @@ adapter_chain() {
           | "sdlc-skills:" + .' "$1" 2>/dev/null
 }
 
+adapter_behavioral_events() {
+  jq -r 'select(.role == "assistant") | .tool_calls[]?
+         | .function as $fn
+         | ($fn.arguments | try fromjson catch {}) as $input
+         | if $fn.name == "Skill" then
+             "SKILL sdlc-skills:" + ($input.skill // "")
+           elif ($fn.name == "Write" or $fn.name == "Edit" or $fn.name == "MultiEdit") then
+             "EDIT " + ($input.path // $input.file_path // "")
+           else empty end' "$1" 2>/dev/null
+}
+
 # No prompt suffix: the sessionStart nudge is part of what this exercises, so the
 # opening goes in bare, as a real user opening.
 adapter_prompt_suffix() { :; }
@@ -91,6 +102,19 @@ adapter_activation_flags() { :; }
 adapter_run_behavioral() { # $1 workdir  $2 opening file  $3 stream
   ( cd "$1" && exec timeout "$timeout_s" env KIMI_CODE_HOME="$harness_home" \
       kimi -p "$(cat "$2")" --output-format stream-json ) < /dev/null > "$3" 2>>"$errlog"
+}
+
+# Continue a multi-turn behavioural session through Kimi's structured resume
+# hint. An absent id is an adapter failure; starting fresh would invalidate any
+# approval/version handoff the scenario is meant to observe.
+adapter_continue_behavioral() { # $1 workdir  $2 prompt  $3 new stream  $4 prior stream
+  local wd="$1" prompt="$2" out="$3" prior="$4" session_id
+  session_id="$(jq -r 'select(.role == "meta" and .type == "session.resume_hint")
+                       | .session_id // empty' "$prior" 2>/dev/null | tail -1)"
+  [ -n "$session_id" ] || { echo "Kimi stream contains no resumable session id" >&2; return 2; }
+  ( cd "$wd" && exec timeout "$timeout_s" env KIMI_CODE_HOME="$harness_home" \
+      kimi --session "$session_id" -p "$prompt" --output-format stream-json \
+    ) < /dev/null > "$out" 2>>"$errlog"
 }
 
 # NO adapter_usage here, and that is a finding rather than an omission. On kimi

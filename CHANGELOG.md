@@ -2,6 +2,12 @@
 
 Notable changes to SDLC skills, newest first. Versions follow semantic versioning; the narrative for each release lives on its release page — this file is the terse, cumulative record.
 
+## [6.0.4] — 2026-08-14
+
+### Fixed
+
+- **Approved plans now enter disciplined execution before code changes.** Execution-mode replies invoke the executor, behavior-affecting work invokes TDD and YAGNI, plan indexes expose task state, supported structured edits are guarded when the chain is skipped, and conversational decisions leave harness-native user-question actions available.
+
 ## [6.0.3] — 2026-08-12
 
 ### Added

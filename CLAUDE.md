@@ -42,6 +42,11 @@ Local checkpoint commits on a task branch are ordinary authorized work here, and
 Files under `skills/` and `docs/` ship to users. They must be self-contained,
 portable engineering guidance.
 
+`docs/` is website documentation for the current library contract. Never put
+run transcripts, failure records, pass-rate anecdotes, superseded behavior, or
+investigation notes there. Keep reproducible scenarios under `tests/`; keep
+ephemeral results in the review workflow or private notes.
+
 **The Agent Skills standard outranks every rule here.** Where this file, or
 anything under `docs/`, conflicts with agentskills.io, the standard wins and the
 house rule is the bug. A house rule may be *stricter*; it may never permit what

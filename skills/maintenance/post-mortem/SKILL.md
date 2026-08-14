@@ -48,26 +48,12 @@ controls are.
 6. **Propose corrective actions, then present them.** Each maps to a structural
    cause and carries the fields the template's action rows require.
 
-   Every action stays `proposed`; writing one down authorizes nobody. Print
-   exactly this, then stop:
-
-   ```text
-   Post-mortem ready for your decision — {{analysis-path}}
-
-   Impact:  {{impact}}
-   Cause:   {{structural-cause}}
-   Escaped: {{gate-that-should-have-caught-it}}
-
-   Proposed corrective actions:
-   {{id}} — {{action}} — owner {{owner}} — by {{date}}
-
-   1. Accept — these actions, owners, and dates
-   2. Request changes — revise scope, owners, or dates
-   3. Reject — wrong analysis
-   4. Cancel — stop this work
-
-   Which?
-   ```
+   Every action stays `proposed`; writing one down authorizes nobody. State the
+   analysis path, impact, structural cause, escaped gate, and each corrective
+   action with owner and date. Ask one conversational question offering accept
+   the actions, request changes, reject the analysis, or cancel. Recommend the
+   answer supported by the evidence and action ownership, with one sentence of
+   reasoning, then stop.
 
    Only complete trusted receipts accepting the exact scope and dates move an
    action out of `proposed`. Record rejection, cancellation, or supersession

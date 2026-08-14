@@ -51,7 +51,9 @@ adapter_check || exit 3
 errlog="$(mktemp)"; harness_home=""; plugin_dir=""
 trap '[ -n "$harness_home" ] && rm -rf "$harness_home"; rm -f "$errlog"' EXIT
 
-canonical="$(find "$repo/skills" -name SKILL.md | wc -l | tr -d ' ')"
+canonical_names="$(find "$repo/skills" -name SKILL.md -printf '%h\n' |
+  sed 's|.*/||' | sort -u)"
+canonical="$(printf '%s\n' "$canonical_names" | grep -c .)"
 fails=0
 echo "harness : $harness"
 echo "skills  : $canonical on disk"
@@ -87,11 +89,27 @@ case "$harness" in
   codex)       layout='*/skills/*/SKILL.md';   manifest='';;
 esac
 
-found="$(find "$root" -path "$layout" 2>/dev/null | wc -l | tr -d ' ')"
-if [ "$found" -ge "$canonical" ]; then
-  echo "  ok    $found SKILL.md discoverable after install ($layout)"
+if declare -F adapter_component_inventory >/dev/null 2>&1; then
+  inventory="$(adapter_component_inventory "$plugin_dir" | grep . | sort -u)"
+  found="$(printf '%s\n' "$inventory" | grep -c .)"
+  missing="$(comm -23 <(printf '%s\n' "$canonical_names") <(printf '%s\n' "$inventory"))"
+  extra="$(comm -13 <(printf '%s\n' "$canonical_names") <(printf '%s\n' "$inventory"))"
+  if [ -z "$missing" ] && [ -z "$extra" ] && [ "$found" -eq "$canonical" ]; then
+    echo "  ok    harness component inventory exposes all $found skills"
+  else
+    echo "  FAIL  harness component inventory does not match the canonical set"
+    [ -n "$missing" ] && printf '%s\n' "$missing" | sed 's/^/        missing: /'
+    [ -n "$extra" ] && printf '%s\n' "$extra" | sed 's/^/        extra:   /'
+    [ -s "$errlog" ] && sed 's/^/        /' "$errlog" >&2
+    fails=1
+  fi
 else
-  echo "  FAIL  only $found of $canonical skills at $layout under $root"; fails=1
+  found="$(find "$root" -path "$layout" 2>/dev/null | wc -l | tr -d ' ')"
+  if [ "$found" -ge "$canonical" ]; then
+    echo "  ok    $found SKILL.md discoverable after install ($layout)"
+  else
+    echo "  FAIL  only $found of $canonical skills at $layout under $root"; fails=1
+  fi
 fi
 
 if [ -n "$manifest" ]; then

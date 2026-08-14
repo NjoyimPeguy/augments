@@ -16,6 +16,18 @@ adapter_check() {
 # An empty source is the NONE arm: nothing to point at, so no flag is passed.
 adapter_install() { plugin_dir="$1"; }
 
+# DISCOVERY: ask Claude Code to resolve the plugin exactly as a session would
+# and return the skill names from its component inventory. A filesystem count
+# cannot prove that the manifest entries were accepted by the harness.
+adapter_component_inventory() { # $1 plugin source
+  claude --plugin-dir "$1" plugin details sdlc-skills 2>>"$errlog" |
+    awk '/^  Skills \([0-9]+\)/ {
+      sub(/^  Skills \([0-9]+\)[[:space:]]+/, "")
+      gsub(/,[[:space:]]*/, "\n")
+      print
+    }'
+}
+
 # DETECTION: only a structured `Skill` tool_use in an ASSISTANT event counts.
 # The SessionStart nudge text and the init manifest both contain `sdlc-skills:`
 # tokens; a raw grep matches those and reports a phantom activation. The first
@@ -23,6 +35,16 @@ adapter_install() { plugin_dir="$1"; }
 adapter_chain() {
   jq -r 'select(.type=="assistant") | .message.content[]?
          | select(.type=="tool_use" and .name=="Skill") | .input.skill' "$1" 2>/dev/null
+}
+
+# Normalize structured actions for cross-harness behavioural assertions.
+adapter_behavioral_events() {
+  jq -r 'select(.type=="assistant") | .message.content[]?
+         | select(.type=="tool_use")
+         | if .name=="Skill" then "SKILL " + (.input.skill // "")
+           elif (.name=="Write" or .name=="Edit" or .name=="MultiEdit")
+           then "EDIT " + (.input.file_path // .input.path // "")
+           else empty end' "$1" 2>/dev/null
 }
 
 # DID IT RUN? The question is whether the run reached the model at all — not
@@ -92,4 +114,20 @@ adapter_run_behavioral() { # $1 workdir  $2 opening file  $3 stream
       ${plugin[@]+"${plugin[@]}"} \
       --allowedTools Skill Read Glob Grep Write Edit Bash TodoWrite \
       --permission-mode acceptEdits ) < /dev/null > "$3" 2>>"$errlog"
+}
+
+# Continue the same behavioural session for scenarios whose failure only exists
+# after an approval handoff. The session id comes from Claude's own structured
+# stream; an absent id is an adapter error, not a fresh-session substitute.
+adapter_continue_behavioral() { # $1 workdir  $2 prompt  $3 new stream  $4 prior stream
+  local wd="$1" prompt="$2" out="$3" prior="$4" session_id plugin=()
+  session_id="$(jq -r 'select(.session_id? != null) | .session_id' "$prior" 2>/dev/null | head -1)"
+  [ -n "$session_id" ] || { echo "Claude stream contains no resumable session id" >&2; return 2; }
+  [ -n "${plugin_dir:-}" ] && plugin=(--plugin-dir "$plugin_dir")
+  ( cd "$wd" && exec timeout "$timeout_s" claude -p "$prompt" \
+      --resume "$session_id" \
+      --output-format stream-json --verbose \
+      ${plugin[@]+"${plugin[@]}"} \
+      --allowedTools Skill Read Glob Grep Write Edit Bash TodoWrite \
+      --permission-mode acceptEdits ) < /dev/null > "$out" 2>>"$errlog"
 }
