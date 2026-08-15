@@ -72,7 +72,7 @@ The page carries state, not documents.
    - the drift connector `{{drift-explanation}}` directly after the stale node, naming which artifact is newer, by how much, and the re-alignment action — omit when there is none;
    - the ADR chain from the designs file's ADR sections, newest first — chains exist only via `Predecessor` links plus ledger state, rendered in the ADR vocabulary (accepted / in force / retired; a superseded record stays `superseded`) — omit when the topic has none;
    - each `<slug>/visuals/*.html` embedded inline via iframe with an `open file ↗` fallback, paths relative to the page; prose artifacts are linked from node meta, never re-rendered — omit when none;
-   - the execute rollup `{{tasks-done}}`/`{{tasks-total}}`/`{{tasks-pct}}`, task rows `{{task-id}}`/`{{task-title}}`/pill, and the `… {{tasks-remaining}} more` line;
+   - the execute rollup `{{tasks-done}}`/`{{tasks-total}}`/`{{tasks-pct}}`; the per-row stubs `{{task-id}}`/`{{task-title}}`/pill repeat once per task, and every task row is rendered — never elide one, because a hidden row can carry a blocked state, a concerns state, or hostile content; completed-state rows (done, cancelled, superseded — a concerns state is not completed) go into the one optional `<details>` block, closed by default, its summary carrying `{{tasks-completed}}`;
    - the assurance matrix from the topic's `verification/` artifact, one row per gate, keeping the matrix's own state words (executable / planned / blocked, go / go-if / no-go) mapped onto pill classes — omit when the topic has none.
 
 7. **Encode everything artifact-derived.** Entity-encode before inserting:
