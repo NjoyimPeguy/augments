@@ -165,7 +165,8 @@
      the decision ledger only: no ledger row means "… unknown" (class
      pending) — never a guessed approval.
   4. Omit optional blocks when their condition fails (drift connector, ADR
-     chain, visuals, task table, assurance matrix). A phase not reached
+     chain, visuals, task table, completed-tasks details, assurance
+     matrix). A phase not reached
      renders as a pending node naming what produces it — never fabricated
      dates or counts.
   5. Self-containment: no http(s) URLs anywhere, no external assets, no
@@ -189,7 +190,7 @@
     visuals:   {{visual-source-label}} · {{visual-file-name}} · {{visual-file-path}}
     tasks:     {{tasks-done}} · {{tasks-total}} · {{tasks-pct}}
                {{task-id}} · {{task-title}} · {{task-pill-class}}
-               {{task-pill-content}} · {{tasks-remaining}}
+               {{task-pill-content}} · {{tasks-completed}}
     gates:     {{gate-name}} · {{gate-pill-class}} · {{gate-pill-content}} · {{gate-note}}
 -->
 
@@ -317,8 +318,9 @@
 
           <!-- NODE · Execute — meta carries the rollup N/M tasks; the bar
                mirrors it but the fraction text is the carrier (bar gets
-               class "full" at M/M). Task table: first rows only, then a
-               "… K more" line; entity-encode task titles. Assurance
+               class "full" at M/M). Task table: EVERY task gets a row
+               (see the task table's fill-in rule); entity-encode task
+               titles. Assurance
                matrix: one row per gate from the topic's verification
                artifact; omit the block when the topic has none. -->
           <div class="node {{execute-node-class}}">
@@ -328,12 +330,34 @@
               <div class="bar" aria-hidden="true"><span style="width:{{tasks-pct}}%"></span></div>
               <p class="meta">{{tasks-done}}/{{tasks-total}} tasks</p>
 
-              <!-- TIER-2 · task table — one row per task, first few only. -->
+              <!-- TIER-2 · task table — one row per task, and EVERY task
+                   gets a row. Repeat the row stub once per task. NEVER
+                   elide, truncate, or summarize-away a task row — a hidden
+                   row can carry a blocked state, a concerns state, or
+                   hostile content. Rows still needing attention (pending,
+                   in progress, blocked, or any concerns state) render
+                   directly in this table so they stay visible at a
+                   glance. -->
               <table class="tasktable" aria-label="Tasks">
                 <tr><th style="width:36px">#</th><th>task</th><th style="width:110px">status</th></tr>
                 <tr><td class="mono">{{task-id}}</td><td>{{task-title}}</td><td><span class="pill {{task-pill-class}}">{{task-pill-content}}</span></td></tr>
               </table>
-              <p class="ts" style="margin:8px 0 0">… {{tasks-remaining}} more</p>
+
+              <!-- TIER-2 · completed tasks — OMIT this block when no task
+                   is completed. All completed-state rows (done, cancelled,
+                   superseded — a concerns state is NOT completed and stays
+                   in the main table above) go into this ONE details block,
+                   closed by default, the summary carrying the completed
+                   count. Every completed row is present in the HTML
+                   regardless of the details state: collapsing is visual
+                   only, never an omission. Pure CSS/HTML — no JavaScript. -->
+              <details style="margin:8px 0 0">
+                <summary class="ts">{{tasks-completed}} completed tasks</summary>
+                <table class="tasktable" aria-label="Completed tasks">
+                  <tr><th style="width:36px">#</th><th>task</th><th style="width:110px">status</th></tr>
+                  <tr><td class="mono">{{task-id}}</td><td>{{task-title}}</td><td><span class="pill {{task-pill-class}}">{{task-pill-content}}</span></td></tr>
+                </table>
+              </details>
 
               <!-- TIER-2 · assurance matrix — one row per gate; keep the
                    matrix's own state words as labels, mapped onto the pill
