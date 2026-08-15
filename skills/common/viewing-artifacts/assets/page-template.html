@@ -280,13 +280,14 @@
                    the label "superseded". -->
               <div class="adr">
                 <div><span class="mono">{{adr-id}}</span> {{adr-title}} · <span class="pill {{adr-pill-class}}">{{adr-pill-content}}</span></div>
-                <div class="chain ts">└ supersedes → <span class="mono">{{adr-superseded-id}}</span> {{adr-superseded-title}} · <span class="pill pending">superseded</span></div>
+                <div class="ts">└ supersedes → <span class="mono">{{adr-superseded-id}}</span> {{adr-superseded-title}} · <span class="pill pending">superseded</span></div>
               </div>
 
               <!-- TIER-2 · Visuals — one .vis block per HTML visual artifact
                    of the topic. Embed only HTML files; prose artifacts get
                    an open-file link in the node meta instead. The iframe
-                   title attribute is required; the path is relative to this
+                   title attribute is required and the bare sandbox attribute
+                   (no tokens) is mandatory; the path is relative to this
                    page; the open-file link is the fallback when iframes
                    are blocked. -->
               <div class="vis">
@@ -295,7 +296,7 @@
                   <span class="mono">{{visual-file-name}}</span>
                   <a href="{{visual-file-path}}" target="_blank" rel="noopener">open file ↗</a>
                 </div>
-                <iframe src="{{visual-file-path}}" title="Inline preview of {{visual-file-name}}" loading="lazy"></iframe>
+                <iframe src="{{visual-file-path}}" title="Inline preview of {{visual-file-name}}" loading="lazy" sandbox></iframe>
               </div>
             </div>
           </div>
@@ -334,10 +335,10 @@
                    gets a row. Repeat the row stub once per task. NEVER
                    elide, truncate, or summarize-away a task row — a hidden
                    row can carry a blocked state, a concerns state, or
-                   hostile content. Rows still needing attention (pending,
-                   in progress, blocked, or any concerns state) render
-                   directly in this table so they stay visible at a
-                   glance. -->
+                   hostile content. Rows still needing attention (todo,
+                   in progress, blocked, needs context, or any concerns
+                   state) render directly in this table so they stay
+                   visible at a glance. -->
               <table class="tasktable" aria-label="Tasks">
                 <tr><th style="width:36px">#</th><th>task</th><th style="width:110px">status</th></tr>
                 <tr><td class="mono">{{task-id}}</td><td>{{task-title}}</td><td><span class="pill {{task-pill-class}}">{{task-pill-content}}</span></td></tr>

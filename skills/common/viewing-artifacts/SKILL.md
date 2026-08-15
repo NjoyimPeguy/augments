@@ -26,25 +26,29 @@ The page carries state, not documents.
    convention is not there — render the template's empty state naming what
    produces artifacts; never search the filesystem for look-alikes.
 
-2. **Thread topics by slug.** `YYYY-MM-DD-<topic>` is the identity. The same
-   slug across folders is one topic: `designs/<slug>.md`, its
-   `<slug>-migration.md` sibling, and its `<slug>/visuals/` directory all
-   belong to it — never split them into phantom topics. Plans are directories
-   (`plans/<slug>/00-index.md`). Audits and post-mortems thread by the same
-   slug but carry no spine phase — never invent a sixth node for them.
+2. **Thread topics by slug.** `YYYY-MM-DD-<topic>` is the identity and the
+   allowlist: only files and directories whose names match that shape are
+   threaded — anything else is ignored. The same slug across folders is one
+   topic: `designs/<slug>.md`, its `<slug>-migration.md` sibling, and its
+   `<slug>/visuals/` directory all belong to it — never split them into
+   phantom topics. Plans are directories (`plans/<slug>/00-index.md`). Audits
+   and post-mortems thread to their topic by the same slug but render in the
+   sidebar and meta only — they never get a spine node or a tier-2 block in
+   v1.
 
 3. **Derive phase status from real markers only.** The spine is brief, spec,
    design, plan, execute. For each phase of each topic:
 
    - **No artifact** → a pending node naming what produces it; no fabricated dates or counts.
    - **Presence plus a `**Status:** draft|proposed` field** → the artifact exists; decision state is external, and its `**Normative version:**` identity is what approval binds to.
-   - **Approval comes only from the decision ledger.** Follow the artifact's `**External decision ledger:**` pointer and parse best-effort — only the markdown-table form, matching the row whose `Identity` equals the artifact's normative version and whose location points at that artifact (the same identity string on another file's row is a different decision). A missing pointer, missing file, non-table content, an ambiguous parse, or no matching row → render approval `external/unknown` (pill `pending`, content `… unknown`). A `**Status:** proposed` field is not approval.
+   - **Approval comes only from the decision ledger.** Follow the artifact's `**External decision ledger:**` pointer — an ADR section carries `**External lifecycle ledger:**` instead, whose states are the ADR-chain vocabulary (accepted / in force / retired / superseded) — and parse best-effort — only the markdown-table form, matching the row whose `Identity` equals the artifact's normative version and whose location points at that artifact (the same identity string on another file's row is a different decision). A missing pointer, missing file, non-table content, an ambiguous parse, or no matching row → render approval `external/unknown` (pill `pending`, content `… unknown`). A `**Status:** proposed` field is not approval.
    - **Section-level state, file-level freshness.** A brief or design file may hold several sections (goals, scope, ADRs), each with its own normative identity and ledger row; derive state per section, freshness per file.
    - **Execute** derives from the plan index's checkbox rows: only the exact marker `[x] done` counts complete. `[x] done with concerns`, `blocked`, `in progress`, `needs context`, `cancelled`, `superseded`, and `todo` each count separately — the same label under a different checkbox is a different signal.
 
 4. **Compute drift from real change times.** Per artifact file, the
-   last-change time is `git log -1 --format=%ct --` followed by the path;
-   outside a git repository, fall back to the file's mtime. Flag drift when
+   last-change time is `git log -1 --format=%ct -- '<path>'` — the path
+   single-quoted, so an artifact-derived name never reaches the shell
+   unquoted; outside a git repository, fall back to the file's mtime. Flag drift when
    an artifact is newer than a downstream artifact that consumed it — a spec
    edited after the plan written against it. Checkbox ticks and status
    labels in the plan index are the mutable execution projection, not a
@@ -71,9 +75,9 @@ The page carries state, not documents.
    - spine nodes from the `{{brief-…}}`, `{{spec-…}}`, `{{design-…}}`, `{{plan-…}}`, `{{execute-…}}` stub families (node class, pill, meta, source path);
    - the drift connector `{{drift-explanation}}` directly after the stale node, naming which artifact is newer, by how much, and the re-alignment action — omit when there is none;
    - the ADR chain from the designs file's ADR sections, newest first — chains exist only via `Predecessor` links plus ledger state, rendered in the ADR vocabulary (accepted / in force / retired; a superseded record stays `superseded`) — omit when the topic has none;
-   - each `<slug>/visuals/*.html` embedded inline via iframe with an `open file ↗` fallback, paths relative to the page; prose artifacts are linked from node meta, never re-rendered — omit when none;
+   - each `<slug>/visuals/*.html` embedded inline via iframe — the iframe always carries `sandbox` — with an `open file ↗` fallback, paths relative to the page; prose artifacts are linked from node meta, never re-rendered — omit when none;
    - the execute rollup `{{tasks-done}}`/`{{tasks-total}}`/`{{tasks-pct}}`; the per-row stubs `{{task-id}}`/`{{task-title}}`/pill repeat once per task, and every task row is rendered — never elide one, because a hidden row can carry a blocked state, a concerns state, or hostile content; completed-state rows (done, cancelled, superseded — a concerns state is not completed) go into the one optional `<details>` block, closed by default, its summary carrying `{{tasks-completed}}`;
-   - the assurance matrix from the topic's `verification/` artifact, one row per gate, keeping the matrix's own state words (executable / planned / blocked, go / go-if / no-go) mapped onto pill classes — omit when the topic has none.
+   - the assurance matrix from the topic's `verification/` artifact, one row per gate, keeping the matrix's own state words (executable / planned / blocked) mapped onto pill classes — omit when the topic has none.
 
 7. **Encode everything artifact-derived.** Entity-encode before inserting:
    `&` → `&amp;` first, then `<` → `&lt;`, `>` → `&gt;`, `"` → `&quot;`.
@@ -92,7 +96,11 @@ The page carries state, not documents.
 9. **Report the path and the as-of.** One short reply: the written path,
    the as-of UTC, and every place the page says unknown or a block was
    omitted for missing state — the user should learn the gaps from you, not
-   discover them.
+   discover them. When any artifact's change time did not come from git,
+   name that drift derives from file mtimes and is blind where times are
+   equal. When a stated ledger pointer exists but could not be honored —
+   present-but-unparsable or ambiguous — name that cause class instead of
+   rendering a bare `unknown`.
 
 ## Common mistakes
 
