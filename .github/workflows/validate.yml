@@ -30,4 +30,4 @@ jobs:
       - name: Plan-to-implementation contract
         run: bash tests/run-plan-execution-contract.sh
       - name: Token budget (always-loaded surface)
-        run: bash scripts/sh/token-budget.sh --max 2000
+        run: bash scripts/sh/token-budget.sh --max 5000

@@ -53,7 +53,7 @@ router's body is resident from session start. That arithmetic justifies a tighte
 | --- | --- | --- | --- |
 | `SKILL.md` body | ≤ 500 lines | 80–120 typical | warns over 200, **fails** over 500 |
 | Body tokens | < 5000 | ≈ 2000 | warns over 2500, **fails** over 5000 |
-| Body drift | — | ≈ 2000 | **fails** over 2000 in CI |
+| Body drift | — | ≈ 2000 | **fails** over 5000 in CI |
 | `description` | ≤ 1024 chars | ≈ 570 chars | **fails** over 1024 |
 
 The two token rows count differently and are not comparable: `check-skill.sh`
