@@ -11,9 +11,12 @@
 #
 # The runner makes ONE baseline commit, which would flatten every git-log
 # timestamp. So setup plants its own dated commits (spec rev 2 newer than the
-# plan = the drift case) and deliberately leaves README.md uncommitted — the
-# runner's `git add -A && git commit` fails on an empty stage, which would
-# kill seeding before the scenario ever runs.
+# plan = the drift case) and deliberately leaves README.md uncommitted. Not
+# because seeding would die: bh_seed_fixture has no `set -e`, so on an empty
+# stage the runner's baseline commit fails SILENTLY and the run continues —
+# but then no `scenario baseline` commit exists, and the read-only assertion
+# below loses its committed-mutation half. The uncommitted README gives that
+# commit something to stage, keeping both halves of the read-only pin live.
 
 scenario_opening() {
   cat <<'EOF'
@@ -264,8 +267,11 @@ EOF
   GIT_AUTHOR_DATE='2026-08-14T09:00:00Z' GIT_COMMITTER_DATE='2026-08-14T09:00:00Z' \
     _sdlc_commit 'cli-rename brief + ledger' || return 2
 
-  # Left UNCOMMITTED on purpose: the runner's baseline commit needs a
-  # non-empty stage or seeding fails. README carries no artifact state.
+  # Left UNCOMMITTED on purpose: the runner's baseline commit fails silently
+  # on an empty stage (bh_seed_fixture has no `set -e`; the run continues),
+  # and without a `scenario baseline` commit the read-only assertion loses
+  # its committed-mutation half. README gives that commit something to
+  # stage; it carries no artifact state itself.
   cat > README.md <<'EOF'
 # fixture
 
@@ -283,7 +289,16 @@ scenario_assert() {
     assert_result; return
   fi
   pass "emitted the page at $page"
-  html="$(cat "$page")"
+  # Strip HTML comments before any matching: the template retains comments
+  # carrying words like "approved" and "assurance matrix", which would
+  # satisfy those pins without the page rendering them. CSS collisions are
+  # handled separately — the pins below anchor on attribute/label text
+  # (`class="conn"`, `Assurance matrix`, `class="vis"`), never bare words
+  # that also occur in the page's own <style> block.
+  html="$(perl -0777 -pe 's/<!--.*?-->//gs' "$page")"
+
+  # an unfilled template stub is not a page: no raw {{placeholder}} remains
+  assert_not_contains "$html" '\{\{' "no unfilled template placeholders"
 
   # self-contained: no external requests of any kind
   assert_not_contains "$html" 'src="http' "no external script/img sources"
@@ -301,8 +316,11 @@ scenario_assert() {
   assert_contains "$html" '5/9|5 of 9' "billing-retry rollup counts only exact \`[x] done\` (5)"
   assert_not_contains "$html" '6/9|6 of 9' "the \`[x] done with concerns\` trap was not counted as done"
 
-  # drift: only real per-file git times put spec rev 2 after the plan
-  assert_contains "$html" 'drift' "drift flagged (spec rev 2 newer than the plan)"
+  # drift: only real per-file git times put spec rev 2 after the plan. The
+  # pin is the drift connector's class — contractually omitted when there is
+  # no drift; a bare `drift` match was vacuous (the page's own CSS is full
+  # of the word)
+  assert_contains "$html" 'class="conn"' "drift flagged (spec rev 2 newer than the plan)"
 
   # attention grouping and underivable state honesty
   assert_contains "$html" 'needs attention' "attention grouping present"
@@ -313,15 +331,20 @@ scenario_assert() {
   assert_not_contains "$html" '<img src=x onerror=alert' "hostile task title is not live markup"
   assert_contains "$html" '&lt;img' "hostile task title is entity-encoded"
 
-  # embedded visual + open-file fallback
+  # embedded visual: iframe and its open-file fallback both live inside the
+  # `class="vis"` block — `open file` alone matched link text anywhere, and
+  # the iframe must carry the template's sandbox attribute
   assert_contains "$html" '<iframe[^>]*retry-flow-v1\.html' "visual artifact embedded inline"
-  assert_contains "$html" 'open file' "open-file fallback link present"
+  assert_contains "$html" '<iframe[^>]*sandbox' "embedded iframe is sandboxed"
+  assert_contains "$html" 'class="vis"' "visuals block (iframe + open-file fallback) rendered"
 
   # tier-2 views
   assert_contains "$html" 'ADR-014' "ADR present in design node"
   assert_contains "$html" 'ADR-009' "superseded ADR present"
   assert_contains "$html" 'supersed' "ADR supersession chain rendered"
-  assert_contains "$html" 'load' "assurance matrix gate rendered"
+  # the assurance matrix block, by its aria-label — `load` matched the
+  # iframe's loading="lazy" whenever any visual rendered
+  assert_contains "$html" 'Assurance matrix' "assurance matrix block rendered"
 
   # read model: state, not documents — this spec body sentence must NOT appear
   assert_not_contains "$html" 'frangible wossname' "page carries state, not full document bodies"
