@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{{page-title}}</title>
+<style>
+  /* Artifact viewer page template: light/dark tokens + all chrome.
+     Self-containment is part of the contract — no external fonts, icons,
+     stylesheets, or scripts. Status is icon + text, never color alone. */
+  :root {
+    color-scheme: light dark;
+    --bg: #f6f7f9; --surface: #ffffff; --ink: #1c2330; --muted: #5b6472;
+    --line: #d8dde4; --soft: #eceff3;
+    --done: #177245; --done-bg: #e3f3ea;
+    --now: #1f5fd0; --now-bg: #e5eefc;
+    --blocked: #b3312a; --blocked-bg: #fbe7e5;
+    --drift: #9a6200; --drift-bg: #faf0dc;
+    --pending: #5b6472; --pending-bg: #eceff3;
+    --accent: #1f5fd0;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #14171c; --surface: #1d2129; --ink: #e6e9ee; --muted: #9aa3b0;
+      --line: #333a45; --soft: #262b34;
+      --done: #4fc38a; --done-bg: #17352a;
+      --now: #7aa5f0; --now-bg: #1c2c4a;
+      --blocked: #f0837c; --blocked-bg: #3d1f1d;
+      --drift: #e0a84f; --drift-bg: #37290f;
+      --pending: #9aa3b0; --pending-bg: #262b34;
+      --accent: #7aa5f0;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--ink);
+    font: 15px/1.5 -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  }
+  code, .mono { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: .92em; }
+  .page { max-width: 1180px; margin: 0 auto; padding: 24px 20px 64px; }
+  :focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+  /* header: title + prominent as-of timestamp (the staleness signal) */
+  .meta-head { margin-bottom: 20px; }
+  .meta-head h1 { font-size: 22px; margin: 0 0 4px; }
+  .note { color: var(--muted); font-size: 13px; }
+  .note strong { color: var(--ink); }
+  .asof { font-size: 14px; }
+
+  /* status pills: glyph + short label, the class only carries the tone */
+  .pill {
+    display: inline-flex; align-items: center; gap: 5px;
+    font-size: 12px; font-weight: 600; line-height: 1;
+    padding: 4px 9px; border-radius: 999px; white-space: nowrap;
+  }
+  .pill.done    { color: var(--done);    background: var(--done-bg); }
+  .pill.now     { color: var(--now);     background: var(--now-bg); }
+  .pill.blocked { color: var(--blocked); background: var(--blocked-bg); }
+  .pill.drift   { color: var(--drift);   background: var(--drift-bg); }
+  .pill.pending { color: var(--pending); background: var(--pending-bg); }
+
+  /* task progress bar: decorative only — the fraction text beside it carries the state */
+  .bar { height: 8px; border-radius: 4px; background: var(--soft); overflow: hidden; min-width: 90px; }
+  .bar > span { display: block; height: 100%; background: var(--now); border-radius: 4px; }
+  .bar.full > span { background: var(--done); }
+
+  /* phase dots: brief, spec, design, plan, execute — always beside a text status */
+  .dots { display: inline-flex; gap: 4px; align-items: center; }
+  .dots i { width: 9px; height: 9px; border-radius: 50%; border: 1.5px solid var(--line); display: inline-block; }
+  .dots i.f { background: var(--done); border-color: var(--done); }
+  .dots i.h { background: var(--now); border-color: var(--now); }
+  .dots i.w { background: var(--drift); border-color: var(--drift); }
+  .dots i.b { background: var(--blocked); border-color: var(--blocked); }
+
+  .card { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; }
+  .slug { font-weight: 650; overflow-wrap: anywhere; }
+  .ts { color: var(--muted); font-size: 12.5px; }
+
+  /* portfolio strip */
+  .tiles { display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 16px; }
+  .tile { flex: 1 1 140px; background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 12px 14px; }
+  .tile .num { font-size: 24px; font-weight: 700; }
+  .tile .num small { color: var(--muted); font-size: 16px; font-weight: 400; }
+  .tile .lbl { color: var(--muted); font-size: 12.5px; }
+  .tile.warn { border-color: var(--drift); }
+  .tile.bad { border-color: var(--blocked); }
+
+  /* dossier: attention-grouped sidebar + one spine pane per topic */
+  .dossier { display: grid; grid-template-columns: 250px 1fr; gap: 16px; }
+  @media (max-width: 760px) { .dossier { grid-template-columns: 1fr; } }
+  .topic-list { display: flex; flex-direction: column; gap: 8px; align-content: start; max-height: 78vh; overflow-y: auto; }
+  .group { margin: 10px 0 0; font-size: 11.5px; font-weight: 700; text-transform: uppercase; letter-spacing: .05em; color: var(--muted); }
+  .group:first-child { margin-top: 0; }
+  a.topic-item { display: block; color: inherit; text-decoration: none; background: var(--surface); border: 1px solid var(--line); border-radius: 8px; padding: 10px 12px; }
+  a.topic-item:hover { border-color: var(--accent); }
+  .topic-item.sel { border-color: var(--accent); box-shadow: 0 0 0 1px var(--accent); }
+  .topic-item .row { display: flex; justify-content: space-between; align-items: center; gap: 8px; }
+  .topic-item .sub { margin-top: 7px; display: flex; justify-content: space-between; align-items: center; gap: 8px; }
+
+  /* topic selection with zero JavaScript: sidebar anchors target panes via
+     :target. The preselected pane carries class default and sits LAST in
+     DOM order, so a targeted pane before it hides it again. */
+  .panes { min-width: 0; }
+  .topic-pane { display: none; }
+  .topic-pane.default { display: block; }
+  .topic-pane:target { display: block; }
+  .topic-pane:target ~ .topic-pane.default { display: none; }
+
+  /* artifact spine: one node per phase; the drift connector sits between nodes */
+  .spine { margin-left: 8px; padding-left: 26px; border-left: 2px solid var(--line); }
+  .node { position: relative; margin-bottom: 18px; }
+  .node::before { content: ""; position: absolute; left: -35px; top: 16px; width: 12px; height: 12px; border-radius: 50%; background: var(--surface); border: 2.5px solid var(--line); }
+  .node.done::before { background: var(--done); border-color: var(--done); }
+  .node.warn::before { background: var(--drift); border-color: var(--drift); }
+  .node.next::before { border-color: var(--pending); }
+  .node .card { padding: 12px 14px; overflow-x: auto; }
+  .node h4 { margin: 0 0 4px; font-size: 15px; display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+  .node .meta { color: var(--muted); font-size: 13px; }
+  .meta a { color: var(--accent); }
+  .conn { margin: -8px 0 14px; padding: 6px 12px; font-size: 12.5px; border: 1px dashed var(--drift); color: var(--drift); background: var(--drift-bg); border-radius: 8px; }
+
+  /* tier-2 blocks inside nodes: ADR chain, embedded visuals, task table, assurance matrix */
+  .adr { font-size: 13px; margin-top: 8px; padding-top: 8px; border-top: 1px dashed var(--line); }
+  .vis { margin-top: 8px; padding-top: 8px; border-top: 1px dashed var(--line); }
+  .vis .vis-head { font-size: 11.5px; font-weight: 700; text-transform: uppercase; letter-spacing: .05em; color: var(--muted); margin-bottom: 8px; }
+  .vis .vis-row { display: flex; justify-content: space-between; align-items: center; gap: 8px; margin-bottom: 6px; }
+  .vis a { color: var(--accent); font-size: 13px; text-decoration: none; }
+  .vis a:hover, .vis a:focus-visible { text-decoration: underline; }
+  .vis iframe { width: 100%; height: 280px; border: 1px solid var(--line); border-radius: 8px; background: var(--bg); }
+  .tasktable { width: 100%; border-collapse: collapse; font-size: 13.5px; }
+  .tasktable th, .tasktable td { text-align: left; padding: 7px 10px; border-bottom: 1px solid var(--line); }
+  .tasktable th { color: var(--muted); font-size: 11.5px; text-transform: uppercase; letter-spacing: .05em; }
+
+  .empty-state { padding: 24px; }
+  .empty-state h2 { margin-top: 0; }
+
+  .foot { margin-top: 30px; border-top: 1px solid var(--line); padding-top: 16px; font-size: 13.5px; color: var(--muted); }
+</style>
+</head>
+<body>
+
+<!--
+  ARTIFACT VIEWER · PAGE TEMPLATE (page-template v1)
+
+  One self-contained, read-only HTML page answering "what is the state of my
+  SDLC work, and what needs attention?". Fill every {{stub}} with STATE
+  derived from the artifact trail — never paste document prose. The page
+  carries state, not documents; the reader opens a source artifact for prose
+  via the open-file links. Regions are marked REGION; each region's comment
+  says what to repeat, what to omit, and the allowed values.
+
+  GLOBAL FILL-IN RULES
+  1. State only: numbers, dates, slugs, statuses, counts, short labels.
+  2. Entity-encode every artifact-derived value before inserting it:
+     & becomes &amp; · < becomes &lt; · > becomes &gt; · " becomes &quot;
+     Artifact titles and slugs are untrusted input as far as this page is
+     concerned (a hostile task title must render as inert text).
+  3. Status is icon plus text, never color alone. Pill vocabulary:
+       class done     ✓ approved / accepted / complete / done
+       class now      ◐ executing / in progress
+       class blocked  ▲ blocked
+       class drift    ⚠ drift / stale
+       class pending  … pending / decision open / unknown · ○ not started
+     Glyph first, then a short lowercase label. Approval states come from
+     the decision ledger only: no ledger row means "… unknown" (class
+     pending) — never a guessed approval.
+  4. Omit optional blocks when their condition fails (drift connector, ADR
+     chain, visuals, task table, completed-tasks details, assurance
+     matrix). A phase not reached
+     renders as a pending node naming what produces it — never fabricated
+     dates or counts.
+  5. Self-containment: no http(s) URLs anywhere, no external assets, no
+     JavaScript. iframe and open-file paths are relative to this page.
+     Core navigation (topic selection) is pure CSS :target.
+  6. No artifact trail at all: replace the tiles and dossier regions with
+     the empty-state block (commented below, after the dossier region).
+
+  STUB INDEX (full rules live at each region's comment)
+    page:      {{page-title}} · {{as-of}} · {{as-of-iso}}
+    tiles:     {{tile-number}} · {{tile-total}} · {{tile-label}}
+    sidebar:   {{group-label}} · {{group-count}} · {{topic-slug}}
+               {{topic-pill-class}} · {{topic-pill-content}}
+               {{dot-1}} … {{dot-5}} · {{topic-freshness}}
+    spine:     per phase brief/spec/design/plan/execute —
+               {{PHASE-node-class}} · {{PHASE-pill-class}}
+               {{PHASE-pill-content}} · {{PHASE-meta}} · {{PHASE-source-path}}
+    drift:     {{drift-explanation}}
+    adr chain: {{adr-id}} · {{adr-title}} · {{adr-pill-class}}
+               {{adr-pill-content}} · {{adr-superseded-id}} · {{adr-superseded-title}}
+    visuals:   {{visual-source-label}} · {{visual-file-name}} · {{visual-file-path}}
+    tasks:     {{tasks-done}} · {{tasks-total}} · {{tasks-pct}}
+               {{task-id}} · {{task-title}} · {{task-pill-class}}
+               {{task-pill-content}} · {{tasks-completed}}
+    gates:     {{gate-name}} · {{gate-pill-class}} · {{gate-pill-content}} · {{gate-note}}
+-->
+
+<div class="page">
+
+  <header class="meta-head">
+    <h1>{{page-title}}</h1>
+    <!-- as-of: prominent staleness signal. {{as-of}} is the display form and
+         carries a UTC marker (pattern: 2026-08-15 09:00 UTC); {{as-of-iso}}
+         is the same instant in ISO 8601 for the datetime attribute. -->
+    <p class="note asof">State as of <strong><time datetime="{{as-of-iso}}">{{as-of}}</time></strong>. Read-only: this page summarizes the artifact trail and never modifies it. Regenerate after the trail changes — a stale page shows its age in this line.</p>
+  </header>
+
+  <!-- ==================== REGION: portfolio tiles ==================== -->
+  <!-- FILL-IN (tiles): 3 to 5 tiles, attention tile LAST. Repeat the
+       exemplar; drop the <small> fraction when the number is not a
+       fraction. Attention tile variants: class "tile bad" with
+       style="color:var(--blocked)" on the number when anything needs
+       attention; class "tile warn" when the only attention is drift;
+       plain tile when nothing needs attention. Numbers and short labels
+       only — no prose. -->
+  <div class="tiles" aria-label="Portfolio summary">
+    <div class="tile"><div class="num">{{tile-number}}<small>/{{tile-total}}</small></div><div class="lbl">{{tile-label}}</div></div>
+  </div>
+
+  <!-- ==================== REGION: dossier ==================== -->
+  <div class="dossier">
+
+    <!-- FILL-IN (sidebar): groups in triage order — the attention group
+         (label starts with "Needs attention") is ALWAYS first; its first
+         topic is the preselected one and carries class "sel" on the item
+         and class "default" on its pane below. One anchor per topic:
+         href is "#topic-" + the topic slug, matching the pane's id.
+         {{topic-freshness}} is a short line: last-change date, or a
+         tasks rollup such as 5/9 with a blocked flag.
+         Phase dots {{dot-1}} … {{dot-5}} map to brief, spec, design, plan,
+         execute; allowed values: f (done) · h (now) · w (drift) ·
+         b (blocked) · empty (not reached). Dots never stand alone — the
+         pill beside them carries the status as icon + text. -->
+    <div class="topic-list" role="list" aria-label="Topics, grouped by attention">
+      <p class="group">{{group-label}} · {{group-count}}</p>
+      <a class="topic-item sel" role="listitem" href="#topic-{{topic-slug}}">
+        <span class="row"><span class="slug mono">{{topic-slug}}</span><span class="pill {{topic-pill-class}}">{{topic-pill-content}}</span></span>
+        <span class="sub"><span class="dots" title="brief, spec, design, plan, execute"><i class="{{dot-1}}"></i><i class="{{dot-2}}"></i><i class="{{dot-3}}"></i><i class="{{dot-4}}"></i><i class="{{dot-5}}"></i></span><span class="ts">{{topic-freshness}}</span></span>
+      </a>
+    </div>
+
+    <div class="panes">
+      <!-- FILL-IN (panes): one section per topic, sidebar order. DOM ORDER
+           MATTERS: the preselected topic's pane goes LAST and carries
+           class "default" — the pure-CSS :target rules show it when no
+           fragment is selected and hide it once another pane is targeted.
+           Node classes: done (approved/finished) · warn (stale/drift) ·
+           next (current or pending) · empty for plain pending. -->
+      <section class="topic-pane default" id="topic-{{topic-slug}}" aria-label="Artifact spine for {{topic-slug}}">
+        <div class="spine">
+
+          <!-- NODE · Brief — meta pattern: approved 2026-07-28 · goals + scope sections · decision ledger: 1 entry.
+               No ledger row: pill is class pending, content "… unknown". -->
+          <div class="node {{brief-node-class}}">
+            <div class="card">
+              <h4>Brief <span class="pill {{brief-pill-class}}">{{brief-pill-content}}</span></h4>
+              <p class="meta">{{brief-meta}} · <a href="{{brief-source-path}}" target="_blank" rel="noopener">open file ↗</a></p>
+            </div>
+          </div>
+
+          <!-- NODE · Spec — meta pattern: approved 08-01 · edited 08-09 → rev 2 · 14 requirements, 9 with verification method.
+               An edit after approval shows as rev N, never hidden. -->
+          <div class="node {{spec-node-class}}">
+            <div class="card">
+              <h4>Spec <span class="pill {{spec-pill-class}}">{{spec-pill-content}}</span></h4>
+              <p class="meta">{{spec-meta}} · <a href="{{spec-source-path}}" target="_blank" rel="noopener">open file ↗</a></p>
+            </div>
+          </div>
+
+          <!-- NODE · Design — meta pattern: 2 decision records · 1 visual set.
+               The ADR chain and visuals blocks attach INSIDE this node;
+               omit each when the topic has none. -->
+          <div class="node {{design-node-class}}">
+            <div class="card">
+              <h4>Design <span class="pill {{design-pill-class}}">{{design-pill-content}}</span></h4>
+              <p class="meta">{{design-meta}} · <a href="{{design-source-path}}" target="_blank" rel="noopener">open file ↗</a></p>
+
+              <!-- TIER-2 · ADR chain — one .adr block when decision records
+                   exist. Newest record first; each supersession nests as a
+                   chain line. A superseded record keeps class pending with
+                   the label "superseded". -->
+              <div class="adr">
+                <div><span class="mono">{{adr-id}}</span> {{adr-title}} · <span class="pill {{adr-pill-class}}">{{adr-pill-content}}</span></div>
+                <div class="ts">└ supersedes → <span class="mono">{{adr-superseded-id}}</span> {{adr-superseded-title}} · <span class="pill pending">superseded</span></div>
+              </div>
+
+              <!-- TIER-2 · Visuals — one .vis block per HTML visual artifact
+                   of the topic. Embed only HTML files; prose artifacts get
+                   an open-file link in the node meta instead. The iframe
+                   title attribute is required and the bare sandbox attribute
+                   (no tokens) is mandatory; the path is relative to this
+                   page; the open-file link is the fallback when iframes
+                   are blocked. -->
+              <div class="vis">
+                <p class="vis-head">Visuals · {{visual-source-label}}</p>
+                <div class="vis-row">
+                  <span class="mono">{{visual-file-name}}</span>
+                  <a href="{{visual-file-path}}" target="_blank" rel="noopener">open file ↗</a>
+                </div>
+                <iframe src="{{visual-file-path}}" title="Inline preview of {{visual-file-name}}" loading="lazy" sandbox></iframe>
+              </div>
+            </div>
+          </div>
+
+          <!-- NODE · Plan — meta pattern: written 08-04 against spec rev 1 · 12 tasks in 00-index.md.
+               node class warn when the plan is stale (see the drift connector). -->
+          <div class="node {{plan-node-class}}">
+            <div class="card">
+              <h4>Plan <span class="pill {{plan-pill-class}}">{{plan-pill-content}}</span></h4>
+              <p class="meta">{{plan-meta}} · <a href="{{plan-source-path}}" target="_blank" rel="noopener">open file ↗</a></p>
+            </div>
+          </div>
+
+          <!-- DRIFT CONNECTOR — only when an artifact is older than what it
+               was written against. Sits directly AFTER the stale node.
+               Text names the exact staleness: which artifact is newer, by
+               how much, and the re-alignment action. Pattern:
+               ⚠ drift — spec rev 2 (edited 08-09) is 5 days newer than the plan (08-04). Re-align before executing. -->
+          <p class="conn">⚠ drift — {{drift-explanation}}</p>
+
+          <!-- NODE · Execute — meta carries the rollup N/M tasks; the bar
+               mirrors it but the fraction text is the carrier (bar gets
+               class "full" at M/M). Task table: EVERY task gets a row
+               (see the task table's fill-in rule); entity-encode task
+               titles. Assurance
+               matrix: one row per gate from the topic's verification
+               artifact; omit the block when the topic has none. -->
+          <div class="node {{execute-node-class}}">
+            <div class="card">
+              <h4>Execute <span class="pill {{execute-pill-class}}">{{execute-pill-content}}</span></h4>
+              <p class="meta">{{execute-meta}} · <a href="{{execute-source-path}}" target="_blank" rel="noopener">open file ↗</a></p>
+              <div class="bar" aria-hidden="true"><span style="width:{{tasks-pct}}%"></span></div>
+              <p class="meta">{{tasks-done}}/{{tasks-total}} tasks</p>
+
+              <!-- TIER-2 · task table — one row per task, and EVERY task
+                   gets a row. Repeat the row stub once per task. NEVER
+                   elide, truncate, or summarize-away a task row — a hidden
+                   row can carry a blocked state, a concerns state, or
+                   hostile content. Rows still needing attention (todo,
+                   in progress, blocked, needs context, or any concerns
+                   state) render directly in this table so they stay
+                   visible at a glance. -->
+              <table class="tasktable" aria-label="Tasks">
+                <tr><th style="width:36px">#</th><th>task</th><th style="width:110px">status</th></tr>
+                <tr><td class="mono">{{task-id}}</td><td>{{task-title}}</td><td><span class="pill {{task-pill-class}}">{{task-pill-content}}</span></td></tr>
+              </table>
+
+              <!-- TIER-2 · completed tasks — OMIT this block when no task
+                   is completed. All completed-state rows (done, cancelled,
+                   superseded — a concerns state is NOT completed and stays
+                   in the main table above) go into this ONE details block,
+                   closed by default, the summary carrying the completed
+                   count. Every completed row is present in the HTML
+                   regardless of the details state: collapsing is visual
+                   only, never an omission. Pure CSS/HTML — no JavaScript. -->
+              <details style="margin:8px 0 0">
+                <summary class="ts">{{tasks-completed}} completed tasks</summary>
+                <table class="tasktable" aria-label="Completed tasks">
+                  <tr><th style="width:36px">#</th><th>task</th><th style="width:110px">status</th></tr>
+                  <tr><td class="mono">{{task-id}}</td><td>{{task-title}}</td><td><span class="pill {{task-pill-class}}">{{task-pill-content}}</span></td></tr>
+                </table>
+              </details>
+
+              <!-- TIER-2 · assurance matrix — one row per gate; keep the
+                   matrix's own state words as labels, mapped onto the pill
+                   classes. -->
+              <table class="tasktable" aria-label="Assurance matrix">
+                <tr><th>gate</th><th style="width:120px">state</th><th>note</th></tr>
+                <tr><td class="mono">{{gate-name}}</td><td><span class="pill {{gate-pill-class}}">{{gate-pill-content}}</span></td><td class="ts">{{gate-note}}</td></tr>
+              </table>
+            </div>
+          </div>
+
+        </div>
+      </section>
+    </div>
+  </div>
+
+  <!-- EMPTY PROJECT — when there is no artifact trail at all, omit the
+       tiles and dossier regions above and emit ONLY this block instead:
+
+    <section class="card empty-state" aria-label="No artifacts yet">
+      <h2>No artifacts yet</h2>
+      <p>This project has no SDLC artifact trail, so there is no state to
+      show. The trail starts with a goals brief, then a spec, then a plan —
+      ask the agent to run that workflow, then regenerate this page.</p>
+    </section>
+  -->
+
+  <footer class="foot">
+    <p>Read-only against the artifact trail · regenerate this page whenever the trail changes (the as-of line above shows staleness) · source artifacts open via the open-file links.</p>
+  </footer>
+
+</div>
+</body>
+</html>
