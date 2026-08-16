@@ -8,19 +8,44 @@
 
 adapter_name='claude-code'
 
+source_claude_home="${CLAUDE_CONFIG_DIR:-${HOME:-}/.claude}"
+
 adapter_check() {
   command -v claude >/dev/null 2>&1 || { echo "no \`claude\` CLI on PATH" >&2; return 3; }
 }
 
-# Claude Code loads a plugin tree directly — no install step, no isolated home.
-# An empty source is the NONE arm: nothing to point at, so no flag is passed.
-adapter_install() { plugin_dir="$1"; }
+# Claude Code loads a plugin tree directly, so `--plugin-dir` is the whole
+# install — an empty source is the NONE arm and passes no flag.
+#
+# The isolated home is a separate job, and this adapter used to skip it. It did
+# not, and a NONE arm on an operator with sdlc-skills installed loaded the
+# skills anyway: `~/.claude/plugins/` is read regardless of `--plugin-dir`. The
+# runner's contamination guard caught it, so the result was refused rather than
+# scored — but the arm that is supposed to answer "is this skill worth its
+# context" was simply unavailable on the primary harness.
+#
+# So: an isolated CLAUDE_CONFIG_DIR per run, exactly as CODEX_HOME and
+# KIMI_CODE_HOME already do. Credentials are copied in because a run has to
+# authenticate; `settings.json` deliberately is NOT, because it carries the
+# SessionStart hook that injects the router — copying it would re-contaminate
+# the arm through the other door. An operator authenticating by environment
+# variable needs no file, and the copy is skipped without complaint.
+#
+# Every invocation below reads `harness_home`, so adapter_install must run
+# first. All three runners already call it before anything else.
+adapter_install() { # $1 plugin source ("" = NONE arm, load nothing)
+  harness_home="$(mktemp -d)"
+  [ -f "$source_claude_home/.credentials.json" ] &&
+    cp "$source_claude_home/.credentials.json" "$harness_home/.credentials.json"
+  plugin_dir="$1"
+  return 0
+}
 
 # DISCOVERY: ask Claude Code to resolve the plugin exactly as a session would
 # and return the skill names from its component inventory. A filesystem count
 # cannot prove that the manifest entries were accepted by the harness.
 adapter_component_inventory() { # $1 plugin source
-  claude --plugin-dir "$1" plugin details sdlc-skills 2>>"$errlog" |
+  env CLAUDE_CONFIG_DIR="$harness_home" claude --plugin-dir "$1" plugin details sdlc-skills 2>>"$errlog" |
     awk '/^  Skills \([0-9]+\)/ {
       sub(/^  Skills \([0-9]+\)[[:space:]]+/, "")
       gsub(/,[[:space:]]*/, "\n")
@@ -72,15 +97,16 @@ adapter_ran() {
 # permission prompt — so against an operator whose settings already
 # auto-approve, there is no prompt to pre-approve and every tool stayed
 # available. Runs executed Bash freely while this comment claimed they could
-# not. Since this adapter deliberately inherits the operator's real home
-# (adapter_install below), an allow-list can never be the guarantee here; only
-# the availability flag is operator-independent. `--allowedTools` stays for the
-# opposite operator, whose default mode would otherwise prompt and hang.
+# not. The isolated home added in adapter_install now keeps the operator's
+# `settings.json` out of the run, so an allow-list would in fact bind again —
+# but `--tools` stays, because a guarantee that does not depend on which files
+# were copied is the stronger one. `--allowedTools` stays for the opposite
+# operator, whose default mode would otherwise prompt and hang.
 adapter_run_activation() { # $1 workdir  $2 prompt  $3 stream  $4 extra flags...
   local wd="$1" prompt="$2" stream="$3"; shift 3
   # --max-turns bounds a run that never reaches the expected skill; without it a
   # miss burns a full session instead of stopping.
-  ( cd "$wd" && exec timeout "$timeout_s" claude -p "$prompt" \
+  ( cd "$wd" && exec timeout "$timeout_s" env CLAUDE_CONFIG_DIR="$harness_home" claude -p "$prompt" \
       --output-format stream-json --verbose "$@" \
       --max-turns "${maxturns:-6}" \
       --tools "Skill,Read,Glob,Grep" \
@@ -109,7 +135,7 @@ adapter_usage() {
 adapter_run_behavioral() { # $1 workdir  $2 opening file  $3 stream
   local plugin=()
   [ -n "${plugin_dir:-}" ] && plugin=(--plugin-dir "$plugin_dir")
-  ( cd "$1" && exec timeout "$timeout_s" claude -p "$(cat "$2")" \
+  ( cd "$1" && exec timeout "$timeout_s" env CLAUDE_CONFIG_DIR="$harness_home" claude -p "$(cat "$2")" \
       --output-format stream-json --verbose \
       ${plugin[@]+"${plugin[@]}"} \
       --allowedTools Skill Read Glob Grep Write Edit Bash TodoWrite \
@@ -124,7 +150,7 @@ adapter_continue_behavioral() { # $1 workdir  $2 prompt  $3 new stream  $4 prior
   session_id="$(jq -r 'select(.session_id? != null) | .session_id' "$prior" 2>/dev/null | head -1)"
   [ -n "$session_id" ] || { echo "Claude stream contains no resumable session id" >&2; return 2; }
   [ -n "${plugin_dir:-}" ] && plugin=(--plugin-dir "$plugin_dir")
-  ( cd "$wd" && exec timeout "$timeout_s" claude -p "$prompt" \
+  ( cd "$wd" && exec timeout "$timeout_s" env CLAUDE_CONFIG_DIR="$harness_home" claude -p "$prompt" \
       --resume "$session_id" \
       --output-format stream-json --verbose \
       ${plugin[@]+"${plugin[@]}"} \
