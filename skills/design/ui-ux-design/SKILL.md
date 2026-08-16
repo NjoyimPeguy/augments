@@ -48,8 +48,10 @@ you.
    spacing, shape, imagery, and motion as one product-specific system — and do not
    decorate around a hierarchy that is still unresolved.
 6. **Show alternatives only when seeing helps.** For a spatial, visual, or motion
-   decision, read [visual-decisions.md](references/visual-decisions.md) and compare
-   2–4 controlled, meaningfully different variants.
+   decision, read [visual-decisions.md](references/visual-decisions.md), build the
+   comparison surface from `assets/comparison-template.html` (the shared chrome —
+   you author only the variants), and compare 2–4 controlled, meaningfully
+   different variants.
 
    Conceptual requirements and trade-offs stay in conversation — they are not
    easier to see. And if what is uncertain is feasibility rather than preference,
