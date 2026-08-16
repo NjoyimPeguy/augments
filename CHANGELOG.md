@@ -2,6 +2,12 @@
 
 Notable changes to SDLC skills, newest first. Versions follow semantic versioning; the narrative for each release lives on its release page — this file is the terse, cumulative record.
 
+## [6.1.0] — 2026-08-16
+
+### Added
+
+- **`viewing-artifacts`: one page for the state of the trail.** Ask for the state of your SDLC work and the agent emits a single self-contained local page from `.sdlc-skills/` — attention-grouped topics, per-topic artifact spine, drift flags from real change times, task and gate rollups — derived only from real markers, showing `unknown` where approval is underivable instead of guessing.
+
 ## [6.0.4] — 2026-08-14
 
 ### Fixed
