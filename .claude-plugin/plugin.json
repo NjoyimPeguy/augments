@@ -42,6 +42,7 @@
     "./skills/implementation/executing-plans",
     "./skills/implementation/test-driven-development",
     "./skills/maintenance/complexity-audit",
+    "./skills/maintenance/containing-an-incident",
     "./skills/maintenance/debugging",
     "./skills/maintenance/post-mortem",
     "./skills/maintenance/refactor-architecture",
