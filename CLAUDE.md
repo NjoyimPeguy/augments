@@ -98,10 +98,26 @@ inconclusive results included.
 ## Adding a skill
 
 Invoke `writing-skills` and follow its procedure — it owns the template, the
-format, and the checks to run before calling one done. Two things are this
-repository's and are not in there: pick the phase folder from the canonical
-order in `README.md` (or `common/`), and run `scripts/sh/validate-skills.sh`,
-which adds the house rules on top of the standard's.
+format, and the checks to run before calling one done. Three things are this
+repository's and are not in there: prove the failure first, pick the phase
+folder from the canonical order in `README.md` (or `common/`), and run
+`scripts/sh/validate-skills.sh`, which adds the house rules on top of the
+standard's.
+
+**Prove the failure before you author, not after.** A gap in what the library
+documents is not a gap in what an agent does. Reading the catalogue for holes
+finds absences reliably and predicts behaviour badly — an absence tells you what
+nobody wrote, never what an agent gets wrong without it. So where the failure can
+be reproduced at all, reproduce it first: run the scenario against a bare agent,
+`--arm none`, and watch it fail. A pass means there is nothing to prevent and the
+skill would be ceremony; "no skill is needed here" is the finding, so report it
+and stop. Where there is no failure to reproduce, authoring rule 4 already
+governs.
+
+A red on `--arm none` is necessary and not sufficient. It shows that a *bare*
+agent fails, never that the current skills do — only `--arm red` answers that,
+and a skill duplicating one already in the catalogue is what that second run
+catches. `docs/testing.md` owns which run answers which question.
 
 ## Editing a skill
 
