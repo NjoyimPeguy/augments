@@ -344,7 +344,7 @@ scenario_assert() {
   assert_contains "$html" 'supersed' "ADR supersession chain rendered"
   # the assurance matrix block, by its aria-label — `load` matched the
   # iframe's loading="lazy" whenever any visual rendered
-  assert_contains "$html" 'Assurance matrix' "assurance matrix block rendered"
+  assert_contains "$html" 'aria-label="Assurance matrix"' "assurance matrix block rendered"
 
   # read model: state, not documents — this spec body sentence must NOT appear
   assert_not_contains "$html" 'frangible wossname' "page carries state, not full document bodies"
