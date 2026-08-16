@@ -80,6 +80,7 @@ A skill is invoked as `sdlc-skills:<name>` regardless of which phase folder hold
 | testing | `visual-ui-verification` | Drive an integrated GUI or TUI across accepted visual conditions, inspect candidate-bound frames, and return a calibrated evidence-backed verdict |
 | deployment | `finishing-a-branch` | Classify the real checkout, finalize only with authorized history changes, verify the integrated result, and make explicit integration and owned-cleanup decisions |
 | deployment | `release-readiness` | Judge an immutable artifact set for one named promotion; later stages consume observed canary/soak evidence rather than borrowing readiness from an earlier verdict |
+| maintenance | `containing-an-incident` | Stop live user impact with the narrowest reversible lever, prove it stopped from the outside signal, and record the mitigation as reversible debt before diagnosing |
 | maintenance | `debugging` | Establish causal root cause through deterministic or quantified probabilistic evidence before changing behavior |
 | maintenance | `post-mortem` | Reconstruct the escape path and carry owned corrective controls through falsification, enforcement, rollout, and effectiveness review |
 | maintenance | `complexity-audit` | Audit a bounded existing module or codebase for accidental complexity through read-only, evidence-bound keep, simplify, remove, decision, and investigate findings |

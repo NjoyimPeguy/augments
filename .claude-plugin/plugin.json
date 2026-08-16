@@ -1,7 +1,7 @@
 {
   "name": "sdlc-skills",
   "description": "A cross-platform SDLC skills library for coding agents: planning, design, TDD, debugging, review, and delivery workflows.",
-  "version": "6.1.1",
+  "version": "6.2.0",
   "author": {
     "name": "Njoyim Peguy",
     "email": "pnjoyim@gmail.com"
@@ -42,6 +42,7 @@
     "./skills/implementation/executing-plans",
     "./skills/implementation/test-driven-development",
     "./skills/maintenance/complexity-audit",
+    "./skills/maintenance/containing-an-incident",
     "./skills/maintenance/debugging",
     "./skills/maintenance/post-mortem",
     "./skills/maintenance/refactor-architecture",

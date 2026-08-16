@@ -2,6 +2,16 @@
 
 Notable changes to SDLC skills, newest first. Versions follow semantic versioning; the narrative for each release lives on its release page — this file is the terse, cumulative record.
 
+## [6.2.0] — 2026-08-16
+
+### Added
+
+- **`containing-an-incident`: stop the impact, then find out why.** When a failure is reaching users, the skill goes first to the fastest safe lever — roll back, disable, drain — so an outage is not extended by a debugging session that could have run after users were served again.
+
+### Fixed
+
+- **`--arm none` works on claude-code.** The adapter set no isolated config home, so `~/.claude/plugins/` loaded the operator's installed skills no matter what `--plugin-dir` pointed at. The contamination guard caught it, so no result was ever mis-scored — but the one arm that can retire a skill was unavailable on any machine with the plugin installed.
+
 ## [6.1.1] — 2026-08-16
 
 ### Added

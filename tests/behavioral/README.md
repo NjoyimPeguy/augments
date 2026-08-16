@@ -79,7 +79,7 @@ grounded in a real defect costs hours to run and proves nothing when it passes.
 | Selection | API calls | Per call | Wall clock |
 | --- | --- | --- | --- |
 | One scenario, one harness, one arm | 1 | ~5–40 min | — |
-| Every scenario × 3 harnesses × 2 arms | 7 × 3 × 2 | ~5–40 min | **3–28 h** |
+| Every scenario × 3 harnesses × 2 arms | 12 × 3 × 2 | ~5–40 min | **6–48 h** |
 
 That matrix is **deliberately not filled**, and the limit is stated rather than
 papered over. Run one arm before a sweep — if GREEN fails on one harness, the

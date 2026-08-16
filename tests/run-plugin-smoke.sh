@@ -66,7 +66,13 @@ echo "  ok    install completed"
 # Whatever the mechanism, the skills must be discoverable afterwards. Claude Code
 # loads the tree in place, so plugin_dir is the answer; the others copy or
 # register into an isolated home.
-root="${harness_home:-$plugin_dir}"
+#
+# The explicit plugin dir wins. This read `${harness_home:-$plugin_dir}` and only
+# worked because Claude Code set no isolated home; the moment it did — for the
+# NONE arm's sake — the same expression pointed this check at a config directory
+# with no skills in it. An adapter can need both, and only one of them is where
+# the tree lives.
+root="${plugin_dir:-$harness_home}"
 [ -n "$root" ] || { echo "  FAIL  adapter_install set neither harness_home nor plugin_dir"; exit 1; }
 
 # What this harness reads after an install: the SKILL.md layout it loads, and the
