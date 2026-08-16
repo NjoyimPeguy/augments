@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{{page-title}}</title>
+<!--
+  COMPARISON-SURFACE TEMPLATE — ui-ux-design, visual decisions.
+
+  WHAT THIS IS: the chrome for one comparison surface (visual-decisions.md,
+  medium 3). Fill the {{double-curly}} stubs, save one file per VERSION at
+  `.sdlc-skills/designs/{{YYYY-MM-DD}}-{{topic}}/visuals/{{decision-slug}}-vN.html`,
+  and KEEP prior versions — a changed surface invalidates earlier comparison
+  evidence, and the old file is the only way to see what changed.
+
+  WHAT YOU AUTHOR: the variants (structure, hierarchy, affordance, visual
+  direction). What you never author from scratch: this chrome. The whole
+  point of the file is that every surface behaves identically, so versions
+  and surfaces compare cleanly.
+
+  RULES THE SURFACE OWES (from visual-decisions.md — restated because a
+  filler may not have it in context):
+  - 2-4 variants, meaningfully different. Color swaps are not different
+    layout directions; give every viable option its strongest fair version
+    and a one-line trade-off; no straw option.
+  - Hold requirements, content, data, device, and baseline accessibility
+    CONSTANT across variants — the chosen axis is the only thing that
+    changes. Never make a preferred option look better through better copy
+    or easier data.
+  - Same realistic happy AND unhappy state in every variant.
+  - State the question and the 2-4 comparison dimensions on the surface
+    (the header below), plus what is held constant.
+  - A click or control state is not approval; the decision is confirmed in
+    conversation and recorded in the design section.
+  - Self-contained: inline styles only, system fonts, no external requests,
+    no JavaScript required (this file ships none), works over file://,
+    light/dark via prefers-color-scheme.
+
+  VARIANT COUNT: stubs are provided for 4. Delete the unused radio inputs,
+  their labels, and their sections — never leave an empty variant.
+-->
+<style>
+  :root {
+    color-scheme: light dark;
+    --bg: #f6f7f9; --surface: #ffffff; --ink: #1c2330; --muted: #5b6472;
+    --line: #d8dde4; --soft: #eceff3;
+    --done: #177245; --done-bg: #e3f3ea;
+    --now: #1f5fd0; --now-bg: #e5eefc;
+    --blocked: #b3312a; --blocked-bg: #fbe7e5;
+    --drift: #9a6200; --drift-bg: #faf0dc;
+    --pending: #5b6472; --pending-bg: #eceff3;
+    --accent: #1f5fd0;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #14171c; --surface: #1d2129; --ink: #e6e9ee; --muted: #9aa3b0;
+      --line: #333a45; --soft: #262b34;
+      --done: #4fc38a; --done-bg: #17352a;
+      --now: #7aa5f0; --now-bg: #1c2c4a;
+      --blocked: #f0837c; --blocked-bg: #3d1f1d;
+      --drift: #e0a84f; --drift-bg: #37290f;
+      --pending: #9aa3b0; --pending-bg: #262b34;
+      --accent: #7aa5f0;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--ink);
+    font: 15px/1.5 -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  }
+  code, .mono { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: .92em; }
+  .page { max-width: 1180px; margin: 0 auto; padding: 24px 20px 64px; }
+
+  /* ---------- decision scaffolding ---------- */
+  .meta-head { margin-bottom: 20px; }
+  .meta-head h1 { font-size: 22px; margin: 0 0 4px; }
+  .meta-head .q { font-size: 16px; margin: 8px 0; }
+  .meta-head .dims { display: flex; flex-wrap: wrap; gap: 8px; margin: 10px 0; }
+  .dim { border: 1px solid var(--line); background: var(--surface); border-radius: 6px; padding: 4px 10px; font-size: 13px; }
+  .note { color: var(--muted); font-size: 13px; }
+  .note strong { color: var(--ink); }
+
+  /* ---------- variant switcher (pure CSS, no JS) ----------
+     The radio inputs MUST stay direct siblings of .variants, before it in
+     the DOM: the `#pick-N:checked ~ .variants` selector only reaches
+     following siblings. Nesting the inputs inside the <nav> silently
+     blanks every pane — that bug shipped once. Do not "tidy" them away. */
+  .visually-hidden { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+  .switcher { display: flex; gap: 4px; background: var(--soft); border-radius: 10px; padding: 4px; margin: 18px 0 24px; width: max-content; max-width: 100%; flex-wrap: wrap; }
+  .switcher label {
+    padding: 8px 16px; border-radius: 7px; cursor: pointer; font-weight: 600; font-size: 14px;
+    color: var(--muted); border: 1px solid transparent;
+  }
+  #pick-1:checked ~ .switcher label[for="pick-1"],
+  #pick-2:checked ~ .switcher label[for="pick-2"],
+  #pick-3:checked ~ .switcher label[for="pick-3"],
+  #pick-4:checked ~ .switcher label[for="pick-4"] { background: var(--surface); color: var(--ink); border-color: var(--line); }
+  #pick-1:focus-visible ~ .switcher label[for="pick-1"],
+  #pick-2:focus-visible ~ .switcher label[for="pick-2"],
+  #pick-3:focus-visible ~ .switcher label[for="pick-3"],
+  #pick-4:focus-visible ~ .switcher label[for="pick-4"] { outline: 2px solid var(--accent); outline-offset: 2px; }
+  .variant { display: none; }
+  #pick-1:checked ~ .variants .variant-1 { display: block; }
+  #pick-2:checked ~ .variants .variant-2 { display: block; }
+  #pick-3:checked ~ .variants .variant-3 { display: block; }
+  #pick-4:checked ~ .variants .variant-4 { display: block; }
+
+  /* ---------- variant header ---------- */
+  .v-head { border-bottom: 2px solid var(--line); padding-bottom: 10px; margin-bottom: 16px; }
+  .v-head h2 { margin: 0 0 2px; font-size: 19px; }
+  .v-head .char { color: var(--muted); margin: 2px 0; }
+  .v-head .trade { font-size: 13px; margin: 6px 0 0; }
+  .v-head .trade strong { color: var(--ink); }
+
+  /* ---------- shared status vocabulary (icon + text, never color alone) ---------- */
+  .pill {
+    display: inline-flex; align-items: center; gap: 5px;
+    font-size: 12px; font-weight: 600; line-height: 1;
+    padding: 4px 9px; border-radius: 999px; white-space: nowrap;
+  }
+  .pill.done    { color: var(--done);    background: var(--done-bg); }
+  .pill.now     { color: var(--now);     background: var(--now-bg); }
+  .pill.blocked { color: var(--blocked); background: var(--blocked-bg); }
+  .pill.drift   { color: var(--drift);   background: var(--drift-bg); }
+  .pill.pending { color: var(--pending); background: var(--pending-bg); }
+
+  /* ---------- footer ---------- */
+  .foot { margin-top: 30px; border-top: 1px solid var(--line); padding-top: 16px; font-size: 13.5px; color: var(--muted); }
+  .foot h2 { font-size: 15px; color: var(--ink); margin: 0 0 8px; }
+  .foot li { margin-bottom: 6px; }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <header class="meta-head">
+    <h1>{{surface-title}}</h1>
+    <p class="q"><strong>Question:</strong> {{the visual or interaction decision being made, one sentence}}</p>
+    <div class="dims">
+      <!-- 2-4 comparison dimensions, e.g. task clarity · information density · recovery · scannability -->
+      <span class="dim">{{dimension-1}}</span>
+      <span class="dim">{{dimension-2}}</span>
+      <span class="dim">{{dimension-3}}</span>
+      <span class="dim">{{dimension-4}}</span>
+    </div>
+    <p class="note">
+      <strong>Held constant:</strong> {{requirements, content, data, device, and baseline accessibility that are identical across variants}}.
+      <strong>Differs:</strong> {{the open axis — structure, hierarchy, affordance, or visual direction}}.
+      A click is not approval — the decision is confirmed in conversation and recorded in the design section.
+    </p>
+  </header>
+
+  <!-- switcher radios: keep as direct siblings of .variants (see CSS note) -->
+  <input class="visually-hidden" type="radio" name="variant" id="pick-1" checked>
+  <input class="visually-hidden" type="radio" name="variant" id="pick-2">
+  <input class="visually-hidden" type="radio" name="variant" id="pick-3">
+  <input class="visually-hidden" type="radio" name="variant" id="pick-4">
+  <nav class="switcher" aria-label="Choose variant to view">
+    <label for="pick-1">{{variant-1-short-label}}</label>
+    <label for="pick-2">{{variant-2-short-label}}</label>
+    <label for="pick-3">{{variant-3-short-label}}</label>
+    <label for="pick-4">{{variant-4-short-label}}</label>
+  </nav>
+
+  <div class="variants">
+
+    <section class="variant variant-1" aria-label="Variant 1">
+      <div class="v-head">
+        <h2>{{variant-1-name}}</h2>
+        <p class="char">{{one line: what this direction is}}</p>
+        <p class="trade"><strong>Strongest for:</strong> {{the dimension(s) it wins}}. <strong>Trade-off:</strong> {{its honest cost}}.</p>
+      </div>
+      <!-- VARIANT 1 CONTENT — authored by you. Same fixture, same states,
+           same vocabulary as every other variant. -->
+      {{variant-1-content}}
+    </section>
+
+    <section class="variant variant-2" aria-label="Variant 2">
+      <div class="v-head">
+        <h2>{{variant-2-name}}</h2>
+        <p class="char">{{one line: what this direction is}}</p>
+        <p class="trade"><strong>Strongest for:</strong> {{the dimension(s) it wins}}. <strong>Trade-off:</strong> {{its honest cost}}.</p>
+      </div>
+      {{variant-2-content}}
+    </section>
+
+    <section class="variant variant-3" aria-label="Variant 3">
+      <div class="v-head">
+        <h2>{{variant-3-name}}</h2>
+        <p class="char">{{one line: what this direction is}}</p>
+        <p class="trade"><strong>Strongest for:</strong> {{the dimension(s) it wins}}. <strong>Trade-off:</strong> {{its honest cost}}.</p>
+      </div>
+      {{variant-3-content}}
+    </section>
+
+    <section class="variant variant-4" aria-label="Variant 4">
+      <div class="v-head">
+        <h2>{{variant-4-name}}</h2>
+        <p class="char">{{one line: what this direction is}}</p>
+        <p class="trade"><strong>Strongest for:</strong> {{the dimension(s) it wins}}. <strong>Trade-off:</strong> {{its honest cost}}.</p>
+      </div>
+      {{variant-4-content}}
+    </section>
+
+  </div><!-- .variants -->
+
+  <footer class="foot">
+    <h2>Text summary (if the page can't render)</h2>
+    <ul>
+      <li><strong>{{variant-1-name}}</strong> — {{one or two lines: structure, what it wins, what it costs}}</li>
+      <li><strong>{{variant-2-name}}</strong> — {{same}}</li>
+      <li><strong>{{variant-3-name}}</strong> — {{same}}</li>
+      <li><strong>{{variant-4-name}}</strong> — {{same}}</li>
+    </ul>
+    <p>All variants render the same fixture: {{fixture identity — date, content, states}}. Version <span class="mono">{{decision-slug}}-vN</span>; prior versions: {{paths, or "none (first)"}}.</p>
+    <p><strong>Feedback needed:</strong> which variant, and — more useful than the letter — which dimension drove the preference and what fails. A click is not approval; the direction is confirmed in conversation, then recorded in the design section.</p>
+  </footer>
+
+</div>
+</body>
+</html>

@@ -2,6 +2,12 @@
 
 Notable changes to SDLC skills, newest first. Versions follow semantic versioning; the narrative for each release lives on its release page — this file is the terse, cumulative record.
 
+## [6.1.1] — 2026-08-16
+
+### Added
+
+- **`ui-ux-design` ships its comparison-surface chrome.** Step 6's visual comparisons now start from a shared template (tokens, variant switcher, decision scaffolding), so every surface behaves identically and agents author only the variants.
+
 ## [6.1.0] — 2026-08-16
 
 ### Added
