@@ -34,9 +34,9 @@ push and pull request.
 | `name` 1–64 chars, lowercase `a-z0-9-` | conforms | charset + length check |
 | `name` no leading/trailing hyphen, no `--` | conforms | pattern check |
 | `name` matches parent directory | conforms | compared per skill |
-| `description` non-empty, ≤ 1024 chars | conforms | length check; longest is 567 |
+| `description` non-empty, ≤ 1024 chars | conforms | length check; longest is 693 |
 | Body ≤ 500 lines | conforms | line check; longest is 135 (27% of ceiling) |
-| Body < 5000 tokens recommended | conforms | token check; largest is ~1457 (29%) |
+| Body < 5000 tokens recommended | conforms | token check; largest is ~1830 (37%) |
 | File references relative to skill root | conforms | every path resolved in the install tree |
 | References one level deep, no nested chains | conforms | depth check |
 | `scripts/` / `references/` / `assets/` semantics | conforms | see *Directory conventions* |
@@ -53,7 +53,7 @@ router's body is resident from session start. That arithmetic justifies a tighte
 | --- | --- | --- | --- |
 | `SKILL.md` body | ≤ 500 lines | 80–120 typical | warns over 200, **fails** over 500 |
 | Body tokens | < 5000 | ≈ 2000 | warns over 2500, **fails** over 5000 |
-| Body drift | — | ≈ 2000 | **fails** over 2000 in CI |
+| Body drift | — | ≈ 2000 | **fails** over 5000 in CI |
 | `description` | ≤ 1024 chars | ≈ 570 chars | **fails** over 1024 |
 
 The two token rows count differently and are not comparable: `check-skill.sh`
@@ -102,7 +102,7 @@ Not machine-checkable. These are the bar a reviewer holds a skill to.
 | Directory | Standard's purpose | Our use |
 | --- | --- | --- |
 | `references/` | documentation read on demand | 21 skills; rubrics, checklists, reviewer briefs, worked examples |
-| `assets/` | static resources, incl. document templates | 24 skills; every fill-in template — see below |
+| `assets/` | static resources, incl. document templates | 25 skills; every fill-in template — see below |
 | `scripts/` | bundled executable code | 3 skills — see below |
 
 **The split.** A file the agent *fills in and emits as an artifact* is a

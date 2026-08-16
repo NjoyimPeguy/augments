@@ -13,13 +13,15 @@
 #
 # Flags and exit codes: --help.
 #
-# CI runs this with --max 2000 (see .github/workflows/validate.yml) — the house
-# body target, so the gate flags drift rather than tracking whatever the largest
-# body happens to measure. It sat at 1600 while bodies were written in a
-# telegraphic register; a body that spells its rules out in sentences costs more
-# tokens for the same rules, and a ceiling fitted to the compressed prose would
-# have forbidden decompressing them. Exceeding 2000 means tighten the skill — or
-# raise the budget deliberately, in the same diff, where a reviewer can see it.
+# CI runs this with --max 5000 (see .github/workflows/validate.yml) — aligned
+# with the standard's own body ceiling. Below it, ≈2000 remains the house
+# target a body is expected to justify in review; this report is the number
+# that justification argues from. The gate sat at 1600 while bodies were
+# written in a telegraphic register; a body that spells its rules out in
+# sentences costs more tokens for the same rules, and a ceiling fitted to the
+# compressed prose would have forbidden decompressing them. Exceeding the CI
+# max means tighten the skill — or raise the budget deliberately, in the same
+# diff, where a reviewer can see it.
 #
 # This is the chars/4 estimator. check-skill.sh scores bodies against the
 # standard's own 5000-token ceiling using words x 1.3; the two numbers are in
