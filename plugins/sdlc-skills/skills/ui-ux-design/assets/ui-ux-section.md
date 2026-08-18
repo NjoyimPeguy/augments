@@ -63,7 +63,7 @@ through its control, its confirmation, and its errors.
 product-specific system — what it is, and what in the product it comes from.}}
 
 Where variants were compared: {{what was held constant, what differed, which won,
-and on what grounds}}
+and on what grounds — or, when no comparison ran, the stated reason none was owed}}
 
 ### Conditions
 
