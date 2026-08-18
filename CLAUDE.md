@@ -93,7 +93,10 @@ exit code.
 Rule 4 (behavior) has no deterministic gate — that is the honest limit. Which
 live run answers which question, and what a red result means on each side of
 `tests/`, is `docs/testing.md`. Report the real numbers in the PR, failures and
-inconclusive results included.
+inconclusive results included. Which harness produced a run is plumbing: leave
+it out of PR, commit, and release narratives unless it is material to the
+result — a harness-specific failure or adapter bug is exactly the case where
+naming it is the finding.
 
 ## Adding a skill
 
@@ -197,7 +200,7 @@ but never invoked are not a working integration.
 - `AGENTS.md`, `GEMINI.md` — symlinks to this file, so a harness that reads its own instructions file gets the same guidance from one source.
 - `.github/` — CI (`workflows/validate.yml`) and the PR template (`PULL_REQUEST_TEMPLATE.md`).
 - `scripts/sh/` — portable validators, token budget, adapter checks, and hook scripts; CI runs `validate-skills.sh` and `token-budget.sh`. Everything here is deterministic, free, and safe to run anywhere.
-- `tests/` — everything that observes the library running, split by what a red result means. The **gates** live here directly, where the answer is known in advance: `run-behavioral.sh` with `behavioral/{{name}}.sh`, plus the offline `run-session-start.sh` and `run-plugin-smoke.sh`. `fixtures.sh` is the disposable project a live run is pointed at.
+- `tests/` — everything that observes the library running, split by what a red result means. The **gates** live here directly, where the answer is known in advance: `run-behavioral.sh` with `behavioral/{{name}}.sh`, plus the offline `run-session-start.sh`, `run-plugin-smoke.sh`, and `run-serve-preview.sh`. `fixtures.sh` is the disposable project a live run is pointed at.
 - `tests/optimizing/` — **measurements**, where it is not: `descriptions/test-triggering-on-queries.sh` scoring descriptions against `descriptions/{{phase}}/{{skill}}.json`. A red sheet here is not a regression, and no part of it runs in CI.
 - `tests/harnesses/{{name}}.sh` — one file per CLI, holding only what differs between them: install, invoke, detect, cost. They decide nothing; every runner binds to them.
 - `assets/` — the project's brand marks. Not to be confused with a skill's own `assets/`, which holds templates that skill emits.
