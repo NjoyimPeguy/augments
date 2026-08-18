@@ -15,6 +15,49 @@ In an existing product, inventory its tokens, components, typography, imagery, m
 
 Use realistic content early. Real names, amounts, timestamps, images, validation messages, and long or missing values expose design problems that polished placeholders conceal.
 
+## Generate candidate directions
+
+Critique needs something to judge. When the direction is open, generate two or
+three *different* candidates before refining any of them — one candidate is a
+preference, three are a decision. Derive each from the grounding sentence, not
+from a generic gallery.
+
+**Style families** — starting points, not costumes; mix deliberately:
+
+- **Editorial minimal** — generous whitespace, strong type hierarchy, restrained
+  color. Content-forward products, publishing, professional tools.
+- **Soft depth** — low-contrast surfaces, subtle shadow, rounded shape. Wellness
+  and calm consumer products; verify contrast floors early.
+- **Brutalist** — exposed structure, hard borders, grotesque or mono type, high
+  contrast. Developer tools and products whose character is anti-polish.
+- **Layered glass** — translucency and blur over imagery. Media-rich consumer
+  products; costly on low-end devices and a contrast risk.
+- **Data-dense** — compact spacing, tabular numerals, muted palette, one reserved
+  accent. Dashboards, operations consoles, finance.
+- **Playful illustrated** — custom illustration, organic shapes, saturated
+  palette, expressive motion. Consumer onboarding and education.
+- **Premium** — serif display type, warm-neutral or dark palette, slow motion,
+  wide spacing. Hospitality, fashion, high-end services.
+- **System-native** — platform conventions and stock components. Internal tools,
+  forms-heavy workflows, accessibility-critical products.
+
+**Derive the palette from character.** Translate the character words into one
+anchor hue from the product's world — a spa's calm reads as muted green or warm
+clay; a bank's trust reads as deep blue. Build two or three supporting tones
+around it, let neutrals carry most of the surface, and reserve exactly one
+accent for the primary action and one for destructive acts. Check contrast at
+decision time, not after implementation.
+
+**Derive type from character and density.** One display face plus one text face
+suffices for most products. Serif display reads editorial, premium, traditional;
+grotesque reads neutral and modern; geometric sans reads friendly; monospace
+accents read data and developer. Data-dense products need tabular figures and a
+text face that stays legible at small sizes.
+
+**Make candidates differ on a real axis.** Vary structure — layout, hierarchy,
+navigation — or character, meaning two different families above. Two palettes
+over one layout is one candidate, not two.
+
 ## Build a coherent visual language
 
 - **Hierarchy and layout:** make reading order and the primary affordance obvious before styling details. Grids, alignment, grouping, dividers, labels, and numbering should encode real structure. Responsive design may change order, density, grouping, and navigation; it is not merely a smaller desktop.
