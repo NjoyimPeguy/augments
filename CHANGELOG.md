@@ -2,6 +2,16 @@
 
 Notable changes to SDLC skills, newest first. Versions follow semantic versioning; the narrative for each release lives on its release page — this file is the terse, cumulative record.
 
+## [6.2.2] — 2026-08-19
+
+### Added
+
+- **A governed localhost preview for the skills that emit pages.** When you ask for a link — or the environment can't open local files — `ui-ux-design` and `viewing-artifacts` now serve their surfaces on 127.0.0.1 through a bundled, key-gated, self-terminating server, instead of leaving you a file path or improvising an ad-hoc one. The file path stays the default.
+
+### Fixed
+
+- **Both HTML templates: a modern palette and an enforced responsiveness contract.** Zinc neutrals with a true dark mode, and the fill rules now make 360px–2560px support mandatory rather than hoped for.
+
 ## [6.2.1] — 2026-08-18
 
 ### Fixed
