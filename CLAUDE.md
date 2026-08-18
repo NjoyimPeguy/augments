@@ -93,7 +93,10 @@ exit code.
 Rule 4 (behavior) has no deterministic gate — that is the honest limit. Which
 live run answers which question, and what a red result means on each side of
 `tests/`, is `docs/testing.md`. Report the real numbers in the PR, failures and
-inconclusive results included.
+inconclusive results included. Which harness produced a run is plumbing: leave
+it out of PR, commit, and release narratives unless it is material to the
+result — a harness-specific failure or adapter bug is exactly the case where
+naming it is the finding.
 
 ## Adding a skill
 
