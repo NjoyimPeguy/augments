@@ -144,9 +144,27 @@ while IFS= read -r s; do
   grep -q '^## Available scripts' "$skill_file" ||
     err "$skill_file: bundles scripts but has no '## Available scripts' section"
 
-  timeout 20 bash "$s" --help 2>/dev/null | grep -qi 'exit code' ||
+  { timeout 20 "$s" --help 2>/dev/null || timeout 20 bash "$s" --help 2>/dev/null; } | grep -qi 'exit code' ||
     err "$s: --help does not document its exit codes"
 done < <(find skills -path '*/scripts/*' -type f | sort)
+
+# The governed preview (serve.py + start/stop wrappers) ships one copy per
+# skill that offers it: skill-local resolution survives every adapter layout,
+# and a cross-skill link would not. The copies must stay byte-identical —
+# two drifting previews are two contracts.
+echo "• preview scripts are identical across skills"
+preview_dirs=$(find skills -path '*/scripts/serve.py' -type f -exec dirname {} \; | sort)
+if [ -n "$preview_dirs" ]; then
+  ref_dir=$(printf '%s\n' "$preview_dirs" | head -1)
+  for d in $preview_dirs; do
+    [ "$d" = "$ref_dir" ] && continue
+    for f in "$ref_dir"/*; do
+      name=$(basename "$f")
+      [ -f "$d/$name" ] || { err "preview script missing: $d/$name"; continue; }
+      cmp -s "$f" "$d/$name" || err "preview scripts drifted: $f vs $d/$name"
+    done
+  done
+fi
 
 # The standard splits support files by what the agent does with them. A template
 # it fills in and emits is a static resource; documentation it reads to decide is

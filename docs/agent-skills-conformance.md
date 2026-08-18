@@ -36,7 +36,7 @@ push and pull request.
 | `name` matches parent directory | conforms | compared per skill |
 | `description` non-empty, ≤ 1024 chars | conforms | length check; longest is 693 |
 | Body ≤ 500 lines | conforms | line check; longest is 135 (27% of ceiling) |
-| Body < 5000 tokens recommended | conforms | token check; largest is ~1830 (37%) |
+| Body < 5000 tokens recommended | conforms | token check; largest is ~2085 (42%) |
 | File references relative to skill root | conforms | every path resolved in the install tree |
 | References one level deep, no nested chains | conforms | depth check |
 | `scripts/` / `references/` / `assets/` semantics | conforms | see *Directory conventions* |
@@ -103,7 +103,7 @@ Not machine-checkable. These are the bar a reviewer holds a skill to.
 | --- | --- | --- |
 | `references/` | documentation read on demand | 22 skills; rubrics, checklists, reviewer briefs, worked examples |
 | `assets/` | static resources, incl. document templates | 26 skills; every fill-in template — see below |
-| `scripts/` | bundled executable code | 3 skills — see below |
+| `scripts/` | bundled executable code | 5 skills — see below |
 
 **The split.** A file the agent *fills in and emits as an artifact* is a
 template: `assets/`. A file it *reads to decide or check* is documentation:
@@ -128,6 +128,8 @@ the skill exists to prevent:
 | `finishing-a-branch` | `branch-state.sh` | commit counts, dirty inventory, worktree ownership, recoverability — the values its menu and discard block interpolate |
 | `verifying-completion` | `state-identity.sh` | the source digest evidence is bound to, and whether it drifted while the gate ran |
 | `writing-skills` | `check-skill.sh` | conformance itself: frontmatter, name, description, body ceilings, presentation, reference resolution |
+| `viewing-artifacts` | `serve.py`, `start-server.sh` / `stop-server.sh` | the governed localhost preview — session key, owner watchdog, idle timeout, PID-safe stop; an ad-hoc server reinvents each, badly |
+| `ui-ux-design` | `serve.py`, `start-server.sh` / `stop-server.sh` | the same preview for comparison surfaces; copies are byte-identical, pinned by the gate |
 
 The discriminator is not "discipline versus mechanics" but whether a step has a
 *single correct answer a machine can compute*. Where it does, an agent

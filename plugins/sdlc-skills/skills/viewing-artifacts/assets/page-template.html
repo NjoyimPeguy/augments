@@ -10,25 +10,25 @@
      stylesheets, or scripts. Status is icon + text, never color alone. */
   :root {
     color-scheme: light dark;
-    --bg: #f6f7f9; --surface: #ffffff; --ink: #1c2330; --muted: #5b6472;
-    --line: #d8dde4; --soft: #eceff3;
-    --done: #177245; --done-bg: #e3f3ea;
-    --now: #1f5fd0; --now-bg: #e5eefc;
-    --blocked: #b3312a; --blocked-bg: #fbe7e5;
-    --drift: #9a6200; --drift-bg: #faf0dc;
-    --pending: #5b6472; --pending-bg: #eceff3;
-    --accent: #1f5fd0;
+    --bg: #fafafa; --surface: #ffffff; --ink: #18181b; --muted: #52525b;
+    --line: #e4e4e7; --soft: #f4f4f5;
+    --done: #047857; --done-bg: #ecfdf5;
+    --now: #4f46e5; --now-bg: #eef2ff;
+    --blocked: #b91c1c; --blocked-bg: #fef2f2;
+    --drift: #b45309; --drift-bg: #fffbeb;
+    --pending: #52525b; --pending-bg: #f4f4f5;
+    --accent: #4f46e5;
   }
   @media (prefers-color-scheme: dark) {
     :root {
-      --bg: #14171c; --surface: #1d2129; --ink: #e6e9ee; --muted: #9aa3b0;
-      --line: #333a45; --soft: #262b34;
-      --done: #4fc38a; --done-bg: #17352a;
-      --now: #7aa5f0; --now-bg: #1c2c4a;
-      --blocked: #f0837c; --blocked-bg: #3d1f1d;
-      --drift: #e0a84f; --drift-bg: #37290f;
-      --pending: #9aa3b0; --pending-bg: #262b34;
-      --accent: #7aa5f0;
+      --bg: #09090b; --surface: #131316; --ink: #f4f4f5; --muted: #a1a1aa;
+      --line: #27272a; --soft: #1c1c1f;
+      --done: #34d399; --done-bg: #052e1f;
+      --now: #818cf8; --now-bg: #1a1c3a;
+      --blocked: #f87171; --blocked-bg: #2a1215;
+      --drift: #fbbf24; --drift-bg: #251a08;
+      --pending: #a1a1aa; --pending-bg: #1c1c1f;
+      --accent: #818cf8;
     }
   }
   * { box-sizing: border-box; }
@@ -37,7 +37,8 @@
     font: 15px/1.5 -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
   }
   code, .mono { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: .92em; }
-  .page { max-width: 1180px; margin: 0 auto; padding: 24px 20px 64px; }
+  .page { max-width: 1180px; margin: 0 auto; padding: 24px clamp(12px, 4vw, 20px) 64px; }
+  img, svg, iframe { max-width: 100%; }
   :focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 
   /* header: title + prominent as-of timestamp (the staleness signal) */
@@ -87,7 +88,15 @@
 
   /* dossier: attention-grouped sidebar + one spine pane per topic */
   .dossier { display: grid; grid-template-columns: 250px 1fr; gap: 16px; }
-  @media (max-width: 760px) { .dossier { grid-template-columns: 1fr; } }
+  @media (max-width: 760px) {
+    .dossier { grid-template-columns: 1fr; }
+    .topic-list { max-height: 38vh; }
+  }
+  @media (max-width: 560px) {
+    .spine { margin-left: 0; padding-left: 20px; }
+    .node::before { left: -29px; }
+    .meta-head h1 { font-size: 19px; }
+  }
   .topic-list { display: flex; flex-direction: column; gap: 8px; align-content: start; max-height: 78vh; overflow-y: auto; }
   .group { margin: 10px 0 0; font-size: 11.5px; font-weight: 700; text-transform: uppercase; letter-spacing: .05em; color: var(--muted); }
   .group:first-child { margin-top: 0; }
@@ -174,6 +183,10 @@
      Core navigation (topic selection) is pure CSS :target.
   6. No artifact trail at all: replace the tiles and dossier regions with
      the empty-state block (commented below, after the dossier region).
+  7. Responsive and adaptive is MANDATORY, in any browser: the page must hold
+     from a 360px phone to a 2560px monitor. Anything wide — a table, a long
+     slug, an unbroken value — scrolls inside its own overflow-x:auto
+     container, never the page body. Check at 360px before reporting.
 
   STUB INDEX (full rules live at each region's comment)
     page:      {{page-title}} · {{as-of}} · {{as-of-iso}}
