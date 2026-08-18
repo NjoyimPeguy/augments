@@ -2,6 +2,12 @@
 
 Notable changes to SDLC skills, newest first. Versions follow semantic versioning; the narrative for each release lives on its release page — this file is the terse, cumulative record.
 
+## [6.2.1] — 2026-08-18
+
+### Fixed
+
+- **`ui-ux-design` shows visual direction by default, not by exception.** An open visual direction now gets a rendered 2–4 variant comparison surface unless a stated reason is recorded, so "what should this look like" is no longer answered with prose alone — and new house-written guidance helps the agent generate genuinely different candidate directions, not just critique them.
+
 ## [6.2.0] — 2026-08-16
 
 ### Added
