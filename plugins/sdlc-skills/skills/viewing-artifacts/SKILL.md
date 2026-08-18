@@ -17,6 +17,14 @@ The page carries state, not documents.
 - **Skip** when a specific artifact must be read, created, or edited: that is the owning skill's work, and this skill never mutates the trail.
 - **Skip** when there is no trail and nobody asked for its state — an unprompted empty page helps nobody.
 
+## Available scripts
+
+- **`scripts/start-server.sh` / `scripts/stop-server.sh`** — start and stop
+  the governed localhost preview (per-session key, owner watchdog, idle
+  timeout), for when the user asks for a URL or the environment cannot open
+  local files. The file path is the default. They wrap `scripts/serve.py`;
+  never run another server.
+
 ## Procedure
 
 1. **Discover the trail.** Read `.sdlc-skills/` at the project root:
@@ -86,21 +94,32 @@ The page carries state, not documents.
    only the template's own relative paths carry attributes.
 
 8. **Write exactly one file: `.sdlc-skills/views/index.html`.** Create
-   `views/` if missing. No external URLs, no JavaScript, no server or
-   watcher, no scratch or backup files under `.sdlc-skills/` — the trail is
-   read-only to you. Regeneration is this same procedure again: recompute
+   `views/` if missing. The page stays self-contained: no external URLs, no
+   JavaScript, no scratch or backup files under `.sdlc-skills/` — the trail
+   is read-only to you. Regeneration is this same procedure again: recompute
    from the trail and rewrite the same path in place, never reading or
    merging a previous render. The as-of is the current UTC instant; it is
    the page's staleness signal.
 
-9. **Report the path and the as-of.** One short reply: the written path,
-   the as-of UTC, and every place the page says unknown or a block was
-   omitted for missing state — the user should learn the gaps from you, not
-   discover them. When any artifact's change time did not come from git,
-   name that drift derives from file mtimes and is blind where times are
-   equal. When a stated ledger pointer exists but could not be honored —
-   present-but-unparsable or ambiguous — name that cause class instead of
-   rendering a bare `unknown`.
+   Deliver the file path by default — no server. When the user asks for a
+   URL, or the environment cannot open local files (headless, remote,
+   container), serve it with `scripts/start-server.sh`: root
+   `.sdlc-skills/`, entry `views/index.html`, so the embedded visuals keep
+   resolving. Hand over the printed URL — it carries a one-time key that
+   plants a cookie — and stop the preview with `scripts/stop-server.sh`
+   when it is no longer needed. Never improvise another server. If the
+   script answers `needs python3`, say so, name the platform's install
+   route, and deliver the file path instead — install a runtime on the
+   user's machine only when the user explicitly asks.
+
+9. **Report the path — or the served URL — and the as-of.** One short reply:
+   the written path or served URL, the as-of UTC, and every place the page
+   says unknown or a block was omitted for missing state — the user should
+   learn the gaps from you, not discover them. When any artifact's change
+   time did not come from git, name that drift derives from file mtimes and
+   is blind where times are equal. When a stated ledger pointer exists but
+   could not be honored — present-but-unparsable or ambiguous — name that
+   cause class instead of rendering a bare `unknown`.
 
 ## Common mistakes
 
@@ -110,5 +129,6 @@ The page carries state, not documents.
 - Splitting `<slug>-migration.md` or `<slug>/visuals/` into their own topics → thread by slug.
 - Flagging drift from a checkbox-only plan update → normalize the execution projection before comparing times.
 - Hunting the filesystem when the convention is absent or overridden → render the empty state naming what produces artifacts.
+- Starting an ad-hoc server (`python3 -m http.server`, a dev-server forward) to show the page → the key gate and self-terminating lifecycle are the contract; use `scripts/start-server.sh` or deliver the plain file path.
 - Linkifying a URL found in artifact text, or adding a script for interactivity → self-containment: no external requests, no JavaScript; navigation is pure CSS.
 - Assuming git exists → use the mtime fallback; equal times flag nothing.

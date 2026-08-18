@@ -14,6 +14,15 @@ Design the experience and decide its direction before implementation. In an exis
 - **Skip** for backend-only or non-interactive work, and for an exact cosmetic edit whose direction is already fixed.
 - **Scale down:** a small, settled interface may need one flow, its states, hierarchy, and acceptance checks; alternatives are not mandatory.
 
+## Available scripts
+
+- **`scripts/start-server.sh` / `scripts/stop-server.sh`** — start and stop
+  the governed localhost preview (per-session key, owner watchdog, idle
+  timeout) for a comparison surface, when the user asks for a URL or the
+  environment cannot open local files. The file path is the default. They
+  wrap `scripts/serve.py`; [visual-decisions.md](references/visual-decisions.md)
+  owns the details.
+
 ## Procedure
 
 Each step fills the matching section of `assets/ui-ux-section.md`. Open it now
