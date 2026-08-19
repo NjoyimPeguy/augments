@@ -18,10 +18,11 @@ Design the experience and decide its direction before implementation. In an exis
 
 - **`scripts/start-server.sh` / `scripts/stop-server.sh`** — start and stop
   the governed localhost preview (per-session key, owner watchdog, idle
-  timeout) for a comparison surface, when the user asks for a URL or the
-  environment cannot open local files. The file path is the default. They
-  wrap `scripts/serve.py`; [visual-decisions.md](references/visual-decisions.md)
-  owns the details.
+  timeout) for a comparison surface. Deliver a surface served: run the
+  preview and present its URL with the delivery, without waiting to be
+  asked. The file path is the fallback when serving fails or is declined.
+  They wrap `scripts/serve.py`;
+  [visual-decisions.md](references/visual-decisions.md) owns the details.
 
 ## Procedure
 

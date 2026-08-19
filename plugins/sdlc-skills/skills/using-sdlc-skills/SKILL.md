@@ -98,6 +98,7 @@ Each of these is the signal to route, not a reason to skip:
 | "I know this" | Knowledge cannot substitute for the gate's verdict. |
 | "No time" | Routing costs less than skipped-gate rework. |
 | "I'll add process later" | The gate must lead new or preserved behavior. |
+| "Hit an issue — stop and ask" | A clear task owns its obstacles: fix and continue. Only a material, destructive, or external decision waits for the user. |
 | "I know the chain" | No universal chain; route from current preconditions. |
 | "I listed the skills" | Prose is not invocation; load every current owner. |
 | "Looks good + constraints = approval" | No accepted answer was selected; route to `interview-me`. |
