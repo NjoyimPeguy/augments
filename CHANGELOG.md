@@ -2,6 +2,13 @@
 
 Notable changes to SDLC skills, newest first. Versions follow semantic versioning; the narrative for each release lives on its release page — this file is the terse, cumulative record.
 
+## [6.2.4] — 2026-08-19
+
+### Changed
+
+- **`using-task-branches` now defaults to a git worktree.** An in-place `git switch -c` / `git checkout -b` rewires the shared checkout and blocks anyone else working in it; in-place switching is reserved for a checkout dedicated to the task, and user or project preference still wins.
+- **The PR template no longer asks contributors for description re-scores.** Proof for a contribution is the deterministic gate plus the smallest behavioural scenario; trigger-rate scoring stays a maintainer-run tuning tool under `tests/optimizing/`.
+
 ## [6.2.3] — 2026-08-19
 
 ### Changed
