@@ -2,6 +2,13 @@
 
 Notable changes to SDLC skills, newest first. Versions follow semantic versioning; the narrative for each release lives on its release page — this file is the terse, cumulative record.
 
+## [6.2.3] — 2026-08-19
+
+### Changed
+
+- **`ui-ux-design` and `viewing-artifacts` hand you the link, not just the path.** Emitted pages are now served through the governed preview and the URL arrives with the delivery — no more asking for it; the file path is the fallback when serving fails or is declined.
+- **A clear task no longer stalls at the first fixable obstacle.** `interview-me` and the router now state the boundary plainly: fix it and continue to completion; only material, destructive, or external-state decisions wait for you.
+
 ## [6.2.2] — 2026-08-19
 
 ### Added
