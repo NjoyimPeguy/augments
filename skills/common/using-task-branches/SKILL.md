@@ -1,12 +1,13 @@
 ---
 name: using-task-branches
-description: "Use before starting repo edits or implementation, or when work needs isolation from the current checkout, so a meaningful task branch, harness workspace, or git worktree exists according to user or project preference. Fires on start on this ticket and let's build X inside a repository, even if nobody says branch or worktree. Skip read-only work, and skip when the current branch or workspace is already dedicated to this task."
+description: "Use before starting repo edits or implementation, or when work needs isolation from the current checkout, so a git worktree, harness workspace, or meaningful task branch exists according to user or project preference. Fires on start on this ticket and let's build X inside a repository, even if nobody says branch or worktree. Skip read-only work, and skip when the current branch or workspace is already dedicated to this task."
 ---
 
 <EXTREMELY-IMPORTANT>
 NEVER START REPO EDITS ON `main`/`master`, `dev`/`develop`, A RELEASE BRANCH, OR
-AN UNRELATED TASK BRANCH. Create or enter a meaningful branch or workspace
-*before* the first edit, unless the user explicitly okayed the current checkout.
+AN UNRELATED TASK BRANCH. Create or enter a dedicated workspace — a git
+worktree unless the user or project says otherwise — *before* the first edit,
+unless the user explicitly okayed the current checkout.
 </EXTREMELY-IMPORTANT>
 
 # Using Task Branches
@@ -55,10 +56,12 @@ whatever finishes the branch, cannot re-derive from the repository alone.
 
 ### Create the workspace
 
-5. **Choose isolation without nesting.** User instruction wins, then project
-   guidance, then an existing native workspace. Failing those, a normal branch
-   suits one task; reach for a worktree when there are parallel writers,
-   separate runtime state, or a dirty checkout that must stay untouched.
+5. **Default to a git worktree, without nesting.** User instruction wins, then
+   project guidance, then an existing native workspace. Failing those, create
+   a worktree — do not `git switch -c` or `git checkout -b` in a shared
+   checkout: switching rewires it, so the user, a second agent, or a running
+   app working in it is blocked or collides until you switch back. Switch
+   branches in place only in a checkout dedicated to this task alone.
 
 6. **Validate the name and its collisions.** Follow project naming, or use
    `feature/{{short-task}}`, `fix/{{short-task}}`, or `docs/{{short-task}}`.
@@ -90,7 +93,7 @@ whatever finishes the branch, cannot re-derive from the repository alone.
 | --- | --- |
 | "I'll just inspect first" | For edit requests, branch/status is the first inspection. |
 | "It's only a small change" | Small changes still land on the wrong branch. Create the branch first. |
-| "Worktrees are safer, so always use one" | User/project preference wins; a plain branch is correct for normal single-task work. |
+| "git switch -c is lighter than a worktree" | Switching rewires the shared checkout — anyone else working in it is blocked until you switch back. A worktree is the default; switch in place only in a checkout dedicated to this task. |
 | "The harness made a detached checkout, so I'll add my own worktree" | First determine whether the host already owns isolation and cleanup. |
 | "I'll make the branch after the first edit" | After the edit, you may already have mixed unrelated state. |
 
