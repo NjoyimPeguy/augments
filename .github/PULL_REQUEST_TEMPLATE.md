@@ -28,11 +28,9 @@ workflow-specific. (CLAUDE.md → "What belongs here".) -->
 ## Proof
 
 <!-- Paste the result of `bash scripts/sh/validate-skills.sh` (must be green).
-For a change to a skill BODY: re-run the smallest scenario that exercises it
-(`tests/run-behavioral.sh`) and paste what it returned. For a change to a skill
-DESCRIPTION: re-score its query set
-(`tests/optimizing/descriptions/test-triggering-on-queries.sh`) and paste the
-rates. Include inconclusive and failing results. Say how many runs. -->
+For a behaviour-shaping change: re-run the smallest behavioural scenario that
+exercises it (`tests/run-behavioral.sh`) and paste what it returned. Include
+inconclusive and failing results. Say how many runs. -->
 
 ## Authoring environment
 
