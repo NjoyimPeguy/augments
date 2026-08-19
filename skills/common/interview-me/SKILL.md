@@ -22,6 +22,11 @@ skill that owns eliciting the still-open inputs.
   A missing product requirement that blocks either procedure is still a genuine
   clarification or specification gap.
 - **Skip** when the task is trivial or already fully specified — interrogating wastes turns.
+- **Skip** when the task is clear and what blocks it is an obstacle, not a
+  decision — a failing command, an error, a missing piece you can find or
+  build. Fix it and continue to completion. Stopping to report a fixable
+  obstacle and wait for instructions spends the user's turn on work that
+  was already yours.
 - **Skipping never licenses a silent decision.** State a reversible, low-impact
   assumption and its reason so the user can redirect. Material product, scope,
   architecture, execution, destructive, or external-state choices stay pending
