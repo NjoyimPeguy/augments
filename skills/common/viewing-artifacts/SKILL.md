@@ -21,9 +21,10 @@ The page carries state, not documents.
 
 - **`scripts/start-server.sh` / `scripts/stop-server.sh`** — start and stop
   the governed localhost preview (per-session key, owner watchdog, idle
-  timeout), for when the user asks for a URL or the environment cannot open
-  local files. The file path is the default. They wrap `scripts/serve.py`;
-  never run another server.
+  timeout). Deliver the page served and present its URL with the delivery,
+  without waiting to be asked; the file path is the fallback when serving
+  fails or is declined. They wrap `scripts/serve.py`; never run another
+  server.
 
 ## Procedure
 
@@ -101,16 +102,15 @@ The page carries state, not documents.
    merging a previous render. The as-of is the current UTC instant; it is
    the page's staleness signal.
 
-   Deliver the file path by default — no server. When the user asks for a
-   URL, or the environment cannot open local files (headless, remote,
-   container), serve it with `scripts/start-server.sh`: root
+   Deliver the page served: run `scripts/start-server.sh` with root
    `.sdlc-skills/`, entry `views/index.html`, so the embedded visuals keep
-   resolving. Hand over the printed URL — it carries a one-time key that
-   plants a cookie — and stop the preview with `scripts/stop-server.sh`
-   when it is no longer needed. Never improvise another server. If the
-   script answers `needs python3`, say so, name the platform's install
-   route, and deliver the file path instead — install a runtime on the
-   user's machine only when the user explicitly asks.
+   resolving, and hand over the printed URL — it carries a one-time key
+   that plants a cookie — together with the file path, without waiting to
+   be asked. Stop the preview with `scripts/stop-server.sh` when it is no
+   longer needed. Never improvise another server. If the script answers
+   `needs python3`, say so, name the platform's install route, and deliver
+   the file path instead — install a runtime on the user's machine only
+   when the user explicitly asks.
 
 9. **Report the path — or the served URL — and the as-of.** One short reply:
    the written path or served URL, the as-of UTC, and every place the page

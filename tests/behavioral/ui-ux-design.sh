@@ -6,10 +6,11 @@
 #      the markdown section and describes variants in prose. The re-centered
 #      step 6 makes the rendered comparison surface the default; the assertion
 #      is the filled surface under designs/<slug>/visuals/ with >= 2 variants.
-#   2. Asked for a link, the agent serves ad hoc (python3 -m http.server) or
-#      dumps a file path. The governed preview leaves a startup record in
-#      /tmp/serve-preview.*.log whose root binds to this workdir — key-gated,
-#      loopback, self-terminating. That record is the observable.
+#   2. Never asked for a link, the agent dumps a file path and waits to be
+#      asked, or serves ad hoc (python3 -m http.server). The governed preview
+#      leaves a startup record in /tmp/serve-preview.*.log whose root binds to
+#      this workdir — key-gated, loopback, self-terminating. That record is
+#      the observable.
 #
 # The 200/403 mechanics of the server itself are covered offline and for free
 # by tests/run-serve-preview.sh; what only a live run can show is the agent
@@ -22,9 +23,8 @@ scenario_opening() {
 This repo is the start of a marketing site for "Nordwind", a SaaS that helps
 independent bakeries take pre-orders online. Before we build anything, I need
 the hero and pricing section designed — layout, look and feel, the lot. I have
-not settled on a visual direction, so show me directions I can react to. And
-give me a link I can open in my browser — I don't want to dig through the repo
-for files. Stop before writing any production markup.
+not settled on a visual direction, so show me directions I can react to. Stop
+before writing any production markup.
 EOF
 }
 
