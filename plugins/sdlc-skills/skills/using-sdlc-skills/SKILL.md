@@ -62,6 +62,8 @@ permissions, and next output.
   scope/authority instead of redesigning it.
 
 Re-evaluate after each material result. Familiar composition is not a workflow.
+Routing is not a turn boundary: re-evaluating between tasks inside an approved
+plan is a route check, not a hand-back to the user.
 
 ### Project-assurance fork
 
@@ -98,6 +100,7 @@ Each of these is the signal to route, not a reason to skip:
 | "I know this" | Knowledge cannot substitute for the gate's verdict. |
 | "No time" | Routing costs less than skipped-gate rework. |
 | "I'll add process later" | The gate must lead new or preserved behavior. |
+| "Task done — check in before the next" | An approved plan authorizes every task in it; `done` is a ledger entry, not a decision point. Continue until the plan ends. |
 | "Hit an issue — stop and ask" | A clear task owns its obstacles: fix and continue. Only a material, destructive, or external decision waits for the user. |
 | "I know the chain" | No universal chain; route from current preconditions. |
 | "I listed the skills" | Prose is not invocation; load every current owner. |
@@ -109,7 +112,8 @@ Each of these is the signal to route, not a reason to skip:
 | "No skill fits / overkill" | Decide none only after scanning current triggers. |
 | "I remember it" | The catalogue changes; load the current skill. |
 
-Catch one and stop: scan, invoke, or state that none fits.
+Catch one and stop: scan, invoke, or state that none fits. Stop the action, not
+the turn.
 
 ## Instructions priority
 

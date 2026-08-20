@@ -90,6 +90,17 @@ alone does not override one.
 
 7. **Re-run a combined gate** after integrating parallel results.
 
+8. **Return to step 1 with the next task** whose `Depends on` is satisfied.
+   `done` is a ledger entry, not a decision point: the approved plan and its
+   approved mode are the authority for every task in it, and that authority is
+   not re-granted task by task. A green evaluator is not a hand-back, and
+   reporting one is not a gate.
+
+   The loop ends — and the turn with it — on exactly one of: the plan's tasks
+   are exhausted; the ledger records any outcome other than `done`; a normative
+   plan change needs direct reapproval; or a high-risk target task's entry gate
+   has not passed. Anything else is the next task.
+
 ## Outcomes and circuit breaker
 
 The append-only ledger records **done**, **done with concerns**, **blocked**,
