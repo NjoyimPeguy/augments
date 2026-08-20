@@ -8,10 +8,16 @@
   COMPARISON-SURFACE TEMPLATE — ui-ux-design, visual decisions.
 
   WHAT THIS IS: the chrome for one comparison surface (visual-decisions.md,
-  medium 3). Fill the {{double-curly}} stubs, save one file per VERSION at
-  `.sdlc-skills/designs/{{YYYY-MM-DD}}-{{topic}}/visuals/{{decision-slug}}-vN.html`,
-  and KEEP prior versions — a changed surface invalidates earlier comparison
-  evidence, and the old file is the only way to see what changed.
+  medium 3). Fill the {{double-curly}} stubs and save ONE file per DECISION at
+  `.sdlc-skills/designs/{{YYYY-MM-DD}}-{{topic}}/visuals/{{decision-slug}}.html`.
+  That path is stable for the life of the decision — never `-v2.html`.
+
+  VERSIONS LIVE INSIDE THIS FILE, not beside it. Iterating APPENDS a
+  `.version` block and moves `checked` to its radio; the versions already in
+  the file are never edited. Prior versions stay selectable, so the user
+  compares them by flipping a control instead of opening two files, and the
+  link they already have keeps working. Two axes, independent: pick a variant,
+  flip the version, and what changed on THAT variant is what you see.
 
   WHAT YOU AUTHOR: the variants (structure, hierarchy, affordance, visual
   direction). What you never author from scratch: this chrome. The whole
@@ -117,6 +123,32 @@
   #pick-3:checked ~ .variants .variant-3 { display: block; }
   #pick-4:checked ~ .variants .variant-4 { display: block; }
 
+  /* ---------- version switcher (same sibling trick, second axis) ----------
+     A variant shows only when its version block is shown AND its own radio
+     is picked — two independent groups, no JS. The version radios are
+     direct siblings of .variants for the same reason the pick-N ones are. */
+  .version { display: none; }
+  #ver-1:checked ~ .variants .version-1,
+  #ver-2:checked ~ .variants .version-2,
+  #ver-3:checked ~ .variants .version-3,
+  #ver-4:checked ~ .variants .version-4 { display: block; }
+  #ver-1:checked ~ .versions label[for="ver-1"],
+  #ver-2:checked ~ .versions label[for="ver-2"],
+  #ver-3:checked ~ .versions label[for="ver-3"],
+  #ver-4:checked ~ .versions label[for="ver-4"] { background: var(--surface); color: var(--ink); border-color: var(--line); }
+  #ver-1:focus-visible ~ .versions label[for="ver-1"],
+  #ver-2:focus-visible ~ .versions label[for="ver-2"],
+  #ver-3:focus-visible ~ .versions label[for="ver-3"],
+  #ver-4:focus-visible ~ .versions label[for="ver-4"] { outline: 2px solid var(--accent); outline-offset: 2px; }
+  .versions { display: flex; align-items: center; gap: 4px; flex-wrap: wrap; margin: 0 0 4px; }
+  .versions .lbl { font-size: 12px; font-weight: 600; color: var(--muted); margin-right: 4px; }
+  .versions label {
+    padding: 4px 12px; border-radius: 999px; cursor: pointer; font-size: 13px; font-weight: 600;
+    color: var(--muted); border: 1px solid var(--line); background: var(--soft);
+  }
+  .v-stamp { color: var(--muted); font-size: 12px; margin: 0 0 14px; }
+  .v-stamp .mono { color: var(--ink); }
+
   /* ---------- variant header ---------- */
   .v-head { border-bottom: 2px solid var(--line); padding-bottom: 10px; margin-bottom: 16px; }
   .v-head h2 { margin: 0 0 2px; font-size: 19px; }
@@ -162,11 +194,28 @@
     </p>
   </header>
 
+  <!-- VERSION radios: keep as direct siblings of .variants (see CSS note).
+       Appending a version = un-check the current one, add the next id with
+       `checked`, add its label below, add its .version block. Delete the
+       unused ids/labels; a first render ships v1 alone. -->
+  <input class="visually-hidden" type="radio" name="version" id="ver-1" checked>
+  <input class="visually-hidden" type="radio" name="version" id="ver-2">
+  <input class="visually-hidden" type="radio" name="version" id="ver-3">
+  <input class="visually-hidden" type="radio" name="version" id="ver-4">
+
   <!-- switcher radios: keep as direct siblings of .variants (see CSS note) -->
   <input class="visually-hidden" type="radio" name="variant" id="pick-1" checked>
   <input class="visually-hidden" type="radio" name="variant" id="pick-2">
   <input class="visually-hidden" type="radio" name="variant" id="pick-3">
   <input class="visually-hidden" type="radio" name="variant" id="pick-4">
+  <nav class="versions" aria-label="Choose version to view">
+    <span class="lbl">Version</span>
+    <label for="ver-1">v1</label>
+    <label for="ver-2">v2</label>
+    <label for="ver-3">v3</label>
+    <label for="ver-4">v4</label>
+  </nav>
+
   <nav class="switcher" aria-label="Choose variant to view">
     <label for="pick-1">{{variant-1-short-label}}</label>
     <label for="pick-2">{{variant-2-short-label}}</label>
@@ -175,6 +224,9 @@
   </nav>
 
   <div class="variants">
+
+  <div class="version version-1" aria-label="Version 1">
+    <p class="v-stamp">Version <span class="mono">{{version-1-identity}}</span> · {{YYYY-MM-DD}} · {{what changed from the previous version, or "first version"}} · fixture {{fixture identity}}</p>
 
     <section class="variant variant-1" aria-label="Variant 1">
       <div class="v-head">
@@ -214,6 +266,15 @@
       {{variant-4-content}}
     </section>
 
+  </div><!-- .version-1 -->
+
+  <!-- APPEND THE NEXT VERSION HERE — a copy of the .version block above with
+       class `version-2`, its own v-stamp, and only the axes that feedback
+       implicated actually changed. Never edit .version-1: it is the record of
+       what was already compared, and the diff for a new version must show no
+       deletions inside a block already issued. Retire a version in place by
+       saying so in its v-stamp; do not delete it. -->
+
   </div><!-- .variants -->
 
   <footer class="foot">
@@ -224,7 +285,7 @@
       <li><strong>{{variant-3-name}}</strong> — {{same}}</li>
       <li><strong>{{variant-4-name}}</strong> — {{same}}</li>
     </ul>
-    <p>All variants render the same fixture: {{fixture identity — date, content, states}}. Version <span class="mono">{{decision-slug}}-vN</span>; prior versions: {{paths, or "none (first)"}}.</p>
+    <p>All variants render the same fixture: {{fixture identity — date, content, states}}. Showing version <span class="mono">{{current-version-identity}}</span>; earlier versions stay selectable above, in this same file. Cite comparison evidence as this path plus the version identity — the path alone no longer says which version was seen.</p>
     <p><strong>Feedback needed:</strong> which variant, and — more useful than the letter — which dimension drove the preference and what fails. A click is not approval; the direction is confirmed in conversation, then recorded in the design section.</p>
   </footer>
 
