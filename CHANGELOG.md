@@ -2,6 +2,13 @@
 
 Notable changes to SDLC skills, newest first. Versions follow semantic versioning; the narrative for each release lives on its release page — this file is the terse, cumulative record.
 
+## [6.2.5] — 2026-08-20
+
+### Fixed
+
+- **An approved plan now runs to its end without checking in between tasks.** The `executing-plans` task loop gained the return edge and exit conditions it was missing, and the router now separates re-routing from ending the turn: an approved plan and mode authorize every task in it.
+- **A visual decision keeps one page, with its versions inside it.** Iterating appends a selectable version block instead of forking a `-v2.html` sibling, so earlier versions stay comparable beside the new one and the link you were first handed keeps working.
+
 ## [6.2.4] — 2026-08-19
 
 ### Changed
