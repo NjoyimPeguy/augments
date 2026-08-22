@@ -39,7 +39,7 @@
     ],
     "PostToolUse": [
       {
-        "matcher": "Skill|exec",
+        "matcher": "Skill|exec|exec_command",
         "hooks": [
           {
             "type": "command",
