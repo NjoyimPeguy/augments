@@ -165,6 +165,11 @@ else
   else
     ok "Codex plugin leaves compact re-injection to SessionStart source=compact"
   fi
+  if jq -e '.hooks.SessionStart[0] | has("matcher")' "$pkg_hooks" >/dev/null; then
+    bad "Codex SessionStart hook is filtered, so source=compact is not guaranteed to dispatch"
+  else
+    ok "Codex SessionStart hook is unfiltered and includes source=compact"
+  fi
 
   cmd="$(jq -r '.hooks.SessionStart[0].hooks[0].command // empty' "$pkg_hooks")"
   if [ -z "$cmd" ]; then
