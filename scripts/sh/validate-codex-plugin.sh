@@ -76,10 +76,10 @@ if ! bash scripts/sh/validate-skill-reference-paths.sh "$plugin_root/skills"; th
 fi
 
 # The plugin manifest ships the skill CATALOGUE; it has no session-start field,
-# so on Codex the router arrives through a hook instead. Verified live on
-# codex-cli 0.147.0: a SessionStart hook runs and its `additionalContext` reaches
-# the model. PostCompact re-applies it after compaction — the event Codex fires
-# when context was actually lost.
+# so on Codex the router arrives through a SessionStart hook instead. Compaction
+# is another SessionStart invocation with source=compact. Codex's PostCompact
+# output cannot carry additional context, so registering that event would make
+# the injector's context envelope invalid.
 #
 # The hooks ship INSIDE the plugin, because the plugin is installed standalone:
 # a hooks file at the repository root is outside the plugin root and Codex never
@@ -91,9 +91,10 @@ codex_hook="$plugin_root/hooks/hooks.json"
 if [ ! -f "$codex_hook" ]; then
   err "missing $codex_hook (an installed plugin would inject no router)"
 else
-  for ev in SessionStart PostCompact; do
-    grep -q "\"$ev\"" "$codex_hook" || err "$codex_hook: no $ev hook (router would not load)"
-  done
+  grep -q '"SessionStart"' "$codex_hook" || err "$codex_hook: no SessionStart hook (router would not load)"
+  if jq -e '.hooks | has("PostCompact")' "$codex_hook" >/dev/null 2>&1; then
+    err "$codex_hook: PostCompact output cannot carry router context; use SessionStart source=compact"
+  fi
   for ev in PreToolUse PostToolUse; do
     grep -q "\"$ev\"" "$codex_hook" || err "$codex_hook: no $ev hook (implementation guard would not run)"
   done

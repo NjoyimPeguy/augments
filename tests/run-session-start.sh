@@ -123,8 +123,8 @@ echo "--- event name is reported back to the harness"
 check "default event is SessionStart" \
   "$(env CLAUDE_PLUGIN_ROOT=/p bash "$S" 2>/dev/null | jq -r '.hookSpecificOutput.hookEventName // empty')" \
   "SessionStart"
-check "PostCompact argument is echoed (Codex re-applies after compaction)" \
-  "$(env CODEX_HOME=/p bash "$S" PostCompact 2>/dev/null | jq -r '.hookSpecificOutput.hookEventName // empty')" \
+check "PostCompact argument is echoed for adapters whose output supports context" \
+  "$(env KIMI_CODE_HOME=/p bash "$S" PostCompact 2>/dev/null | jq -r '.hookSpecificOutput.hookEventName // empty')" \
   "PostCompact"
 
 echo "--- resolves the router in the FLAT Codex plugin mirror too"
@@ -160,24 +160,35 @@ else
   ok "plugin hooks file is valid JSON"
   pkg_abs="$(cd "$pkg" && pwd)"
   elsewhere="$(mktemp -d)"
-  for ev in SessionStart PostCompact; do
-    cmd="$(jq -r --arg ev "$ev" '.hooks[$ev][0].hooks[0].command // empty' "$pkg_hooks")"
-    if [ -z "$cmd" ]; then
-      bad "plugin hooks declare no $ev command"
-      continue
-    fi
-    # The harness runs hook commands with the SESSION cwd, not the plugin's, so
-    # run from an unrelated directory: a command that only works from the repo
-    # root is a command that only works for us.
-    hook_out="$(cd "$elsewhere" && env PLUGIN_ROOT="$pkg_abs" bash -c "$cmd" 2>/dev/null)"
+  if jq -e '.hooks | has("PostCompact")' "$pkg_hooks" >/dev/null; then
+    bad "Codex plugin registers PostCompact even though that output cannot carry context"
+  else
+    ok "Codex plugin leaves compact re-injection to SessionStart source=compact"
+  fi
+  if jq -e '.hooks.SessionStart[0] | has("matcher")' "$pkg_hooks" >/dev/null; then
+    bad "Codex SessionStart hook must stay unfiltered so every source, including compact, dispatches"
+  else
+    ok "Codex SessionStart hook is unfiltered and includes source=compact"
+  fi
+
+  cmd="$(jq -r '.hooks.SessionStart[0].hooks[0].command // empty' "$pkg_hooks")"
+  if [ -z "$cmd" ]; then
+    bad "plugin hooks declare no SessionStart command"
+  else
+    # Codex fires SessionStart with source=compact after compaction. Run that
+    # payload from an unrelated session cwd: a command that only works from the
+    # repository root, or only at startup, does not preserve resident context.
+    compact_input='{"cwd":"/w","hook_event_name":"SessionStart","model":"test","permission_mode":"default","session_id":"s1","source":"compact","transcript_path":null}'
+    hook_out="$(cd "$elsewhere" && printf '%s' "$compact_input" | \
+      env PLUGIN_ROOT="$pkg_abs" bash -c "$cmd" 2>/dev/null)"
     hook_body="$(printf '%s' "$hook_out" | jq -r '.hookSpecificOutput.additionalContext // empty' 2>/dev/null)"
     hook_ev="$(printf '%s' "$hook_out" | jq -r '.hookSpecificOutput.hookEventName // empty' 2>/dev/null)"
     case "$hook_body" in
-      *'Catch one and stop'*) ok "$ev command injects the router body from an arbitrary cwd" ;;
-      *)                      bad "$ev command injected no router body (an install would route nothing)" ;;
+      *'Catch one and stop'*) ok "SessionStart source=compact injects the router body from an arbitrary cwd" ;;
+      *)                      bad "SessionStart source=compact injected no router body (an install would route nothing)" ;;
     esac
-    check "$ev command reports its own event back" "$hook_ev" "$ev"
-  done
+    check "compact-source command reports SessionStart" "$hook_ev" "SessionStart"
+  fi
   rm -rf "$elsewhere"
 fi
 

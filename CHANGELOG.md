@@ -2,6 +2,12 @@
 
 Notable changes to SDLC skills, newest first. Versions follow semantic versioning; the narrative for each release lives on its release page — this file is the terse, cumulative record.
 
+## [6.2.6] — 2026-08-22
+
+### Fixed
+
+- **Codex hooks now match the events the CLI emits:** structured edits no longer remain blocked after nested skill reads, and compaction no longer fails with invalid hook output.
+
 ## [6.2.5] — 2026-08-20
 
 ### Fixed
