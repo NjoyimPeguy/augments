@@ -117,7 +117,7 @@ Install in Claude Code with `/plugin marketplace add augments-labs/sdlc-skills` 
 
 A coding agent treats an installed skill library as available-but-optional and walks past it unless you name a skill. So SDLC skills pairs each adapter with the strongest honest routing support that harness can prove.
 
-Every adapter injects the **full `using-sdlc-skills` router body** as session context — Claude Code and Codex through a `SessionStart` hook, Kimi Code through `sessionStart.skill` — and re-applies it wherever the harness reports context was lost (Claude's `compact` matcher, Codex's `PostCompact` event).
+Every adapter injects the **full `using-sdlc-skills` router body** as session context — Claude Code and Codex through a `SessionStart` hook, Kimi Code through `sessionStart.skill` — and re-applies it wherever the harness reports context was lost (Claude's `compact` matcher, Codex's compact-source `SessionStart`, and Kimi Code's `PostCompact` hook).
 
 It used to inject a ~90-token *pointer* asking the agent to invoke the router before working. That is one discretionary tool call, and a discretionary call can be skipped — it was skipped on this very repository, on exactly the kind of task the router governs. Injecting the body costs ~1,500 approx tokens per context epoch and removes the skippable step: the routing rules are simply resident. The text is read from the canonical skill at runtime, never copied, so editing the skill cannot silently stop shipping it.
 
@@ -138,7 +138,7 @@ both `test-driven-development` and `yagni` to load before a structured code edit
 Codex. Shell writes remain outside that hook boundary; project gates still own
 artifact correctness.
 
-On Codex, SDLC skills ships a plugin adapter and local marketplace metadata, and the plugin bundles its own hooks (`plugins/sdlc-skills/hooks/hooks.json`) that run the same injector on `SessionStart` and again on `PostCompact`. The skills install through Codex, durable repo guidance still comes through `AGENTS.md`, and the Codex harness test observes activation by watching the agent read the installed `SKILL.md` file from the plugin cache.
+On Codex, SDLC skills ships a plugin adapter and local marketplace metadata, and the plugin bundles its own hooks (`plugins/sdlc-skills/hooks/hooks.json`) that run the same injector on `SessionStart`, including compact-source invocations. The skills install through Codex, durable repo guidance still comes through `AGENTS.md`, and the Codex harness test observes activation by watching the agent read the installed `SKILL.md` file from the plugin cache.
 
 On Kimi Code, SDLC skills ships a plugin manifest (`.kimi-plugin/plugin.json`)
 whose `sessionStart.skill` loads the `using-sdlc-skills` router into every new
