@@ -100,7 +100,17 @@ kimi_check "Kimi: both disciplines allow a code edit" allow \
   "$(kimi_payload PreToolUse Edit '{"file_path":"/w/src/a.rs"}')"
 
 codex_payload() {
-  printf '{"hook_event_name":"%s","session_id":"codex-guard-test","tool_name":"%s","tool_input":%s}' "$1" "$2" "$3"
+  local session_id="${CODEX_TEST_SESSION_ID:-codex-guard-test}"
+  printf '{"hook_event_name":"%s","session_id":"%s","tool_name":"%s","tool_input":%s}' \
+    "$1" "$session_id" "$2" "$3"
+}
+codex_dispatch() { # event tool tool-input
+  local event="$1" tool="$2" tool_input="$3" matcher
+  matcher="$(jq -r --arg event "$event" '.hooks[$event][0].matcher // ".*"' \
+    plugins/sdlc-skills/hooks/hooks.json)"
+  printf '%s\n' "$tool" | grep -Eq "^($matcher)$" || return 0
+  codex_payload "$event" "$tool" "$tool_input" |
+    TMPDIR="$tmpdir" bash "$guard" 2>/dev/null
 }
 codex_check() { # description expected payload
   local desc="$1" expected="$2" payload="$3" out actual=allow
@@ -114,14 +124,20 @@ printf '%s' "$(codex_payload PostToolUse exec '{"cmd":"printf test-driven-develo
   | TMPDIR="$tmpdir" bash "$guard" >/dev/null 2>&1
 codex_check "Codex: mentioning a skill path is not loading it" deny \
   "$(codex_payload PreToolUse apply_patch "$patch_input")"
-printf '%s' "$(codex_payload PostToolUse exec '{"cmd":"sed -n 1,200p /plugin/skills/test-driven-development/SKILL.md"}')" \
-  | TMPDIR="$tmpdir" bash "$guard" >/dev/null 2>&1
+codex_dispatch PostToolUse exec_command \
+  '{"cmd":"sed -n 1,200p /plugin/skills/test-driven-development/SKILL.md"}' >/dev/null
 codex_check "Codex: one read discipline is insufficient" deny \
   "$(codex_payload PreToolUse apply_patch "$patch_input")"
-printf '%s' "$(codex_payload PostToolUse exec '{"cmd":"sed -n 1,200p /plugin/skills/yagni/SKILL.md"}')" \
-  | TMPDIR="$tmpdir" bash "$guard" >/dev/null 2>&1
+codex_dispatch PostToolUse exec_command \
+  '{"cmd":"sed -n 1,200p /plugin/skills/yagni/SKILL.md"}' >/dev/null
 codex_check "Codex: both read disciplines allow apply_patch" allow \
   "$(codex_payload PreToolUse apply_patch "$patch_input")"
+CODEX_TEST_SESSION_ID=codex-direct-exec-test codex_dispatch PostToolUse exec \
+  '{"cmd":"sed -n 1,200p /plugin/skills/test-driven-development/SKILL.md"}' >/dev/null
+CODEX_TEST_SESSION_ID=codex-direct-exec-test codex_dispatch PostToolUse exec \
+  '{"cmd":"sed -n 1,200p /plugin/skills/yagni/SKILL.md"}' >/dev/null
+codex_check "Codex: direct exec receipts remain matched" allow \
+  "$(CODEX_TEST_SESSION_ID=codex-direct-exec-test codex_payload PreToolUse apply_patch "$patch_input")"
 codex_check "Codex: non-code patches stay outside the scoped boundary" allow \
   "$(codex_payload PreToolUse apply_patch '{"patch":"*** Begin Patch\n*** Update File: /w/README.md\n@@\n-old\n+new\n*** End Patch"}')"
 
