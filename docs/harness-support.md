@@ -23,7 +23,7 @@ Codex never loads it — a repo-local config wires contributors and ships nothin
 Everything the hook touches therefore lives inside the plugin, and
 `scripts/sh/sync-codex-plugin-skills.sh` mirrors it in.
 
-Codex reports compaction through a new `SessionStart` event whose source is
+Codex reports compaction through a `SessionStart` event whose source is
 `compact`. Its separate `PostCompact` output cannot carry additional context,
 so the adapter keeps router injection on the contextual `SessionStart` path.
 
