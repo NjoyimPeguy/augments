@@ -12,7 +12,7 @@ tools, and lifecycle events.
 | Harness | Adapter | Router injection | Re-applied after compaction | Structured code-edit guard |
 | --- | --- | --- | --- | --- |
 | Claude Code | `.claude-plugin/` and `hooks/hooks.json` | `SessionStart` hook | Yes — `compact` is in the matcher | `Write`, `Edit`, `MultiEdit` |
-| Codex | `plugins/sdlc-skills/` (manifest, `hooks/hooks.json`, mirrored injector) and `.agents/plugins/marketplace.json` | `SessionStart` hook | Yes — separate `PostCompact` event | `apply_patch` |
+| Codex | `plugins/sdlc-skills/` (manifest, `hooks/hooks.json`, mirrored injector) and `.agents/plugins/marketplace.json` | `SessionStart` hook | Yes — `SessionStart` with `source=compact` | `apply_patch` |
 | Kimi Code | `.kimi-plugin/plugin.json` | `sessionStart.skill` | `PostCompact` hook | `Write`, `Edit`, `MultiEdit` |
 
 The Codex plugin manifest carries the skill catalogue but has no session-start
@@ -22,6 +22,10 @@ standalone, so a hooks file at the repository root is outside the plugin root an
 Codex never loads it — a repo-local config wires contributors and ships nothing.
 Everything the hook touches therefore lives inside the plugin, and
 `scripts/sh/sync-codex-plugin-skills.sh` mirrors it in.
+
+Codex reports compaction through a `SessionStart` event whose source is
+`compact`. Its separate `PostCompact` output cannot carry additional context,
+so the adapter keeps router injection on the contextual `SessionStart` path.
 
 Two consequences worth knowing before editing either side. The command resolves
 the injector through `$PLUGIN_ROOT`, because hooks run with the *session* working

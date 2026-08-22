@@ -12,18 +12,6 @@
         ]
       }
     ],
-    "PostCompact": [
-      {
-        "hooks": [
-          {
-            "type": "command",
-            "command": "bash \"$PLUGIN_ROOT/scripts/sh/session-start.sh\" PostCompact",
-            "timeout": 15,
-            "statusMessage": "Re-applying the SDLC skills router"
-          }
-        ]
-      }
-    ],
     "PreToolUse": [
       {
         "matcher": "apply_patch|exec",
