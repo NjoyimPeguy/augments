@@ -17,8 +17,9 @@
 | {{VR-001}} | {{D-001}} | {{medium}} | {{design version}} | {{stable path, route, or artifact ID}} | {{immutable version, revision, or capture ID}} | {{selected content digest}} | {{stable selection ID}} | {{immutable rendering-input identity}} | {{exact freshness check}} | {{normative states/viewports/themes/fixtures/captures}} | {{observable distinguishing traits}} |
 
 A missing field invalidates the applicable UI-bearing tasks and evidence. A
-proved mismatch is stale; an unavailable/error result is pending until the
-evaluator or its environment is repaired and rerun.
+`pass` permits use, while a proved `mismatch` is stale. `unavailable` means the
+environment is absent and `error` means the evaluator failed; either is pending
+until the evaluator or its environment is repaired and rerun.
 
 ### Visual reference coverage
 
