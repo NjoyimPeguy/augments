@@ -96,8 +96,10 @@ else
     err "$codex_hook: PostCompact output cannot carry router context; use SessionStart source=compact"
   fi
   grep -q 'session-start\.sh' "$codex_hook" || err "$codex_hook: does not invoke session-start.sh"
-  grep -q 'implementation-guard\.sh' "$codex_hook" \
-    && err "$codex_hook: receipt-backed implementation guard must stay retired"
+  if jq -e '.hooks | has("PreToolUse") or has("PostToolUse")' \
+       "$codex_hook" >/dev/null 2>&1; then
+    err "$codex_hook: structured edit lifecycle hooks must stay retired"
+  fi
   grep -q 'PLUGIN_ROOT' "$codex_hook" \
     || err "$codex_hook: resolves no plugin root — the command must not depend on the session cwd"
 fi

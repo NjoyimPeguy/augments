@@ -101,7 +101,7 @@ Three harnesses have adapters:
 | Harness | Adapter | Routing support |
 | --- | --- | --- |
 | Claude Code | `.claude-plugin/` | `SessionStart` router injection; `Write`/`Edit` guard |
-| Codex CLI | `plugins/sdlc-skills/`, listed in `.agents/plugins/marketplace.json` | bundled router hooks; `apply_patch` guard |
+| Codex CLI | `plugins/sdlc-skills/`, listed in `.agents/plugins/marketplace.json` | bundled SessionStart router; no implementation guard |
 | Kimi Code | `.kimi-plugin/` | session-start router, tool bindings, and `Write`/`Edit` guard |
 
 `AGENTS.md` and `GEMINI.md` symlink to `CLAUDE.md`, so a harness that reads its

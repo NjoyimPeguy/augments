@@ -2,7 +2,7 @@
 # Offline contract for the scoped implementation-entry hook.
 #
 # This is not a universal file-mutation boundary. It covers the structured
-# edit-class actions declared by the supported adapters and verifies that they
+# edit-class actions declared by the Claude and Kimi adapters and verifies that they
 # cannot write a code path before both implementation disciplines have loaded.
 set -uo pipefail
 cd "$(dirname "$0")/.." || exit 2
@@ -39,18 +39,43 @@ if jq -e 'any(.hooks.PreToolUse[]?.hooks[]?; .command | contains("implementation
 else
   bad "Claude: PreToolUse does not install the guard"
 fi
-if jq -e '
-     [.hooks[]?[]?.hooks[]?]
-     | any(.command | contains("implementation-guard.sh"))
-   ' plugins/sdlc-skills/hooks/hooks.json >/dev/null; then
-  bad "Codex: receipt-backed implementation guard is still installed"
+if jq -e '.hooks | has("PreToolUse") or has("PostToolUse")' \
+     plugins/sdlc-skills/hooks/hooks.json >/dev/null; then
+  bad "Codex: structured edit lifecycle hooks are still installed"
 else
-  ok "Codex: no receipt-backed implementation guard is installed"
+  ok "Codex: no structured edit lifecycle hooks are installed"
 fi
 if [ -e plugins/sdlc-skills/scripts/sh/implementation-guard.sh ]; then
   bad "Codex: unused implementation guard mirror is still shipped"
 else
   ok "Codex: implementation guard mirror is not shipped"
+fi
+
+codex_out="$(printf '%s' \
+  '{"hook_event_name":"PreToolUse","session_id":"codex-guard-test","tool_name":"apply_patch","tool_input":"*** Begin Patch\n*** Update File: src/a.rs\n@@\n-old\n+new\n*** End Patch"}' \
+  | TMPDIR="$tmpdir" bash "$guard" 2>/dev/null)"
+if printf '%s' "$codex_out" | jq -e '.hookSpecificOutput.permissionDecision == "deny"' \
+     >/dev/null 2>&1; then
+  bad "Codex: shared guard still denies a Codex-shaped structured edit"
+else
+  ok "Codex: shared guard ignores Codex-shaped structured edits"
+fi
+
+sync_repo="$tmpdir/sync-repo"
+mkdir -p "$sync_repo/scripts/sh" "$sync_repo/skills/common/router" \
+  "$sync_repo/plugins/sdlc-skills/scripts/sh"
+cp scripts/sh/sync-codex-plugin-skills.sh scripts/sh/session-start.sh \
+  "$sync_repo/scripts/sh/"
+: > "$sync_repo/skills/common/router/SKILL.md"
+: > "$sync_repo/plugins/sdlc-skills/scripts/sh/implementation-guard.sh"
+if (cd "$sync_repo" && bash scripts/sh/sync-codex-plugin-skills.sh) &&
+   [ ! -e "$sync_repo/plugins/sdlc-skills/scripts/sh/implementation-guard.sh" ] &&
+   [ -x "$sync_repo/plugins/sdlc-skills/scripts/sh/session-start.sh" ] &&
+   cmp -s scripts/sh/session-start.sh \
+     "$sync_repo/plugins/sdlc-skills/scripts/sh/session-start.sh"; then
+  ok "Codex: sync removes a stale guard and refreshes the router script"
+else
+  bad "Codex: sync does not retire the stale guard lifecycle cleanly"
 fi
 if jq -e '
      any(.hooks[]?; .event == "PreToolUse" and (.command | contains("implementation-guard.sh"))) and
