@@ -7,7 +7,7 @@ Notable changes to SDLC skills, newest first. Versions follow semantic versionin
 ### Fixed
 
 - **Codex no longer deadlocks on a missing implementation-guard receipt.** Its adapter now relies on resident routing instead of blocking structured edits with a guard whose receipt path could fail; Claude Code and Kimi Code keep their existing enforcement.
-- **Selected UI directions now survive planning and implementation.** Approved visual references carry immutable artifact and rendering identities, ownership, freshness, and conformance gates through plans, tasks, execution, and visual verification so later sessions cannot silently substitute another direction.
+- **Selected UI directions now have a durable delivery contract.** Approved visual references carry immutable artifact and rendering identities, ownership, freshness, and conformance gates through plans, tasks, execution, and visual verification; later sessions must validate those references and gates before completion.
 
 ## [6.2.6] — 2026-08-22
 
