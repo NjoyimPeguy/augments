@@ -51,11 +51,18 @@ else
   ok "Codex: implementation guard mirror is not shipped"
 fi
 
+codex_err="$tmpdir/codex-guard.err"
+codex_status=0
 codex_out="$(printf '%s' \
   '{"hook_event_name":"PreToolUse","session_id":"codex-guard-test","tool_name":"apply_patch","tool_input":"*** Begin Patch\n*** Update File: src/a.rs\n@@\n-old\n+new\n*** End Patch"}' \
-  | TMPDIR="$tmpdir" bash "$guard" 2>/dev/null)"
-if printf '%s' "$codex_out" | jq -e '.hookSpecificOutput.permissionDecision == "deny"' \
-     >/dev/null 2>&1; then
+  | TMPDIR="$tmpdir" bash "$guard" 2>"$codex_err")" || codex_status=$?
+codex_stderr="$(cat "$codex_err")"
+if [ "$codex_status" -ne 0 ]; then
+  bad "Codex: shared guard exited nonzero for a Codex-shaped structured edit"
+elif printf '%s' "$codex_out" | jq -e '.hookSpecificOutput.permissionDecision == "deny"' \
+       >/dev/null 2>&1 ||
+     printf '%s' "$codex_stderr" | jq -e '.hookSpecificOutput.permissionDecision == "deny"' \
+       >/dev/null 2>&1; then
   bad "Codex: shared guard still denies a Codex-shaped structured edit"
 else
   ok "Codex: shared guard ignores Codex-shaped structured edits"

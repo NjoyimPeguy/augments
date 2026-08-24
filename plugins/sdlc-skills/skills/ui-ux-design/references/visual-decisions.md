@@ -90,11 +90,12 @@ The richer medium is not automatically better. Match fidelity to the decision: l
 
    A path, visible label, or mutable whole-surface digest is not an identity.
    Before downstream use, run every applicable Freshness evaluator. Its contract
-   distinguishes `pass`, proved `mismatch`, and `unavailable/error`. A mismatch
-   makes planning, implementation, and visual evidence stale: either restore the
-   binding and rerun, or approve a successor design and then, when plan-bound, a
-   successor plan. An unavailable evaluator leaves the gate pending until its
-   environment or evaluator is repaired and rerun; it proves no drift. Owner
+   has exactly four literal outcomes: `pass`, proved `mismatch`, `unavailable`,
+   and `error`. A mismatch makes planning, implementation, and visual evidence
+   stale: either restore the binding and rerun, or approve a successor design
+   and then, when plan-bound, a successor plan. `unavailable` means the required
+   environment is absent; `error` means the evaluator failed. Either outcome
+   leaves the gate pending until repaired and rerun and proves no drift. Owner
    reconciliation alone cannot change an approved binding.
 
 ## Decision record

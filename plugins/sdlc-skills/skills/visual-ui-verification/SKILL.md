@@ -30,10 +30,11 @@ candidate-bound evidence; snapshots and “looks good” do not establish it.
    reference applicable to this candidate field for field. When plan-bound, also
    match each record and conformance evaluator to the approved plan and task;
    design-only verification needs no plan. Run each Freshness evaluator before
-   capture. A proved mismatch is stale: restore the binding and rerun, or approve
-   a design successor and, when plan-bound, a plan successor. An unavailable/error
-   result is pending until the evaluator or environment is repaired and rerun;
-   it proves no drift. A missing field also leaves the verdict pending.
+   capture. `pass` permits capture; proved `mismatch` is stale, so restore the
+   binding and rerun or approve a design successor and, when plan-bound, a plan
+   successor. `unavailable` means the environment is absent and `error` means the
+   evaluator failed; either is pending until repaired and rerun and proves no
+   drift. A missing field also leaves the verdict pending.
 2. **Build the smallest deciding matrix.** Cross applicable journeys and states
    with viewport/window size, theme, input method, platform, and content
    pressure. Include empty, loading, error, overflow, and no-permission states

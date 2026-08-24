@@ -23,7 +23,11 @@ the plan index's Selected visual references, copied field for field below; or
 | {{VR-001}} | {{VCONF-001}} | {{executable check or controlled rubric that judges the Distinguishing invariants}} |
 
 Every Applicable visual reference has a gate row, and every gate ID matches the
-plan index's Visual reference coverage.
+plan index's Visual reference coverage. A UI task's required gate set is its task
+Evaluator, every applicable VCONF row, and, for an integrated UI,
+`visual-ui-verification`. Every required gate must pass on the same accepted
+state before the task can be `done`; a `mismatch`, failed VCONF, `unavailable` or
+`error` evaluator result, or any pending gate keeps it non-done.
 
 **Suggested tier:** {{small | medium | large}} — {{mechanical | logic | design}}
 **Implementation disciplines:** {{`test-driven-development` + `yagni` for

@@ -18,8 +18,9 @@ per required observation; use stable `{{double-curly}}` values.
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | `{{VR-001}}` | `{{D-001}}` | `{{medium}}` | `{{design version}}` | `{{stable path, route, or artifact ID}}` | `{{immutable version, revision, or capture ID}}` | `{{selected content digest}}` | `{{stable selection ID}}` | `{{immutable rendering-input identity}}` | `{{exact freshness check}}` | `{{normative states/viewports/themes/fixtures/captures}}` | `{{observable distinguishing traits}}` |
 
-- **Freshness evidence:** `{{one current pass / mismatch / unavailable-error
-  evaluator receipt per applicable Reference ID, or pending recovery route}}`
+- **Freshness evidence:** {{one current outcome—`pass`, `mismatch`, `unavailable`,
+  or `error`—per applicable Reference ID, with its evaluator receipt or pending
+  recovery route}}
 - **Plan binding:** `{{not plan-bound, or approved plan/task identity plus each
   Reference ID → conformance evaluator ID mapping}}`
 - **Environment:** `{{platform, build mode, runtime, display or terminal}}`
