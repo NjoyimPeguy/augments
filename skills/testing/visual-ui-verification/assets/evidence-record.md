@@ -10,6 +10,19 @@ per required observation; use stable `{{double-curly}}` values.
   covering staged, unstaged, untracked, and relevant ignored inputs}}`
 - **Launch path:** `{{command or controlled action}}`
 - **Acceptance source:** `{{requirements, UI state IDs, rubric identity}}`
+- **Selected visual references:** `{{keyed collection applicable to this
+  candidate, copied field for field from the approved design and, when
+  plan-bound, the approved plan; or not applicable}}`
+
+| Reference ID | Decision ID | Medium | Approved design artifact version | Artifact locator | Artifact version | Content digest | Selection ID | Rendering-input identity | Freshness evaluator | Normative conditions | Distinguishing invariants |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| `{{VR-001}}` | `{{D-001}}` | `{{medium}}` | `{{design version}}` | `{{stable path, route, or artifact ID}}` | `{{immutable version, revision, or capture ID}}` | `{{selected content digest}}` | `{{stable selection ID}}` | `{{immutable rendering-input identity}}` | `{{exact freshness check}}` | `{{normative states/viewports/themes/fixtures/captures}}` | `{{observable distinguishing traits}}` |
+
+- **Freshness evidence:** {{one current outcome—`pass`, `mismatch`, `unavailable`,
+  or `error`—per applicable Reference ID, with its evaluator receipt or pending
+  recovery route}}
+- **Plan binding:** `{{not plan-bound, or approved plan/task identity plus each
+  Reference ID → conformance evaluator ID mapping}}`
 - **Environment:** `{{platform, build mode, runtime, display or terminal}}`
 - **Capture tool:** `{{tool, version, configuration, digest}}`
 - **Observer / authority:** `{{who inspects; mechanical or human-owned criteria;

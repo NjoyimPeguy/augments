@@ -3,13 +3,12 @@
 #
 # This hook catches accidental routing skips on the tool surface it can observe.
 # It is not a universal mutation boundary: shell commands can write files without
-# using Write, Edit, or apply_patch, and unsupported harnesses may expose
+# using Write or Edit, and unsupported harnesses may expose
 # different tools. The adapter documentation and tests name that scope.
 #
 # Claude-style hook payloads carry transcript_path, so loaded skills are read
-# from the real session transcript. Kimi and Codex payloads use an owner-only
-# per-session ledger: Kimi records native Skill calls; Codex records successful
-# reads of the two skill files because that adapter has no native Skill action.
+# from the real session transcript. Kimi payloads use an owner-only per-session
+# ledger of native Skill calls.
 set -uo pipefail
 command -v jq >/dev/null 2>&1 || exit 0
 
@@ -29,7 +28,7 @@ pair_missing() {
 }
 
 guard_reason() {
-  printf 'Blocked on the structured edit-class implementation boundary: %s has not loaded in this session. Invoke `test-driven-development` and `yagni` through the configured skill-loading action, then retry. This guard covers code paths written through Write/Edit/apply_patch-class actions; it does not claim to cover shell-driven writes.' "$1"
+  printf 'Blocked on the structured edit-class implementation boundary: %s has not loaded in this session. Invoke `test-driven-development` and `yagni` through the configured skill-loading action, then retry. This guard covers code paths written through Write/Edit-class actions; it does not claim to cover shell-driven writes.' "$1"
 }
 
 target_path() {
@@ -37,27 +36,6 @@ target_path() {
   path="$(get '.tool_input.file_path')"
   [ -n "$path" ] || path="$(get '.tool_input.path')"
   printf '%s' "$path"
-}
-
-tool_input_text() {
-  printf '%s' "$input" | jq -r '
-    .tool_input // empty | if type == "string" then . else tojson end
-  ' 2>/dev/null
-}
-
-patch_paths() {
-  tool_input_text | grep -oE '\*\*\* (Add|Update|Delete) File: [^\\"[:cntrl:]]+' |
-    sed -E 's/^\*\*\* (Add|Update|Delete) File: //'
-}
-
-codex_loaded_disciplines() {
-  local raw skill
-  raw="$(tool_input_text)"
-  printf '%s' "$raw" | grep -qiE '\b(cat|sed|awk|head|tail|less|bat|read|open)\b' || return 0
-  for skill in test-driven-development yagni; do
-    printf '%s' "$raw" | grep -qE "(^|/)$skill/SKILL\.md([[:space:]\\\"']|$)" &&
-      printf '%s\n' "$skill"
-  done
 }
 
 deny_json() {
@@ -102,20 +80,12 @@ case "$event" in
     if [ "$tool" = "Skill" ]; then
       skill="$(get '.tool_input.skill')"
       [ -n "$skill" ] && ( umask 077; printf '%s\n' "$skill" >> "$ledger" )
-    elif [[ "$tool" =~ ^(exec|exec_command|functions.exec)$ ]]; then
-      loaded="$(codex_loaded_disciplines)"
-      [ -n "$loaded" ] && ( umask 077; printf '%s\n' "$loaded" >> "$ledger" )
     fi
     ;;
   PreToolUse)
     case "$tool" in
       Write|Edit|MultiEdit)
         paths="$(target_path)" ;;
-      apply_patch|ApplyPatch)
-        paths="$(patch_paths)" ;;
-      exec|functions.exec)
-        tool_input_text | grep -qE 'tools\.apply_patch|\*\*\* Begin Patch' || exit 0
-        paths="$(patch_paths)" ;;
       *) exit 0;;
     esac
     [ -n "$paths" ] && is_code_path "$paths" || exit 0
@@ -128,9 +98,7 @@ case "$event" in
       missing="test-driven-development and yagni"
     fi
     reason="$(guard_reason "$missing")"
-    case "$tool" in
-      apply_patch|ApplyPatch|exec|functions.exec) deny_json "$reason"; exit 0 ;;
-      *) printf '%s' "$reason" >&2; exit 2 ;;
-    esac
+    printf '%s' "$reason" >&2
+    exit 2
     ;;
 esac

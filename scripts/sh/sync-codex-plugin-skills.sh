@@ -44,9 +44,8 @@ while IFS= read -r skill_md; do
 done < <(find skills -mindepth 3 -maxdepth 3 -name SKILL.md | sort)
 
 # Hooks are inert without their scripts beside them. session-start.sh resolves
-# the router from the flat mirror; implementation-guard.sh owns the structured
-# edit boundary. Both copies need no rewriting.
+# the router from the flat mirror and needs no rewriting.
 mkdir -p "$root/scripts/sh"
+rm -f "$root/scripts/sh/implementation-guard.sh"
 cp -a scripts/sh/session-start.sh "$root/scripts/sh/session-start.sh"
-cp -a scripts/sh/implementation-guard.sh "$root/scripts/sh/implementation-guard.sh"
-chmod +x "$root/scripts/sh/session-start.sh" "$root/scripts/sh/implementation-guard.sh"
+chmod +x "$root/scripts/sh/session-start.sh"

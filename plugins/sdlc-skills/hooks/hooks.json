@@ -11,31 +11,6 @@
           }
         ]
       }
-    ],
-    "PreToolUse": [
-      {
-        "matcher": "apply_patch|exec",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "bash \"$PLUGIN_ROOT/scripts/sh/implementation-guard.sh\"",
-            "timeout": 15,
-            "statusMessage": "Checking implementation-entry disciplines"
-          }
-        ]
-      }
-    ],
-    "PostToolUse": [
-      {
-        "matcher": "Skill|exec|exec_command",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "bash \"$PLUGIN_ROOT/scripts/sh/implementation-guard.sh\"",
-            "timeout": 15
-          }
-        ]
-      }
     ]
   }
 }

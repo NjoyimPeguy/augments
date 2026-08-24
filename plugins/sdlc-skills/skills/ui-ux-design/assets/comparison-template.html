@@ -34,6 +34,8 @@
     changes. Never make a preferred option look better through better copy
     or easier data.
   - Same realistic happy AND unhappy state in every variant.
+  - Every version block and variant carries a stable data ID. A selected
+    direction is cited by these IDs; order or visible label is not identity.
   - State the question and the 2-4 comparison dimensions on the surface
     (the header below), plus what is held constant.
   - A click or control state is not approval; the decision is confirmed in
@@ -225,10 +227,11 @@
 
   <div class="variants">
 
-  <div class="version version-1" aria-label="Version 1">
+  <!-- comparison-version:start {{version-1-identity}} -->
+  <div class="version version-1" data-version-id="{{version-1-identity}}" aria-label="Version 1">
     <p class="v-stamp">Version <span class="mono">{{version-1-identity}}</span> · {{YYYY-MM-DD}} · {{what changed from the previous version, or "first version"}} · fixture {{fixture identity}}</p>
 
-    <section class="variant variant-1" aria-label="Variant 1">
+    <section class="variant variant-1" data-variant-id="{{variant-1-stable-ID}}" aria-label="Variant 1">
       <div class="v-head">
         <h2>{{variant-1-name}}</h2>
         <p class="char">{{one line: what this direction is}}</p>
@@ -239,7 +242,7 @@
       {{variant-1-content}}
     </section>
 
-    <section class="variant variant-2" aria-label="Variant 2">
+    <section class="variant variant-2" data-variant-id="{{variant-2-stable-ID}}" aria-label="Variant 2">
       <div class="v-head">
         <h2>{{variant-2-name}}</h2>
         <p class="char">{{one line: what this direction is}}</p>
@@ -248,7 +251,7 @@
       {{variant-2-content}}
     </section>
 
-    <section class="variant variant-3" aria-label="Variant 3">
+    <section class="variant variant-3" data-variant-id="{{variant-3-stable-ID}}" aria-label="Variant 3">
       <div class="v-head">
         <h2>{{variant-3-name}}</h2>
         <p class="char">{{one line: what this direction is}}</p>
@@ -257,7 +260,7 @@
       {{variant-3-content}}
     </section>
 
-    <section class="variant variant-4" aria-label="Variant 4">
+    <section class="variant variant-4" data-variant-id="{{variant-4-stable-ID}}" aria-label="Variant 4">
       <div class="v-head">
         <h2>{{variant-4-name}}</h2>
         <p class="char">{{one line: what this direction is}}</p>
@@ -267,13 +270,14 @@
     </section>
 
   </div><!-- .version-1 -->
+  <!-- comparison-version:end {{version-1-identity}} -->
 
-  <!-- APPEND THE NEXT VERSION HERE — a copy of the .version block above with
-       class `version-2`, its own v-stamp, and only the axes that feedback
-       implicated actually changed. Never edit .version-1: it is the record of
-       what was already compared, and the diff for a new version must show no
-       deletions inside a block already issued. Retire a version in place by
-       saying so in its v-stamp; do not delete it. -->
+  <!-- APPEND THE NEXT VERSION HERE — copy the start marker, .version block,
+       and end marker above with a new immutable version identity, class
+       `version-2`, its own v-stamp, and only the axes that feedback implicated
+       changed. The bytes from a version's start marker through its end marker
+       are its stable digest boundary: never edit them after issue. Retire a
+       version outside that boundary; do not delete it. -->
 
   </div><!-- .variants -->
 

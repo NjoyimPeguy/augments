@@ -2,7 +2,7 @@
 # Offline contract for the scoped implementation-entry hook.
 #
 # This is not a universal file-mutation boundary. It covers the structured
-# edit-class actions declared by the supported adapters and verifies that they
+# edit-class actions declared by the Claude and Kimi adapters and verifies that they
 # cannot write a code path before both implementation disciplines have loaded.
 set -uo pipefail
 cd "$(dirname "$0")/.." || exit 2
@@ -12,8 +12,9 @@ case "${1-}" in
     cat <<'EOF'
 tests/run-implementation-guard.sh — check the scoped pre-edit hook contract.
 
-Takes no arguments. Exercises Claude transcript evidence, Kimi native-skill
-evidence, and Codex skill-file-read evidence without calling a model.
+Takes no arguments. Exercises Claude transcript evidence and Kimi native-skill
+evidence without calling a model, and keeps receipt-backed Codex enforcement
+retired.
 
 Exit codes: 0 every check passed · 1 at least one failed · 2 bad repository state
 EOF
@@ -38,13 +39,50 @@ if jq -e 'any(.hooks.PreToolUse[]?.hooks[]?; .command | contains("implementation
 else
   bad "Claude: PreToolUse does not install the guard"
 fi
-if jq -e '
-     any(.hooks.PreToolUse[]?.hooks[]?; .command | contains("implementation-guard.sh")) and
-     any(.hooks.PostToolUse[]?.hooks[]?; .command | contains("implementation-guard.sh"))
-   ' plugins/sdlc-skills/hooks/hooks.json >/dev/null; then
-  ok "Codex: PreToolUse and PostToolUse install the guard"
+if jq -e '.hooks | has("PreToolUse") or has("PostToolUse")' \
+     plugins/sdlc-skills/hooks/hooks.json >/dev/null; then
+  bad "Codex: structured edit lifecycle hooks are still installed"
 else
-  bad "Codex: guard lifecycle hooks are incomplete"
+  ok "Codex: no structured edit lifecycle hooks are installed"
+fi
+if [ -e plugins/sdlc-skills/scripts/sh/implementation-guard.sh ]; then
+  bad "Codex: unused implementation guard mirror is still shipped"
+else
+  ok "Codex: implementation guard mirror is not shipped"
+fi
+
+codex_err="$tmpdir/codex-guard.err"
+codex_status=0
+codex_out="$(printf '%s' \
+  '{"hook_event_name":"PreToolUse","session_id":"codex-guard-test","tool_name":"apply_patch","tool_input":"*** Begin Patch\n*** Update File: src/a.rs\n@@\n-old\n+new\n*** End Patch"}' \
+  | TMPDIR="$tmpdir" bash "$guard" 2>"$codex_err")" || codex_status=$?
+codex_stderr="$(cat "$codex_err")"
+if [ "$codex_status" -ne 0 ]; then
+  bad "Codex: shared guard exited nonzero for a Codex-shaped structured edit"
+elif printf '%s' "$codex_out" | jq -e '.hookSpecificOutput.permissionDecision == "deny"' \
+       >/dev/null 2>&1 ||
+     printf '%s' "$codex_stderr" | jq -e '.hookSpecificOutput.permissionDecision == "deny"' \
+       >/dev/null 2>&1; then
+  bad "Codex: shared guard still denies a Codex-shaped structured edit"
+else
+  ok "Codex: shared guard ignores Codex-shaped structured edits"
+fi
+
+sync_repo="$tmpdir/sync-repo"
+mkdir -p "$sync_repo/scripts/sh" "$sync_repo/skills/common/router" \
+  "$sync_repo/plugins/sdlc-skills/scripts/sh"
+cp scripts/sh/sync-codex-plugin-skills.sh scripts/sh/session-start.sh \
+  "$sync_repo/scripts/sh/"
+: > "$sync_repo/skills/common/router/SKILL.md"
+: > "$sync_repo/plugins/sdlc-skills/scripts/sh/implementation-guard.sh"
+if (cd "$sync_repo" && bash scripts/sh/sync-codex-plugin-skills.sh) &&
+   [ ! -e "$sync_repo/plugins/sdlc-skills/scripts/sh/implementation-guard.sh" ] &&
+   [ -x "$sync_repo/plugins/sdlc-skills/scripts/sh/session-start.sh" ] &&
+   cmp -s scripts/sh/session-start.sh \
+     "$sync_repo/plugins/sdlc-skills/scripts/sh/session-start.sh"; then
+  ok "Codex: sync removes a stale guard and refreshes the router script"
+else
+  bad "Codex: sync does not retire the stale guard lifecycle cleanly"
 fi
 if jq -e '
      any(.hooks[]?; .event == "PreToolUse" and (.command | contains("implementation-guard.sh"))) and
@@ -98,48 +136,6 @@ printf '%s' "$(kimi_payload PostToolUse Skill '{"skill":"sdlc-skills:yagni"}')" 
   | TMPDIR="$tmpdir" bash "$guard" >/dev/null 2>&1
 kimi_check "Kimi: both disciplines allow a code edit" allow \
   "$(kimi_payload PreToolUse Edit '{"file_path":"/w/src/a.rs"}')"
-
-codex_payload() {
-  local session_id="${CODEX_TEST_SESSION_ID:-codex-guard-test}"
-  printf '{"hook_event_name":"%s","session_id":"%s","tool_name":"%s","tool_input":%s}' \
-    "$1" "$session_id" "$2" "$3"
-}
-codex_dispatch() { # event tool tool-input
-  local event="$1" tool="$2" tool_input="$3" matcher
-  matcher="$(jq -r --arg event "$event" '.hooks[$event][0].matcher // ".*"' \
-    plugins/sdlc-skills/hooks/hooks.json)"
-  printf '%s\n' "$tool" | grep -Eq "^($matcher)$" || return 0
-  codex_payload "$event" "$tool" "$tool_input" |
-    TMPDIR="$tmpdir" bash "$guard" 2>/dev/null
-}
-codex_check() { # description expected payload
-  local desc="$1" expected="$2" payload="$3" out actual=allow
-  out="$(printf '%s' "$payload" | TMPDIR="$tmpdir" bash "$guard" 2>/dev/null)"
-  printf '%s' "$out" | jq -e '.hookSpecificOutput.permissionDecision == "deny"' >/dev/null 2>&1 && actual=deny
-  [ "$actual" = "$expected" ] && ok "$desc" || bad "$desc (expected $expected, got $actual)"
-}
-
-patch_input='{"patch":"*** Begin Patch\n*** Update File: /w/src/a.py\n@@\n-old\n+new\n*** End Patch"}'
-printf '%s' "$(codex_payload PostToolUse exec '{"cmd":"printf test-driven-development/SKILL.md"}')" \
-  | TMPDIR="$tmpdir" bash "$guard" >/dev/null 2>&1
-codex_check "Codex: mentioning a skill path is not loading it" deny \
-  "$(codex_payload PreToolUse apply_patch "$patch_input")"
-codex_dispatch PostToolUse exec_command \
-  '{"cmd":"sed -n 1,200p /plugin/skills/test-driven-development/SKILL.md"}' >/dev/null
-codex_check "Codex: one read discipline is insufficient" deny \
-  "$(codex_payload PreToolUse apply_patch "$patch_input")"
-codex_dispatch PostToolUse exec_command \
-  '{"cmd":"sed -n 1,200p /plugin/skills/yagni/SKILL.md"}' >/dev/null
-codex_check "Codex: both read disciplines allow apply_patch" allow \
-  "$(codex_payload PreToolUse apply_patch "$patch_input")"
-CODEX_TEST_SESSION_ID=codex-direct-exec-test codex_dispatch PostToolUse exec \
-  '{"cmd":"sed -n 1,200p /plugin/skills/test-driven-development/SKILL.md"}' >/dev/null
-CODEX_TEST_SESSION_ID=codex-direct-exec-test codex_dispatch PostToolUse exec \
-  '{"cmd":"sed -n 1,200p /plugin/skills/yagni/SKILL.md"}' >/dev/null
-codex_check "Codex: direct exec receipts remain matched" allow \
-  "$(CODEX_TEST_SESSION_ID=codex-direct-exec-test codex_payload PreToolUse apply_patch "$patch_input")"
-codex_check "Codex: non-code patches stay outside the scoped boundary" allow \
-  "$(codex_payload PreToolUse apply_patch '{"patch":"*** Begin Patch\n*** Update File: /w/README.md\n@@\n-old\n+new\n*** End Patch"}')"
 
 [ "$fails" -eq 0 ] && { echo "implementation guard: PASS"; exit 0; }
 echo "implementation guard: FAIL"

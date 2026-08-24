@@ -86,7 +86,7 @@ fi
 # loads it. Manifest hook paths resolve relative to the plugin root and must stay
 # inside it, so everything the hook touches is mirrored in by
 # scripts/sh/sync-codex-plugin-skills.sh.
-echo "• Codex hook config (router and structured edit guard)"
+echo "• Codex hook config (router only)"
 codex_hook="$plugin_root/hooks/hooks.json"
 if [ ! -f "$codex_hook" ]; then
   err "missing $codex_hook (an installed plugin would inject no router)"
@@ -95,11 +95,11 @@ else
   if jq -e '.hooks | has("PostCompact")' "$codex_hook" >/dev/null 2>&1; then
     err "$codex_hook: PostCompact output cannot carry router context; use SessionStart source=compact"
   fi
-  for ev in PreToolUse PostToolUse; do
-    grep -q "\"$ev\"" "$codex_hook" || err "$codex_hook: no $ev hook (implementation guard would not run)"
-  done
   grep -q 'session-start\.sh' "$codex_hook" || err "$codex_hook: does not invoke session-start.sh"
-  grep -q 'implementation-guard\.sh' "$codex_hook" || err "$codex_hook: does not invoke implementation-guard.sh"
+  if jq -e '.hooks | has("PreToolUse") or has("PostToolUse")' \
+       "$codex_hook" >/dev/null 2>&1; then
+    err "$codex_hook: structured edit lifecycle hooks must stay retired"
+  fi
   grep -q 'PLUGIN_ROOT' "$codex_hook" \
     || err "$codex_hook: resolves no plugin root — the command must not depend on the session cwd"
 fi
@@ -119,12 +119,8 @@ if [ ! -x "$mirrored" ]; then
 elif ! diff -q scripts/sh/session-start.sh "$mirrored" >/dev/null; then
   err "$mirrored is stale — re-run scripts/sh/sync-codex-plugin-skills.sh"
 fi
-guard_mirror="$plugin_root/scripts/sh/implementation-guard.sh"
-if [ ! -x "$guard_mirror" ]; then
-  err "missing executable $guard_mirror (run scripts/sh/sync-codex-plugin-skills.sh)"
-elif ! diff -q scripts/sh/implementation-guard.sh "$guard_mirror" >/dev/null; then
-  err "$guard_mirror is stale — re-run scripts/sh/sync-codex-plugin-skills.sh"
-fi
+[ ! -e "$plugin_root/scripts/sh/implementation-guard.sh" ] \
+  || err "$plugin_root/scripts/sh/implementation-guard.sh is unused and must not ship"
 [ -f "$plugin_root/skills/using-sdlc-skills/SKILL.md" ] \
   || err "$plugin_root/skills/using-sdlc-skills/SKILL.md missing — the injector would find no router"
 

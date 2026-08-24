@@ -9,6 +9,27 @@
   conflict resolver and decision rule}}
 - **Bound inputs:** {{exact brief/spec/design/model/ADR/migration/assurance/code
   identities, evidence freshness, and invalidation rules}}
+- **Selected visual references:** {{complete keyed collection from the approved
+  design, copied field for field in the table below; or `not applicable`}}
+
+| Reference ID | Decision ID | Medium | Approved design artifact version | Artifact locator | Artifact version | Content digest | Selection ID | Rendering-input identity | Freshness evaluator | Normative conditions | Distinguishing invariants |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| {{VR-001}} | {{D-001}} | {{medium}} | {{design version}} | {{stable path, route, or artifact ID}} | {{immutable version, revision, or capture ID}} | {{selected content digest}} | {{stable selection ID}} | {{immutable rendering-input identity}} | {{exact freshness check}} | {{normative states/viewports/themes/fixtures/captures}} | {{observable distinguishing traits}} |
+
+A missing field invalidates the applicable UI-bearing tasks and evidence. A
+`pass` permits use, while a proved `mismatch` is stale. `unavailable` means the
+environment is absent and `error` means the evaluator failed; either is pending
+until the evaluator or its environment is repaired and rerun.
+
+### Visual reference coverage
+
+| Reference ID | Owning task IDs | Conformance evaluator IDs |
+| --- | --- | --- |
+| {{VR-001}} | {{TASK-UI-01; one or more}} | {{VCONF-001; one or more}} |
+
+Every selected Reference ID maps to at least one owning task and implementation
+conformance evaluator; no row may be inferred from task prose.
+
 - **Successor delta:** {{initial, or every stable task/interface/gate/phase ID as
   added / changed / removed / preserved; removals need owning approval}}
 - **Downstream impact:** {{predecessor-bound review, task attempts, evidence,
