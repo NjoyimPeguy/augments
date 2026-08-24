@@ -9,10 +9,15 @@
   conflict resolver and decision rule}}
 - **Bound inputs:** {{exact brief/spec/design/model/ADR/migration/assurance/code
   identities, evidence freshness, and invalidation rules}}
-- **Selected visual reference:** {{for an approved rendered UI direction: exact
-  design identity, comparison path, version identity, stable variant ID,
-  `sha256:...`, normative states/viewports, and distinguishing invariants; or
-  `not applicable`. Any mismatch invalidates UI-bearing tasks and evidence}}
+- **Selected visual references:** {{complete keyed collection from the approved
+  design, copied field for field in the table below; or `not applicable`}}
+
+| Reference ID | Decision ID | Medium | Approved design artifact version | Reference artifact version/content identity | Selection ID | Freshness evaluator | Normative conditions | Distinguishing invariants |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| {{VR-001}} | {{D-001}} | {{medium}} | {{design version}} | {{artifact locator plus immutable version/content identity}} | {{stable selection ID}} | {{exact freshness check}} | {{normative states/viewports/themes/fixtures/captures}} | {{observable distinguishing traits}} |
+
+Any missing field or failed Freshness evaluator invalidates the applicable
+UI-bearing tasks and evidence.
 - **Successor delta:** {{initial, or every stable task/interface/gate/phase ID as
   added / changed / removed / preserved; removals need owning approval}}
 - **Downstream impact:** {{predecessor-bound review, task attempts, evidence,

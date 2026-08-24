@@ -10,9 +10,15 @@ per required observation; use stable `{{double-curly}}` values.
   covering staged, unstaged, untracked, and relevant ignored inputs}}`
 - **Launch path:** `{{command or controlled action}}`
 - **Acceptance source:** `{{requirements, UI state IDs, rubric identity}}`
-- **Selected visual reference:** `{{approved design identity, comparison path,
-  version identity, stable variant ID, sha256 digest, normative states/viewports,
-  and distinguishing invariants; or not applicable}}`
+- **Selected visual references:** `{{keyed collection applicable to this
+  candidate, copied field for field from the approved plan; or not applicable}}`
+
+| Reference ID | Decision ID | Medium | Approved design artifact version | Reference artifact version/content identity | Selection ID | Freshness evaluator | Normative conditions | Distinguishing invariants |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| `{{VR-001}}` | `{{D-001}}` | `{{medium}}` | `{{design version}}` | `{{artifact locator plus immutable version/content identity}}` | `{{stable selection ID}}` | `{{exact freshness check}}` | `{{normative states/viewports/themes/fixtures/captures}}` | `{{observable distinguishing traits}}` |
+
+- **Freshness evidence:** `{{one current evaluator receipt per applicable
+  Reference ID, or pending with restoration/successor route}}`
 - **Environment:** `{{platform, build mode, runtime, display or terminal}}`
 - **Capture tool:** `{{tool, version, configuration, digest}}`
 - **Observer / authority:** `{{who inspects; mechanical or human-owned criteria;

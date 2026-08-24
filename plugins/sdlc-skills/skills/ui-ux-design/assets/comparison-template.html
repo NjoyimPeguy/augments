@@ -227,6 +227,7 @@
 
   <div class="variants">
 
+  <!-- comparison-version:start {{version-1-identity}} -->
   <div class="version version-1" data-version-id="{{version-1-identity}}" aria-label="Version 1">
     <p class="v-stamp">Version <span class="mono">{{version-1-identity}}</span> · {{YYYY-MM-DD}} · {{what changed from the previous version, or "first version"}} · fixture {{fixture identity}}</p>
 
@@ -269,13 +270,14 @@
     </section>
 
   </div><!-- .version-1 -->
+  <!-- comparison-version:end {{version-1-identity}} -->
 
-  <!-- APPEND THE NEXT VERSION HERE — a copy of the .version block above with
-       class `version-2`, its own v-stamp, and only the axes that feedback
-       implicated actually changed. Never edit .version-1: it is the record of
-       what was already compared, and the diff for a new version must show no
-       deletions inside a block already issued. Retire a version in place by
-       saying so in its v-stamp; do not delete it. -->
+  <!-- APPEND THE NEXT VERSION HERE — copy the start marker, .version block,
+       and end marker above with a new immutable version identity, class
+       `version-2`, its own v-stamp, and only the axes that feedback implicated
+       changed. The bytes from a version's start marker through its end marker
+       are its stable digest boundary: never edit them after issue. Retire a
+       version outside that boundary; do not delete it. -->
 
   </div><!-- .variants -->
 

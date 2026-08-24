@@ -84,10 +84,10 @@ you.
    flow. Where a usability risk stays open, record it as open, with a named future
    evaluator and an owner.
 
-   When preference selects a rendered variant, freeze the selected visual
-   reference exactly as `visual-decisions.md` defines it before compiling the
-   design. Conversation memory, a path, or a variant label alone is not a
-   downstream implementation contract.
+   When preferences select rendered variants, freeze the keyed **Selected
+   visual references** collection exactly as `visual-decisions.md` defines it
+   before compiling the design. Conversation memory, a path, or a visible label
+   alone is not a downstream implementation contract.
 9. **Compile one immutable proposed whole UI/UX section.** Write the filled
    template to `.sdlc-skills/designs/{{YYYY-MM-DD}}-{{topic}}.md`, or the
    user-set location, preserving the sections already approved around it.

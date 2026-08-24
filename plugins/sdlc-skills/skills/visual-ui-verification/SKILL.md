@@ -26,11 +26,11 @@ candidate-bound evidence; snapshots and “looks good” do not establish it.
    The record itself lives outside that identity, so writing evidence never
    changes what the evidence is about.
 
-   When an approved UI design selected a rendered direction, bind its complete
-   selected visual reference too: design identity, comparison path, version
-   identity, stable variant ID, surface SHA-256 digest, normative states or
-   viewports, and distinguishing invariants. Recompute the digest before capture;
-   a mismatch leaves the verdict pending until the design owner reconciles it.
+   When an approved UI design contains **Selected visual references**, bind every
+   reference applicable to this candidate field for field, and run each Freshness
+   evaluator before capture. A missing field or failed evaluator leaves the
+   verdict pending until the bound artifact is restored and re-evaluated, or an
+   approved design successor and then an approved plan successor replace it.
 2. **Build the smallest deciding matrix.** Cross applicable journeys and states
    with viewport/window size, theme, input method, platform, and content
    pressure. Include empty, loading, error, overflow, and no-permission states
@@ -59,9 +59,10 @@ candidate-bound evidence; snapshots and “looks good” do not establish it.
    clipping and overflow, focus, contrast, behaviour at content extremes, state
    feedback, and whether recovery controls are actually visible.
 
-   Judge conformance to the selected visual reference explicitly. A candidate
-   that satisfies generic quality criteria but substitutes a rejected layout,
-   hierarchy, or interaction fails unless the design owner approves a successor.
+   Judge conformance to all selected visual references applicable to the
+   candidate explicitly. A candidate that satisfies generic quality criteria
+   but substitutes a rejected layout, hierarchy, or interaction fails unless
+   approved design and plan successors replace the binding.
 
    File each defect with its severity, the requirement it violates, the matrix
    row and frame it was seen in, its impact, and how to reproduce it. An agent's

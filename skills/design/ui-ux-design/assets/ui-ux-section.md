@@ -66,10 +66,14 @@ product-specific system — what it is, and what in the product it comes from.}}
 Where variants were compared: {{what was held constant, what differed, which won,
 and on what grounds — or, when no comparison ran, the stated reason none was owed}}
 
-**Selected visual reference:** {{comparison path; version content identity;
-stable variant ID; `sha256:...` of the served surface bytes; normative states or
-viewports; and the invariants that distinguish this selection from rejected
-variants — or `not applicable` when no comparison was owed}}
+#### Selected visual references
+
+| Reference ID | Decision ID | Medium | Approved design artifact version | Reference artifact version/content identity | Selection ID | Freshness evaluator | Normative conditions | Distinguishing invariants |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| {{VR-001}} | {{D-001}} | {{local HTML / project or native preview / screenshot / wireframe}} | {{this design's normative version}} | {{stable artifact locator plus immutable version or content identity}} | {{stable variant, state, frame, or region ID}} | {{exact check that proves the referenced bytes or revision still match}} | {{states, viewports, themes, fixtures, or capture set}} | {{observable traits that distinguish this selection from rejected directions}} |
+
+Use one keyed row per independently selected decision, or state `not
+applicable` with the recorded reason no comparison was owed.
 
 ### Conditions
 
