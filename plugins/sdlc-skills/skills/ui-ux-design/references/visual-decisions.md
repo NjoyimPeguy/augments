@@ -57,7 +57,7 @@ The richer medium is not automatically better. Match fidelity to the decision: l
    it: a new version's diff on the surface adds a block and changes only which
    radio carries `checked`. If `git diff` shows deletions inside an existing
    version block, an earlier comparison was rewritten — restore it before
-   presenting. Retire a version in place by marking it superseded; do not
+   presenting. Retire a version in metadata outside its immutable block; do not
    delete it.
 
    Bind each version block to its own content identity and controlled inputs; a
@@ -67,6 +67,35 @@ The richer medium is not automatically better. Match fidelity to the decision: l
 6. **Confirm and record.** Write the decision into the versioned whole design.
    Variant confirmation alone does not approve the combined flow; obtain direct
    approval of the exact compiled version before implementation planning.
+
+   Before compiling that whole, freeze **Selected visual references** as a
+   keyed collection, with one reference per independently selected decision.
+   Each record carries its Reference ID, Decision ID, Medium, Approved design
+   artifact version, Artifact locator, Artifact version, Content digest,
+   Selection ID, Rendering-input identity, Freshness evaluator, Normative
+   conditions, and Distinguishing invariants. A downstream UI task consumes only
+   the applicable references.
+
+   Make identity fit the medium. For local HTML, put immutable start/end markers
+   around each issued version and identify the stable path, version ID, selected
+   variant ID, marker-bounded version bytes, and their SHA-256; appending a new
+   version must not alter that digest. Bind shared chrome, assets, controlled
+   inputs, and their digest or revision as the Rendering-input identity, so
+   unchanged block bytes cannot hide a changed presentation.
+
+   For an existing project preview, or a native preview, bind an immutable
+   source or artifact revision plus the route, fixture, environment,
+   selected state, and capture set. For a screenshot or wireframe, bind its
+   immutable artifact ID, selected frame or region, and whole-file digest.
+
+   A path, visible label, or mutable whole-surface digest is not an identity.
+   Before downstream use, run every applicable Freshness evaluator. Its contract
+   distinguishes `pass`, proved `mismatch`, and `unavailable/error`. A mismatch
+   makes planning, implementation, and visual evidence stale: either restore the
+   binding and rerun, or approve a successor design and then, when plan-bound, a
+   successor plan. An unavailable evaluator leaves the gate pending until its
+   environment or evaluator is repaired and rerun; it proves no drift. Owner
+   reconciliation alone cannot change an approved binding.
 
 ## Decision record
 
@@ -80,6 +109,8 @@ Record enough for an implementer or reviewer to reconstruct the choice:
   classified project fact, research, usability observation, constraint,
   preference, or inference.
 - **Decision:** the chosen direction and why it best serves the dimensions.
+- **Selected visual references:** the complete keyed records above, one per
+  decision, including the applicable medium-specific identity and evaluator.
 - **Rejected:** why the other viable directions lost; avoid “not preferred” with no reason.
 - **Follow-ups:** unresolved details and usability or implementation risks, each
   with an evaluator and owner; route feasibility uncertainty to `prototyping`.

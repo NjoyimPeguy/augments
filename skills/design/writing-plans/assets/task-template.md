@@ -8,6 +8,23 @@
 external state, and evaluator artifacts this task may mutate; overlaps require
 an explicit dependency and one transition owner}}
 **Context:** {{key files or entrypoints to read first for this task — plus any spec artifact that defines it (a failing test, a mockup page, a reference implementation to port). Point at the path; do not paraphrase it back into prose. Or "none".}}
+**Applicable visual references:** {{for a UI-bearing task: the keyed subset of
+the plan index's Selected visual references, copied field for field below; or
+`not applicable`. This task may not substitute a different direction}}
+
+| Reference ID | Decision ID | Medium | Approved design artifact version | Artifact locator | Artifact version | Content digest | Selection ID | Rendering-input identity | Freshness evaluator | Normative conditions | Distinguishing invariants |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| {{VR-001}} | {{D-001}} | {{medium}} | {{design version}} | {{stable path, route, or artifact ID}} | {{immutable version, revision, or capture ID}} | {{selected content digest}} | {{stable selection ID}} | {{immutable rendering-input identity}} | {{exact freshness check}} | {{normative states/viewports/themes/fixtures/captures}} | {{observable distinguishing traits}} |
+
+**Visual conformance gates:**
+
+| Reference ID | Evaluator ID | Implementation conformance gate |
+| --- | --- | --- |
+| {{VR-001}} | {{VCONF-001}} | {{executable check or controlled rubric that judges the Distinguishing invariants}} |
+
+Every Applicable visual reference has a gate row, and every gate ID matches the
+plan index's Visual reference coverage.
+
 **Suggested tier:** {{small | medium | large}} — {{mechanical | logic | design}}
 **Implementation disciplines:** {{`test-driven-development` + `yagni` for
 behavior-affecting work, or the exact carve-out that makes them inapplicable}}

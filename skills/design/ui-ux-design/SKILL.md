@@ -62,7 +62,8 @@ you.
    [visual-decisions.md](references/visual-decisions.md), build the comparison
    surface from `assets/comparison-template.html` (the shared chrome — you
    author only the variants), and compare 2–4 controlled, meaningfully
-   different variants.
+   different variants. Give every version block and variant a stable ID; those
+   IDs become the implementation reference if the stakeholder selects it.
 
    Skipping the surface takes a stated reason, recorded with the decision:
    every open question is conceptual — requirements, scope, and trade-offs are
@@ -82,6 +83,11 @@ you.
    select a direction; it cannot masquerade as proof that users can complete the
    flow. Where a usability risk stays open, record it as open, with a named future
    evaluator and an owner.
+
+   When preferences select rendered variants, freeze the keyed **Selected
+   visual references** collection exactly as `visual-decisions.md` defines it
+   before compiling the design. Conversation memory, a path, or a visible label
+   alone is not a downstream implementation contract.
 9. **Compile one immutable proposed whole UI/UX section.** Write the filled
    template to `.sdlc-skills/designs/{{YYYY-MM-DD}}-{{topic}}.md`, or the
    user-set location, preserving the sections already approved around it.
@@ -100,7 +106,8 @@ you.
     lifecycle externally.
 
     An issued identity never mutates: a normative change creates a successor with
-    `added / changed / removed / preserved` IDs (removal needs owning approval)
+    `added / changed / removed / preserved` IDs (including selected visual
+    references; removal needs owning approval)
     that invalidates stale downstream bindings until owners revalidate.
 
 ## Common mistakes

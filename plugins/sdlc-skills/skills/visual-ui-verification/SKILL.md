@@ -25,6 +25,15 @@ candidate-bound evidence; snapshots and “looks good” do not establish it.
    digest that covers staged, unstaged, untracked, and relevant ignored inputs.
    The record itself lives outside that identity, so writing evidence never
    changes what the evidence is about.
+
+   When an approved UI design contains **Selected visual references**, bind every
+   reference applicable to this candidate field for field. When plan-bound, also
+   match each record and conformance evaluator to the approved plan and task;
+   design-only verification needs no plan. Run each Freshness evaluator before
+   capture. A proved mismatch is stale: restore the binding and rerun, or approve
+   a design successor and, when plan-bound, a plan successor. An unavailable/error
+   result is pending until the evaluator or environment is repaired and rerun;
+   it proves no drift. A missing field also leaves the verdict pending.
 2. **Build the smallest deciding matrix.** Cross applicable journeys and states
    with viewport/window size, theme, input method, platform, and content
    pressure. Include empty, loading, error, overflow, and no-permission states
@@ -52,6 +61,12 @@ candidate-bound evidence; snapshots and “looks good” do not establish it.
    criteria. Where each is relevant, look at visual hierarchy, legibility,
    clipping and overflow, focus, contrast, behaviour at content extremes, state
    feedback, and whether recovery controls are actually visible.
+
+   Judge conformance to all selected visual references applicable to the
+   candidate explicitly. A candidate that satisfies generic quality criteria
+   but substitutes a rejected layout, hierarchy, or interaction fails unless an
+   approved design successor, plus a plan successor when plan-bound, replaces
+   the binding.
 
    File each defect with its severity, the requirement it violates, the matrix
    row and frame it was seen in, its impact, and how to reproduce it. An agent's
