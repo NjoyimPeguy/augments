@@ -43,12 +43,16 @@ thresholds, and failure responses are properties of the adopting project.
 
 ## Scoped implementation-entry backstop
 
-All three adapters run a pre-tool guard on their structured edit-class actions
-for code paths. Claude Code checks native skill invocations in its transcript.
-Kimi Code records native skill invocations through its post-tool lifecycle
-event. Codex, whose adapter has no native skill action, records successful reads
-of the two skill files and guards `apply_patch`. The edit is allowed only after
-the current session has loaded both `test-driven-development` and `yagni`.
+Claude Code and Kimi Code run a pre-tool guard on their structured edit-class
+actions for code paths. Claude Code checks native skill invocations in its
+transcript, and Kimi Code records native skill invocations through its post-tool
+lifecycle event. The edit is allowed only after the current session has loaded
+both `test-driven-development` and `yagni`.
+
+Codex does not run this guard. Its adapter has no authoritative skill invocation
+receipt, and absence of an auxiliary file-read receipt cannot prove that a skill
+was skipped. Treating that missing evidence as a denial can deadlock a valid
+session, so routing and project gates carry the discipline there.
 
 This is deliberately a narrow backstop. It covers the named structured edit
 actions and common code extensions. It does not cover shell commands, generated

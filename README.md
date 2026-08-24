@@ -132,11 +132,12 @@ that context was actually lost; that is where a reminder earns its tokens.
 `scripts/sh/validate-skills.sh` keeps the retired events retired across every
 adapter.
 
-All three adapters also run a scoped implementation-entry guard. It requires
-both `test-driven-development` and `yagni` to load before a structured code edit:
-`Write`/`Edit`-class actions on Claude Code and Kimi Code, and `apply_patch` on
-Codex. Shell writes remain outside that hook boundary; project gates still own
-artifact correctness.
+Claude Code and Kimi Code also run a scoped implementation-entry guard. It
+requires both `test-driven-development` and `yagni` to load before a structured
+`Write`/`Edit`-class code edit. Shell writes remain outside that hook boundary;
+project gates still own artifact correctness. Codex does not run the guard
+because its adapter has no authoritative skill invocation receipt; a missing
+side-channel receipt cannot safely deny an edit.
 
 On Codex, SDLC skills ships a plugin adapter and local marketplace metadata, and the plugin bundles its own hooks (`plugins/sdlc-skills/hooks/hooks.json`) that run the same injector on `SessionStart`, including compact-source invocations. The skills install through Codex, durable repo guidance still comes through `AGENTS.md`, and the Codex harness test observes activation by watching the agent read the installed `SKILL.md` file from the plugin cache.
 
