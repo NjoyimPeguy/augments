@@ -12,7 +12,7 @@ tools, and lifecycle events.
 | Harness | Adapter | Router injection | Re-applied after compaction | Structured code-edit guard |
 | --- | --- | --- | --- | --- |
 | Claude Code | `.claude-plugin/` and `hooks/hooks.json` | `SessionStart` hook | Yes — `compact` is in the matcher | `Write`, `Edit`, `MultiEdit` |
-| Codex | `plugins/sdlc-skills/` (manifest, `hooks/hooks.json`, mirrored injector) and `.agents/plugins/marketplace.json` | `SessionStart` hook | Yes — `SessionStart` with `source=compact` | `apply_patch` |
+| Codex | `plugins/sdlc-skills/` (manifest, `hooks/hooks.json`, mirrored injector) and `.agents/plugins/marketplace.json` | `SessionStart` hook | Yes — `SessionStart` with `source=compact` | None — no authoritative skill receipt |
 | Kimi Code | `.kimi-plugin/plugin.json` | `sessionStart.skill` | `PostCompact` hook | `Write`, `Edit`, `MultiEdit` |
 
 The Codex plugin manifest carries the skill catalogue but has no session-start
@@ -132,12 +132,16 @@ splits by whether the correct answer is known in advance: gates in
 
 ## Scoped implementation guard
 
-All three adapters run `scripts/sh/implementation-guard.sh` at their structured
-code-edit boundary. It requires current-session loading evidence for both
-implementation disciplines before a covered edit. Claude Code reads native
-skill calls from the transcript; Kimi Code records its native Skill calls; Codex
-records successful reads of the two skill files because it has no native Skill
-action, then guards `apply_patch`.
+Claude Code and Kimi Code run `scripts/sh/implementation-guard.sh` at their
+structured code-edit boundary. It requires current-session loading evidence for
+both implementation disciplines before a covered edit. Claude Code reads native
+skill calls from the transcript, and Kimi Code records its native Skill calls.
+
+Codex deliberately has no implementation guard. It exposes no authoritative
+skill invocation receipt to the adapter, and a missing side-channel receipt is
+not evidence that the skill did not load. Its router still requires the pair;
+the adopting project's real gates decide whether the resulting artifact can
+advance.
 
 The hook is not a universal write boundary. Shell commands and other mutation
 paths do not pass through structured edit-class hooks, and unsupported harnesses
