@@ -71,26 +71,31 @@ The richer medium is not automatically better. Match fidelity to the decision: l
    Before compiling that whole, freeze **Selected visual references** as a
    keyed collection, with one reference per independently selected decision.
    Each record carries its Reference ID, Decision ID, Medium, Approved design
-   artifact version, Reference artifact version/content identity, Selection ID,
-   Freshness evaluator, Normative conditions, and Distinguishing invariants.
-   A downstream UI task consumes only the applicable references.
+   artifact version, Artifact locator, Artifact version, Content digest,
+   Selection ID, Rendering-input identity, Freshness evaluator, Normative
+   conditions, and Distinguishing invariants. A downstream UI task consumes only
+   the applicable references.
 
    Make identity fit the medium. For local HTML, put immutable start/end markers
    around each issued version and identify the stable path, version ID, selected
    variant ID, marker-bounded version bytes, and their SHA-256; appending a new
-   version must not alter that digest. Also bind immutable shared chrome or
-   rendering-input identity, so unchanged block bytes cannot hide a changed
-   presentation. For an existing project preview or native preview, bind an
-   immutable source or artifact revision plus the route, fixture, environment,
+   version must not alter that digest. Bind shared chrome, assets, controlled
+   inputs, and their digest or revision as the Rendering-input identity, so
+   unchanged block bytes cannot hide a changed presentation.
+
+   For an existing project preview, or a native preview, bind an immutable
+   source or artifact revision plus the route, fixture, environment,
    selected state, and capture set. For a screenshot or wireframe, bind its
    immutable artifact ID, selected frame or region, and whole-file digest.
 
    A path, visible label, or mutable whole-surface digest is not an identity.
-   Before downstream use, run every applicable Freshness evaluator. A failure
+   Before downstream use, run every applicable Freshness evaluator. Its contract
+   distinguishes `pass`, proved `mismatch`, and `unavailable/error`. A mismatch
    makes planning, implementation, and visual evidence stale: either restore the
-   bound artifact and rerun the evaluator, or approve a successor design and
-   then a successor plan. Owner reconciliation alone cannot change an approved
-   binding.
+   binding and rerun, or approve a successor design and then, when plan-bound, a
+   successor plan. An unavailable evaluator leaves the gate pending until its
+   environment or evaluator is repaired and rerun; it proves no drift. Owner
+   reconciliation alone cannot change an approved binding.
 
 ## Decision record
 

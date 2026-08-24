@@ -42,12 +42,14 @@ Advance only through real state transitions; nothing is done until its evaluator
 
    For every UI-bearing task, require its **Applicable visual references** to
    match the plan index's **Selected visual references** and approved design
-   field for field. Run each Freshness evaluator before the first UI edit. A
-   missing field or failed evaluator stops execution as stale input; never infer
-   a preferred direction from conversation or choose a replacement. Either
-   restore the bound artifact identity and rerun the evaluator, or stop for an
-   approved design successor and then an approved plan successor. Owner
-   reconciliation alone cannot alter the bound input.
+   field for field. Confirm every Reference ID resolves through **Visual
+   reference coverage** to this task and a matching conformance evaluator. Run
+   each Freshness evaluator before the first UI edit. A proved mismatch is stale;
+   restore the binding and rerun, or stop for an approved design successor and
+   then an approved plan successor. An unavailable/error result is pending until
+   the evaluator or environment is repaired and rerun; it proves no drift. A
+   missing field also stops execution. Never infer a preferred direction or let
+   owner reconciliation alter the bound input.
 
 4. **Select the execution form.** Bounded tasks use the loop below; a plan with
    phases or machine-derived shards also loads `references/phase-queues.md`, and
@@ -89,9 +91,10 @@ alone does not override one.
    offload that means its raw diff, its authorized checkpoints (or none), its
    result revision, and its evaluator output — never its summary.
 
-   For a UI-bearing result, inspect the Distinguishing invariants from every
-   Applicable visual reference explicitly. Similar styling or functional
-   equivalence does not authorize a different layout, hierarchy, or interaction.
+   For a UI-bearing result, run each bound conformance evaluator against the
+   Distinguishing invariants from its Applicable visual reference. Similar
+   styling or functional equivalence does not authorize a different layout,
+   hierarchy, or interaction.
 
 5. **Invoke `verifying-completion`** to run the task Evaluator in the
    authoritative workspace and bind the output to that exact state. That skill
