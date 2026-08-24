@@ -27,6 +27,13 @@ Turn an aligned intent into an executable plan: a small durable **map** plus thi
    goes stale. Fill the header of `assets/index-template.md` first — it names the
    bound inputs, the invalidation triggers, and the approval rule the plan owes.
 
+   When an approved UI design selected a rendered direction, bind its complete
+   selected visual reference in the index and in every UI-bearing task that
+   implements it. The path, version identity, stable variant ID, SHA-256 digest,
+   normative states/viewports, and distinguishing invariants travel together.
+   A UI plan missing that tuple is not executable; return it to `ui-ux-design`
+   instead of reconstructing the preference from prose or conversation.
+
    Give every file and every side effect exactly one owning task. Where two tasks
    would touch the same one, order them with an explicit dependency and name a
    single transition owner. For homogeneous work — one transformation applied
@@ -58,6 +65,10 @@ Turn an aligned intent into an executable plan: a small durable **map** plus thi
    and the observations that decide it, so the judgement is bound before the work
    starts rather than argued after it.
 
+   A UI-bearing task's evaluator includes conformance to its selected visual
+   reference. Functional tests may share the gate, but cannot replace the visual
+   and structural invariants that distinguish the selected variant.
+
    The evaluator's identity and owner live outside whatever the implementation
    may mutate. If a task is allowed to edit its own gate, say so explicitly and
    bound the permitted scope, and require a RED run or a deliberate falsification
@@ -81,6 +92,8 @@ Turn an aligned intent into an executable plan: a small durable **map** plus thi
 - No undefined *scope*: `TBD`, `handle edge cases`, `similar to task N` each mean a task you haven't written. (Deferring *implementation* is fine; deferring *scope* is not.)
 - Every task has an executable Evaluator or controlled rubric; the plan has one top-level **Acceptance** check.
 - **Every Consumes resolves to a Produces** under the *same* name and type — a `clearLayers()` consumed but only `clearFullLayers()` produced is a build-time break — and no task violates a rule in the index's Constraints block.
+- Every UI-bearing task carries the selected visual reference from the approved
+  design and has a conformance evaluator for its distinguishing invariants.
 - Independent tasks have disjoint files, data, effects, evaluators, and external
   state; every overlap has an explicit dependency and single transition owner.
 

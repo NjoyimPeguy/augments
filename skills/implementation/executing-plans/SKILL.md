@@ -40,6 +40,12 @@ Advance only through real state transitions; nothing is done until its evaluator
    through the loop: a **Consumes** with no matching **Produces**, a dependency on
    a cancelled task, an evaluator the task is also asked to rewrite.
 
+   For every UI-bearing task, require the selected visual reference tuple to
+   match the plan index and approved design. Recompute the comparison surface's
+   SHA-256 digest before the first UI edit. A missing field or digest mismatch
+   stops execution as stale input; never infer the preferred direction from
+   conversation or choose a replacement.
+
 4. **Select the execution form.** Bounded tasks use the loop below; a plan with
    phases or machine-derived shards also loads `references/phase-queues.md`, and
    a queue is never flattened into copied tasks.
@@ -80,9 +86,16 @@ alone does not override one.
    offload that means its raw diff, its authorized checkpoints (or none), its
    result revision, and its evaluator output — never its summary.
 
+   For a UI-bearing result, inspect the distinguishing invariants from the
+   selected visual reference explicitly. Similar styling or functional
+   equivalence does not authorize a different layout, hierarchy, or interaction.
+
 5. **Invoke `verifying-completion`** to run the task Evaluator in the
    authoritative workspace and bind the output to that exact state. That skill
    owns the evidence ledger; this one owns the task-state transition.
+
+   When the result is an integrated UI, also invoke `visual-ui-verification`
+   against the same selected visual reference before recording `done`.
 
 6. **Append `done` only after the evaluator passes on the accepted state.** A
    concern counts toward no gate until it is proved non-blocking, or accepted

@@ -1,7 +1,7 @@
 Copy this section into the design document, replacing every `{{placeholder}}`.
 Preserve the sections already approved around it; this one is immutable once its
-identity is issued. Every flow, state, decision, and acceptance check gets a
-stable ID, and a successor never recycles one.
+identity is issued. Every flow, state, visual reference, decision, and
+acceptance check gets a stable ID, and a successor never recycles one.
 
 ```markdown
 ## UI/UX design
@@ -14,8 +14,9 @@ plus the conflict resolver and the rule that decides}}
 **External decision ledger:** {{location; pending / changes requested / approved /
 rejected / cancelled / superseded by approved normative identity, with trusted
 evidence bound to this exact version}}
-**Stable ID delta:** {{every flow, state, decision, and check ID as added /
-changed / removed / preserved; a removal needs owning approval}}
+**Stable ID delta:** {{every flow, state, visual-reference variant, decision,
+and check ID as added / changed / removed / preserved; a removal needs owning
+approval}}
 
 ### Context
 
@@ -64,6 +65,11 @@ product-specific system — what it is, and what in the product it comes from.}}
 
 Where variants were compared: {{what was held constant, what differed, which won,
 and on what grounds — or, when no comparison ran, the stated reason none was owed}}
+
+**Selected visual reference:** {{comparison path; version content identity;
+stable variant ID; `sha256:...` of the served surface bytes; normative states or
+viewports; and the invariants that distinguish this selection from rejected
+variants — or `not applicable` when no comparison was owed}}
 
 ### Conditions
 

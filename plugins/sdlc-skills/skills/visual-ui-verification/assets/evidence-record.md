@@ -10,6 +10,9 @@ per required observation; use stable `{{double-curly}}` values.
   covering staged, unstaged, untracked, and relevant ignored inputs}}`
 - **Launch path:** `{{command or controlled action}}`
 - **Acceptance source:** `{{requirements, UI state IDs, rubric identity}}`
+- **Selected visual reference:** `{{approved design identity, comparison path,
+  version identity, stable variant ID, sha256 digest, normative states/viewports,
+  and distinguishing invariants; or not applicable}}`
 - **Environment:** `{{platform, build mode, runtime, display or terminal}}`
 - **Capture tool:** `{{tool, version, configuration, digest}}`
 - **Observer / authority:** `{{who inspects; mechanical or human-owned criteria;

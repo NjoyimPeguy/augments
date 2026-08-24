@@ -68,6 +68,14 @@ The richer medium is not automatically better. Match fidelity to the decision: l
    Variant confirmation alone does not approve the combined flow; obtain direct
    approval of the exact compiled version before implementation planning.
 
+   Before compiling that whole, freeze the **selected visual reference** as one
+   tuple: comparison path, version content identity, stable variant ID, and the
+   SHA-256 digest of the served surface bytes the stakeholder saw. Record the
+   states or viewports that are normative and the visual invariants that
+   distinguish the selected variant from the rejected ones. A path or variant
+   label alone is not an identity. Any tuple mismatch makes downstream planning,
+   implementation, and visual evidence stale until the owner reconciles it.
+
 ## Decision record
 
 Record enough for an implementer or reviewer to reconstruct the choice:
@@ -80,6 +88,8 @@ Record enough for an implementer or reviewer to reconstruct the choice:
   classified project fact, research, usability observation, constraint,
   preference, or inference.
 - **Decision:** the chosen direction and why it best serves the dimensions.
+- **Selected visual reference:** path, version content identity, stable variant
+  ID, SHA-256 digest, normative states/viewports, and distinguishing invariants.
 - **Rejected:** why the other viable directions lost; avoid “not preferred” with no reason.
 - **Follow-ups:** unresolved details and usability or implementation risks, each
   with an evaluator and owner; route feasibility uncertainty to `prototyping`.

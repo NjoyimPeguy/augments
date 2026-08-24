@@ -9,6 +9,10 @@
   conflict resolver and decision rule}}
 - **Bound inputs:** {{exact brief/spec/design/model/ADR/migration/assurance/code
   identities, evidence freshness, and invalidation rules}}
+- **Selected visual reference:** {{for an approved rendered UI direction: exact
+  design identity, comparison path, version identity, stable variant ID,
+  `sha256:...`, normative states/viewports, and distinguishing invariants; or
+  `not applicable`. Any mismatch invalidates UI-bearing tasks and evidence}}
 - **Successor delta:** {{initial, or every stable task/interface/gate/phase ID as
   added / changed / removed / preserved; removals need owning approval}}
 - **Downstream impact:** {{predecessor-bound review, task attempts, evidence,
