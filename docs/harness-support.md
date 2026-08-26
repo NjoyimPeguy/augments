@@ -9,34 +9,38 @@ There is one canonical tree under `skills/`. Skills use capability tiers and
 portable actions; each harness adapter binds those concepts to its own manifest,
 tools, and lifecycle events.
 
-| Harness | Adapter | Router injection | Re-applied after compaction | Structured code-edit guard |
+| Harness | Adapter | Entry-skill injection | Re-applied after compaction | Structured code-edit guard |
 | --- | --- | --- | --- | --- |
-| Claude Code | `.claude-plugin/` and `hooks/hooks.json` | `SessionStart` hook | Yes — `compact` is in the matcher | `Write`, `Edit`, `MultiEdit` |
-| Codex | `plugins/sdlc-skills/` (manifest, `hooks/hooks.json`, mirrored injector) and `.agents/plugins/marketplace.json` | `SessionStart` hook | Yes — `SessionStart` with `source=compact` | None — no authoritative skill receipt |
-| Kimi Code | `.kimi-plugin/plugin.json` | `sessionStart.skill` | `PostCompact` hook | `Write`, `Edit`, `MultiEdit` |
+| Claude Code | `.claude-plugin/` and `hooks/hooks.json` | `SessionStart` hook | No — `compact` is excluded from the matcher | `Write`, `Edit`, `MultiEdit` |
+| Codex | `plugins/sdlc-skills/` (manifest, `hooks/hooks.json`, mirrored injector) and `.agents/plugins/marketplace.json` | `SessionStart` hook | No — the injector drops `source=compact` payloads | None — no authoritative skill receipt |
+| Kimi Code | `.kimi-plugin/plugin.json` | `sessionStart.skill` | No — no `PostCompact` hook is registered | `Write`, `Edit`, `MultiEdit` |
 
 The Codex plugin manifest carries the skill catalogue but has no session-start
-field, so the router arrives through hooks the plugin itself bundles
+field, so the entry skill arrives through hooks the plugin itself bundles
 (`"hooks": "./hooks/hooks.json"`). Bundling matters: the plugin is installed
 standalone, so a hooks file at the repository root is outside the plugin root and
 Codex never loads it — a repo-local config wires contributors and ships nothing.
 Everything the hook touches therefore lives inside the plugin, and
 `scripts/sh/sync-codex-plugin-skills.sh` mirrors it in.
 
-Codex reports compaction through a `SessionStart` event whose source is
-`compact`. Its separate `PostCompact` output cannot carry additional context,
-so the adapter keeps router injection on the contextual `SessionStart` path.
+**Compaction is not context loss on these harnesses**: loaded skills and session
+context are carried across it, so re-injecting the same body after compaction is
+redundant cost, and no adapter does it. Claude Code excludes `compact` from its
+matcher; Kimi registers no `PostCompact` hook; Codex reports compaction as a
+`SessionStart` whose payload source is `compact`, and because its hook cannot
+filter by source, the injector itself reads the payload and exits without
+output. Do not add compact re-injection back to any adapter.
 
 Two consequences worth knowing before editing either side. The command resolves
 the injector through `$PLUGIN_ROOT`, because hooks run with the *session* working
 directory, not the plugin's. And the mirror is flat (`skills/<name>/`) where the
 canonical tree is by phase (`skills/<phase>/<name>/`), so the injector resolves
-the router from both layouts; hard-coding one path ships something that works in
+the entry skill from both layouts; hard-coding one path ships something that works in
 this repository and nowhere anyone installs.
 
 Every adapter injects the **full `using-sdlc-skills` body**, not a pointer to it.
-A pointer asks the agent to spend a discretionary tool call loading the router;
-the body makes the routing rules resident instead. `scripts/sh/token-budget.sh`
+A pointer asks the agent to spend a discretionary tool call loading the entry
+skill; the body makes the entry mandate resident instead. `scripts/sh/token-budget.sh`
 reports the current context cost by running the injector.
 
 The text is **read from the canonical skill at runtime**, never copied into an
@@ -52,8 +56,8 @@ The Claude manifest, Codex mirror, and Kimi skill paths must expose the same
 canonical skill set. `scripts/sh/validate-skills.sh` checks that deterministic
 packaging contract.
 
-Kimi's manifest declares `PostCompact` re-injection through the same
-`hookSpecificOutput` context envelope used by its other lifecycle hooks.
+No adapter re-injects after compaction, and if invoked with a `PostCompact`
+event name the shared injector exits silently rather than emitting context.
 
 ## Dispatch capability
 
@@ -92,15 +96,17 @@ The skills are Markdown invoked by name. On another harness:
 1. Expose the canonical skill directories through the harness's normal skill
    mechanism.
 2. Run `scripts/sh/session-start.sh` from the harness's session-start event and
-   feed its `additionalContext` into the session, so the router arrives as
+   feed its `additionalContext` into the session, so the entry skill arrives as
    resident context rather than as an errand the agent can skip. Re-run it on
-   whatever event the harness fires when context is lost.
+   whatever event the harness fires when context is genuinely lost (start,
+   resume, clear) — not after compaction, which carries context forward.
 3. Bind skill actions to the harness's real tools.
 4. Exercise one representative activation through the real installed adapter
    before claiming support.
 
-If the harness cannot re-apply instructions after compaction, state that limit.
-Do not simulate support with copied transcript fixtures.
+If the harness discards resident context at compaction — unlike the supported
+harnesses, which carry it forward — state that behavior explicitly before wiring
+any re-injection. Do not simulate support with copied transcript fixtures.
 
 ## What to test
 
@@ -139,7 +145,7 @@ skill calls from the transcript, and Kimi Code records its native Skill calls.
 
 Codex deliberately has no implementation guard. It exposes no authoritative
 skill invocation receipt to the adapter, and a missing side-channel receipt is
-not evidence that the skill did not load. Its router still requires the pair;
+not evidence that the skill did not load. Its entry skill still requires the pair;
 the adopting project's real gates decide whether the resulting artifact can
 advance.
 
@@ -148,8 +154,8 @@ paths do not pass through structured edit-class hooks, and unsupported harnesses
 do not gain enforcement from prose. The hook reports that limitation when it
 denies an edit.
 
-Wide migrations are routed by `using-sdlc-skills` to `migration-strategy` and
-`verification-strategy`. Their durable enforcement belongs in the adopting
+Wide migrations are routed by `migration-strategy`'s own trigger and
+classification rubric, which pull in `verification-strategy`. Their durable enforcement belongs in the adopting
 project's real compiler, test, CI, review, and promotion gates. A universal hook
 cannot reliably infer project risk from prompt wording.
 

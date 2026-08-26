@@ -76,10 +76,11 @@ if ! bash scripts/sh/validate-skill-reference-paths.sh "$plugin_root/skills"; th
 fi
 
 # The plugin manifest ships the skill CATALOGUE; it has no session-start field,
-# so on Codex the router arrives through a SessionStart hook instead. Compaction
-# is another SessionStart invocation with source=compact. Codex's PostCompact
-# output cannot carry additional context, so registering that event would make
-# the injector's context envelope invalid.
+# so on Codex the entry skill arrives through a SessionStart hook instead.
+# Compaction is another SessionStart invocation with source=compact, and the
+# injector deliberately skips it: loaded context survives compaction, so
+# re-injection is redundant cost. PostCompact stays unregistered — its output
+# cannot carry additional context, and compact re-injection is retired anyway.
 #
 # The hooks ship INSIDE the plugin, because the plugin is installed standalone:
 # a hooks file at the repository root is outside the plugin root and Codex never
@@ -93,7 +94,7 @@ if [ ! -f "$codex_hook" ]; then
 else
   grep -q '"SessionStart"' "$codex_hook" || err "$codex_hook: no SessionStart hook (router would not load)"
   if jq -e '.hooks | has("PostCompact")' "$codex_hook" >/dev/null 2>&1; then
-    err "$codex_hook: PostCompact output cannot carry router context; use SessionStart source=compact"
+    err "$codex_hook: compact re-injection is retired — PostCompact must stay unregistered"
   fi
   grep -q 'session-start\.sh' "$codex_hook" || err "$codex_hook: does not invoke session-start.sh"
   if jq -e '.hooks | has("PreToolUse") or has("PostToolUse")' \

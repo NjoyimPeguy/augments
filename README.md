@@ -117,7 +117,7 @@ Install in Claude Code with `/plugin marketplace add augments-labs/sdlc-skills` 
 
 A coding agent treats an installed skill library as available-but-optional and walks past it unless you name a skill. So SDLC skills pairs each adapter with the strongest honest routing support that harness can prove.
 
-Every adapter injects the **full `using-sdlc-skills` router body** as session context — Claude Code and Codex through a `SessionStart` hook, Kimi Code through `sessionStart.skill`. Claude Code re-applies it through its `compact` matcher, Codex through compact-source `SessionStart`, and Kimi Code declares a `PostCompact` hook whose live behavior has not yet been verified here.
+Every adapter injects the **full `using-sdlc-skills` entry-skill body** as session context — Claude Code and Codex through a `SessionStart` hook, Kimi Code through `sessionStart.skill` — re-applied only where the harness reports context was actually lost: start, resume, clear. No adapter re-injects after compaction, because compaction carries loaded context forward and re-injection would be redundant cost.
 
 It used to inject a ~90-token *pointer* asking the agent to invoke the router before working. That is one discretionary tool call, and a discretionary call can be skipped — it was skipped on this very repository, on exactly the kind of task the router governs. Injecting the body costs ~1,500 approx tokens per context epoch and removes the skippable step: the routing rules are simply resident. The text is read from the canonical skill at runtime, never copied, so editing the skill cannot silently stop shipping it.
 
@@ -139,7 +139,7 @@ project gates still own artifact correctness. Codex does not run the guard
 because its adapter has no authoritative skill invocation receipt; a missing
 side-channel receipt cannot safely deny an edit.
 
-On Codex, SDLC skills ships a plugin adapter and local marketplace metadata, and the plugin bundles its own hooks (`plugins/sdlc-skills/hooks/hooks.json`) that run the same injector on `SessionStart`, including compact-source invocations. The skills install through Codex, durable repo guidance still comes through `AGENTS.md`, and the Codex harness test observes activation by watching the agent read the installed `SKILL.md` file from the plugin cache.
+On Codex, SDLC skills ships a plugin adapter and local marketplace metadata, and the plugin bundles its own hooks (`plugins/sdlc-skills/hooks/hooks.json`) that run the same injector on `SessionStart`; the injector itself drops compact-source invocations, since Codex's hook cannot filter by source. The skills install through Codex, durable repo guidance still comes through `AGENTS.md`, and the Codex harness test observes activation by watching the agent read the installed `SKILL.md` file from the plugin cache.
 
 On Kimi Code, SDLC skills ships a plugin manifest (`.kimi-plugin/plugin.json`)
 whose `sessionStart.skill` loads the `using-sdlc-skills` router into every new
@@ -148,9 +148,8 @@ to Kimi's real tools — including the dispatch action — whenever a plugin ski
 loads. The manifest points at the canonical phase directories directly, with no
 mirror.
 
-It also declares a `PostCompact` hook so the router is re-applied after
-mid-session compaction. That declaration follows the harness's documented hook
-events and **has not been verified live** in this repository — see
+It registers no `PostCompact` hook: compaction carries loaded context forward,
+so re-applying the entry skill there would be redundant — see
 [`docs/harness-support.md`](docs/harness-support.md).
 
 The routing is **non-negotiable by default, not a gentle suggestion** where a

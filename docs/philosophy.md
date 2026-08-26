@@ -121,11 +121,11 @@ the failure the gate exists to stop.
 
 ## What this means for the library
 
-This is why `using-sdlc-skills` carries a firm routing stance *and* refuses to overclaim. Its first job is to install the mental model that makes every other skill cohere:
+This is why `using-sdlc-skills` carries a firm entry stance *and* refuses to overclaim. Its first job is to install the mental model that makes every other skill cohere:
 
 > You are a generator. Executable claims need executable gates; judgment and
 > authority need explicit accountable decisions. Truth comes from their
 > evidence, never from your confidence. “Done” means the required gate accepted
 > the exact state, not that you believe it is done.
 
-Its second job is to route — firmly, because a skipped skill is the failure the library exists to prevent, and a gentle suggestion is skipped. But routing is process, not proof: it carries no deterministic verdict, so its firmness is persuasion, honestly labeled, never a claim to be a gate. The reliability of SDLC skills does not live in that firmness. It lives in the gates the skills define — and, where you want enforcement, in deterministic checks wired into git and CI, where enforcement is real and portable.
+Its second job is to get the first skill invoked and keep the chain unbroken — firmly, because a skipped skill is the failure the library exists to prevent, and a gentle suggestion is walked past. Routing between skills lives in the skills themselves: each body's preconditions, skips, and handoffs carry the work to its next owner, stated once, where the work actually is. But routing is process, not proof: it carries no deterministic verdict, so its firmness is persuasion, honestly labeled, never a claim to be a gate. The reliability of SDLC skills does not live in that firmness. It lives in the gates the skills define — and, where you want enforcement, in deterministic checks wired into git and CI, where enforcement is real and portable.

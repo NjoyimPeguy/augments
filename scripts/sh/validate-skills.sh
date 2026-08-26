@@ -110,6 +110,19 @@ for skill in "${skills[@]}"; do
   done < <(find "$dir" -name '*.md')
 done
 
+# Cross-skill routing lives in the bodies: a precondition, boundary, or handoff
+# names its peer in backticks. A rename or removal must not leave stale names
+# behind — a handoff to a skill that no longer exists routes nowhere, silently.
+# Backticked kebab-case tokens that are not skill names go on the allowlist.
+echo "• backticked skill names resolve to skills on disk"
+skill_names="$(find skills -mindepth 3 -maxdepth 3 -name SKILL.md -exec dirname {} \; | xargs -n1 basename | sort -u)"
+name_allowlist='common-dir git-dir integrated-regression'
+while IFS=: read -r file token; do
+  printf '%s\n' "$skill_names" | grep -qx "$token" && continue
+  printf '%s\n' $name_allowlist | grep -qx "$token" && continue
+  err "$file: backticked \`$token\` matches no skill on disk (stale cross-reference, or add it to the allowlist)"
+done < <(find skills -name 'SKILL.md' -exec grep -oH '`[a-z][a-z]*\(-[a-z][a-z]*\)\{1,\}`' {} + | tr -d '\`' | sort -u)
+
 # Progressive-disclosure links are executable navigation for an agent. Resolve
 # them in the canonical install tree; adapter-specific layouts run the same
 # helper against their own tree.
