@@ -9,6 +9,11 @@ Root cause before fix. A patch that quiets a symptom without a causal,
 reproducible explanation is still a guess. Intermittence changes the evidence
 model; it does not authorize guess-and-patch.
 
+A failure currently reaching real users is contained before it is diagnosed:
+`containing-an-incident` owns stopping the impact, and this skill takes over
+once nothing is bleeding. Check that boundary first — the report rarely says
+"incident".
+
 ## The method
 
 ### Frame the investigation

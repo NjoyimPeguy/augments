@@ -57,6 +57,10 @@ The conformance record is `docs/agent-skills-conformance.md`.
    articles, or authors, and do not cite issue/PR numbers or tracker links. State
    the principle directly ("a monolithic plan is re-read on every compaction") —
    never attribute it. Provenance belongs in private notes, not a shipped skill.
+   The same rule governs commit messages, PR descriptions, and release notes:
+   state the change and its evidence; never attribute it to another repository,
+   project, or library it may resemble. (Disclosing the authoring environment,
+   required under *Contributing*, is not attribution and stays.)
 2. **Model- and harness-agnostic.** Refer to models by capability tier —
    `small | medium | large` — never vendor names (haiku, sonnet, gpt, gemini, …).
    Don't assume a specific harness's tooling or paths. Each harness binds

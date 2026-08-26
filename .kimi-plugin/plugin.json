@@ -1,6 +1,6 @@
 {
   "name": "sdlc-skills",
-  "version": "6.2.7",
+  "version": "6.2.8",
   "description": "A cross-platform SDLC skills library for coding agents: planning, design, TDD, debugging, review, and delivery workflows.",
   "author": {
     "name": "Njoyim Peguy",
@@ -31,11 +31,6 @@
     "skill": "using-sdlc-skills"
   },
   "hooks": [
-    {
-      "event": "PostCompact",
-      "command": "bash ./scripts/sh/session-start.sh PostCompact",
-      "timeout": 15
-    },
     {
       "event": "PreToolUse",
       "command": "bash ./scripts/sh/implementation-guard.sh",

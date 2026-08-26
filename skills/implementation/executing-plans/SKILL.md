@@ -149,6 +149,11 @@ time.
 
 ## Resume and plan changes
 
+When the remaining work will not fit the current session — context pressure,
+an approaching limit, an ending shift — stop at the current task boundary and
+invoke `handoff` so the next session resumes without re-deriving state, rather
+than degrading through a truncated context.
+
 On resume, re-read the state rather than trusting it. Refresh the plan and its
 decision state, the workspace with its base, HEAD, and dirty state, the external
 ledgers and queues, the contract versions, and whether the evidence is still

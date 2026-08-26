@@ -10,7 +10,16 @@ Define how a trusted source becomes the intended target without losing behavior,
 ## When to use
 
 - The transformation is too broad, partitioned, preservation-heavy, or operationally risky for ordinary feature planning and line-by-line review.
-- **Skip** for a bounded change whose behavior and diff remain directly reviewable.
+- Classify before implementing, on risk evidence rather than line count:
+  **reviewability** (can independent humans or gates inspect the result?),
+  **preservation** (must behavior, compatibility, data, or operations match?),
+  **breadth** (how many owners, consumers, platforms, or modes change?), and
+  **failure surfaces** (can data, security, concurrency, resources, cutover, or
+  recovery fail independently?). If the ordinary route cannot make these
+  surfaces reviewable and recoverable, target work waits for this skill's
+  approved contract plus `verification-strategy`'s assurance and passed entry
+  gates. Uncertainty is pending classification; reclassify when inputs change.
+- **Skip** for a bounded change whose behavior and diff remain directly reviewable — bounded reviewable work stays on its ordinary route.
 - This skill owns source facts and transition strategy; `system-architecture`
   owns target shape, `verification-strategy` proof, and planning/execution work.
 

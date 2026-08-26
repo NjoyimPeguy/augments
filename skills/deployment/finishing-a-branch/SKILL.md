@@ -94,6 +94,11 @@ Readiness blocks integration; identity and ownership block discard.
    owned worktree, and leave detached, shared, user-owned, and host-owned
    resources in place.
 
+10. **Integration is not promotion.** When the integrated work produces a
+    releasable or running artifact, the promotion verdict — canary, deploy,
+    publish, distribute — belongs to `release-readiness`; this skill's
+    integration decision does not grant it.
+
 ## Discard is a separate destructive path
 
 Never offer discard because work looks unwanted; it enters only on a direct

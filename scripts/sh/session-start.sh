@@ -1,17 +1,18 @@
 #!/usr/bin/env bash
-# Inject the SDLC skills router as session context.
+# Inject the SDLC skills entry skill as session context.
 #
 # Usage: session-start.sh [HookEventName]   (default: SessionStart)
 #
-# Why the whole router and not a pointer: a pointer costs ~90 tokens and buys a
-# REQUEST that the agent invoke `using-sdlc-skills` before working. That request
-# is one discretionary tool call away from being skipped, and it does get
-# skipped — measured, in a real session, on exactly the task the router governs.
-# Injecting the body removes the skippable step: the routing rules are simply
+# Why the whole entry skill and not a pointer: a pointer costs ~90 tokens and
+# buys a REQUEST that the agent invoke `using-sdlc-skills` before working. That
+# request is one discretionary tool call away from being skipped, and it does
+# get skipped — measured, in a real session, on exactly the task it governs.
+# Injecting the body removes the skippable step: the entry mandate is simply
 # resident, so there is nothing left to forget. It costs ~1.5k tokens once per
 # context epoch instead of ~90, and it is re-applied only where the harness
-# reports context was actually lost (start, resume, clear, compaction) — never
-# on a per-turn cadence.
+# reports context was actually lost (start, resume, clear) — never after
+# compaction, which carries loaded context forward, and never on a per-turn
+# cadence.
 #
 # The text is READ from the canonical skill, never copied here: one source of
 # truth, so editing the skill cannot silently stop shipping.
@@ -23,6 +24,20 @@
 set -uo pipefail
 
 event="${1:-SessionStart}"
+
+# Compaction is not context loss on the supported harnesses: loaded skills and
+# session context are carried across it, so re-injecting the same body is pure
+# redundant cost. Claude Code excludes compact in the hook matcher, Kimi
+# registers no PostCompact hook, and Codex reports compaction as a SessionStart
+# whose payload source is "compact" — filtered here because its hook cannot
+# filter by source. Do not add compact re-injection back.
+case "$event" in PostCompact) exit 0 ;; esac
+if [ ! -t 0 ]; then
+    payload="$(cat 2>/dev/null || true)"
+    case "$payload" in
+        *'"source":"compact"'*|*'"source": "compact"'*) exit 0 ;;
+    esac
+fi
 
 script_dir="$(dirname "$0")"
 plugin_root="$(cd "$script_dir/../.." 2>/dev/null && pwd)"
@@ -58,13 +73,15 @@ context="$(cat <<EOF
 <EXTREMELY_IMPORTANT>
 # SDLC skills
 
-The full \`using-sdlc-skills\` router follows. It is ALREADY LOADED — apply it
-directly and do not spend a tool call re-invoking it. Every skill it routes to
-is listed with its trigger in your Skill tool; invoke those through the real
-skill-loading action, since reading a skill file is not invoking it.
+The full \`using-sdlc-skills\` entry skill follows. It is ALREADY LOADED — apply
+it directly and do not spend a tool call re-invoking it. Every skill in the
+catalogue is listed with its trigger in your Skill tool; invoke skills through
+the real skill-loading action, since reading a skill file is not invoking it.
+Each loaded skill's own preconditions, skips, and handoffs are the routing
+authority — follow them.
 
-Route from this before any answer or action, including questions and
-exploration, and before any tool that begins the work.
+Apply this before any answer or action, including questions and exploration,
+and before any tool that begins the work.
 
 $body
 </EXTREMELY_IMPORTANT>
@@ -86,8 +103,8 @@ elif [ -n "${COPILOT_CLI:-}" ]; then
     # SDK-style hooks consume top-level camelCase additional context.
     printf '{\n  "additionalContext": "%s"\n}\n' "$esc"
 else
-    # Claude Code and Codex consume the nested SessionStart envelope. Codex also
-    # uses SessionStart after compaction; adapters that support a contextual
-    # PostCompact event pass that event name explicitly.
+    # Claude Code and Codex consume the nested SessionStart envelope. Codex
+    # also fires SessionStart after compaction (source=compact); the skip at
+    # the top of this script drops that invocation before reaching here.
     printf '{\n  "hookSpecificOutput": {\n    "hookEventName": "%s",\n    "additionalContext": "%s"\n  }\n}\n' "$event" "$esc"
 fi

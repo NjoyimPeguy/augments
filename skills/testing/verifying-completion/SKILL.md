@@ -14,6 +14,11 @@ nearby run do not widen that evidence.
 Every completion claim, every commit, every PR. This discipline never scales
 down; only the required gate set does.
 
+When the candidate bears an integrated UI, its gate set includes
+`visual-ui-verification`: automated checks passing does not make a screen
+visually correct, and a done claim on UI work without that verdict is
+unverified.
+
 ## Available scripts
 
 - **`scripts/state-identity.sh`** — captures the source state a gate runs
