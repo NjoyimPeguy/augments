@@ -2,6 +2,13 @@
 
 Notable changes to SDLC skills, newest first. Versions follow semantic versioning; the narrative for each release lives on its release page — this file is the terse, cumulative record.
 
+## [6.2.8] — 2026-08-26
+
+### Changed
+
+- **Routing authority now lives in the skills, not a central router.** Each skill's body binds its own preconditions, boundaries, and handoffs — claimed on evidence, never assumption — and `using-sdlc-skills` becomes the entry skill that gets the first one loaded and keeps the chain unbroken. Four missing done-boundary handoffs were added so a session's exit always names its next owner.
+- **No adapter re-injects the entry skill after compaction.** Compaction carries loaded context forward on every supported harness, so re-injection was redundant cost; injection now fires only where context is actually lost — start, resume, clear.
+
 ## [6.2.7] — 2026-08-24
 
 ### Fixed
