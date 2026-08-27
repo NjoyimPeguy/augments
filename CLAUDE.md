@@ -169,7 +169,7 @@ What an entry says, and the four things to cut, are in `RELEASING.md`.
 - **One change per PR.** Don't bundle unrelated edits or batch-fix the tracker — pick one problem, understand it, submit focused work.
 - **Run the gate, and prove behaviour-shaping changes,** before opening a PR (see *Verify against the gate*). A human reviews the full diff first.
 - **Identify yourself.** Disclose in the PR the model, harness, harness version, and any installed plugins that produced the change — or state plainly it was written by hand. Contributions are weighed by how they were made: a behaviour claim reasoned from documentation is held to a different bar than one grounded in a real session. Hiding the authoring environment is grounds for closing the PR.
-- **Target `dev`, not `main`.** `main` is the released branch; active work lands on `dev` first. A PR against `main` will be asked to retarget.
+- **Target `main` from a task branch.** `main` is the only long-lived branch; every change reaches it through a reviewed PR. There is no staging branch to land on first.
 - **Never bump versions or edit CHANGELOG version headings in a PR.** Releases are versioned once, by the maintainer — see `RELEASING.md`.
 - The bar is the gate and the evidence, not volume or confidence. "No skill is needed here" is a valid, useful outcome.
 
