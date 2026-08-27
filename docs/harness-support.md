@@ -9,11 +9,11 @@ There is one canonical tree under `skills/`. Skills use capability tiers and
 portable actions; each harness adapter binds those concepts to its own manifest,
 tools, and lifecycle events.
 
-| Harness | Adapter | Entry-skill injection | Re-applied after compaction | Structured code-edit guard |
-| --- | --- | --- | --- | --- |
-| Claude Code | `.claude-plugin/` and `hooks/hooks.json` | `SessionStart` hook | No — `compact` is excluded from the matcher | `Write`, `Edit`, `MultiEdit` |
-| Codex | `plugins/sdlc-skills/` (manifest, `hooks/hooks.json`, mirrored injector) and `.agents/plugins/marketplace.json` | `SessionStart` hook | No — the injector drops `source=compact` payloads | None — no authoritative skill receipt |
-| Kimi Code | `.kimi-plugin/plugin.json` | `sessionStart.skill` | No — no `PostCompact` hook is registered | `Write`, `Edit`, `MultiEdit` |
+| Harness | Adapter | Entry-skill injection | Re-applied after compaction | Structured code-edit guard | Turn-end done-boundary guard |
+| --- | --- | --- | --- | --- | --- |
+| Claude Code | `.claude-plugin/` and `hooks/hooks.json` | `SessionStart` hook | No — `compact` is excluded from the matcher | `Write`, `Edit`, `MultiEdit` | `Stop`, read from the session transcript |
+| Codex | `plugins/sdlc-skills/` (manifest, `hooks/hooks.json`, mirrored injector) and `.agents/plugins/marketplace.json` | `SessionStart` hook | No — the injector drops `source=compact` payloads | None — no authoritative skill receipt | None — same missing receipt |
+| Kimi Code | `.kimi-plugin/plugin.json` | `sessionStart.skill` | No — no `PostCompact` hook is registered | `Write`, `Edit`, `MultiEdit` | `Stop`, read from the `PostToolUse` ledger |
 
 The Codex plugin manifest carries the skill catalogue but has no session-start
 field, so the entry skill arrives through hooks the plugin itself bundles
@@ -48,9 +48,26 @@ adapter, so editing the skill cannot silently stop shipping.
 `tests/run-session-start.sh` asserts the injected context contains the canonical
 body verbatim, in each harness's envelope.
 
-No adapter ships a turn-end or per-prompt reminder. Routing that has to survive a
-long session belongs in the resident surface, re-applied only where the harness
-reports that context was actually lost.
+No adapter ships a per-prompt reminder, and none ships a turn-end *reminder* —
+a hook that fires on the turn itself, or on its wording, re-spends its text for
+as long as the session runs. Routing that has to survive a long session belongs
+in the resident surface, re-applied only where the harness reports that context
+was actually lost.
+
+The turn-end **guard** is the other kind, and is bounded so it cannot decay into
+that. It fires only where the session's own record shows code was changed and
+`verifying-completion` has not run since, it blocks at most once per such change,
+and it goes quiet again until new code appears. Wording is read only to suppress
+a block — a turn that asks the user something and claims nothing is a hand-back,
+not a done claim — never to cause one.
+
+That bound is also why the guard is not universal. Answering "has the boundary
+been honoured?" needs a receipt that a skill was invoked. Claude Code exposes one
+in the session transcript; Kimi Code exposes one through `PostToolUse`, which the
+implementation guard already records in a per-session ledger alongside the code
+edits it sees. Codex exposes no skill-invocation tool at all — skills there are
+read as files — so a turn-end hook could never clear, and Codex therefore gets
+none. Registering one anyway would rebuild exactly the cadence that was retired.
 
 The Claude manifest, Codex mirror, and Kimi skill paths must expose the same
 canonical skill set. `scripts/sh/validate-skills.sh` checks that deterministic
