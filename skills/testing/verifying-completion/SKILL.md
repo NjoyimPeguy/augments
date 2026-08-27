@@ -67,6 +67,13 @@ unverified.
    row and its handling under `Evidence controls`. Redact only the copy you
    present.
 
+   Read what the gate asserted, not only how it exited. A gate that went green
+   over assertions that could not have gone red has said nothing about the code
+   it covers, so its green is not evidence you may cite for that code. Where
+   that is what you find, say so in the claim: repairing the gate is separate
+   scope, owned by `verification-strategy`, and is not yours to patch in
+   passing.
+
 7. **Audit execution completeness** against the ledger's `Inventory
    reconciliation` section: what was required to run, against what observably
    ran. Aggregate green is red when required work did not run or did not
@@ -128,6 +135,7 @@ self-certify a human-owned judgment.
 | "It should work" | Run the gate and make it a fact. |
 | "I ran it earlier" | Earlier state or evidence age may not support this transition. |
 | "The types pass" | Types, build, behavior, requirements, and release are distinct claims. |
+| "The suite is green, so the code is covered" | Read what it asserted. A green that could not have been red covers nothing. |
 | "The agent said green" | A report is a claim; inspect raw state and output. |
 | "The summary says all passed" | Reconcile skipped tests, shards, and matrix cells. |
 | "It's a false positive" | That judgement is itself unverified. Rewrite the code until the checker agrees, or record an accepted deviation. |
