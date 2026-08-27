@@ -51,4 +51,4 @@ inconclusive and failing results. Say how many runs. -->
 - [ ] Behaviour-shaping changes were re-tested, with the real result reported.
 - [ ] No external references or vendor model names in shipped `skills/` or `docs/` files.
 - [ ] A human has reviewed the complete diff.
-- [ ] Targeting `dev`, not `main`.
+- [ ] Targeting `main` from a task branch.
