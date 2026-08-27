@@ -2,6 +2,16 @@
 
 Notable changes to SDLC skills, newest first. Versions follow semantic versioning; the narrative for each release lives on its release page — this file is the terse, cumulative record.
 
+## [6.3.0] — 2026-08-28
+
+### Added
+
+- **A turn-end guard on the done boundary.** When a session has changed code and `verifying-completion` has not run since, the turn is blocked with the reason rather than ending on an unverified completion claim. It fires on the change, not on the wording, and goes quiet once honoured; a turn that pauses to ask you something is left alone. Measured: 0 of 5 bare runs reached the done boundary having verified; 3 of 3 did with the guard active.
+
+### Changed
+
+- **`verifying-completion` reads what a gate asserted, not only how it exited.** A suite that goes green over assertions that could never go red is no longer citable as evidence for the code it covers — the agent says so in the claim and names repairing it as separate scope. Measured: a hollow project gate survived bounded feature work unremarked in 4 of 6 runs before, 0 of 6 after.
+
 ## [6.2.8] — 2026-08-26
 
 ### Changed
