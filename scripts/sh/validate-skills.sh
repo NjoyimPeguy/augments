@@ -200,18 +200,30 @@ while IFS= read -r f; do
   sed 's/`[^`]*`//g' "$f" | grep -qiE "$SCANNER_TRIGGERS" && err "$f: harness scanner trigger-word"
 done < <(find hooks -name '*.md' 2>/dev/null)
 
-# Cadence reminders stay retired in every supported adapter. The implementation
-# guard below is different: it runs only at the covered code-edit boundary.
-echo "• no cadence reminder hooks (UserPromptSubmit, Stop)"
+# Cadence reminders stay retired in every supported adapter. A cadence fires on
+# the turn itself — on its wording, or on every prompt — so it re-spends its text
+# for as long as the session runs and blocks turn-end to do it. The boundary
+# guards are the opposite and stay: each fires on an observable action, and each
+# goes quiet once that action's boundary has been honoured.
+#
+# UserPromptSubmit has no boundary reading and stays retired outright. A turn-end
+# event may only run a state-conditioned guard, never a wording nudge — which is
+# what the retired stop-nudge scripts below were.
+echo "• no cadence reminder hooks (UserPromptSubmit, wording-triggered turn-end)"
 for hook_config in \
   hooks/hooks.json \
   plugins/sdlc-skills/hooks/hooks.json \
   .kimi-plugin/plugin.json; do
   [ -f "$hook_config" ] || continue
-  for retired_event in UserPromptSubmit Stop; do
-    grep -q "\"$retired_event\"" "$hook_config" \
-      && err "$hook_config: $retired_event is retired across supported adapters"
-  done
+  grep -q '"UserPromptSubmit"' "$hook_config" \
+    && err "$hook_config: UserPromptSubmit is retired across supported adapters"
+  # A turn-end registration is legal only as the state-conditioned guard. This
+  # is deliberately file-scoped rather than parsed: the gate ships without a
+  # JSON dependency, and pairing it with the retired-script list below is enough
+  # to keep a wording nudge from coming back under a new name.
+  if grep -q '"Stop"' "$hook_config" && ! grep -q 'completion-guard\.sh' "$hook_config"; then
+    err "$hook_config: a turn-end hook is registered that is not the completion guard"
+  fi
 done
 for retired_script in \
   scripts/sh/implementation-remind.sh \

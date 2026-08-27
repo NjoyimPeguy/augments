@@ -77,9 +77,16 @@ ledger="${TMPDIR:-/tmp}/sdlc-skills-implementation-$session"
 
 case "$event" in
   PostToolUse)
+    # Skill loads and code edits are recorded in the order they happened. The
+    # ordering is what lets the turn-end completion guard answer "was this change
+    # verified AFTER it was made?" on a harness that exposes no transcript.
     if [ "$tool" = "Skill" ]; then
       skill="$(get '.tool_input.skill')"
       [ -n "$skill" ] && ( umask 077; printf '%s\n' "$skill" >> "$ledger" )
+    elif [[ "$tool" =~ ^(Write|Edit|MultiEdit)$ ]]; then
+      edited="$(target_path)"
+      [ -n "$edited" ] && is_code_path "$edited" &&
+        ( umask 077; printf 'EDIT\t%s\n' "$edited" >> "$ledger" )
     fi
     ;;
   PreToolUse)
